@@ -7,7 +7,7 @@
 <meta name="description" content="Ajmal P.S is an MEP BIM Coordinator in Doha, Qatar with 10+ years of experience. HVAC, plumbing, drainage and firefighting BIM, plus AJ-Tools — a custom Revit add-in suite in C# and pyRevit.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/">
-<meta name="theme-color" id="metaTheme" content="#ffffff">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
 <meta property="og:title" content="Ajmal P.S — MEP BIM Coordinator, Doha, Qatar">
 <meta property="og:description" content="10+ years of MEP BIM in Qatar. I build the models, and the Revit tools my team runs on.">
 <meta property="og:url" content="https://ajmalps.com/">
@@ -81,40 +81,68 @@
   --card:#ffffff;
   --link:#0071e3;
   --hover-bg:rgba(0,0,0,.05);
-  --rtool-hover:#eef1f6;
-  --hero-bg:linear-gradient(180deg,#fff 0%,#fbfbfd 100%);
-  --nav-bg:rgba(255,255,255,.72);
+  --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
+  --nav-bg:rgba(245,247,251,.7);
   --nav-border:rgba(0,0,0,.08);
-  --menu-bg:rgba(255,255,255,.92);
-  --tile-border:transparent;
-  --card-shadow:0 2px 16px rgba(0,0,0,.04);
-  --card-shadow-hover:0 14px 40px rgba(0,0,0,.08);
+  --menu-bg:rgba(245,247,251,.92);
+  --tile-border:rgba(255,255,255,.3);
+  /* glass */
+  --glass:rgba(255,255,255,.55);
+  --glass-strong:rgba(255,255,255,.68);
+  --glass-border:rgba(255,255,255,.7);
+  --glass-fb:#fbfcfe;
+  /* neumorphic */
+  --neu-surface:#eef1f7;
+  --neu-out:8px 8px 20px rgba(163,177,198,.4),-8px -8px 20px rgba(255,255,255,.9);
+  --neu-out-sm:4px 4px 10px rgba(163,177,198,.35),-4px -4px 10px rgba(255,255,255,.85);
+  --neu-hover:14px 14px 30px rgba(140,155,180,.42),-14px -14px 30px rgba(255,255,255,.95);
+  --neu-in:inset 3px 3px 8px rgba(163,177,198,.4),inset -3px -3px 8px rgba(255,255,255,.9);
+  /* ambient blobs */
+  --b-cyan:rgba(0,200,255,.15);
+  --b-blue:rgba(37,99,235,.12);
+  --b-violet:rgba(124,58,237,.12);
   color-scheme:light;
 }
 :root[data-theme="dark"]{
   --ink:#f5f5f7;
   --muted:#a1a1a6;
   --faint:#86868b;
-  --bg:#000000;
-  --bg-alt:#161617;
-  --hairline:#3a3a3c;
+  --bg:#0c0e13;
+  --bg-alt:#12141b;
+  --hairline:#2b2f38;
   --card:#1d1d1f;
   --link:#2997ff;
   --hover-bg:rgba(255,255,255,.08);
-  --rtool-hover:#2a2a2c;
-  --hero-bg:linear-gradient(180deg,#000 0%,#0b0b0d 100%);
-  --nav-bg:rgba(18,18,20,.72);
+  --hero-bg:linear-gradient(180deg,#0c0e13 0%,#0e1118 100%);
+  --nav-bg:rgba(16,18,24,.7);
   --nav-border:rgba(255,255,255,.12);
-  --menu-bg:rgba(18,18,20,.94);
+  --menu-bg:rgba(16,18,24,.94);
   --tile-border:rgba(255,255,255,.1);
-  --card-shadow:none;
-  --card-shadow-hover:0 14px 40px rgba(0,0,0,.55);
+  --glass:rgba(255,255,255,.055);
+  --glass-strong:rgba(255,255,255,.075);
+  --glass-border:rgba(255,255,255,.12);
+  --glass-fb:#191c23;
+  --neu-surface:#171a21;
+  --neu-out:8px 8px 20px rgba(0,0,0,.6),-8px -8px 20px rgba(255,255,255,.04);
+  --neu-out-sm:4px 4px 10px rgba(0,0,0,.55),-4px -4px 10px rgba(255,255,255,.04);
+  --neu-hover:14px 14px 30px rgba(0,0,0,.7),-14px -14px 30px rgba(255,255,255,.05);
+  --neu-in:inset 3px 3px 8px rgba(0,0,0,.6),inset -3px -3px 8px rgba(255,255,255,.05);
+  --b-cyan:rgba(0,200,255,.1);
+  --b-blue:rgba(37,99,235,.12);
+  --b-violet:rgba(124,58,237,.11);
   color-scheme:dark;
 }
 /* smooth cross-fade while switching themes */
 html.theming *,html.theming *::before,html.theming *::after{
   transition:background-color .35s var(--ease),background .35s var(--ease),color .35s var(--ease),
-  border-color .35s var(--ease),fill .35s var(--ease),stroke .35s var(--ease),transform .35s var(--ease) !important;
+  border-color .35s var(--ease),fill .35s var(--ease),stroke .35s var(--ease),
+  box-shadow .35s var(--ease),transform .35s var(--ease) !important;
+}
+/* solid fallbacks where backdrop blur is unsupported */
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .bcard,.ribbon,.chips span{background:var(--glass-fb)}
+  .ptile{background:#14161b}
+  .stat-b{background:#12151b}
 }
 
 /* ============ Base ============ */
@@ -148,6 +176,18 @@ section{padding:110px 0}
 .sec-dark{background:#000;color:#f5f5f7}
 .sec-dark .muted,.sec-dark p.sub{color:#a1a1a6}
 .sec-alt{background:var(--bg-alt)}
+
+/* ambient colour blobs behind the glass */
+.hero,section{position:relative}
+.hero::before,section::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--blobs,none)}
+.hero>*,section>*{position:relative}
+.hero{--blobs:radial-gradient(620px 460px at 12% 16%,var(--b-cyan),transparent 65%),radial-gradient(680px 500px at 88% 28%,var(--b-violet),transparent 65%)}
+#about{--blobs:radial-gradient(640px 480px at 86% 12%,var(--b-blue),transparent 65%),radial-gradient(520px 400px at 8% 78%,var(--b-cyan),transparent 62%)}
+#experience{--blobs:radial-gradient(560px 420px at 92% 24%,var(--b-cyan),transparent 65%)}
+#ajtools{--blobs:radial-gradient(660px 480px at 10% 18%,var(--b-cyan),transparent 65%),radial-gradient(600px 440px at 90% 72%,var(--b-violet),transparent 62%)}
+#skills{--blobs:radial-gradient(560px 420px at 88% 18%,var(--b-violet),transparent 65%)}
+.sec-dark{--blobs:radial-gradient(760px 500px at 50% 0%,rgba(37,99,235,.16),transparent 65%)}
+#contact{--blobs:radial-gradient(680px 460px at 50% 16%,rgba(124,58,237,.17),transparent 65%),radial-gradient(560px 420px at 16% 82%,rgba(0,200,255,.1),transparent 62%)}
 
 /* headlines: apple two-tone */
 .eyebrow{
@@ -217,13 +257,14 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 }
 #themeSwitch .track{
   position:relative;display:block;width:54px;height:30px;border-radius:999px;
-  background:var(--bg-alt);border:1px solid var(--hairline);
-  transition:background .35s var(--ease),border-color .35s var(--ease);
+  background:var(--neu-surface);
+  box-shadow:var(--neu-in);
+  transition:background .35s var(--ease),box-shadow .35s var(--ease);
 }
-:root[data-theme="dark"] #themeSwitch .track{background:var(--blue);border-color:transparent}
+:root[data-theme="dark"] #themeSwitch .track{background:rgba(0,113,227,.35)}
 #themeSwitch .knob{
-  position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;
-  background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);
+  position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;box-shadow:2px 2px 6px rgba(0,0,0,.3),-2px -2px 6px rgba(255,255,255,.4);
   display:flex;align-items:center;justify-content:center;
   transition:transform .35s var(--ease);
 }
@@ -327,6 +368,13 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
   display:grid;grid-template-columns:repeat(4,1fr);gap:44px 28px;margin-top:64px;text-align:center;
 }
 @media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;gap:52px 20px}}
+.stat-b{
+  background:rgba(255,255,255,.05);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;padding:34px 18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
 .stat-b b{
   display:block;font-size:clamp(46px,6.6vw,84px);font-weight:700;letter-spacing:-.03em;line-height:1;
   background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
@@ -339,11 +387,13 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 @media(max-width:900px){.bento{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.bento{grid-template-columns:1fr}}
 .bcard{
-  background:var(--card);border-radius:var(--radius);padding:36px 34px;
-  box-shadow:var(--card-shadow);
+  background:var(--glass);border-radius:var(--radius);padding:36px 34px;
+  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--neu-out);
   transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s var(--ease);
 }
-.bcard:hover{transform:translateY(-4px);box-shadow:var(--card-shadow-hover)}
+.bcard:hover{transform:translateY(-4px);box-shadow:var(--neu-hover)}
 .bcard.span2{grid-column:span 2}
 @media(max-width:600px){.bcard.span2{grid-column:span 1}}
 .bcard h3{font-size:23px;font-weight:700;letter-spacing:-.015em;margin-bottom:10px}
@@ -355,6 +405,7 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
   width:46px;height:46px;border-radius:14px;margin-bottom:18px;
   background:linear-gradient(135deg,rgba(0,200,255,.12),rgba(124,58,237,.12));
   display:flex;align-items:center;justify-content:center;color:var(--link);
+  box-shadow:var(--neu-out-sm);
 }
 
 /* ============ Experience ============ */
@@ -380,7 +431,8 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
 @media(max-width:734px){.pgrid{grid-template-columns:1fr}}
 .ptile{
-  position:relative;background:#101013;border:1px solid rgba(255,255,255,.09);
+  position:relative;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   border-radius:var(--radius);padding:38px 36px;overflow:hidden;
   transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);
 }
@@ -408,8 +460,10 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 
 /* ============ AJ-Tools ============ */
 .ribbon{
-  background:var(--card);border-radius:var(--radius);padding:26px;margin-top:56px;
-  box-shadow:var(--card-shadow);
+  background:var(--glass-strong);border-radius:var(--radius);padding:26px;margin-top:56px;
+  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--neu-out);
 }
 .rtabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--hairline);padding-bottom:14px;margin-bottom:18px;font-size:13.5px;color:var(--muted)}
 .rtabs span{padding:6px 14px;border-radius:999px}
@@ -419,11 +473,13 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 @media(max-width:820px){.rtools{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:520px){.rtools{grid-template-columns:repeat(3,1fr)}}
 .rtool{
-  background:var(--bg-alt);border-radius:14px;padding:16px 8px;text-align:center;
+  background:var(--neu-surface);border-radius:14px;padding:16px 8px;text-align:center;
   font-size:12px;color:var(--muted);font-weight:500;
-  transition:transform .3s var(--ease),background .3s var(--ease);
+  box-shadow:var(--neu-out-sm);cursor:default;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s var(--ease);
 }
-.rtool:hover{transform:translateY(-3px);background:var(--rtool-hover)}
+.rtool:hover{transform:translateY(-3px);box-shadow:var(--neu-out)}
+.rtool:active{transform:translateY(0);box-shadow:var(--neu-in)}
 .rtool svg{margin:0 auto 8px;color:var(--link)}
 .brain{
   background:#000;color:#f5f5f7;border-radius:var(--radius);
@@ -464,10 +520,11 @@ nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,
 .spec-row p{font-size:16.5px;color:var(--muted)}
 .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
 .chips span{
-  font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--hairline);
+  font-size:14px;color:var(--ink);background:var(--glass);border:1px solid var(--glass-border);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   border-radius:999px;padding:9px 18px;font-weight:500;
+  box-shadow:var(--neu-out-sm);
 }
-.chips.on-white span{background:var(--bg-alt);border-color:transparent}
 
 /* ============ Contact ============ */
 .contact{text-align:center}
@@ -829,7 +886,7 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     root.setAttribute("data-theme", t);
     sw.setAttribute("aria-checked", t === "dark" ? "true" : "false");
     sw.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#000000" : "#ffffff");
+    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
   }
   applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
   sw.addEventListener("click", function(){
