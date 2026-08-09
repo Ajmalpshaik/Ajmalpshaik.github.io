@@ -3,305 +3,534 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ajmal P.S | MEP BIM Coordinator &amp; Revit Automation Developer | Doha, Qatar</title>
-<meta name="description" content="Ajmal P.S is an MEP BIM Coordinator in Doha, Qatar with 10+ years of experience. HVAC, plumbing, drainage and firefighting BIM, plus AJ-Tools, a custom Revit add-in suite in C# and pyRevit.">
+<title>Ajmal P.S — MEP BIM Coordinator &amp; Revit Automation Developer | Doha, Qatar</title>
+<meta name="description" content="Ajmal P.S is an MEP BIM Coordinator in Doha, Qatar with 10+ years of experience. HVAC, plumbing, drainage and firefighting BIM, plus AJ-Tools — a custom Revit add-in suite in C# and pyRevit.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/">
-<meta property="og:title" content="Ajmal P.S | MEP BIM Coordinator, Doha, Qatar">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="Ajmal P.S — MEP BIM Coordinator, Doha, Qatar">
 <meta property="og:description" content="10+ years of MEP BIM in Qatar. I build the models, and the Revit tools my team runs on.">
 <meta property="og:url" content="https://ajmalps.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="ajmalps.com">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ajmal P.S — MEP BIM Coordinator, Doha, Qatar">
+<meta name="twitter:description" content="10+ years of MEP BIM in Qatar. I build the models, and the Revit tools my team runs on.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script>document.documentElement.classList.add("js");</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ajmalps.com/#person",
+      "name": "Ajmal P.S",
+      "url": "https://ajmalps.com/",
+      "jobTitle": "MEP BIM Coordinator",
+      "description": "MEP BIM Coordinator in Doha, Qatar with 10+ years of experience across HVAC, plumbing, drainage and firefighting. Builds Revit automation in C# and pyRevit.",
+      "email": "mailto:ajmalnattika@gmail.com",
+      "telephone": "+97431033040",
+      "address": { "@type": "PostalAddress", "addressLocality": "Doha", "addressCountry": "QA" },
+      "sameAs": [
+        "https://www.linkedin.com/in/ajmalps/",
+        "https://github.com/Ajmalpshaik"
+      ],
+      "knowsAbout": ["BIM", "MEP Coordination", "Autodesk Revit", "Navisworks", "HVAC", "Plumbing", "Firefighting Systems", "Drainage", "Revit API", "C#", "pyRevit", "Dynamo", "ISO 19650"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ajmalps.com/#website",
+      "url": "https://ajmalps.com/",
+      "name": "ajmalps.com",
+      "publisher": { "@id": "https://ajmalps.com/#person" }
+    }
+  ]
+}
+</script>
 <style>
+/* ============ Tokens ============ */
 :root{
-  --primary:#00C8FF; --primary-hover:#37D7FF; --primary-press:#009FCC;
-  --surface:#10161C; --card:#1A222A; --softcard:#202A33;
-  --text:#F2F7FA; --muted:#A8B4BE; --border:#39444E;
-  --duct:#2F80ED; --chw:#22C7C7; --fire:#F05C5C; --drain:#4CBB6C;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
-  --glow:0 0 24px rgba(0,200,255,.18);
+  --ink:#1d1d1f;
+  --muted:#6e6e73;
+  --faint:#86868b;
+  --bg:#ffffff;
+  --bg-alt:#f5f5f7;
+  --hairline:#d2d2d7;
+  --blue:#0071e3;
+  --blue-hover:#0077ed;
+  --cyan:#00c8ff;
+  --violet:#7c3aed;
+  --grad:linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%);
+  --duct:#2f80ed; --chw:#22c7c7; --fire:#f05c5c; --drain:#4cbb6c;
+  --radius:28px;
+  --ease:cubic-bezier(.25,.1,.25,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --nav-h:52px;
 }
-html[data-theme="light"]{
-  --primary:#00AEEF; --primary-hover:#18C7FF; --primary-press:#0096CC;
-  --surface:#F4F8FB; --card:#FFFFFF; --softcard:#EEF5F9;
-  --text:#162029; --muted:#6B7A86; --border:#D6E2EA;
-  --shadow:0 10px 26px rgba(22,32,41,.10);
-  --glow:0 0 24px rgba(0,174,239,.12);
-}
+
+/* ============ Base ============ */
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
 body{
-  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
-  background:var(--surface);color:var(--text);line-height:1.6;
-  -webkit-font-smoothing:antialiased;transition:background .3s,color .3s;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
 }
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-section{padding:72px 0}
-h2{font-size:clamp(26px,4vw,34px);font-weight:600;margin-bottom:8px}
-.kicker{color:var(--primary);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
-.lead{color:var(--muted);max-width:640px;margin-bottom:36px}
-a{color:var(--primary);text-decoration:none}
-a:hover{color:var(--primary-hover)}
+::selection{background:rgba(0,113,227,.18)}
+a{color:var(--blue);text-decoration:none}
+img,svg{display:block;max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.wrap-narrow{max-width:820px;margin:0 auto;padding:0 22px}
 
-/* ---------- nav ---------- */
+:where(a,button):focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:8px}
+
+.grad-text{
+  background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+
+/* section rhythm */
+section{padding:110px 0}
+@media(max-width:734px){section{padding:76px 0}}
+.sec-dark{background:#000;color:#f5f5f7}
+.sec-dark .muted,.sec-dark p.sub{color:#a1a1a6}
+.sec-alt{background:var(--bg-alt)}
+
+/* headlines: apple two-tone */
+.eyebrow{
+  display:block;font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--blue);margin-bottom:14px;
+}
+.sec-dark .eyebrow{color:#6ea8ff}
+h2.head{
+  font-size:clamp(34px,5vw,60px);font-weight:700;letter-spacing:-.022em;line-height:1.08;
+  max-width:900px;text-wrap:balance;
+}
+h2.head .dim{color:var(--faint)}
+.sec-dark h2.head .dim{color:#6e6e73}
+p.sub{
+  font-size:clamp(18px,2.2vw,21px);color:var(--muted);max-width:680px;margin-top:20px;
+}
+
+/* ============ Reveal motion (hidden state only when JS is running) ============ */
+html.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);transition-delay:var(--d,0s)}
+html.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  html.js .reveal{opacity:1;transform:none;transition:none}
+  .hero-enter,.float,.draw,.drawdot{animation:none !important}
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+
+/* ============ Nav ============ */
 nav{
-  position:sticky;top:0;z-index:50;
-  background:color-mix(in srgb,var(--surface) 86%,transparent);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  background:rgba(255,255,255,.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
 }
-.navin{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--text)}
-.brand:hover{color:var(--text)}
-.brand svg{display:block}
+nav.scrolled{border-bottom-color:rgba(0,0,0,.08);box-shadow:0 1px 14px rgba(0,0,0,.04)}
+.navin{max-width:1080px;height:100%;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:8px}
+.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.brand svg{width:26px;height:26px}
 .navlinks{display:flex;gap:4px;margin-left:auto;align-items:center}
-.navlinks a{color:var(--muted);font-size:14px;padding:8px 12px;border-radius:10px}
-.navlinks a:hover{color:var(--text);background:var(--softcard)}
-#themeBtn{
-  border:1px solid var(--border);background:var(--card);color:var(--text);
-  width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:16px;line-height:1;
+.navlinks a{
+  color:var(--muted);font-size:13.5px;padding:8px 13px;border-radius:999px;
+  transition:color .25s var(--ease),background .25s var(--ease);
 }
-#themeBtn:hover{border-color:var(--primary)}
-#menuBtn{display:none;border:1px solid var(--border);background:var(--card);color:var(--text);
-  width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:18px;margin-left:auto}
+.navlinks a:hover{color:var(--ink);background:rgba(0,0,0,.05)}
+.navlinks a.cta{color:#fff;background:var(--blue);font-weight:500;margin-left:6px}
+.navlinks a.cta:hover{background:var(--blue-hover)}
+#menuBtn{
+  display:none;margin-left:auto;width:44px;height:44px;border:none;background:none;cursor:pointer;
+  align-items:center;justify-content:center;border-radius:12px;
+}
+#menuBtn span{position:relative;display:block;width:18px;height:1.5px;background:var(--ink);transition:transform .3s var(--ease),background .3s var(--ease)}
+#menuBtn span::before,#menuBtn span::after{
+  content:"";position:absolute;left:0;width:18px;height:1.5px;background:var(--ink);transition:transform .3s var(--ease),top .3s var(--ease);
+}
+#menuBtn span::before{top:-6px}
+#menuBtn span::after{top:6px}
+#menuBtn[aria-expanded="true"] span{background:transparent}
+#menuBtn[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
+#menuBtn[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
 @media(max-width:820px){
-  #menuBtn{display:block}
+  #menuBtn{display:flex}
   .navlinks{
-    display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;
-    background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px 16px;gap:2px;
+    position:fixed;top:var(--nav-h);left:0;right:0;z-index:99;
+    flex-direction:column;align-items:stretch;gap:0;padding:12px 22px 22px;
+    background:rgba(255,255,255,.92);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid rgba(0,0,0,.08);
+    opacity:0;transform:translateY(-8px);pointer-events:none;visibility:hidden;
+    transition:opacity .35s var(--ease),transform .35s var(--ease);
   }
-  .navlinks.open{display:flex}
-  .navlinks a{width:100%;padding:12px}
-  #themeBtn{margin-left:0;margin-top:6px}
+  .navlinks.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
+  .navlinks a{font-size:17px;padding:14px 4px;border-radius:0;border-bottom:1px solid rgba(0,0,0,.06)}
+  .navlinks a:hover{background:none}
+  .navlinks a.cta{border:none;text-align:center;border-radius:999px;padding:13px;margin:14px 0 0}
 }
 
-/* ---------- hero ---------- */
-.hero{padding:88px 0 72px}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
-@media(max-width:820px){.hero-grid{grid-template-columns:1fr}}
-.hero h1{font-size:clamp(32px,5.4vw,52px);font-weight:700;line-height:1.15;margin:14px 0 18px}
-.hero h1 em{font-style:normal;color:var(--primary)}
-.hero p.sub{color:var(--muted);font-size:17px;max-width:560px;margin-bottom:30px}
-.btnrow{display:flex;gap:12px;flex-wrap:wrap}
+/* ============ Buttons ============ */
 .btn{
-  display:inline-block;padding:12px 22px;border-radius:12px;font-weight:600;font-size:15px;
-  background:var(--primary);color:#04141C;box-shadow:var(--glow);transition:background .2s,transform .15s;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;padding:12px 26px;border-radius:999px;
+  background:var(--blue);color:#fff;font-size:17px;font-weight:500;cursor:pointer;
+  transition:background .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);
 }
-.btn:hover{background:var(--primary-hover);color:#04141C;transform:translateY(-1px)}
-.btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--border);box-shadow:none}
-.btn.ghost:hover{border-color:var(--primary);color:var(--text)}
-.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
-.pill{
-  font-size:13px;color:var(--muted);background:var(--softcard);
-  border:1px solid var(--border);border-radius:999px;padding:6px 14px;
-}
-.iso-card{
-  background:var(--card);border:1px solid var(--border);border-radius:18px;
-  padding:18px;box-shadow:var(--shadow);
-}
-.iso-card svg{width:100%;height:auto;display:block}
-.legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 6px 2px;font-size:12.5px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:7px}
-.dot{width:16px;height:5px;border-radius:3px;display:inline-block}
+.btn:hover{background:var(--blue-hover);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,113,227,.28)}
+.btn:active{transform:scale(.985)}
+.btn-ghost{background:rgba(0,0,0,.05);color:var(--ink)}
+.btn-ghost:hover{background:rgba(0,0,0,.09);box-shadow:none}
+.btn-light{background:#f5f5f7;color:#000}
+.btn-light:hover{background:#fff;box-shadow:0 8px 24px rgba(255,255,255,.15)}
+.btn-glass{background:rgba(255,255,255,.1);color:#f5f5f7;border:1px solid rgba(255,255,255,.22)}
+.btn-glass:hover{background:rgba(255,255,255,.16);box-shadow:none}
+.tlink{font-size:17px;font-weight:500;display:inline-flex;align-items:center;gap:5px;min-height:48px}
+.tlink:hover{text-decoration:underline}
+.tlink .chev{font-weight:400}
 
-/* ---------- cards ---------- */
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:24px;transition:transform .15s,border-color .2s;
+/* ============ Hero ============ */
+.hero{
+  padding:calc(var(--nav-h) + 78px) 0 96px;text-align:center;
+  background:linear-gradient(180deg,#fff 0%,#fbfbfd 100%);
 }
-.card:hover{border-color:var(--primary);transform:translateY(-2px)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
-
-/* ---------- about ---------- */
-.about-grid{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:start}
-@media(max-width:820px){.about-grid{grid-template-columns:1fr}}
-.avatar{
-  width:132px;height:132px;border-radius:28px;background:var(--softcard);
-  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
-  box-shadow:var(--shadow);
+.hero .kicker{
+  display:block;font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
 }
-.about p{color:var(--muted);max-width:660px;margin-bottom:14px}
-.about p strong{color:var(--text);font-weight:600}
-.facts{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
-.fact{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:14px 20px;min-width:120px;
+.hero h1{
+  font-size:clamp(54px,10vw,108px);font-weight:700;letter-spacing:-.03em;line-height:1.02;
+  margin:14px 0 10px;
 }
-.fact b{display:block;font-size:24px;color:var(--primary);font-weight:700}
-.fact span{font-size:13px;color:var(--muted)}
-
-/* ---------- experience ---------- */
-.timeline{position:relative;padding-left:26px}
-.timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--border);border-radius:2px}
-.titem{position:relative;padding:0 0 34px}
-.titem:last-child{padding-bottom:0}
-.titem::before{
-  content:"";position:absolute;left:-26px;top:7px;width:14px;height:14px;border-radius:50%;
-  background:var(--primary);border:3px solid var(--surface);box-shadow:0 0 0 2px var(--primary);
+.hero .tagline{
+  font-size:clamp(26px,4.4vw,50px);font-weight:700;letter-spacing:-.022em;line-height:1.12;
+  max-width:900px;margin:0 auto;text-wrap:balance;
 }
-.titem .when{font-size:13px;color:var(--primary);font-weight:600;letter-spacing:.04em}
-.titem h3{font-size:18px;font-weight:600;margin:4px 0 2px}
-.titem .org{color:var(--muted);font-size:14.5px;margin-bottom:10px}
-.titem ul{list-style:none}
-.titem li{color:var(--muted);font-size:14.5px;padding-left:18px;position:relative;margin-bottom:6px}
-.titem li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--primary)}
+.hero p.lead{
+  font-size:clamp(17px,2.3vw,21px);color:var(--muted);max-width:660px;margin:24px auto 0;
+  text-wrap:pretty;
+}
+.hero .btnrow{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:34px}
+.hero-enter{animation:heroIn .9s var(--ease-out) backwards;animation-delay:var(--d,0s)}
+@keyframes heroIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 
-/* ---------- projects ---------- */
-.pcard h3{font-size:17.5px;font-weight:600;margin:12px 0 4px}
-.pcard .ptype{font-size:12.5px;color:var(--primary);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.pcard p{color:var(--muted);font-size:14.5px;margin-bottom:12px}
-.ptags{display:flex;gap:8px;flex-wrap:wrap}
-.ptags span{font-size:12px;color:var(--muted);background:var(--softcard);border-radius:8px;padding:4px 10px}
-.picon{width:44px;height:44px;border-radius:12px;background:var(--softcard);display:flex;align-items:center;justify-content:center}
+/* hero visual */
+.hero-visual{max-width:980px;margin:72px auto 0;padding:0 22px}
+.model-tile{
+  position:relative;background:#0a0c10;border-radius:var(--radius);
+  padding:clamp(18px,4vw,44px);
+  box-shadow:0 30px 80px rgba(10,14,24,.25);
+  overflow:hidden;
+}
+.model-tile::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(90% 70% at 50% 0%,rgba(37,99,235,.16),transparent 60%);
+  pointer-events:none;
+}
+.float{animation:floatY 7s ease-in-out infinite alternate}
+@keyframes floatY{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.draw{stroke-dasharray:1;animation:drawIn 1.1s var(--ease-out) backwards;animation-delay:var(--dd,.2s)}
+@keyframes drawIn{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.drawdot{animation:dotIn .5s var(--ease-out) backwards;animation-delay:var(--dd,1.4s)}
+@keyframes dotIn{from{opacity:0}to{opacity:1}}
+.legend{
+  position:relative;display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;
+  padding-top:20px;font-size:13px;color:#a1a1a6;
+}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:18px;height:4px;border-radius:2px;display:inline-block}
 
-/* ---------- aj-tools ---------- */
-.ajt{background:var(--softcard);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+/* ============ Stats band ============ */
+.stats-band{padding:100px 0}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:44px 28px;margin-top:64px;text-align:center;
+}
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;gap:52px 20px}}
+.stat-b b{
+  display:block;font-size:clamp(46px,6.6vw,84px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  font-variant-numeric:tabular-nums;
+}
+.stat-b span{display:block;margin-top:12px;font-size:16px;color:#a1a1a6;line-height:1.4}
+
+/* ============ Bento ============ */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+@media(max-width:900px){.bento{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.bento{grid-template-columns:1fr}}
+.bcard{
+  background:#fff;border-radius:var(--radius);padding:36px 34px;
+  box-shadow:0 2px 16px rgba(0,0,0,.04);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+}
+.bcard:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,.08)}
+.bcard.span2{grid-column:span 2}
+@media(max-width:600px){.bcard.span2{grid-column:span 1}}
+.bcard h3{font-size:23px;font-weight:700;letter-spacing:-.015em;margin-bottom:10px}
+.bcard p{font-size:16.5px;color:var(--muted)}
+.bcard p strong{color:var(--ink);font-weight:600}
+.bcard .big{font-size:clamp(30px,3.4vw,40px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.bcard .cap{font-size:14px;color:var(--faint);margin-top:8px}
+.bicon{
+  width:46px;height:46px;border-radius:14px;margin-bottom:18px;
+  background:linear-gradient(135deg,rgba(0,200,255,.12),rgba(124,58,237,.12));
+  display:flex;align-items:center;justify-content:center;color:var(--blue);
+}
+
+/* ============ Experience ============ */
+.xp{margin-top:64px;border-top:1px solid var(--hairline)}
+.xp-row{
+  display:grid;grid-template-columns:220px 1fr;gap:20px 44px;
+  padding:44px 0;border-bottom:1px solid var(--hairline);
+}
+@media(max-width:734px){.xp-row{grid-template-columns:1fr;padding:34px 0}}
+.xp-when{font-size:15px;font-weight:600;color:var(--blue);letter-spacing:.02em;padding-top:4px}
+.xp-body h3{font-size:23px;font-weight:700;letter-spacing:-.015em}
+.xp-body .org{font-size:16px;color:var(--muted);margin:4px 0 16px}
+.xp-body ul{list-style:none}
+.xp-body li{
+  font-size:16.5px;color:var(--muted);padding-left:20px;position:relative;margin-bottom:9px;line-height:1.55;
+}
+.xp-body li::before{
+  content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
+}
+
+/* ============ Projects ============ */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
+@media(max-width:734px){.pgrid{grid-template-columns:1fr}}
+.ptile{
+  position:relative;background:#101013;border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--radius);padding:38px 36px;overflow:hidden;
+  transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);
+}
+.ptile:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.2);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.ptile.feature{grid-column:1/-1}
+.ptile::before{
+  content:"";position:absolute;inset:0;opacity:0;transition:opacity .45s var(--ease);
+  background:radial-gradient(80% 90% at 85% 0%,rgba(37,99,235,.14),transparent 60%);
+  pointer-events:none;
+}
+.ptile:hover::before{opacity:1}
+.ptype{font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6ea8ff}
+.ptile h3{font-size:clamp(24px,2.8vw,31px);font-weight:700;letter-spacing:-.018em;color:#f5f5f7;margin:10px 0 12px}
+.ptile p{font-size:16.5px;color:#a1a1a6;max-width:640px}
+.ptags{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.ptags span{
+  font-size:12.5px;color:#d2d2d7;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:5px 13px;
+}
+.picon{
+  width:50px;height:50px;border-radius:14px;margin-bottom:22px;color:#6ea8ff;
+  background:rgba(110,168,255,.1);border:1px solid rgba(110,168,255,.18);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ============ AJ-Tools ============ */
 .ribbon{
-  background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:16px;box-shadow:var(--shadow);margin:26px 0;
+  background:#fff;border-radius:var(--radius);padding:26px;margin-top:56px;
+  box-shadow:0 2px 16px rgba(0,0,0,.04);
 }
-.ribbon .rtabs{display:flex;gap:2px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px;flex-wrap:wrap}
-.ribbon .rtabs span{padding:5px 12px;border-radius:8px}
-.ribbon .rtabs .on{color:var(--primary);border:1px solid var(--primary);font-weight:600}
+.rtabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--hairline);padding-bottom:14px;margin-bottom:18px;font-size:13.5px;color:var(--muted)}
+.rtabs span{padding:6px 14px;border-radius:999px}
+.rtabs .on{color:#fff;background:var(--ink);font-weight:600}
 .rtools{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
 @media(max-width:820px){.rtools{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:520px){.rtools{grid-template-columns:repeat(3,1fr)}}
 .rtool{
-  background:var(--softcard);border:1px solid var(--border);border-radius:12px;
-  padding:12px 6px;text-align:center;font-size:12px;color:var(--muted);
+  background:var(--bg-alt);border-radius:14px;padding:16px 8px;text-align:center;
+  font-size:12px;color:var(--muted);font-weight:500;
+  transition:transform .3s var(--ease),background .3s var(--ease);
 }
-.rtool svg{display:block;margin:0 auto 7px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:26px 0}
-@media(max-width:600px){.stats{grid-template-columns:1fr}}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;text-align:center}
-.stat b{display:block;font-size:38px;font-weight:700;color:var(--primary);line-height:1.1}
-.stat span{color:var(--muted);font-size:14px}
-.ajlist{list-style:none;max-width:720px}
-.ajlist li{color:var(--muted);padding-left:26px;position:relative;margin-bottom:10px;font-size:15px}
-.ajlist li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:3px;background:var(--primary)}
-.ajlist li strong{color:var(--text);font-weight:600}
+.rtool:hover{transform:translateY(-3px);background:#eef1f6}
+.rtool svg{margin:0 auto 8px;color:var(--blue)}
+.brain{
+  background:#000;color:#f5f5f7;border-radius:var(--radius);
+  padding:clamp(36px,5vw,64px);margin-top:18px;position:relative;overflow:hidden;
+}
+.brain::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(70% 60% at 50% 0%,rgba(124,58,237,.18),transparent 65%);
+  pointer-events:none;
+}
+.brain>*{position:relative}
+.brain h3{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em}
+.brain p.sub{color:#a1a1a6;max-width:720px}
+.brain-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:44px 0}
+@media(max-width:734px){.brain-stats{grid-template-columns:1fr}}
+.brain-stat b{
+  display:block;font-size:clamp(40px,5vw,64px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  font-variant-numeric:tabular-nums;
+}
+.brain-stat span{display:block;margin-top:10px;font-size:15px;color:#a1a1a6;line-height:1.45}
+.brain ul{list-style:none;max-width:760px}
+.brain li{font-size:16.5px;color:#a1a1a6;padding-left:24px;position:relative;margin-bottom:12px}
+.brain li::before{
+  content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:3px;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+}
+.brain li strong{color:#f5f5f7;font-weight:600}
 
-/* ---------- skills ---------- */
-.skills h3{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:12px;letter-spacing:.02em}
-.skills ul{list-style:none}
-.skills li{color:var(--muted);font-size:14.5px;padding:5px 0;border-bottom:1px dashed var(--border)}
-.skills li:last-child{border-bottom:none}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-@media(max-width:900px){.grid4{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.grid4{grid-template-columns:1fr}}
+/* ============ Skills (specs table) ============ */
+.specs{margin-top:56px;border-top:1px solid var(--hairline)}
+.spec-row{
+  display:grid;grid-template-columns:260px 1fr;gap:12px 44px;
+  padding:26px 0;border-bottom:1px solid var(--hairline);
+}
+@media(max-width:734px){.spec-row{grid-template-columns:1fr;padding:22px 0}}
+.spec-row h3{font-size:17px;font-weight:600}
+.spec-row p{font-size:16.5px;color:var(--muted)}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
+.chips span{
+  font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--hairline);
+  border-radius:999px;padding:9px 18px;font-weight:500;
+}
+.sec-alt .chips span{background:#fff}
+.chips.on-white span{background:var(--bg-alt);border-color:transparent}
 
-/* ---------- contact ---------- */
+/* ============ Contact ============ */
 .contact{text-align:center}
-.contact .lead{margin:0 auto 30px}
-.crow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.cbtn{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:14px 22px;color:var(--text);font-weight:600;font-size:15px;transition:border-color .2s,transform .15s;
+.contact h2{
+  font-size:clamp(44px,7vw,84px);font-weight:700;letter-spacing:-.028em;line-height:1.04;
 }
-.cbtn:hover{border-color:var(--primary);color:var(--text);transform:translateY(-2px)}
-.cbtn.main{background:var(--primary);color:#04141C;border-color:transparent;box-shadow:var(--glow)}
-.cbtn.main:hover{background:var(--primary-hover);color:#04141C}
-.cnote{margin-top:24px;color:var(--muted);font-size:13.5px}
+.contact p.sub{margin:22px auto 0}
+.crow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+.cnote{margin-top:34px;color:#6e6e73;font-size:14px}
 
-footer{border-top:1px solid var(--border);padding:26px 0;color:var(--muted);font-size:13.5px}
-.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1100px;margin:0 auto;padding:0 20px}
+/* ============ Footer ============ */
+footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairline)}
+.foot{
+  max-width:1080px;margin:0 auto;padding:0 22px;
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--faint);
+}
+.foot a{color:var(--muted)}
 </style>
 </head>
 <body>
 
-<nav>
+<nav id="nav" aria-label="Main">
   <div class="navin">
-    <a class="brand" href="#top" aria-label="Ajmal P.S home">
-      <svg width="34" height="34" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="var(--primary)" stroke-width="3"/><text x="32" y="41" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="var(--primary)" text-anchor="middle">AJ</text></svg>
+    <a class="brand" href="#top" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
       Ajmal P.S
     </a>
-    <button id="menuBtn" aria-label="Open menu">&#9776;</button>
+    <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
     <div class="navlinks" id="navLinks">
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
+      <a href="#projects">Work</a>
       <a href="#ajtools">AJ-Tools</a>
       <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
-      <button id="themeBtn" aria-label="Switch theme">&#9788;</button>
+      <a href="#contact" class="cta">Contact</a>
     </div>
   </div>
 </nav>
 
 <!-- ================= HERO ================= -->
 <header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="kicker">MEP BIM &middot; Doha, Qatar</span>
-      <h1>I build MEP models, and the <em>tools</em> that build them faster.</h1>
-      <p class="sub">Ajmal P.S. BIM Coordinator with 10+ years in Qatar, across HVAC, plumbing, drainage and firefighting. I also write the Revit automation my team runs on.</p>
-      <div class="btnrow">
-        <a class="btn" href="#projects">See my projects</a>
-        <a class="btn ghost" href="#ajtools">AJ-Tools</a>
-      </div>
-      <div class="hero-badges">
-        <span class="pill">BIM Coordinator</span>
-        <span class="pill">MEP BIM Specialist</span>
-        <span class="pill">Revit Automation Developer</span>
-      </div>
+  <div class="wrap">
+    <span class="kicker hero-enter" style="--d:.05s">MEP BIM &middot; Doha, Qatar</span>
+    <h1 class="hero-enter" style="--d:.15s">Ajmal&nbsp;P.S</h1>
+    <p class="tagline hero-enter" style="--d:.28s"><span class="grad-text">I build the models. And the tools that build them faster.</span></p>
+    <p class="lead hero-enter" style="--d:.4s">BIM Coordinator with 10+ years in Qatar — HVAC, plumbing, drainage and firefighting, from airports and schools to a live petrochemical plant. I also write the Revit automation my team runs on.</p>
+    <div class="btnrow hero-enter" style="--d:.52s">
+      <a class="btn" href="#projects">See my work</a>
+      <a class="tlink" href="#ajtools">Explore AJ-Tools <span class="chev">&rsaquo;</span></a>
     </div>
-    <div class="iso-card" aria-hidden="true">
-      <svg viewBox="0 0 460 340" fill="none">
-        <g stroke="var(--border)" stroke-width="1" opacity=".5">
+  </div>
+
+  <div class="hero-visual hero-enter" style="--d:.62s">
+    <div class="model-tile">
+      <div class="float">
+      <svg viewBox="0 0 460 330" fill="none" role="img" aria-label="Isometric illustration of coordinated MEP services: ducts, chilled water, fire sprinklers and drainage">
+        <g stroke="#262b35" stroke-width="1">
           <path d="M20 60h420M20 120h420M20 180h420M20 240h420M20 300h420"/>
           <path d="M60 20v300M140 20v300M220 20v300M300 20v300M380 20v300"/>
         </g>
-        <g opacity=".85">
-          <path d="M120 150 L260 80 L400 150 L260 220 Z" fill="var(--softcard)" stroke="var(--border)"/>
-          <path d="M60 210 L200 140 L340 210 L200 280 Z" fill="var(--softcard)" stroke="var(--border)" opacity=".7"/>
+        <g>
+          <path d="M120 150 L260 80 L400 150 L260 220 Z" fill="#171c26" stroke="#3b4352"/>
+          <path d="M60 210 L200 140 L340 210 L200 280 Z" fill="#171c26" stroke="#3b4352" opacity=".85"/>
         </g>
-        <path d="M150 160 L290 90" stroke="var(--duct)" stroke-width="9" stroke-linecap="round"/>
-        <path d="M290 90 L360 125" stroke="var(--duct)" stroke-width="9" stroke-linecap="round"/>
-        <path d="M230 200 L230 130" stroke="var(--duct)" stroke-width="7" stroke-linecap="round"/>
-        <path d="M160 180 L300 110" stroke="var(--chw)" stroke-width="5" stroke-linecap="round"/>
-        <path d="M172 192 L312 122" stroke="var(--chw)" stroke-width="5" stroke-linecap="round"/>
-        <path d="M140 140 L280 70" stroke="var(--fire)" stroke-width="4" stroke-linecap="round"/>
+        <path class="draw" style="--dd:.3s" pathLength="1" d="M150 160 L290 90" stroke="var(--duct)" stroke-width="9" stroke-linecap="round"/>
+        <path class="draw" style="--dd:.55s" pathLength="1" d="M290 90 L360 125" stroke="var(--duct)" stroke-width="9" stroke-linecap="round"/>
+        <path class="draw" style="--dd:.7s" pathLength="1" d="M230 200 L230 130" stroke="var(--duct)" stroke-width="7" stroke-linecap="round"/>
+        <path class="draw" style="--dd:.85s" pathLength="1" d="M160 180 L300 110" stroke="var(--chw)" stroke-width="5" stroke-linecap="round"/>
+        <path class="draw" style="--dd:.95s" pathLength="1" d="M172 192 L312 122" stroke="var(--chw)" stroke-width="5" stroke-linecap="round"/>
+        <path class="draw" style="--dd:1.05s" pathLength="1" d="M140 140 L280 70" stroke="var(--fire)" stroke-width="4" stroke-linecap="round"/>
         <g stroke="var(--fire)" stroke-width="3" stroke-linecap="round">
-          <path d="M180 120 v16M220 100 v16M260 80 v16"/>
+          <path class="draw" style="--dd:1.2s" pathLength="1" d="M180 120 v16"/>
+          <path class="draw" style="--dd:1.28s" pathLength="1" d="M220 100 v16"/>
+          <path class="draw" style="--dd:1.36s" pathLength="1" d="M260 80 v16"/>
         </g>
         <g fill="var(--fire)">
-          <circle cx="180" cy="139" r="3.5"/><circle cx="220" cy="119" r="3.5"/><circle cx="260" cy="99" r="3.5"/>
+          <circle class="drawdot" style="--dd:1.45s" cx="180" cy="139" r="3.5"/>
+          <circle class="drawdot" style="--dd:1.5s" cx="220" cy="119" r="3.5"/>
+          <circle class="drawdot" style="--dd:1.55s" cx="260" cy="99" r="3.5"/>
         </g>
-        <path d="M100 250 L320 140" stroke="var(--drain)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M218 194 l24 -12 24 12 -24 12 Z" fill="var(--surface)" stroke="var(--duct)" stroke-width="2.5"/>
+        <path class="draw" style="--dd:1.15s" pathLength="1" d="M100 250 L320 140" stroke="var(--drain)" stroke-width="6" stroke-linecap="round"/>
+        <path class="drawdot" style="--dd:1.6s" d="M218 194 l24 -12 24 12 -24 12 Z" fill="#0a0c10" stroke="var(--duct)" stroke-width="2.5"/>
       </svg>
-      <div class="legend">
-        <span><i class="dot" style="background:var(--duct)"></i>Supply duct</span>
-        <span><i class="dot" style="background:var(--chw)"></i>Chilled water F&amp;R</span>
-        <span><i class="dot" style="background:var(--fire)"></i>Fire sprinkler</span>
-        <span><i class="dot" style="background:var(--drain)"></i>Gravity drainage</span>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--duct)"></i>Supply duct</span>
+        <span><i style="background:var(--chw)"></i>Chilled water F&amp;R</span>
+        <span><i style="background:var(--fire)"></i>Fire sprinkler</span>
+        <span><i style="background:var(--drain)"></i>Gravity drainage</span>
       </div>
     </div>
   </div>
 </header>
 
-<!-- ================= ABOUT ================= -->
-<section id="about">
+<!-- ================= STATS ================= -->
+<section class="sec-dark stats-band" aria-label="Career numbers">
   <div class="wrap">
-    <span class="kicker">About</span>
-    <h2>Ten years of MEP BIM in Qatar</h2>
-    <div class="about-grid about" style="margin-top:28px">
-      <div class="avatar" aria-hidden="true">
-        <svg width="76" height="76" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="var(--primary)" stroke-width="3"/><text x="32" y="41" font-family="Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="var(--primary)" text-anchor="middle">AJ</text></svg>
-      </div>
-      <div>
-        <p>I take MEP models from concept through construction documentation to as-built, on both the consultant and the contractor side. My projects cover airports, petrochemical plants, schools, towers and mixed-use developments. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and keeping LOD and project BIM standards enforced at every milestone.</p>
-        <p>The part that sets my work apart is what happens around the model. <strong>I build the automation my team runs on:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent connected straight into a live Revit session. Repetitive drafting work goes to the tools, so the team's time goes to coordination.</p>
-        <div class="facts">
-          <div class="fact"><b>10+</b><span>years in Qatar</span></div>
-          <div class="fact"><b>2</b><span>sides: consultant &amp; contractor</span></div>
-          <div class="fact"><b>14</b><span>schools in one programme</span></div>
-          <div class="fact"><b>1</b><span>add-in suite my team uses daily</span></div>
-        </div>
-      </div>
+    <h2 class="head reveal">Ten years on site.<br><span class="dim">The numbers behind the models.</span></h2>
+    <div class="stats-grid">
+      <div class="stat-b reveal" style="--d:.05s"><b data-count="10" data-suffix="+">10+</b><span>years of MEP BIM in Qatar</span></div>
+      <div class="stat-b reveal" style="--d:.13s"><b data-count="14">14</b><span>schools delivered in one programme</span></div>
+      <div class="stat-b reveal" style="--d:.21s"><b data-count="20" data-suffix="%">20%</b><span>project timelines cut by my Revit tools</span></div>
+      <div class="stat-b reveal" style="--d:.29s"><b data-count="4">4</b><span>MEP disciplines: HVAC, plumbing, drainage, fire</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="sec-alt">
+  <div class="wrap">
+    <span class="eyebrow reveal">About</span>
+    <h2 class="head reveal">Consultant and contractor sides. <span class="dim">Concept to as&#8209;built.</span></h2>
+    <div class="bento">
+      <article class="bcard span2 reveal">
+        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
+        <h3>The model is the job</h3>
+        <p>I take MEP models from concept through construction documentation to as-built — airports, petrochemical plants, schools, towers and mixed-use developments. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and keeping LOD and project BIM standards enforced at every milestone.</p>
+      </article>
+      <article class="bcard reveal" style="--d:.08s">
+        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+        <h3>Automation built in</h3>
+        <p><strong>I build the tools my team runs on:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools — the team's time goes to coordination.</p>
+      </article>
+      <article class="bcard reveal" style="--d:.05s">
+        <p class="big">Doha,<br>Qatar</p>
+        <p class="cap">QID with NOC &middot; available immediately</p>
+      </article>
+      <article class="bcard reveal" style="--d:.12s">
+        <p class="big">2 sides</p>
+        <p class="cap">consultant (AEB) and contractor (Trags, TEM&#8209;AC&hellip;) &mdash; I speak both languages</p>
+      </article>
+      <article class="bcard reveal" style="--d:.19s">
+        <p class="big">5 languages</p>
+        <p class="cap">English &middot; Malayalam &middot; Tamil &middot; Hindi &middot; basic Arabic</p>
+      </article>
     </div>
   </div>
 </section>
@@ -309,135 +538,134 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--muted);font
 <!-- ================= EXPERIENCE ================= -->
 <section id="experience">
   <div class="wrap">
-    <span class="kicker">Experience</span>
-    <h2>Where I have worked</h2>
-    <p class="lead">Consultant and contractor sides, from villas to a live petrochemical plant.</p>
-    <div class="timeline">
-      <div class="titem">
-        <span class="when">Apr 2025 &ndash; Present</span>
-        <h3>BIM Specialist &amp; MEP BIM Coordinator</h3>
-        <div class="org">Trags Electrical Engineering &amp; Air Conditioning &middot; Doha &middot; Polyethylene Plant, Ras Laffan</div>
-        <ul>
-          <li>Lead HVAC BIM modelling and coordination on a live petrochemical plant, in Revit with BIM 360.</li>
-          <li>Run Navisworks clash detection, issue clash reports and drive them to closure with MEP, structural and civil teams.</li>
-          <li>Enforce LOD and project BIM standards across the federated model at every milestone.</li>
-          <li>Build and roll out custom Revit tools to the drafting team. Workflow changes cut project timelines by 20%.</li>
-        </ul>
+    <span class="eyebrow reveal">Experience</span>
+    <h2 class="head reveal">Where I have worked. <span class="dim">Villas to a live petrochemical plant.</span></h2>
+    <div class="xp">
+      <div class="xp-row reveal">
+        <div class="xp-when">Apr 2025 &ndash; Present</div>
+        <div class="xp-body">
+          <h3>BIM Specialist &amp; MEP BIM Coordinator</h3>
+          <div class="org">Trags Electrical Engineering &amp; Air Conditioning &middot; Doha &middot; Polyethylene Plant, Ras Laffan</div>
+          <ul>
+            <li>Lead HVAC BIM modelling and coordination on a live petrochemical plant, in Revit with BIM 360.</li>
+            <li>Run Navisworks clash detection, issue clash reports and drive them to closure with MEP, structural and civil teams.</li>
+            <li>Enforce LOD and project BIM standards across the federated model at every milestone.</li>
+            <li>Build and roll out custom Revit tools to the drafting team — workflow changes cut project timelines by 20%.</li>
+          </ul>
+        </div>
       </div>
-      <div class="titem">
-        <span class="when">Jun 2024 &ndash; Apr 2025</span>
-        <h3>BIM Modeler</h3>
-        <div class="org">Arab Engineering Bureau (AEB) &middot; Doha &middot; Qatar Private Schools Programme, PPP Package 2</div>
-        <ul>
-          <li>Developed Revit MEP models for HVAC, plumbing, firefighting and drainage across 14 school buildings.</li>
-          <li>Coordinated federated models on Autodesk Construction Cloud, with clash detection in Navisworks.</li>
-          <li>Produced coordination drawings, schedules and quantity take-offs straight from the model.</li>
-        </ul>
+      <div class="xp-row reveal">
+        <div class="xp-when">Jun 2024 &ndash; Apr 2025</div>
+        <div class="xp-body">
+          <h3>BIM Modeler</h3>
+          <div class="org">Arab Engineering Bureau (AEB) &middot; Doha &middot; Qatar Private Schools Programme, PPP Package 2</div>
+          <ul>
+            <li>Developed Revit MEP models for HVAC, plumbing, firefighting and drainage across 14 school buildings.</li>
+            <li>Coordinated federated models on Autodesk Construction Cloud, with clash detection in Navisworks.</li>
+            <li>Produced coordination drawings, schedules and quantity take-offs straight from the model.</li>
+          </ul>
+        </div>
       </div>
-      <div class="titem">
-        <span class="when">May 2015 &ndash; Jun 2024</span>
-        <h3>BIM Modeler / MEP Draftsman</h3>
-        <div class="org">TEM-AC &middot; Mekdam &middot; Roots Energy &middot; Stream &middot; Powermech &middot; Doha</div>
-        <ul>
-          <li>Modelled MEP services in Revit for villas, towers, malls, hotels, offices and airport renovation works.</li>
-          <li>Produced shop, coordination, builder's work and as-built drawings, and managed submissions through consultant approval.</li>
-          <li>Supervised drafting teams and coordinated daily with consultants and other disciplines.</li>
-          <li>Started writing AutoLISP routines and Dynamo scripts here. That grew into full Revit tool development.</li>
-        </ul>
+      <div class="xp-row reveal">
+        <div class="xp-when">May 2015 &ndash; Jun 2024</div>
+        <div class="xp-body">
+          <h3>BIM Modeler / MEP Draftsman</h3>
+          <div class="org">TEM-AC &middot; Mekdam &middot; Roots Energy &middot; Stream &middot; Powermech &middot; Doha</div>
+          <ul>
+            <li>Modelled MEP services in Revit for villas, towers, malls, hotels, offices and airport renovation works.</li>
+            <li>Produced shop, coordination, builder's work and as-built drawings, and managed submissions through consultant approval.</li>
+            <li>Supervised drafting teams and coordinated daily with consultants and other disciplines.</li>
+            <li>Started writing AutoLISP routines and Dynamo scripts here — that grew into full Revit tool development.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ================= PROJECTS ================= -->
-<section id="projects">
+<section id="projects" class="sec-dark">
   <div class="wrap">
-    <span class="kicker">Projects</span>
-    <h2>Selected projects</h2>
-    <p class="lead">All in Qatar. Models and drawings stay with the clients, so what you see here is scope and role, not their files.</p>
-    <div class="grid3">
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
-        <h3>Polyethylene Plant, Ras Laffan</h3>
+    <span class="eyebrow reveal">Selected work</span>
+    <h2 class="head reveal">All in Qatar. <span class="dim">Scope and role &mdash; the models stay with the clients.</span></h2>
+    <div class="pgrid">
+      <article class="ptile feature reveal">
+        <div class="picon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
         <span class="ptype">Petrochemical &middot; ongoing</span>
-        <p>Industrial HVAC BIM on a live plant. Services share pipe racks with process lines, and access clearances are non-negotiable, so every route is checked against structure, process and existing services before issue.</p>
+        <h3>Polyethylene Plant, Ras Laffan</h3>
+        <p>Industrial HVAC BIM on a live plant. Services share pipe racks with process lines, and access clearances are non-negotiable — every route is checked against structure, process and existing services before issue.</p>
         <div class="ptags"><span>HVAC</span><span>BIM 360</span><span>Clash lead</span></div>
-      </div>
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2"/></svg></div>
-        <h3>Qatar Private Schools, PPP Package 2</h3>
+      </article>
+      <article class="ptile reveal">
+        <div class="picon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2"/></svg></div>
         <span class="ptype">14 schools &middot; consultant side</span>
-        <p>Fourteen buildings delivered from one coordinated MEP type model. Get the standards, parameters and drawing set right once and all fourteen stay consistent. Get it wrong once and you fix it fourteen times.</p>
+        <h3>Qatar Private Schools, PPP&nbsp;Package&nbsp;2</h3>
+        <p>Fourteen buildings delivered from one coordinated MEP type model. Get the standards right once and all fourteen stay consistent — get it wrong once and you fix it fourteen times.</p>
         <div class="ptags"><span>HVAC</span><span>Plumbing</span><span>Firefighting</span><span>Drainage</span><span>ACC</span></div>
-      </div>
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M2 16h20M4 16l7-11 3 5 2-2 4 8"/><path d="M9 20h6M12 16v4"/></svg></div>
-        <h3>Doha International Airport</h3>
+      </article>
+      <article class="ptile reveal" style="--d:.08s">
+        <div class="picon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16h20M4 16l7-11 3 5 2-2 4 8"/><path d="M9 20h6M12 16v4"/></svg></div>
         <span class="ptype">FIFA 2022 renovation</span>
-        <p>MEP renovation under a live operating terminal, with a deadline that could not move. Routes proven against survey and existing services before fabrication, and the drawing set kept pace with the programme.</p>
+        <h3>Doha International Airport</h3>
+        <p>MEP renovation under a live operating terminal, with a deadline that could not move. Routes proven against survey and existing services before fabrication.</p>
         <div class="ptags"><span>MEP</span><span>Renovation</span><span>As-built</span></div>
-      </div>
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M4 21V9l8-5 8 5v12H4Z"/><path d="M4 13h16M10 21v-4h4v4"/></svg></div>
-        <h3>Madinat Mawater</h3>
+      </article>
+      <article class="ptile reveal">
+        <div class="picon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-5 8 5v12H4Z"/><path d="M4 13h16M10 21v-4h4v4"/></svg></div>
         <span class="ptype">Mixed-use &middot; multiple phases</span>
-        <p>MEP modelling and drawing production across several phases of a large mixed-use development, with clash detection and consultant approvals through every submission.</p>
+        <h3>Madinat Mawater</h3>
+        <p>MEP modelling and drawing production across several phases of a large mixed-use development, through every consultant submission.</p>
         <div class="ptags"><span>MEP</span><span>Shop drawings</span></div>
-      </div>
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M8 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"/><path d="M5 21h14M10 7h4M10 11h4M10 15h4"/></svg></div>
+      </article>
+      <article class="ptile reveal" style="--d:.08s">
+        <div class="picon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"/><path d="M5 21h14M10 7h4M10 11h4M10 15h4"/></svg></div>
+        <span class="ptype">High-rise residential &middot; + New El Haraj Souq</span>
         <h3>Union Residential Tower</h3>
-        <span class="ptype">High-rise residential</span>
-        <p>Full MEP services modelled in Revit, with riser coordination, builder's work openings and as-built drawings through to handover.</p>
-        <div class="ptags"><span>HVAC</span><span>Plumbing</span><span>Drainage</span></div>
-      </div>
-      <div class="card pcard">
-        <div class="picon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M3 10l9-6 9 6M5 10v10h14V10"/><path d="M9 20v-6h6v6M3 10h18"/></svg></div>
-        <h3>New El Haraj Souq</h3>
-        <span class="ptype">Commercial market</span>
-        <p>MEP modelling and coordination drawings for a traditional market development, keeping services workable inside tight ceiling zones.</p>
-        <div class="ptags"><span>MEP</span><span>Coordination</span></div>
-      </div>
+        <p>Full MEP services modelled in Revit — riser coordination, builder's work openings and as-built drawings through to handover. Plus market development MEP inside tight ceiling zones at New El Haraj Souq.</p>
+        <div class="ptags"><span>HVAC</span><span>Plumbing</span><span>Drainage</span><span>Coordination</span></div>
+      </article>
     </div>
   </div>
 </section>
 
 <!-- ================= AJ-TOOLS ================= -->
-<section id="ajtools" class="ajt">
+<section id="ajtools" class="sec-alt">
   <div class="wrap">
-    <span class="kicker">AJ-Tools</span>
-    <h2>The Revit add-in suite I build and my team runs</h2>
-    <p class="lead">AJ-Tools started as AutoLISP routines to stop repeating drafting work by hand. It grew into a Revit add-in suite in C# and pyRevit with its own installer, so the whole drafting team runs the same version of the same tools.</p>
+    <span class="eyebrow reveal">AJ-Tools</span>
+    <h2 class="head reveal"><span class="grad-text">AJ-Tools.</span> <span class="dim">The Revit add-in suite I build and my team runs.</span></h2>
+    <p class="sub reveal">It started as AutoLISP routines to stop repeating drafting work by hand. It grew into a Revit add-in suite in C# and pyRevit with its own installer — so the whole drafting team runs the same version of the same tools.</p>
 
-    <div class="ribbon" aria-label="AJ-Tools on the Revit ribbon">
+    <div class="ribbon reveal" aria-label="AJ-Tools on the Revit ribbon">
       <div class="rtabs">
         <span>Architecture</span><span>Structure</span><span>Systems</span><span>Analyze</span><span class="on">AJ-Tools</span>
       </div>
       <div class="rtools">
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Sheet Setup</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Param Manager</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><rect x="3" y="9" width="18" height="6" rx="2"/><path d="M7 9V6M17 15v3"/></svg>Duct Tools</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>Clash Helper</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg>Model QA</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M12 3l9 5-9 5-9-5 9-5ZM3 13l9 5 9-5"/></svg>Family Builder</div>
-        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg>AI Agent</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Sheet Setup</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Param Manager</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="18" height="6" rx="2"/><path d="M7 9V6M17 15v3"/></svg>Duct Tools</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>Clash Helper</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg>Model QA</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 5-9 5-9-5 9-5ZM3 13l9 5 9-5"/></svg>Family Builder</div>
+        <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg>AI Agent</div>
       </div>
     </div>
 
-    <h3 style="font-size:20px;font-weight:600;margin:34px 0 6px">AJ AI Brain</h3>
-    <p class="lead" style="margin-bottom:20px">The next step: an AI agent that carries out real modelling work on a live, open Revit model. It reads a knowledge package first, so its output follows real BIM practice instead of generic answers. A Node.js MCP connector links it straight into the open Revit session.</p>
-    <div class="stats">
-      <div class="stat"><b>9</b><span>task workflows, from air terminal layout to NFPA 13 sprinkler spacing checks</span></div>
-      <div class="stat"><b>267</b><span>reusable Revit API C# fragments, compile-checked against the real API</span></div>
-      <div class="stat"><b>23</b><span>knowledge documents the agent reads before it acts</span></div>
-    </div>
-    <ul class="ajlist">
-      <li><strong>Team-wide, not personal.</strong> Packaged with an installer, version-controlled in Git, documented. The time saving is shared.</li>
-      <li><strong>Quality built in.</strong> Automated checks compile-verify the C# against the real Revit API and flag documentation drift on every edit.</li>
-      <li><strong>Honest tooling.</strong> A tool that has never been run against a real model says so.</li>
-    </ul>
-    <div class="btnrow" style="margin-top:26px">
-      <a class="btn" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">See my GitHub</a>
+    <div class="brain reveal">
+      <h3>AJ AI Brain</h3>
+      <p class="sub">The next step: an AI agent that carries out real modelling work on a live, open Revit model. It reads a knowledge package first, so its output follows real BIM practice instead of generic answers. A Node.js MCP connector links it straight into the open Revit session.</p>
+      <div class="brain-stats">
+        <div class="brain-stat"><b data-count="9">9</b><span>task workflows, from air terminal layout to NFPA&nbsp;13 sprinkler spacing checks</span></div>
+        <div class="brain-stat"><b data-count="267">267</b><span>reusable Revit API C# fragments, compile-checked against the real API</span></div>
+        <div class="brain-stat"><b data-count="23">23</b><span>knowledge documents the agent reads before it acts</span></div>
+      </div>
+      <ul>
+        <li><strong>Team-wide, not personal.</strong> Packaged with an installer, version-controlled in Git, documented. The time saving is shared.</li>
+        <li><strong>Quality built in.</strong> Automated checks compile-verify the C# against the real Revit API and flag documentation drift on every edit.</li>
+        <li><strong>Honest tooling.</strong> A tool that has never been run against a real model says so.</li>
+      </ul>
+      <div style="margin-top:36px">
+        <a class="btn btn-light" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">See my GitHub</a>
+      </div>
     </div>
   </div>
 </section>
@@ -445,83 +673,56 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--muted);font
 <!-- ================= SKILLS ================= -->
 <section id="skills">
   <div class="wrap">
-    <span class="kicker">Skills</span>
-    <h2>What I work with</h2>
-    <div class="grid4 skills" style="margin-top:30px">
-      <div class="card">
+    <span class="eyebrow reveal">Skills</span>
+    <h2 class="head reveal">What I work with. <span class="dim">The full stack of a BIM coordinator.</span></h2>
+    <div class="specs">
+      <div class="spec-row reveal">
         <h3>BIM Coordination</h3>
-        <ul>
-          <li>Multidisciplinary coordination</li>
-          <li>Clash detection &amp; model review</li>
-          <li>Federated models &amp; audits</li>
-          <li>LOD 200&ndash;400</li>
-          <li>BEP &amp; ISO 19650 workflows</li>
-          <li>BIM 360 / ACC</li>
-        </ul>
+        <p>Multidisciplinary coordination &middot; clash detection &amp; model review &middot; federated models &amp; audits &middot; LOD 200&ndash;400 &middot; BEP &amp; ISO 19650 workflows &middot; BIM 360 / ACC</p>
       </div>
-      <div class="card">
+      <div class="spec-row reveal">
         <h3>MEP Modelling</h3>
-        <ul>
-          <li>HVAC &amp; chilled water</li>
-          <li>VRF systems</li>
-          <li>Firefighting</li>
-          <li>Plumbing &amp; water supply</li>
-          <li>Drainage</li>
-        </ul>
+        <p>HVAC &amp; chilled water &middot; VRF systems &middot; firefighting &middot; plumbing &amp; water supply &middot; drainage</p>
       </div>
-      <div class="card">
+      <div class="spec-row reveal">
         <h3>Automation</h3>
-        <ul>
-          <li>C# on the Revit API</li>
-          <li>pyRevit / Python</li>
-          <li>Dynamo</li>
-          <li>AutoLISP</li>
-          <li>AI / MCP integration</li>
-          <li>Installer deployment</li>
-        </ul>
+        <p>C# on the Revit API &middot; pyRevit / Python &middot; Dynamo &middot; AutoLISP &middot; AI / MCP integration &middot; installer deployment</p>
       </div>
-      <div class="card">
+      <div class="spec-row reveal">
         <h3>Drawing Production</h3>
-        <ul>
-          <li>Shop drawings</li>
-          <li>Coordination drawings</li>
-          <li>Builder's work openings</li>
-          <li>Isometrics &amp; schematics</li>
-          <li>RCP &amp; as-built</li>
-        </ul>
+        <p>Shop drawings &middot; coordination drawings &middot; builder's work openings &middot; isometrics &amp; schematics &middot; RCP &amp; as-built</p>
       </div>
     </div>
-    <div class="hero-badges" style="margin-top:26px">
-      <span class="pill">Revit, all versions to 2027</span>
-      <span class="pill">Navisworks Manage</span>
-      <span class="pill">AutoCAD</span>
-      <span class="pill">BIM Collaborate Pro</span>
-      <span class="pill">Visual Studio</span>
+    <div class="chips on-white reveal">
+      <span>Revit, all versions to 2027</span>
+      <span>Navisworks Manage</span>
+      <span>AutoCAD</span>
+      <span>BIM Collaborate Pro</span>
+      <span>Visual Studio</span>
     </div>
   </div>
 </section>
 
 <!-- ================= CONTACT ================= -->
-<section id="contact" class="contact">
+<section id="contact" class="sec-dark contact">
   <div class="wrap">
-    <span class="kicker">Contact</span>
-    <h2>Let's talk</h2>
-    <p class="lead">Open to BIM Coordinator and MEP BIM Specialist roles, and to automation work. Based in Doha, QID with NOC, available to join immediately.</p>
-    <div class="crow">
-      <a class="cbtn main" href="mailto:ajmalnattika@gmail.com">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+    <h2 class="reveal"><span class="grad-text">Let&rsquo;s talk.</span></h2>
+    <p class="sub reveal" style="max-width:620px">Open to BIM Coordinator and MEP BIM Specialist roles, and to automation work. Based in Doha &middot; QID with NOC &middot; available to join immediately.</p>
+    <div class="crow reveal">
+      <a class="btn btn-light" href="mailto:ajmalnattika@gmail.com">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
         ajmalnattika@gmail.com
       </a>
-      <a class="cbtn" href="https://www.linkedin.com/in/ajmalps/" target="_blank" rel="noopener">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.24 8.25h4.52V23H.24V8.25ZM8.34 8.25h4.33v2h.06c.6-1.14 2.08-2.34 4.28-2.34 4.58 0 5.42 3.01 5.42 6.92V23h-4.51v-7.16c0-1.71-.03-3.91-2.38-3.91-2.39 0-2.75 1.86-2.75 3.78V23H8.34V8.25Z"/></svg>
+      <a class="btn btn-glass" href="https://www.linkedin.com/in/ajmalps/" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.24 8.25h4.52V23H.24V8.25ZM8.34 8.25h4.33v2h.06c.6-1.14 2.08-2.34 4.28-2.34 4.58 0 5.42 3.01 5.42 6.92V23h-4.51v-7.16c0-1.71-.03-3.91-2.38-3.91-2.39 0-2.75 1.86-2.75 3.78V23H8.34V8.25Z"/></svg>
         LinkedIn
       </a>
-      <a class="cbtn" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.53-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.66.41.35.77 1.05.77 2.12v3.14c0 .3.21.66.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+      <a class="btn btn-glass" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.53-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.78 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.66.41.35.77 1.05.77 2.12v3.14c0 .3.21.66.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
         GitHub
       </a>
-      <a class="cbtn" href="tel:+97431033040">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.25a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+      <a class="btn btn-glass" href="tel:+97431033040">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.25a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
         +974 3103 3040
       </a>
     </div>
@@ -531,36 +732,76 @@ footer{border-top:1px solid var(--border);padding:26px 0;color:var(--muted);font
 
 <footer>
   <div class="foot">
-    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
-    <span>ajmalps.com &middot; hosted on GitHub Pages</span>
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
+    <span><a href="https://ajmalps.com">ajmalps.com</a></span>
   </div>
 </footer>
 
 <script>
 (function(){
-  var root=document.documentElement;
-  var saved=null;
-  try{saved=localStorage.getItem("ajps-theme")}catch(e){}
-  if(saved==="light"||saved==="dark"){root.setAttribute("data-theme",saved)}
-  else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches){root.setAttribute("data-theme","light")}
-  else{root.setAttribute("data-theme","dark")}
+  "use strict";
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var btn=document.getElementById("themeBtn");
-  function setIcon(){btn.innerHTML=root.getAttribute("data-theme")==="light"?"&#9790;":"&#9788;"}
-  setIcon();
-  btn.addEventListener("click",function(){
-    var next=root.getAttribute("data-theme")==="light"?"dark":"light";
-    root.setAttribute("data-theme",next);
-    try{localStorage.setItem("ajps-theme",next)}catch(e){}
-    setIcon();
+  /* nav shadow on scroll */
+  var nav = document.getElementById("nav");
+  function onScroll(){ nav.classList.toggle("scrolled", window.scrollY > 8); }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* mobile menu */
+  var menuBtn = document.getElementById("menuBtn");
+  var links = document.getElementById("navLinks");
+  function closeMenu(){ links.classList.remove("open"); menuBtn.setAttribute("aria-expanded","false"); menuBtn.setAttribute("aria-label","Open menu"); }
+  menuBtn.addEventListener("click", function(){
+    var open = links.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
   });
+  links.addEventListener("click", function(e){ if(e.target.tagName === "A") closeMenu(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
 
-  var menuBtn=document.getElementById("menuBtn");
-  var links=document.getElementById("navLinks");
-  menuBtn.addEventListener("click",function(){links.classList.toggle("open")});
-  links.addEventListener("click",function(e){if(e.target.tagName==="A"){links.classList.remove("open")}});
+  /* count-up */
+  function counterFinal(el){
+    el.textContent = el.getAttribute("data-count") + (el.getAttribute("data-suffix") || "");
+  }
+  function runCounter(el){
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    var suffix = el.getAttribute("data-suffix") || "";
+    if(reduceMotion || !window.requestAnimationFrame){ counterFinal(el); return; }
+    var dur = 1300, start = null;
+    function step(ts){
+      if(start === null) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
 
-  document.getElementById("yr").textContent=new Date().getFullYear();
+  /* scroll reveal */
+  var revealEls = document.querySelectorAll(".reveal");
+  var counters = document.querySelectorAll("[data-count]");
+  if(reduceMotion || !("IntersectionObserver" in window)){
+    for(var i=0;i<revealEls.length;i++){ revealEls[i].classList.add("in"); }
+    for(var j=0;j<counters.length;j++){ counterFinal(counters[j]); }
+  } else {
+    for(var k=0;k<counters.length;k++){ counters[k].textContent = "0" + (counters[k].getAttribute("data-suffix") || ""); }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add("in");
+          entry.target.querySelectorAll("[data-count]").forEach(function(c){
+            if(!c.dataset.done){ c.dataset.done = "1"; runCounter(c); }
+          });
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.15, rootMargin:"0px 0px -40px 0px"});
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
 })();
 </script>
 </body>
