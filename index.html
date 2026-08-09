@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ajmal P.S — MEP BIM Coordinator &amp; Revit Automation Developer | Doha, Qatar</title>
-<meta name="description" content="Ajmal P.S is an MEP BIM Coordinator in Doha, Qatar with 10+ years of experience. HVAC, plumbing, drainage and firefighting BIM, plus AJ-Tools — a custom Revit add-in suite in C# and pyRevit.">
+<meta name="description" content="Ajmal P.S is an MEP BIM Coordinator and BIM Modeller in Doha, Qatar with 10+ years of experience. HVAC, plumbing, drainage and firefighting BIM modeling in Revit, plus AJ-Tools — a custom Revit add-in suite.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/">
 <meta name="theme-color" id="metaTheme" content="#f2f4f8">
@@ -38,7 +38,7 @@
       "@id": "https://ajmalps.com/#person",
       "name": "Ajmal P.S",
       "url": "https://ajmalps.com/",
-      "jobTitle": "MEP BIM Coordinator",
+      "jobTitle": ["MEP BIM Coordinator", "BIM Modeller", "BIM Modeler", "MEP BIM Specialist"],
       "description": "MEP BIM Coordinator in Doha, Qatar with 10+ years of experience across HVAC, plumbing, drainage and firefighting. Builds Revit automation in C# and pyRevit.",
       "email": "mailto:ajmalnattika@gmail.com",
       "telephone": "+97431033040",
@@ -47,7 +47,7 @@
         "https://www.linkedin.com/in/ajmalps/",
         "https://github.com/Ajmalpshaik"
       ],
-      "knowsAbout": ["BIM", "MEP Coordination", "Autodesk Revit", "Navisworks", "HVAC", "Plumbing", "Firefighting Systems", "Drainage", "Revit API", "C#", "pyRevit", "Dynamo", "ISO 19650"]
+      "knowsAbout": ["BIM", "BIM Modeling", "MEP Coordination", "MEP BIM Modeling", "Autodesk Revit", "Navisworks", "HVAC", "Plumbing", "Firefighting Systems", "Drainage", "Revit API", "C#", "pyRevit", "Dynamo", "ISO 19650", "Shop Drawings", "Clash Detection"]
     },
     {
       "@type": "WebSite",
@@ -773,7 +773,7 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
 <section id="contact" class="sec-dark contact">
   <div class="wrap">
     <h2 class="reveal"><span class="grad-text">Let&rsquo;s talk.</span></h2>
-    <p class="sub reveal" style="max-width:620px">Open to BIM Coordinator and MEP BIM Specialist roles, and to automation work. Based in Doha &middot; QID with NOC &middot; available to join immediately.</p>
+    <p class="sub reveal" style="max-width:620px">Open to BIM Coordinator, BIM Modeller and MEP BIM Specialist roles, and to automation work. Based in Doha, Qatar &middot; QID with NOC &middot; available to join immediately.</p>
     <div class="crow reveal">
       <a class="btn btn-light" href="mailto:ajmalnattika@gmail.com">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
@@ -853,6 +853,23 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
   });
   links.addEventListener("click", function(e){ if(e.target.tagName === "A") closeMenu(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
+
+  /* clean address bar: smooth-scroll without leaving #hash in the URL */
+  function stripHash(){
+    if(history.replaceState){ history.replaceState(null, "", location.pathname + location.search); }
+  }
+  document.addEventListener("click", function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if(!a) return;
+    var id = a.getAttribute("href").slice(1);
+    var target = document.getElementById(id);
+    if(!target) return;
+    e.preventDefault();
+    if(id === "top"){ window.scrollTo({top:0, behavior:reduceMotion ? "auto" : "smooth"}); }
+    else{ target.scrollIntoView({behavior:reduceMotion ? "auto" : "smooth", block:"start"}); }
+    stripHash();
+  });
+  if(location.hash){ stripHash(); }
 
   /* count-up */
   function counterFinal(el){
