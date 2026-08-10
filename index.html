@@ -701,20 +701,6 @@ html.js .rvt.in .ln>i{transform:none;opacity:1}
 }
 
 /* ---- ch01: the repetition stack ---- */
-.repwrap{margin-top:60px;position:relative;height:230px;
-  -webkit-mask-image:linear-gradient(180deg,#000 32%,transparent 96%);
-  mask-image:linear-gradient(180deg,#000 32%,transparent 96%)}
-.rep{
-  display:flex;align-items:center;gap:14px;padding:13px 20px;margin-bottom:9px;
-  border:1px solid var(--hairline);border-radius:13px;background:var(--glass);
-  font-size:14px;color:var(--muted);
-}
-html.js .repwrap .rep{opacity:0;transform:translateY(16px);
-  transition:opacity .55s var(--ease-out),transform .55s var(--ease-out);transition-delay:var(--rd,0s)}
-html.js .repwrap.in .rep{opacity:1;transform:none}
-.rep .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none}
-.rep.hot{border-color:var(--link);color:var(--ink);font-weight:600}
-.rep.hot .dot{background:var(--link);box-shadow:0 0 0 4px rgba(0,113,227,.18)}
 
 /* ---- ch02: the tooling ladder ---- */
 .ladder{margin-top:52px;list-style:none;position:relative;padding-left:30px}
@@ -781,7 +767,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 
 @media(prefers-reduced-motion:reduce){
   html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
-  html.js .repwrap .rep,html.js .ladder li{opacity:1;transform:none;transition:none}
+  html.js .ladder li{opacity:1;transform:none;transition:none}
   .progress{display:none}
   .tl::after{display:none}
   html.js .bcard:hover,html.js .ptile:hover{transform:none}
@@ -792,7 +778,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   @page{margin:14mm}
   html,body{background:#fff !important;color:#000 !important}
   nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.bicon,.picon,.chev,
-  .progress,.repwrap,.rtabs{display:none !important}
+  .progress,.rtabs{display:none !important}
   /* the ribbon now carries the real tool list, so print it — both tabs, compactly */
   .rpanel[hidden]{display:block !important}
   .rgrp{grid-template-columns:130px 1fr !important;padding:7px 0 !important;break-inside:avoid}
@@ -903,14 +889,6 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
     <p class="ch-lead reveal">Every MEP project runs on the same handful of actions done thousands of times. Tag a duct. Match the graphics. Fix a level. Renumber a run of sheets. None of it is difficult and none of it is where the value is — but it eats the day, and the coordination that actually decides whether a building works gets whatever hours are left.</p>
     <p class="ch-lead reveal">I spent my first years in Doha doing exactly that, on villas and towers, in AutoCAD and then Revit. <strong>The work I was paid for was thinking. The work I actually did was typing.</strong></p>
 
-    <div class="repwrap reveal" aria-hidden="true">
-      <div class="rep" style="--rd:.02s"><span class="dot"></span>Tag duct — 300&times;250</div>
-      <div class="rep" style="--rd:.07s"><span class="dot"></span>Tag duct — 300&times;250</div>
-      <div class="rep" style="--rd:.12s"><span class="dot"></span>Tag duct — 400&times;250</div>
-      <div class="rep" style="--rd:.17s"><span class="dot"></span>Match graphics — 12 views</div>
-      <div class="rep" style="--rd:.22s"><span class="dot"></span>Tag duct — 400&times;300</div>
-      <div class="rep hot" style="--rd:.27s"><span class="dot"></span>&hellip; and again tomorrow</div>
-    </div>
     </div>
   </div>
 </section>
@@ -1372,7 +1350,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   }
 
   /* scroll reveal — .reveal, .rvt headings, timeline dots */
-  var revealEls = document.querySelectorAll(".reveal, .rvt, .repwrap, .ladder");
+  var revealEls = document.querySelectorAll(".reveal, .rvt, .ladder");
   var counters = document.querySelectorAll("[data-count]");
   var tlItems = document.querySelectorAll(".tl-item");
 
