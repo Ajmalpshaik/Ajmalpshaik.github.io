@@ -230,6 +230,8 @@ html.theming *,html.theming *::before,html.theming *::after{
 }
 /* solid fallbacks where backdrop blur is unsupported */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  nav{background:var(--bg-alt)}
+  .navlinks.open{background:var(--menu-bg)}
   .bcard,.ribbon,.chips span{background:var(--glass-fb)}
   .ptile{background:#14161b}
   .stat-b{background:#12151b}
@@ -616,11 +618,190 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
 }
 .foot a{color:var(--muted)}
 
+/* ============ Story / motion layer ============ */
+
+/* so the timeline stroke can be tweened rather than snapped */
+@property --draw{syntax:"<percentage>";inherits:false;initial-value:0%}
+
+/* reading progress */
+.progress{position:fixed;left:0;top:0;height:2px;width:100%;z-index:130;pointer-events:none}
+.progress i{display:block;height:100%;background:var(--grad);transform:scaleX(0);transform-origin:0 50%}
+
+/* line-masked text reveal (Apple-style) */
+.rvt{display:block}
+.rvt .ln{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+html.js .rvt .ln>i{display:block;font-style:inherit;transform:translateY(110%);opacity:0;
+  transition:transform .95s var(--ease-out),opacity .8s var(--ease-out);transition-delay:var(--ld,0s)}
+html.js .rvt.in .ln>i{transform:none;opacity:1}
+
+/* parallax depth */
+[data-para]{will-change:transform}
+
+/* hero scroll cue */
+.cue{
+  position:absolute;left:50%;bottom:34px;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+}
+.cue .rail{width:1px;height:44px;background:var(--hairline);position:relative;overflow:hidden;border-radius:2px}
+.cue .rail::after{content:"";position:absolute;inset:0;background:var(--link);
+  animation:railRun 2.1s var(--ease) infinite}
+@keyframes railRun{0%{transform:translateY(-100%)}55%,100%{transform:translateY(100%)}}
+
+/* ---- chapters ---- */
+.chapter{position:relative}
+.ch-top{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
+.ch-idx{
+  font-size:clamp(48px,9vw,104px);line-height:.82;font-weight:700;letter-spacing:-.05em;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;opacity:.9;
+}
+.ch-eyebrow{font-size:12px;font-weight:650;letter-spacing:.19em;text-transform:uppercase;color:var(--faint)}
+.ch-title{
+  font-size:clamp(30px,5.4vw,62px);line-height:1.06;letter-spacing:-.035em;font-weight:700;
+  max-width:17ch;
+}
+.ch-lead{
+  margin-top:26px;max-width:60ch;font-size:clamp(17px,2.1vw,21px);
+  line-height:1.62;color:var(--muted);
+}
+.ch-lead strong{color:var(--ink);font-weight:600}
+.ch-lead + .ch-lead{margin-top:18px}
+
+/* two-column chapters: the heading holds its place while the story scrolls past */
+@media(min-width:1000px){
+  .chapter .wrap{
+    display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);
+    column-gap:72px;align-items:start;
+  }
+  .ch-head{position:sticky;top:calc(var(--nav-h) + 56px)}
+  .ch-title{max-width:none}
+  .ch-body{min-width:0}
+  .ch-body > :first-child{margin-top:0}
+  /* the timeline chapter runs full width under its heading */
+  .chapter-wide .wrap{display:block}
+  .chapter-wide .ch-head{position:static}
+  .chapter-wide .ch-title{max-width:17ch}
+}
+@media(min-width:1000px) and (prefers-reduced-motion:reduce){
+  .ch-head{position:static}
+}
+
+/* pull quote */
+.pull{
+  margin:56px 0 0;padding-left:26px;border-left:3px solid transparent;
+  border-image:var(--grad) 1;
+  font-size:clamp(21px,3vw,31px);line-height:1.32;letter-spacing:-.022em;font-weight:600;
+  max-width:22ch;
+}
+
+/* ---- ch01: the repetition stack ---- */
+.repwrap{margin-top:60px;position:relative;height:230px;
+  -webkit-mask-image:linear-gradient(180deg,#000 32%,transparent 96%);
+  mask-image:linear-gradient(180deg,#000 32%,transparent 96%)}
+.rep{
+  display:flex;align-items:center;gap:14px;padding:13px 20px;margin-bottom:9px;
+  border:1px solid var(--hairline);border-radius:13px;background:var(--glass);
+  font-size:14px;color:var(--muted);
+}
+html.js .repwrap .rep{opacity:0;transform:translateY(16px);
+  transition:opacity .55s var(--ease-out),transform .55s var(--ease-out);transition-delay:var(--rd,0s)}
+html.js .repwrap.in .rep{opacity:1;transform:none}
+.rep .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none}
+.rep.hot{border-color:var(--link);color:var(--ink);font-weight:600}
+.rep.hot .dot{background:var(--link);box-shadow:0 0 0 4px rgba(0,113,227,.18)}
+
+/* ---- ch02: the code card ---- */
+.codecard{
+  margin-top:56px;border-radius:20px;overflow:hidden;
+  border:1px solid var(--hairline);background:var(--neu-surface);box-shadow:var(--neu-out);
+}
+.code-h{
+  display:flex;align-items:center;gap:8px;padding:13px 18px;
+  border-bottom:1px solid var(--hairline);background:var(--glass);
+}
+.code-h b{margin-left:8px;font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.code-h .d{width:11px;height:11px;border-radius:50%;background:var(--hairline);flex:none}
+.code-b{
+  margin:0;padding:22px 20px;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  font-size:13px;line-height:1.85;color:var(--ink);
+}
+.code-b .l{display:block;white-space:pre}
+html.js .codecard .code-b .l{opacity:0;transition:opacity .5s var(--ease);transition-delay:var(--cd,0s)}
+html.js .codecard.in .code-b .l{opacity:1}
+.k{color:#a855f7}.s{color:#10b981}.c{color:var(--faint);font-style:italic}.f{color:var(--link)}
+:root[data-theme="dark"] .k{color:#c084fc}
+:root[data-theme="dark"] .s{color:#34d399}
+.code-note{margin-top:16px;font-size:14px;color:var(--faint)}
+
+/* ---- ch03: story timeline ---- */
+.tl{position:relative;margin-top:64px;padding-left:34px}
+.tl::before{
+  content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;border-radius:2px;
+  background:var(--hairline);
+}
+.tl::after{
+  content:"";position:absolute;left:5px;top:6px;width:2px;border-radius:2px;
+  height:var(--draw,0%);background:var(--grad);
+}
+@media(max-width:734px){.tl{padding-left:26px}}
+.tl-item{position:relative;padding-bottom:62px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:-34px;top:8px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--hairline);transition:border-color .4s var(--ease),box-shadow .4s var(--ease);
+}
+@media(max-width:734px){.tl-item::before{left:-26px}}
+.tl-item.lit::before{border-color:var(--link);box-shadow:0 0 0 5px rgba(0,113,227,.15)}
+.tl-yr{font-size:13px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--link)}
+.tl-item h3{font-size:clamp(20px,2.6vw,27px);letter-spacing:-.022em;margin-top:9px;font-weight:650}
+.tl-org{margin-top:7px;font-size:14.5px;color:var(--faint)}
+.tl-item p{margin-top:15px;color:var(--muted);font-size:16.5px;line-height:1.6;max-width:62ch}
+/* wide screens: year sits in its own column so the row uses the full measure */
+@media(min-width:900px){
+  .tl-item{display:grid;grid-template-columns:190px minmax(0,1fr);column-gap:32px}
+  .tl-yr{grid-column:1;grid-row:1 / span 4;padding-top:7px}
+  .tl-item h3,.tl-org,.tl-item p,.tl-stake{grid-column:2}
+  .tl-stake{justify-self:start}
+  .tl-item h3{margin-top:0}
+}
+.tl-stake{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:7px 15px;
+  border-radius:100px;border:1px solid var(--hairline);background:var(--glass);
+  font-size:12.5px;font-weight:600;color:var(--muted);
+}
+.tl-stake::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--grad)}
+
+/* magnetic-ish button lift */
+.btn,.tlink{will-change:transform}
+
+/* card tilt/lift */
+html.js .bcard,html.js .ptile{transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out),border-color .4s var(--ease)}
+html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
+
+@media(prefers-reduced-motion:reduce){
+  html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
+  html.js .repwrap .rep,html.js .codecard .code-b .l{opacity:1;transform:none;transition:none}
+  .cue .rail::after{animation:none}
+  .progress{display:none}
+  .tl::after{display:none}
+  html.js .bcard:hover,html.js .ptile:hover{transform:none}
+}
+
 /* ============ Print ============ */
 @media print{
   @page{margin:14mm}
   html,body{background:#fff !important;color:#000 !important}
-  nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.ribbon,.bicon,.picon,.chev{display:none !important}
+  nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.ribbon,.bicon,.picon,.chev,
+  .progress,.cue,.repwrap{display:none !important}
+  /* gradient-filled text is transparent — force it back to ink for paper */
+  .grad-text,.ch-idx,.stat-b b,.brain-stat b,.pull{
+    -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
+  }
+  .ch-head{position:static !important}
+  .chapter .wrap{display:block !important}
+  .tl::after{display:none !important}
   /* decorative gradient blobs and hover glows */
   .hero::before,section::before,.ptile::before,.brain::before{display:none !important}
   section,.hero{padding:16pt 0 !important;break-inside:avoid}
@@ -647,6 +828,8 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
 
 <a class="skip" href="#main">Skip to content</a>
 
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
 <nav id="nav" aria-label="Main">
   <div class="navin">
     <a class="brand" href="#top" aria-label="Ajmal P.S — home">
@@ -655,11 +838,11 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     </a>
     <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
     <div class="navlinks" id="navLinks">
-      <a href="#about">About</a>
+      <a href="#story">Story</a>
       <a href="#experience">Experience</a>
       <a href="#projects">Work</a>
       <a href="#ajtools">AJ-Tools</a>
-      <a href="#skills">Skills</a>
+      <a href="#about">About</a>
       <a href="#contact" class="cta">Contact</a>
     </div>
     <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
@@ -672,7 +855,6 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
 </nav>
 
 <main id="main">
-
 <!-- ================= HERO ================= -->
 <header class="hero" id="top">
   <div class="wrap">
@@ -681,11 +863,14 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     <p class="tagline hero-enter" style="--d:.28s"><span class="grad-text">I build the models. And the tools that build them faster.</span></p>
     <p class="lead hero-enter" style="--d:.4s">BIM Coordinator with 10+ years in Qatar — HVAC, plumbing, drainage and firefighting, from airports and schools to a live petrochemical plant. I also write the Revit automation my team runs on.</p>
     <div class="btnrow hero-enter" style="--d:.52s">
-      <a class="btn" href="#projects">See my work</a>
-      <a class="tlink" href="#ajtools">Explore AJ-Tools <span class="chev">&rsaquo;</span></a>
+      <a class="btn" href="#story">Start the story</a>
+      <a class="tlink" href="#projects">Skip to the work <span class="chev">&rsaquo;</span></a>
     </div>
   </div>
-
+  <div class="cue hero-enter" style="--d:.9s" aria-hidden="true">
+    <span class="rail"></span>
+    Scroll
+  </div>
 </header>
 
 <!-- ================= STATS ================= -->
@@ -701,82 +886,102 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
   </div>
 </section>
 
-<!-- ================= ABOUT ================= -->
-<section id="about" class="sec-alt">
+<!-- ================= CH 01 — THE PROBLEM ================= -->
+<section id="story" class="chapter">
   <div class="wrap">
-    <span class="eyebrow reveal">About</span>
-    <h2 class="head reveal">How I work. <span class="dim">Concept to as&#8209;built.</span></h2>
-    <div class="bento">
-      <article class="bcard span2 reveal">
-        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
-        <h3>The model is the job</h3>
-        <p>I take MEP models from concept through construction documentation to as-built — airports, petrochemical plants, schools, towers and mixed-use developments. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
-      </article>
-      <article class="bcard reveal" style="--d:.08s">
-        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
-        <h3>Automation built in</h3>
-        <p><strong>I write the software, not just the model:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools — the team's time goes to coordination.</p>
-      </article>
-      <article class="bcard reveal" style="--d:.05s">
-        <p class="big">Doha,<br>Qatar</p>
-        <p class="cap">QID with NOC &middot; available immediately</p>
-      </article>
-      <article class="bcard reveal" style="--d:.12s">
-        <p class="big">2 sides</p>
-        <p class="cap">consultant (AEB) and contractor (Trags, TEM&#8209;AC&hellip;) &mdash; I speak both languages</p>
-      </article>
-      <article class="bcard reveal" style="--d:.19s">
-        <p class="big">5 languages</p>
-        <p class="cap">English &middot; Malayalam &middot; Tamil &middot; Hindi &middot; basic Arabic</p>
-      </article>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">01</span>
+      <span class="ch-eyebrow reveal">The problem</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>Drafting is mostly</i></span>
+      <span class="ln"><i>the same hour,</i></span>
+      <span class="ln"><i>repeated.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">Every MEP project runs on the same handful of actions done thousands of times. Tag a duct. Match the graphics. Fix a level. Renumber a run of sheets. None of it is difficult and none of it is where the value is — but it eats the day, and the coordination that actually decides whether a building works gets whatever hours are left.</p>
+    <p class="ch-lead reveal">I spent my first years in Doha doing exactly that, on villas and towers, in AutoCAD and then Revit. <strong>The work I was paid for was thinking. The work I actually did was typing.</strong></p>
+
+    <div class="repwrap reveal" aria-hidden="true">
+      <div class="rep" style="--rd:.02s"><span class="dot"></span>Tag duct — 300&times;250</div>
+      <div class="rep" style="--rd:.07s"><span class="dot"></span>Tag duct — 300&times;250</div>
+      <div class="rep" style="--rd:.12s"><span class="dot"></span>Tag duct — 400&times;250</div>
+      <div class="rep" style="--rd:.17s"><span class="dot"></span>Match graphics — 12 views</div>
+      <div class="rep" style="--rd:.22s"><span class="dot"></span>Tag duct — 400&times;300</div>
+      <div class="rep hot" style="--rd:.27s"><span class="dot"></span>&hellip; and again tomorrow</div>
+    </div>
     </div>
   </div>
 </section>
 
-<!-- ================= EXPERIENCE ================= -->
-<section id="experience">
+<!-- ================= CH 02 — THE FIRST SCRIPT ================= -->
+<section class="chapter sec-alt">
   <div class="wrap">
-    <span class="eyebrow reveal">Experience</span>
-    <h2 class="head reveal">Where I have worked. <span class="dim">Villas to heavy industry.</span></h2>
-    <div class="xp">
-      <div class="xp-row reveal">
-        <div class="xp-when">Apr 2025 &ndash; Present</div>
-        <div class="xp-body">
-          <h3>BIM Specialist &amp; MEP BIM Coordinator</h3>
-          <div class="org">Trags Electrical Engineering &amp; Air Conditioning &middot; Doha &middot; Polyethylene Plant, Ras Laffan</div>
-          <ul>
-            <li>Lead HVAC BIM modelling and coordination on an operating production plant, in Revit with BIM 360.</li>
-            <li>Run Navisworks clash detection, issue clash reports and drive them to closure with MEP, structural and civil teams.</li>
-            <li>Enforce LOD and project BIM standards across the federated model at every milestone.</li>
-            <li>Build and roll out custom Revit tools to the drafting team — workflow changes cut project timelines by 20%.</li>
-          </ul>
-        </div>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">02</span>
+      <span class="ch-eyebrow reveal">2015 &middot; the turn</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>So I wrote a script</i></span>
+      <span class="ln"><i>to do it for me.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">It was AutoLISP, it was maybe twenty lines, and it was not elegant. It read a selection of blocks and wrote the same value into all of them. It saved perhaps forty minutes that afternoon.</p>
+    <p class="ch-lead reveal"><strong>That was the whole turning point.</strong> Not the code — the realisation that the boring half of my job was something I could describe precisely enough to hand to a machine. Everything after this is that same idea, applied to bigger problems.</p>
+
+    <div class="codecard reveal">
+      <div class="code-h">
+        <span class="d"></span><span class="d"></span><span class="d"></span>
+        <b>TAGDUCT.lsp &middot; 2015</b>
       </div>
-      <div class="xp-row reveal">
-        <div class="xp-when">Jun 2024 &ndash; Apr 2025</div>
-        <div class="xp-body">
-          <h3>BIM Modeler</h3>
-          <div class="org">Arab Engineering Bureau (AEB) &middot; Doha &middot; Qatar Private Schools Programme, PPP Package 2</div>
-          <ul>
-            <li>Developed Revit MEP models for HVAC, plumbing, firefighting and drainage across 14 school buildings.</li>
-            <li>Coordinated federated models on Autodesk Construction Cloud, with clash detection in Navisworks.</li>
-            <li>Produced coordination drawings, schedules and quantity take-offs straight from the model.</li>
-          </ul>
-        </div>
+      <pre class="code-b"><code><span class="l" style="--cd:.05s"><span class="c">; Stop typing the same duct size 200 times a day.</span></span><span class="l" style="--cd:.12s"></span><span class="l" style="--cd:.19s">(<span class="k">defun</span> <span class="f">c:TD</span> ( / ss i en sz )</span><span class="l" style="--cd:.26s">  (<span class="k">setq</span> sz (getstring <span class="s">"\nDuct size: "</span>))</span><span class="l" style="--cd:.33s">  (<span class="k">setq</span> ss (ssget '((0 . <span class="s">"INSERT"</span>))) i 0)</span><span class="l" style="--cd:.40s">  (<span class="k">while</span> (&lt; i (sslength ss))</span><span class="l" style="--cd:.47s">    (<span class="k">setq</span> en (ssname ss i))</span><span class="l" style="--cd:.54s">    (setpropertyvalue en <span class="s">"SIZE"</span> sz)</span><span class="l" style="--cd:.61s">    (<span class="k">setq</span> i (1+ i))</span><span class="l" style="--cd:.68s">  )</span><span class="l" style="--cd:.75s">  (princ (strcat <span class="s">"\n"</span> (itoa i) <span class="s">" tags updated."</span>))</span><span class="l" style="--cd:.82s">  (princ)</span><span class="l" style="--cd:.89s">)</span></code></pre>
       </div>
-      <div class="xp-row reveal">
-        <div class="xp-when">May 2015 &ndash; Jun 2024</div>
-        <div class="xp-body">
-          <h3>BIM Modeler / MEP Draftsman</h3>
-          <div class="org">TEM-AC &middot; Mekdam &middot; Roots Energy &middot; Stream &middot; Powermech &middot; Doha</div>
-          <ul>
-            <li>Modelled MEP services in Revit for villas, towers, malls, hotels, offices and airport renovation works.</li>
-            <li>Produced shop, coordination, builder's work and as-built drawings, and managed submissions through consultant approval.</li>
-            <li>Supervised drafting teams and coordinated daily with consultants and other disciplines.</li>
-            <li>Started writing AutoLISP routines and Dynamo scripts here — that grew into full Revit tool development.</li>
-          </ul>
-        </div>
+    <p class="code-note reveal">Ten years later the same instinct ships as a C# add-in suite with an installer. The line from here to there is unbroken.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CH 03 — THE JOURNEY ================= -->
+<section id="experience" class="chapter chapter-wide">
+  <div class="wrap">
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">03</span>
+      <span class="ch-eyebrow reveal">Ten years</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>Every project</i></span>
+      <span class="ln"><i>raised the cost</i></span>
+      <span class="ln"><i>of being wrong.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">A mistake in a villa is an afternoon. A mistake in an operating plant is a shutdown. The work did not just get bigger — it got less forgiving, and that is what pushed the tooling forward.</p>
+
+    <div class="tl" id="tl">
+      <div class="tl-item reveal">
+        <div class="tl-yr">May 2015 &ndash; Jun 2024</div>
+        <h3>BIM Modeler / MEP Draftsman</h3>
+        <div class="tl-org">TEM-AC &middot; Mekdam &middot; Roots Energy &middot; Stream &middot; Powermech &middot; Doha</div>
+        <p>Villas, towers, malls, hotels, offices and airport renovation works. Shop, coordination, builder's work and as-built drawings, through consultant approval. Supervised drafting teams and coordinated daily with other disciplines. This is where the AutoLISP routines and Dynamo scripts started.</p>
+        <span class="tl-stake">Learning exactly where models break</span>
       </div>
+      <div class="tl-item reveal">
+        <div class="tl-yr">Jun 2024 &ndash; Apr 2025</div>
+        <h3>BIM Modeler &middot; Arab Engineering Bureau</h3>
+        <div class="tl-org">Qatar Private Schools Programme, PPP Package 2 &middot; consultant side</div>
+        <p>Revit MEP models for HVAC, plumbing, firefighting and drainage across fourteen school buildings, federated on Autodesk Construction Cloud with clash detection in Navisworks. Coordination drawings, schedules and quantity take-offs produced straight from the model.</p>
+        <span class="tl-stake">Get the standard right once, or fix it fourteen times</span>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-yr">Apr 2025 &ndash; Present</div>
+        <h3>BIM Specialist &amp; MEP BIM Coordinator &middot; Trags</h3>
+        <div class="tl-org">Polyethylene Plant, Ras Laffan &middot; contractor side</div>
+        <p>Lead HVAC BIM modelling and coordination on an operating production plant, in Revit with BIM 360. Navisworks clash detection driven to closure with MEP, structural and civil teams, and LOD and project BIM standards enforced across the federated model at every milestone. The custom Revit tools I rolled out to the drafting team cut project timelines by 20%.</p>
+        <span class="tl-stake">Shutdown risk, not rework risk</span>
+      </div>
+    </div>
     </div>
   </div>
 </section>
@@ -826,12 +1031,21 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
   </div>
 </section>
 
-<!-- ================= AJ-TOOLS ================= -->
-<section id="ajtools" class="sec-alt">
+<!-- ================= CH 04 — AJ-TOOLS ================= -->
+<section id="ajtools" class="chapter sec-alt">
   <div class="wrap">
-    <span class="eyebrow reveal">AJ-Tools</span>
-    <h2 class="head reveal"><span class="grad-text">AJ-Tools.</span> <span class="dim">The Revit add-in suite I build and ship.</span></h2>
-    <p class="sub reveal">It started as AutoLISP routines to stop repeating drafting work by hand. Today it&rsquo;s a C# Revit add-in suite with WPF interfaces and its own installer, so the whole drafting team runs the same version of the same tools &mdash; one codebase building for Revit 2020 through 2027, currently at v1.41.0. Two ribbon tabs: <strong>AJ Tools</strong> for view, graphics, MEP and coordination commands, <strong>AJ Annotation</strong> for dimensioning and tagging.</p>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">04</span>
+      <span class="ch-eyebrow reveal">AJ-Tools</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>The scripts</i></span>
+      <span class="ln"><i>became a product.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">A personal script helps one person. The moment a tool has an installer, a version number and documentation, it helps everyone — and that is the difference between a clever trick and something a company can actually rely on.</p>
+    <p class="ch-lead reveal">Today AJ-Tools is a C# Revit add-in suite with WPF interfaces and its own installer, so the whole drafting team runs the same version of the same tools. <strong>One codebase builds for Revit 2020 through 2027, currently at v1.41.0.</strong> Two ribbon tabs: <strong>AJ Tools</strong> for view, graphics, MEP and coordination commands, <strong>AJ Annotation</strong> for dimensioning and tagging.</p>
 
     <div class="ribbon reveal" aria-label="AJ Tools and AJ Annotation on the Revit ribbon">
       <div class="rtabs">
@@ -847,10 +1061,28 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
         <div class="rtool"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="9" rx="4.5"/><path d="M8 11v3M6.5 12.5h3"/><circle cx="16.5" cy="12.5" r="1"/></svg>Game Mode</div>
       </div>
     </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CH 05 — THE BRAIN ================= -->
+<section class="chapter">
+  <div class="wrap">
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">05</span>
+      <span class="ch-eyebrow reveal">AJ AI Brain</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>Then I taught it</i></span>
+      <span class="ln"><i>what good work</i></span>
+      <span class="ln"><i>looks like.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">A general AI model knows a great deal about everything and nothing about how your project names a duct. So the agent reads a proven knowledge package before it acts — task skills, techniques and working code captured from real projects — and then carries out real modelling work on the live, open Revit model through a Node.js MCP bridge.</p>
 
     <div class="brain reveal">
-      <h3>AJ AI Brain</h3>
-      <p class="sub">An AI agent that carries out real modelling work on the live, open Revit model. A Node.js MCP bridge links it straight into the open Revit session, and it reads a proven knowledge package first &mdash; task skills, techniques and working code captured from real projects &mdash; so its output follows real BIM practice instead of generic answers.</p>
+      <h3>What it is made of</h3>
       <div class="brain-stats">
         <div class="brain-stat"><b data-count="9">9</b><span>task workflows, from air terminal layout to NFPA&nbsp;13 sprinkler spacing checks</span></div>
         <div class="brain-stat"><b data-count="267">267</b><span>reusable Revit API C# fragments, compile-checked against the real API</span></div>
@@ -864,6 +1096,41 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
       <div style="margin-top:36px">
         <a class="btn btn-light" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">See my GitHub</a>
       </div>
+    </div>
+
+    <p class="pull reveal"><span class="grad-text">The model is still the job. The tools just stop it eating the day.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AT A GLANCE ================= -->
+<section id="about" class="sec-alt">
+  <div class="wrap">
+    <span class="eyebrow reveal">At a glance</span>
+    <h2 class="head reveal">The practical part. <span class="dim">Concept to as&#8209;built.</span></h2>
+    <div class="bento">
+      <article class="bcard span2 reveal">
+        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
+        <h3>The model is the job</h3>
+        <p>I take MEP models from concept through construction documentation to as-built — airports, petrochemical plants, schools, towers and mixed-use developments. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
+      </article>
+      <article class="bcard reveal" style="--d:.08s">
+        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+        <h3>Automation built in</h3>
+        <p><strong>I write the software, not just the model:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools — the team's time goes to coordination.</p>
+      </article>
+      <article class="bcard reveal" style="--d:.05s">
+        <p class="big">Doha,<br>Qatar</p>
+        <p class="cap">QID with NOC &middot; available immediately</p>
+      </article>
+      <article class="bcard reveal" style="--d:.12s">
+        <p class="big">2 sides</p>
+        <p class="cap">consultant (AEB) and contractor (Trags, TEM&#8209;AC&hellip;) &mdash; I speak both languages</p>
+      </article>
+      <article class="bcard reveal" style="--d:.19s">
+        <p class="big">5 languages</p>
+        <p class="cap">English &middot; Malayalam &middot; Tamil &middot; Hindi &middot; basic Arabic</p>
+      </article>
     </div>
   </div>
 </section>
@@ -961,7 +1228,6 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     <p class="cnote">Doha, Qatar &middot; GMT+3 &middot; usually replying within a day</p>
   </div>
 </section>
-
 </main>
 
 <footer>
@@ -971,10 +1237,16 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
   </div>
 </footer>
 
+<script src="vendor/lenis.min.js" defer></script>
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
+
 <script>
+/* ---------- core: runs immediately, needs no library ---------- */
 (function(){
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.__ajReduce = reduceMotion;
 
   /* theme switch */
   var root = document.documentElement;
@@ -1004,11 +1276,23 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     if(mqDark.addEventListener){ mqDark.addEventListener("change", onOsTheme); }
   }
 
-  /* nav shadow on scroll */
+  /* nav shadow + reading progress */
   var nav = document.getElementById("nav");
-  function onScroll(){ nav.classList.toggle("scrolled", window.scrollY > 8); }
+  var prog = document.getElementById("prog");
+  var ticking = false;
+  function paint(){
+    var y = window.scrollY;
+    nav.classList.toggle("scrolled", y > 8);
+    if(prog){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      prog.style.transform = "scaleX(" + (max > 0 ? Math.min(y / max, 1) : 0) + ")";
+    }
+    ticking = false;
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }
   window.addEventListener("scroll", onScroll, {passive:true});
-  onScroll();
+  window.addEventListener("resize", onScroll, {passive:true});
+  paint();
 
   /* mobile menu */
   var menuBtn = document.getElementById("menuBtn");
@@ -1022,7 +1306,14 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
   links.addEventListener("click", function(e){ if(e.target.tagName === "A") closeMenu(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
 
-  /* clean address bar: smooth-scroll without leaving #hash in the URL */
+  /* stagger delays for line-masked headings */
+  var heads = document.querySelectorAll(".rvt");
+  for(var h=0; h<heads.length; h++){
+    var lns = heads[h].querySelectorAll(".ln > i");
+    for(var l=0; l<lns.length; l++){ lns[l].style.setProperty("--ld", (l * 0.085) + "s"); }
+  }
+
+  /* clean address bar: scroll without leaving #hash in the URL */
   function stripHash(){
     if(history.replaceState){ history.replaceState(null, "", location.pathname + location.search); }
   }
@@ -1033,8 +1324,14 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     var target = document.getElementById(id);
     if(!target) return;
     e.preventDefault();
-    if(id === "top"){ window.scrollTo({top:0, behavior:reduceMotion ? "auto" : "smooth"}); }
-    else{ target.scrollIntoView({behavior:reduceMotion ? "auto" : "smooth", block:"start"}); }
+    var top = id === "top";
+    if(window.__ajLenis){
+      window.__ajLenis.scrollTo(top ? 0 : target, {offset: top ? 0 : -10});
+    } else if(top){
+      window.scrollTo({top:0, behavior:reduceMotion ? "auto" : "smooth"});
+    } else {
+      target.scrollIntoView({behavior:reduceMotion ? "auto" : "smooth", block:"start"});
+    }
     stripHash();
   });
   if(location.hash){ stripHash(); }
@@ -1058,12 +1355,15 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
     requestAnimationFrame(step);
   }
 
-  /* scroll reveal */
-  var revealEls = document.querySelectorAll(".reveal");
+  /* scroll reveal — .reveal, .rvt headings, timeline dots */
+  var revealEls = document.querySelectorAll(".reveal, .rvt, .repwrap, .codecard");
   var counters = document.querySelectorAll("[data-count]");
+  var tlItems = document.querySelectorAll(".tl-item");
+
   if(reduceMotion || !("IntersectionObserver" in window)){
     for(var i=0;i<revealEls.length;i++){ revealEls[i].classList.add("in"); }
     for(var j=0;j<counters.length;j++){ counterFinal(counters[j]); }
+    for(var t=0;t<tlItems.length;t++){ tlItems[t].classList.add("lit"); }
   } else {
     for(var k=0;k<counters.length;k++){ counters[k].textContent = "0" + (counters[k].getAttribute("data-suffix") || ""); }
     var io = new IntersectionObserver(function(entries){
@@ -1078,10 +1378,69 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
       });
     }, {threshold:.15, rootMargin:"0px 0px -40px 0px"});
     revealEls.forEach(function(el){ io.observe(el); });
+
+    var dotIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("lit"); dotIo.unobserve(en.target); } });
+    }, {threshold:.2, rootMargin:"0px 0px -25% 0px"});
+    tlItems.forEach(function(el){ dotIo.observe(el); });
   }
 
   document.getElementById("yr").textContent = new Date().getFullYear();
 })();
+
+/* ---------- enhancement: smooth scroll + scroll-linked motion ---------- */
+document.addEventListener("DOMContentLoaded", function(){
+  "use strict";
+  if(window.__ajReduce) return;
+  var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
+  var hasLenis = typeof window.Lenis !== "undefined";
+  if(!hasGsap && !hasLenis) return;
+
+  /* Lenis momentum scrolling */
+  if(hasLenis){
+    var lenis = new window.Lenis({ lerp:0.11, wheelMultiplier:1, smoothWheel:true, touchMultiplier:1.6 });
+    window.__ajLenis = lenis;
+    if(hasGsap){
+      lenis.on("scroll", window.ScrollTrigger.update);
+      window.gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+      window.gsap.ticker.lagSmoothing(0);
+    } else {
+      var raf = function(t){ lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    }
+  }
+
+  if(!hasGsap) return;
+  var gsap = window.gsap, ST = window.ScrollTrigger;
+  gsap.registerPlugin(ST);
+
+  /* depth parallax on chapter numerals */
+  gsap.utils.toArray("[data-para]").forEach(function(el){
+    var amt = parseFloat(el.getAttribute("data-para")) || 0.1;
+    gsap.fromTo(el, {yPercent: -amt * 100}, {
+      yPercent: amt * 100, ease:"none",
+      scrollTrigger:{ trigger: el.closest("section") || el, start:"top bottom", end:"bottom top", scrub:true }
+    });
+  });
+
+  /* hero content drifts and fades as you leave it */
+  var heroInner = document.querySelector(".hero .wrap");
+  if(heroInner){
+    gsap.to(heroInner, {
+      yPercent:14, opacity:.35, ease:"none",
+      scrollTrigger:{ trigger:".hero", start:"top top", end:"bottom top", scrub:true }
+    });
+  }
+
+  /* timeline draws itself as the chapter scrolls */
+  var tl = document.getElementById("tl");
+  if(tl){
+    gsap.fromTo(tl, {"--draw":"0%"}, {
+      "--draw":"100%", ease:"none",
+      scrollTrigger:{ trigger: tl, start:"top 72%", end:"bottom 72%", scrub:.4 }
+    });
+  }
+});
 </script>
 </body>
 </html>
