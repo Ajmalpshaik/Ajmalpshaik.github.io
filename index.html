@@ -637,17 +637,6 @@ html.js .rvt.in .ln>i{transform:none;opacity:1}
 /* parallax depth */
 [data-para]{will-change:transform}
 
-/* hero scroll cue */
-.cue{
-  position:absolute;left:50%;bottom:34px;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:9px;
-  font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
-}
-.cue .rail{width:1px;height:44px;background:var(--hairline);position:relative;overflow:hidden;border-radius:2px}
-.cue .rail::after{content:"";position:absolute;inset:0;background:var(--link);
-  animation:railRun 2.1s var(--ease) infinite}
-@keyframes railRun{0%{transform:translateY(-100%)}55%,100%{transform:translateY(100%)}}
-
 /* ---- chapters ---- */
 .chapter{position:relative}
 .ch-top{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
@@ -783,7 +772,6 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 @media(prefers-reduced-motion:reduce){
   html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
   html.js .repwrap .rep,html.js .codecard .code-b .l{opacity:1;transform:none;transition:none}
-  .cue .rail::after{animation:none}
   .progress{display:none}
   .tl::after{display:none}
   html.js .bcard:hover,html.js .ptile:hover{transform:none}
@@ -794,7 +782,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   @page{margin:14mm}
   html,body{background:#fff !important;color:#000 !important}
   nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.ribbon,.bicon,.picon,.chev,
-  .progress,.cue,.repwrap{display:none !important}
+  .progress,.repwrap{display:none !important}
   /* gradient-filled text is transparent — force it back to ink for paper */
   .grad-text,.ch-idx,.stat-b b,.brain-stat b,.pull{
     -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
@@ -866,10 +854,6 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
       <a class="btn" href="#story">Start the story</a>
       <a class="tlink" href="#projects">Skip to the work <span class="chev">&rsaquo;</span></a>
     </div>
-  </div>
-  <div class="cue hero-enter" style="--d:.9s" aria-hidden="true">
-    <span class="rail"></span>
-    Scroll
   </div>
 </header>
 
