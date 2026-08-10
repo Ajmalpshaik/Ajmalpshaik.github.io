@@ -1,0 +1,33 @@
+name: sitemap
+
+# Keeps <lastmod> honest. Only fires when a page actually changes, and only
+# ever touches sitemap.xml, so it cannot retrigger itself.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '404.html'
+
+permissions:
+  contents: write
+
+jobs:
+  lastmod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set lastmod to the date of this commit
+        run: |
+          DATE=$(git log -1 --format=%cs)
+          if grep -q "<lastmod>$DATE</lastmod>" sitemap.xml; then
+            echo "sitemap already says $DATE — nothing to do"
+            exit 0
+          fi
+          sed -i "s|<lastmod>[^<]*</lastmod>|<lastmod>$DATE</lastmod>|" sitemap.xml
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git commit -m "Update sitemap lastmod to $DATE"
+          git push

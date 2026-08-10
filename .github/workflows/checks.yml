@@ -1,0 +1,30 @@
+name: checks
+
+# The site deploys straight from main with no build step, so a mistake is live
+# the moment it merges. These run before that happens.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Static checks
+        run: python3 tools/check_site.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Chromium
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Browser checks
+        run: node tools/check_browser.mjs
