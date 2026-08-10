@@ -700,29 +700,23 @@ html.js .repwrap.in .rep{opacity:1;transform:none}
 .rep.hot{border-color:var(--link);color:var(--ink);font-weight:600}
 .rep.hot .dot{background:var(--link);box-shadow:0 0 0 4px rgba(0,113,227,.18)}
 
-/* ---- ch02: the code card ---- */
-.codecard{
-  margin-top:56px;border-radius:20px;overflow:hidden;
-  border:1px solid var(--hairline);background:var(--neu-surface);box-shadow:var(--neu-out);
-}
-.code-h{
-  display:flex;align-items:center;gap:8px;padding:13px 18px;
-  border-bottom:1px solid var(--hairline);background:var(--glass);
-}
-.code-h b{margin-left:8px;font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.02em}
-.code-h .d{width:11px;height:11px;border-radius:50%;background:var(--hairline);flex:none}
-.code-b{
-  margin:0;padding:22px 20px;overflow-x:auto;
-  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  font-size:13px;line-height:1.85;color:var(--ink);
-}
-.code-b .l{display:block;white-space:pre}
-html.js .codecard .code-b .l{opacity:0;transition:opacity .5s var(--ease);transition-delay:var(--cd,0s)}
-html.js .codecard.in .code-b .l{opacity:1}
-.k{color:#a855f7}.s{color:#10b981}.c{color:var(--faint);font-style:italic}.f{color:var(--link)}
-:root[data-theme="dark"] .k{color:#c084fc}
-:root[data-theme="dark"] .s{color:#34d399}
-.code-note{margin-top:16px;font-size:14px;color:var(--faint)}
+/* ---- ch02: the tooling ladder ---- */
+.ladder{margin-top:52px;list-style:none;position:relative;padding-left:30px}
+.ladder li{position:relative;padding-bottom:26px}
+.ladder li:last-child{padding-bottom:0}
+/* each step draws its own connector, so the rail stops at the last dot */
+.ladder li::after{content:"";position:absolute;left:-26px;top:19px;bottom:-3px;width:2px;
+  border-radius:2px;background:var(--grad);opacity:.4}
+.ladder li:last-child::after{display:none}
+.ladder li::before{content:"";position:absolute;left:-30px;top:6px;width:10px;height:10px;
+  border-radius:50%;background:var(--bg);border:2px solid var(--hairline)}
+.ladder li:last-child::before{border-color:var(--link);box-shadow:0 0 0 4px rgba(0,113,227,.15)}
+.ladder b{display:block;font-size:17.5px;font-weight:650;letter-spacing:-.012em}
+.ladder span{display:block;margin-top:4px;font-size:15px;color:var(--muted)}
+html.js .ladder li{opacity:0;transform:translateY(14px);
+  transition:opacity .55s var(--ease-out),transform .55s var(--ease-out);transition-delay:var(--rd,0s)}
+html.js .ladder.in li{opacity:1;transform:none}
+.code-note{margin-top:22px;font-size:14px;color:var(--faint)}
 
 /* ---- ch03: story timeline ---- */
 .tl{position:relative;margin-top:64px;padding-left:34px}
@@ -771,7 +765,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 
 @media(prefers-reduced-motion:reduce){
   html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
-  html.js .repwrap .rep,html.js .codecard .code-b .l{opacity:1;transform:none;transition:none}
+  html.js .repwrap .rep,html.js .ladder li{opacity:1;transform:none;transition:none}
   .progress{display:none}
   .tl::after{display:none}
   html.js .bcard:hover,html.js .ptile:hover{transform:none}
@@ -899,30 +893,29 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   </div>
 </section>
 
-<!-- ================= CH 02 — THE FIRST SCRIPT ================= -->
+<!-- ================= CH 02 — THE TURN ================= -->
 <section class="chapter sec-alt">
   <div class="wrap">
     <div class="ch-head">    <div class="ch-top">
       <span class="ch-idx" data-para="0.10">02</span>
-      <span class="ch-eyebrow reveal">2015 &middot; the turn</span>
+      <span class="ch-eyebrow reveal">The turn</span>
     </div>
     <h2 class="ch-title rvt">
-      <span class="ln"><i>So I wrote a script</i></span>
-      <span class="ln"><i>to do it for me.</i></span>
+      <span class="ln"><i>So I stopped</i></span>
+      <span class="ln"><i>doing it by hand.</i></span>
     </h2>
     </div>
     <div class="ch-body">
-    <p class="ch-lead reveal">It was AutoLISP, it was maybe twenty lines, and it was not elegant. It read a selection of blocks and wrote the same value into all of them. It saved perhaps forty minutes that afternoon.</p>
-    <p class="ch-lead reveal"><strong>That was the whole turning point.</strong> Not the code — the realisation that the boring half of my job was something I could describe precisely enough to hand to a machine. Everything after this is that same idea, applied to bigger problems.</p>
+    <p class="ch-lead reveal">Rather than work through the same task again, I started building something that would do it instead. Small routines at first, nothing sophisticated, each one taking a job off my hands that I was tired of repeating.</p>
+    <p class="ch-lead reveal"><strong>That is the turning point, and it is not really about code.</strong> It is the realisation that the repetitive half of the work can be described precisely enough to hand over &mdash; and that the half worth keeping is the judgement. Everything since has been the same idea applied to larger problems.</p>
 
-    <div class="codecard reveal">
-      <div class="code-h">
-        <span class="d"></span><span class="d"></span><span class="d"></span>
-        <b>TAGDUCT.lsp &middot; 2015</b>
-      </div>
-      <pre class="code-b"><code><span class="l" style="--cd:.05s"><span class="c">; Stop typing the same duct size 200 times a day.</span></span><span class="l" style="--cd:.12s"></span><span class="l" style="--cd:.19s">(<span class="k">defun</span> <span class="f">c:TD</span> ( / ss i en sz )</span><span class="l" style="--cd:.26s">  (<span class="k">setq</span> sz (getstring <span class="s">"\nDuct size: "</span>))</span><span class="l" style="--cd:.33s">  (<span class="k">setq</span> ss (ssget '((0 . <span class="s">"INSERT"</span>))) i 0)</span><span class="l" style="--cd:.40s">  (<span class="k">while</span> (&lt; i (sslength ss))</span><span class="l" style="--cd:.47s">    (<span class="k">setq</span> en (ssname ss i))</span><span class="l" style="--cd:.54s">    (setpropertyvalue en <span class="s">"SIZE"</span> sz)</span><span class="l" style="--cd:.61s">    (<span class="k">setq</span> i (1+ i))</span><span class="l" style="--cd:.68s">  )</span><span class="l" style="--cd:.75s">  (princ (strcat <span class="s">"\n"</span> (itoa i) <span class="s">" tags updated."</span>))</span><span class="l" style="--cd:.82s">  (princ)</span><span class="l" style="--cd:.89s">)</span></code></pre>
-      </div>
-    <p class="code-note reveal">Ten years later the same instinct ships as a C# add-in suite with an installer. The line from here to there is unbroken.</p>
+    <ol class="ladder reveal">
+      <li style="--rd:.04s"><b>AutoLISP</b><span>small routines inside AutoCAD</span></li>
+      <li style="--rd:.12s"><b>Dynamo</b><span>visual scripting against the Revit model</span></li>
+      <li style="--rd:.20s"><b>pyRevit and Python</b><span>proper tools, shared with the team</span></li>
+      <li style="--rd:.28s"><b>C# add-ins</b><span>installed, versioned and supported</span></li>
+    </ol>
+    <p class="code-note reveal">Each step covered more ground than the one before it. Where that line ends up is the next chapter.</p>
     </div>
   </div>
 </section>
@@ -1340,7 +1333,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   }
 
   /* scroll reveal — .reveal, .rvt headings, timeline dots */
-  var revealEls = document.querySelectorAll(".reveal, .rvt, .repwrap, .codecard");
+  var revealEls = document.querySelectorAll(".reveal, .rvt, .repwrap, .ladder");
   var counters = document.querySelectorAll("[data-count]");
   var tlItems = document.querySelectorAll(".tl-item");
 
