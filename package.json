@@ -1,0 +1,11 @@
+{
+  "name": "ajmalps-site",
+  "private": true,
+  "description": "Tooling for the checks in tools/. The site itself is plain HTML and needs no build.",
+  "scripts": {
+    "check": "python3 tools/check_site.py && node tools/check_browser.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

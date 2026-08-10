@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AJ-Tools — Revit MEP add-in suite by Ajmal P.S</title>
+<meta name="description" content="AJ-Tools is a Revit add-in suite for MEP: 47 commands across 18 ribbon panels for view, graphics, MEP, coordination, dimensioning and tagging. One codebase for Revit 2020-2027.">
+<meta name="author" content="Ajmal P.S">
+<link rel="canonical" href="https://ajmalps.com/aj-tools/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta property="og:title" content="AJ-Tools — Revit MEP add-in suite">
+<meta property="og:description" content="47 Revit commands for MEP modelling, coordination, dimensioning and tagging. Built and maintained by Ajmal P.S in Doha, Qatar.">
+<meta property="og:url" content="https://ajmalps.com/aj-tools/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ajmalps.com">
+<meta property="og:image" content="https://ajmalps.com/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AJ-Tools — Revit MEP add-in suite">
+<meta name="twitter:description" content="47 Revit commands for MEP modelling, coordination, dimensioning and tagging.">
+<meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<script>
+(function(){
+  var d = document.documentElement;
+  d.classList.add("js");
+  var t = null;
+  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://ajmalps.com/aj-tools/#app",
+      "name": "AJ-Tools",
+      "applicationCategory": "DesignApplication",
+      "applicationSubCategory": "Autodesk Revit add-in",
+      "operatingSystem": "Windows",
+      "softwareVersion": "1.41.0",
+      "url": "https://ajmalps.com/aj-tools/",
+      "description": "A Revit add-in suite for MEP work: 47 commands across 18 ribbon panels covering view control, graphics, datums, MEP routing, openings, coordination, dimensioning and tagging. Written in C# with WPF interfaces and its own installer, built from one codebase for Revit 2020 through 2027.",
+      "author": { "@type": "Person", "name": "Ajmal P.S", "url": "https://ajmalps.com/" },
+      "isAccessibleForFree": false,
+      "softwareRequirements": "Autodesk Revit 2020-2027, Windows"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://ajmalps.com/aj-tools/#page",
+      "url": "https://ajmalps.com/aj-tools/",
+      "name": "AJ-Tools — Revit MEP add-in suite",
+      "about": { "@id": "https://ajmalps.com/aj-tools/#app" },
+      "isPartOf": { "@id": "https://ajmalps.com/#website" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Ajmal P.S", "item": "https://ajmalps.com/" },
+        { "@type": "ListItem", "position": 2, "name": "AJ-Tools", "item": "https://ajmalps.com/aj-tools/" }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --ink:#1d1d1f; --muted:#6e6e73; --faint:#86868b;
+  --bg:#ffffff; --bg-alt:#f5f5f7; --hairline:#d2d2d7;
+  --link:#0071e3; --card:#ffffff;
+  --grad:linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%);
+  --radius:26px; --ease:cubic-bezier(.25,.1,.25,1); --ease-out:cubic-bezier(.16,1,.3,1);
+  --nav-h:52px;
+  --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
+  --nav-bg:rgba(245,247,251,.72);
+  --surface:#eef1f7;
+  --neu-sm:4px 4px 10px rgba(163,177,198,.35),-4px -4px 10px rgba(255,255,255,.85);
+  --glass:rgba(255,255,255,.55); --glass-border:rgba(255,255,255,.7);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --ink:#f5f5f7; --muted:#a1a1a6; --faint:#86868b;
+  --bg:#0c0e13; --bg-alt:#12141b; --hairline:#2b2f38;
+  --link:#2997ff; --card:#1d1d1f;
+  --hero-bg:linear-gradient(180deg,#0c0e13 0%,#0e1118 100%);
+  --nav-bg:rgba(16,18,24,.72);
+  --surface:#171a21;
+  --neu-sm:4px 4px 10px rgba(0,0,0,.5),-4px -4px 10px rgba(255,255,255,.035);
+  --glass:rgba(255,255,255,.055); --glass-border:rgba(255,255,255,.12);
+  color-scheme:dark;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 14px)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:var(--link);text-decoration:none}
+img,svg{display:block;max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+:where(a,button):focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
+.skip{position:absolute;left:14px;top:-70px;z-index:200;padding:12px 20px;border-radius:14px;
+  background:var(--link);color:#fff;font-weight:600;font-size:15px;transition:top .2s var(--ease-out)}
+.skip:focus{top:14px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:var(--nav-bg);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;transition:border-color .3s var(--ease)}
+nav.scrolled{border-bottom-color:var(--hairline)}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){nav{background:var(--bg-alt)}}
+.navin{max-width:1080px;height:100%;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--ink)}
+.brand svg{width:26px;height:26px}
+.navin .back{margin-left:auto;font-size:14.5px;color:var(--muted);font-weight:500}
+.navin .back:hover{color:var(--link)}
+#themeSwitch{margin-left:4px;background:none;border:0;padding:6px;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center}
+#themeSwitch:hover{color:var(--link)}
+:root[data-theme="dark"] .ic-sun{display:none}
+:root:not([data-theme="dark"]) .ic-moon{display:none}
+
+header.hero{background:var(--hero-bg);padding:calc(var(--nav-h) + 84px) 0 78px;text-align:center;
+  border-bottom:1px solid var(--hairline)}
+.kicker{font-size:12.5px;font-weight:650;letter-spacing:.17em;text-transform:uppercase;color:var(--faint)}
+h1{font-size:clamp(46px,9vw,92px);font-weight:700;letter-spacing:-.04em;line-height:1;margin:16px 0 0}
+.tag{margin-top:20px;font-size:clamp(19px,2.6vw,26px);font-weight:600;letter-spacing:-.02em}
+.lead{margin:22px auto 0;max-width:62ch;font-size:17.5px;color:var(--muted);line-height:1.62}
+.badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.badges span{font-size:13.5px;font-weight:500;background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:999px;padding:8px 16px;box-shadow:var(--neu-sm)}
+
+.nums{background:var(--bg-alt);padding:52px 0;border-bottom:1px solid var(--hairline)}
+.numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
+@media(max-width:734px){.numgrid{grid-template-columns:1fr 1fr;gap:34px 18px}}
+.numgrid b{display:block;font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-.03em;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.numgrid span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
+
+.tabsec{padding:78px 0 10px}
+.tabsec:first-of-type{padding-top:70px}
+.head{font-size:clamp(28px,4.6vw,46px);font-weight:700;letter-spacing:-.032em;line-height:1.08;
+  padding:0 22px;max-width:1080px;margin:0 auto 10px}
+.head .dim{color:var(--faint);font-weight:600;font-size:.5em;letter-spacing:-.01em;display:block;margin-top:10px}
+.pgrp{max-width:1080px;margin:0 auto;padding:26px 22px 0}
+.pgrp h3{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--hairline)}
+.pgrp h3 i{font-style:normal;font-size:11px;font-weight:600;color:var(--link);
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:2px 9px}
+.tlist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:2px 30px;margin-top:6px}
+@media(max-width:820px){.tlist{grid-template-columns:1fr}}
+.tlist li{padding:15px 0;border-bottom:1px solid var(--hairline)}
+.tlist b{display:block;font-size:16px;font-weight:650;letter-spacing:-.012em}
+.tlist span{display:block;margin-top:5px;font-size:14.5px;color:var(--muted);line-height:1.55}
+
+.rel{background:var(--bg-alt);margin-top:70px;padding:70px 0;border-top:1px solid var(--hairline)}
+.rlist{list-style:none;max-width:1080px;margin:26px auto 0;padding:0 22px}
+.rlist li{display:grid;grid-template-columns:96px 116px minmax(0,1fr);gap:18px;align-items:baseline;
+  padding:15px 0;border-top:1px solid var(--hairline)}
+@media(max-width:734px){.rlist li{grid-template-columns:1fr;gap:4px}}
+.rlist b{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.rlist time{font-size:13.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.rlist span{font-size:15px;color:var(--muted);line-height:1.55}
+.rlist em{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--link);margin-right:8px}
+
+.cta{padding:78px 0;text-align:center}
+.cta h2{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.cta p{margin:18px auto 0;max-width:56ch;color:var(--muted);font-size:17px}
+.btnrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.btn{background:var(--link);color:#fff;font-weight:600;font-size:16px;padding:14px 30px;border-radius:100px;
+  transition:transform .25s var(--ease-out),opacity .25s}
+.btn:hover{transform:translateY(-2px);opacity:.93}
+.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline)}
+
+footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairline)}
+.foot{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;font-size:12.5px;color:var(--faint)}
+.foot a{color:var(--muted)}
+
+html.js .reveal{opacity:0;transform:translateY(20px);
+  transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+html.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  html.js .reveal{opacity:1;transform:none;transition:none}
+}
+@media print{
+  @page{margin:14mm}
+  nav,.skip,.btnrow,#themeSwitch{display:none !important}
+  html,body{background:#fff !important;color:#000 !important}
+  header.hero,.nums,.rel{background:#fff !important}
+  .grad-text,.numgrid b{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
+  .reveal{opacity:1 !important;transform:none !important}
+  .pgrp,.tlist li,.rlist li{break-inside:avoid}
+  a{color:#000 !important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav id="nav" aria-label="Main">
+  <div class="navin">
+    <a class="brand" href="/" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
+      Ajmal P.S
+    </a>
+    <a class="back" href="/">&larr; Back to the site</a>
+    <button id="themeSwitch" type="button" aria-label="Switch theme">
+      <svg class="ic-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+      <svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main id="main">
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">Revit add-in suite</span>
+    <h1><span class="grad-text">AJ-Tools</span></h1>
+    <p class="tag">47 commands I built so my team stops repeating itself.</p>
+    <p class="lead">A C# add-in suite with WPF interfaces and its own installer, so a whole drafting team runs the same version of the same tools. One codebase builds for Revit 2020 through 2027. Every command below is on the ribbon today &mdash; the descriptions are the tooltips from the source.</p>
+    <div class="badges">
+      <span>v1.41.0</span><span>Revit 2020&ndash;2027</span><span>C# &middot; WPF</span><span>Two ribbon tabs</span>
+    </div>
+  </div>
+</header>
+
+<section class="nums" aria-label="At a glance">
+  <div class="wrap">
+    <div class="numgrid">
+      <div><b>47</b><span>commands on the ribbon</span></div>
+      <div><b>18</b><span>panels across two tabs</span></div>
+      <div><b>8</b><span>Revit versions, one codebase</span></div>
+      <div><b>117</b><span>tagged releases</span></div>
+    </div>
+  </div>
+</section>
+
+    <section class="tabsec">
+      <h2 class="head reveal">AJ Tools <span class="dim">32 tools &middot; 12 panels</span></h2>
+      <div class="pgrp reveal">
+        <h3>View <i>6</i></h3>
+        <ul class="tlist">
+          <li><b>View Crop</b><span>View crop and annotation crop tools.</span></li>
+          <li><b>Unhide All</b><span>Unhide all elements in the active view (Temporary Hide/Isolate + hidden items).</span></li>
+          <li><b>Toggle Link</b><span>Toggle visibility of all Revit Links in the active view.</span></li>
+          <li><b>Filter Pro</b><span>Create parameter filters quickly (category, parameter, values) and apply them to the active view.</span></li>
+          <li><b>Colorize</b><span>Colorize elements by category or by parameter value directly in the active view (or selected views) - no view filter is created.</span></li>
+          <li><b>Highlight Selection</b><span>Color the selected elements red and every other element in the active view gray, for instant visual identification.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Graphics <i>3</i></h3>
+        <ul class="tlist">
+          <li><b>Apply Graphics</b><span>Apply the same graphics override settings to selected elements or selected categories in the active view.</span></li>
+          <li><b>Match Graphics</b><span>Match category or element graphics from a picked source.</span></li>
+          <li><b>Reset Graphics</b><span>Reset category and element graphics overrides in the active view.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Datums <i>3</i></h3>
+        <ul class="tlist">
+          <li><b>Reset Grid / Level Extents to 3D</b><span>Reset grid or level datum extents back to 3D.</span></li>
+          <li><b>Modify Level Extents</b><span>Match or maximize level 3D extents.</span></li>
+          <li><b>Flip Grid / Level Bubbles</b><span>Toggle which datum end shows the bubble for grids or levels, one item at a time.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Modify <i>4</i></h3>
+        <ul class="tlist">
+          <li><b>Match MEP Element Elevation</b><span>Match center, top, or bottom elevation from a source MEP element to others.</span></li>
+          <li><b>Reassign Reference Level</b><span>Reassign supported MEP elements from one level to another without moving them physically - whole project, or just your current selection.</span></li>
+          <li><b>Pin / Unpin Elements</b><span>Pin/unpin separated Sheet groups (Title Blocks, Placed Views, Legends, Schedules) with Active Sheet Only or All Sheets mode, and Model groups (Duct, Pipe, Cable Tray, Generic Models, Mechanical Equipment, Plumbing Fixtures, Electrical Equipment, Grids, Levels).</span></li>
+          <li><b>Smart Selection</b><span>Pick one reference element, then one window or crossing-select - only elements of the same category are added.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>MEP <i>4</i></h3>
+        <ul class="tlist">
+          <li><b>Connect MEP Elements</b><span>Connect two same-category MEP elements (Pipe, Duct, Cable Tray) with routing and angle settings.</span></li>
+          <li><b>Elements to Ceiling Grid</b><span>Pick ceiling, pick grid intersection, then snap point-based elements to nearest tile centers.</span></li>
+          <li><b>HVAC Schematic</b><span>Convert selected ducts, air terminals, and mechanical equipment into a connector-based HVAC schematic inside a new Drafting View.</span></li>
+          <li><b>Pipe Sizing</b><span>Calculate domestic water pipe sizing from fixture units, system type, pipe material, and velocity limit.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Opening <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Opening</b><span>Create direct wall, floor/slab, and beam openings from selected pipes, ducts, cable trays, and conduits.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Coordination <i>3</i></h3>
+        <ul class="tlist">
+          <li><b>Element ID</b><span>Element ID tools for current and linked models.</span></li>
+          <li><b>3D Views</b><span>3D view creation tools.</span></li>
+          <li><b>Link Workset</b><span>Assign selected Revit links and CAD imports to a workset.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Data <i>2</i></h3>
+        <ul class="tlist">
+          <li><b>Assign Location</b><span>Assign Room, Level, Coordinates, Altitude, and HVAC Zone data to selected categories.</span></li>
+          <li><b>Duct Standard</b><span>Calculate and write duct sheet thickness, gauge, weight, and area based on SMACNA-style rules.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Manage <i>2</i></h3>
+        <ul class="tlist">
+          <li><b>Transfer</b><span>Transfer tools.</span></li>
+          <li><b>Purge</b><span>Purge tools.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Family <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Shared to Family</b><span>Convert selected shared parameters in the active family into normal family parameters.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>AI Assistant <i>2</i></h3>
+        <ul class="tlist">
+          <li><b>C#</b><span>Open the interactive AI-powered C# shell for Revit.</span></li>
+          <li><b>AJ AI</b><span>Connect or disconnect AJ AI - lets an external AI agent (via MCP) run C# against this</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Game <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Game Mode</b><span>Walk inside the model like a video game, in a real Revit perspective view</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="tabsec">
+      <h2 class="head reveal">AJ Annotation <span class="dim">15 tools &middot; 6 panels</span></h2>
+      <div class="pgrp reveal">
+        <h3>Auto Dimension <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Auto Duct Dimension</b><span>Create a chained perpendicular reference dimension for ducts, nearby ducts, walls, structural columns, and structural beams.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Dimensions <i>3</i></h3>
+        <ul class="tlist">
+          <li><b>Automatic Dimension</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
+          <li><b>Quick Dimension</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
+          <li><b>Copy Dimension Text</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Annotation <i>3</i></h3>
+        <ul class="tlist">
+          <li><b>Duct Flow Annotations</b><span>Place duct flow annotations along horizontal ducts.</span></li>
+          <li><b>Revision Clouds</b><span>Create orthogonal stepped revision cloud boundaries aligned to dominant selected-element angle. Keeps running until Esc.</span></li>
+          <li><b>Copy / Swap Text Notes</b><span>Copy the text value from one text note to others (click targets until ESC).</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Family <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Center Annotation</b><span>Center selected annotations in the active annotation family view.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Tags <i>6</i></h3>
+        <ul class="tlist">
+          <li><b>Smart MEP Tags</b><span>Force tags to use a right-angle leader. Run again on the same tag to flip the elbow side. Preselect tags or pick tags (Tab cycles) until Esc.</span></li>
+          <li><b>Rearrange Tags</b><span>Force tags to use a right-angle leader. Run again on the same tag to flip the elbow side. Preselect tags or pick tags (Tab cycles) until Esc.</span></li>
+          <li><b>L-Shape Leader</b><span>Force tags to use a right-angle leader. Run again on the same tag to flip the elbow side. Preselect tags or pick tags (Tab cycles) until Esc.</span></li>
+          <li><b>Create Tags</b><span>Select one or more MEP elements, then click a location for each to create a tag there. Skips elements already tagged in the view, shorter than the configured minimum length, or a vertical run. Press Esc to stop early.</span></li>
+          <li><b>Center Room Tags</b><span>Move every room tag in the active view to the center of its tagged room. Handles local rooms and loaded linked rooms; skips orphaned, pinned, and unreadable tags.</span></li>
+          <li><b>Section Mark Visibility</b><span>Automatically manage section visibility based on Sheet Number filters or sheet placement status.</span></li>
+        </ul>
+      </div>
+      <div class="pgrp reveal">
+        <h3>Text <i>1</i></h3>
+        <ul class="tlist">
+          <li><b>Arrange Text in Box</b><span>Fit selected text notes into a box you drag: each note is resized to the box width and the notes are spread evenly top-to-bottom with left edges aligned. Pick the top-left corner once, then pick bottom-right corners to re-fit live. Press Esc to finish.</span></li>
+        </ul>
+      </div>
+    </section>
+
+<section class="rel" aria-label="Recent releases">
+  <div class="wrap">
+    <h2 class="head reveal" style="padding:0">Recent releases <span class="dim">117 tagged so far</span></h2>
+  </div>
+  <ul class="rlist">
+        <li class="reveal"><b>v1.41.0</b><time>2026-08-05</time><span><em>Added</em> NVIDIA is now a fourth AI option in the C# panel</span></li>
+        <li class="reveal"><b>v1.40.6</b><time>2026-08-05</time><span><em>Fixed</em> Game Mode — the camera flew off every time you shot something with the SELECTOR gun</span></li>
+        <li class="reveal"><b>v1.40.5</b><time>2026-08-05</time><span><em>Added</em> The little AJ AI Bridge status pop-up now fades in and out instead of appearing and</span></li>
+        <li class="reveal"><b>v1.40.4</b><time>2026-08-05</time><span><em>Fixed</em> You could close a Purge window while it was still scanning</span></li>
+        <li class="reveal"><b>v1.40.3</b><time>2026-08-05</time><span><em>Added</em> Purge Unplaced Views</span></li>
+        <li class="reveal"><b>v1.40.2</b><time>2026-08-05</time><span><em>Changed</em> Tick boxes and radio buttons now look like AJ Tools</span></li>
+        <li class="reveal"><b>v1.40.1</b><time>2026-08-05</time><span><em>Added</em> Purge Unused Elements</span></li>
+        <li class="reveal"><b>v1.40.0</b><time>2026-08-05</time><span><em>Important</em> Every window still returns exactly the same answer as before</span></li>
+  </ul>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2 class="reveal">Want something like this <span class="grad-text">for your team?</span></h2>
+    <p class="reveal">The suite is built around the standards of the team I work with, so it is not sold off the shelf. Adapting it, or building a private version around another company&rsquo;s templates and naming, is straightforward &mdash; the installer, the versioning and the multi-version build are already in place.</p>
+    <div class="btnrow reveal">
+      <a class="btn" href="mailto:ajmalnattika@gmail.com">Email me</a>
+      <a class="btn btn-ghost" href="/#ajtools">Read the story</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+    <span><a href="/">ajmalps.com</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var root = document.documentElement, sw = document.getElementById("themeSwitch");
+  var meta = document.getElementById("metaTheme");
+  function apply(t){
+    root.setAttribute("data-theme", t);
+    if(meta) meta.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
+  }
+  sw.addEventListener("click", function(){
+    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    apply(next);
+    try{ localStorage.setItem("ajps-theme", next); }catch(e){}
+  });
+
+  var nav = document.getElementById("nav"), ticking = false;
+  function paint(){ nav.classList.toggle("scrolled", window.scrollY > 8); ticking = false; }
+  window.addEventListener("scroll", function(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }, {passive:true});
+  paint();
+
+  var els = document.querySelectorAll(".reveal");
+  if(reduce || !("IntersectionObserver" in window)){
+    for(var i=0;i<els.length;i++) els[i].classList.add("in");
+  } else {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:"0px 0px -40px 0px"});
+    els.forEach(function(el){ io.observe(el); });
+  }
+  document.getElementById("yr").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
