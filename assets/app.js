@@ -228,17 +228,16 @@
   })();
 
   /* ------------------------------------------------------------------
-     Analytics — OFF until you put your GoatCounter code below.
+     Analytics — ON. Dashboard: https://ajmalps.goatcounter.com
 
-     Sign up free at https://www.goatcounter.com (no card, no cookies,
-     no consent banner needed). Pick a site code, then set it here:
+     GoatCounter sets no cookies and stores no personal data, so there is
+     nothing to put a consent banner in front of. Visitors who send Do Not
+     Track or Global Privacy Control are never counted at all.
 
-         var GOATCOUNTER = "ajmalps";
-
-     Leave it empty and the site loads nothing from anyone else, exactly
-     as it does today. Visitors who send Do Not Track are never counted.
+     To switch every bit of this off again, set the code back to "" — that
+     one line stops the script below from ever being fetched.
      ------------------------------------------------------------------ */
-  var GOATCOUNTER = "";
+  var GOATCOUNTER = "ajmalps";
 
   (function(){
     if(!GOATCOUNTER) return;
