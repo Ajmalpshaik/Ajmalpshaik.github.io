@@ -248,7 +248,7 @@ html.js .reveal.in{opacity:1;transform:none}
 #themeSwitch .ic-moon{color:#0071e3;opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-sun{opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-moon{opacity:1}
-@media(max-width:900px){
+@media(max-width:1024px){
   /* menu button first, theme switch stays last in the corner */
   #menuBtn{display:flex}
   .navcenter{position:static;transform:none}
@@ -545,11 +545,12 @@ html.js .rvt.in .ln>i{transform:none;opacity:1}
 /* two-column chapters: the heading holds its place while the story scrolls past */
 @media(min-width:1000px){
   .chapter .wrap{
-    display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);
+    display:grid;grid-template-columns:minmax(300px,440px) minmax(0,1fr);
     column-gap:72px;align-items:start;
   }
   .ch-head{position:sticky;top:calc(var(--nav-h) + 56px)}
   .ch-title{max-width:none}
+  .chapter:not(.chapter-wide) .ch-title{font-size:clamp(30px,4.4vw,52px)}
   .ch-body{min-width:0}
   .ch-body > :first-child{margin-top:0}
   /* the timeline chapter runs full width under its heading */
@@ -728,7 +729,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 
 /* explore grid on the home page */
 .xgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
-@media(max-width:900px){.xgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:1024px){.xgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.xgrid{grid-template-columns:1fr}}
 .xcard{
   position:relative;display:block;overflow:hidden;color:inherit;
@@ -763,6 +764,23 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 
 /* WhatsApp glyph keeps its own green on an otherwise neutral button */
 .ic-wa{color:#25D366}
+
+/* ---- animated flock behind the hero (home page only) ----
+   The canvas is transparent, so the hero gradient and the ambient blobs still
+   show through and the birds fly over them. It sits under the hero content and
+   ignores the pointer, so nothing here can swallow a click on the buttons.
+   The ID beats the `.hero > *{position:relative}` rule. */
+#vanta-hero{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  opacity:0;transition:opacity 1.4s var(--ease);
+}
+/* held back so the birds stay scenery and the name stays the loudest thing */
+#vanta-hero.on{opacity:.55}
+:root[data-theme="dark"] #vanta-hero.on{opacity:.7}
+#vanta-hero canvas{display:block}
+.hero{overflow:hidden}
+@media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}
+@media print{#vanta-hero{display:none !important}}
 
 /* previous / next - kept for the 404 shortcuts */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}

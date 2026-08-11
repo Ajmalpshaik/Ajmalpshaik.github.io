@@ -34,6 +34,7 @@
     sw.setAttribute("aria-checked", t === "dark" ? "true" : "false");
     sw.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
     if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
+    if(window.__ajBirds) window.__ajBirds.retint();
   }
   applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
   sw.addEventListener("click", function(){
@@ -85,7 +86,7 @@
 
   /* macOS-style pill that glides between the centred tabs */
   var pill = links ? links.querySelector(".navpill") : null;
-  var mqDesktop = window.matchMedia ? window.matchMedia("(min-width: 901px)") : null;
+  var mqDesktop = window.matchMedia ? window.matchMedia("(min-width: 1025px)") : null;
   if(pill && links){
     links.addEventListener("pointerover", function(e){
       var a = e.target.closest ? e.target.closest("a") : null;
@@ -268,6 +269,114 @@
     }, {threshold:.5});
     var els = document.querySelectorAll("[data-track]");
     for(var i=0;i<els.length;i++) io.observe(els[i]);
+  })();
+
+  /* ---------- Vanta BIRDS behind the hero, home page only ----------
+     three.js is 600kb, so it is fetched only when it will actually be drawn:
+     never for reduced-motion, never on Save-Data, never without WebGL, and
+     never on the pages that have no hero. The flock is destroyed when the hero
+     scrolls away so it is not burning a phone battery further down the page. */
+  (function(){
+    var host = document.getElementById("vanta-hero");
+    if(!host || reduceMotion) return;
+
+    var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+    if(conn && conn.saveData) return;
+
+    var gl = false;
+    try{
+      var probe = document.createElement("canvas");
+      gl = !!(window.WebGLRenderingContext &&
+              (probe.getContext("webgl") || probe.getContext("experimental-webgl")));
+    }catch(e){ gl = false; }
+    if(!gl) return;
+
+    var vendor = host.getAttribute("data-vendor") || "vendor/";
+    var effect = null, loading = null;
+
+    function palette(){
+      /* cyan reads well on the dark canvas, blue holds up on the light one;
+         both land on violet, the same sweep as the tagline gradient */
+      return root.getAttribute("data-theme") === "dark"
+        ? { color1:0x00c8ff, color2:0x7c3aed }
+        : { color1:0x2563eb, color2:0x7c3aed };
+    }
+
+    function loadScript(src){
+      return new Promise(function(resolve, reject){
+        var s = document.createElement("script");
+        s.src = src; s.async = true;
+        s.onload = resolve;
+        s.onerror = function(){ reject(new Error("failed: " + src)); };
+        document.head.appendChild(s);
+      });
+    }
+
+    function libs(){
+      if(!loading){
+        loading = loadScript(vendor + "three.min.js").then(function(){
+          return loadScript(vendor + "vanta.birds.min.js");
+        });
+      }
+      return loading;
+    }
+
+    function start(){
+      if(effect || !window.VANTA || !window.VANTA.BIRDS || !window.THREE) return;
+      var narrow = window.innerWidth < 1025;
+      var tint = palette();
+      try{
+        effect = window.VANTA.BIRDS({
+          el: host,
+          THREE: window.THREE,
+          mouseControls: !narrow,   /* vanta binds this to window, so the hero buttons stay clickable */
+          touchControls: false,     /* would fight with scrolling on a phone */
+          gyroControls: false,
+          minHeight: 200, minWidth: 200,
+          scale: 1, scaleMobile: 1,
+          backgroundAlpha: 0,       /* keep the hero gradient underneath */
+          color1: tint.color1,
+          color2: tint.color2,
+          colorMode: "varianceGradient",
+          /* tuned down from the Vanta defaults: the default 1024 birds with
+             high cohesion ball up in the middle of the hero and sit all over
+             the name. Fewer birds, pushed apart, moving slower. */
+          birdSize: 1,
+          wingSpan: 20,
+          speedLimit: 3.5,
+          separation: 60,
+          alignment: 28,
+          cohesion: 14,
+          quantity: narrow ? 3 : 4
+        });
+        host.classList.add("on");
+      }catch(e){
+        effect = null;            /* a WebGL failure must never break the page */
+      }
+    }
+
+    function stop(){
+      if(!effect) return;
+      host.classList.remove("on");
+      try{ effect.destroy(); }catch(e){}
+      effect = null;
+    }
+
+    window.__ajBirds = { retint: function(){
+      if(effect){ try{ effect.setOptions(palette()); }catch(e){} }
+    } };
+
+    if("IntersectionObserver" in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){ libs().then(start).catch(function(){}); }
+          else { stop(); }
+        });
+      }, { rootMargin: "200px" });
+      io.observe(host);
+    } else {
+      libs().then(start).catch(function(){});
+    }
   })();
 
   var yrEl = document.getElementById("yr");
