@@ -531,12 +531,7 @@ html.js .rvt.in .ln>i{transform:none;opacity:1}
 
 /* ---- chapters ---- */
 .chapter{position:relative}
-.ch-top{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
-.ch-idx{
-  font-size:clamp(48px,9vw,104px);line-height:.82;font-weight:700;letter-spacing:-.05em;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;opacity:.9;
-}
+.ch-top{display:flex;align-items:baseline;gap:16px;margin-bottom:18px}
 .ch-eyebrow{font-size:12px;font-weight:650;letter-spacing:.19em;text-transform:uppercase;color:var(--faint)}
 .ch-title{
   font-size:clamp(30px,5.4vw,62px);line-height:1.06;letter-spacing:-.035em;font-weight:700;
@@ -662,7 +657,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
     font-size:8.5pt !important;border-radius:6px !important}
   .rmeta{padding:10px 0 2px !important}
   /* gradient-filled text is transparent — force it back to ink for paper */
-  .grad-text,.ch-idx,.stat-b b,.brain-stat b,.pull{
+  .grad-text,.stat-b b,.brain-stat b,.pull{
     -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
   }
   .ch-head{position:static !important}
@@ -713,10 +708,6 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 }
 .pagehead::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--blobs)}
 .pagehead>*{position:relative}
-.pagehead .ph-idx{
-  display:block;font-size:clamp(56px,9vw,110px);font-weight:800;line-height:.9;
-  letter-spacing:-.04em;color:var(--hairline);opacity:.6;margin-bottom:6px;
-}
 .pagehead h1{
   font-size:clamp(38px,6.2vw,74px);font-weight:700;letter-spacing:-.028em;line-height:1.05;
   max-width:940px;text-wrap:balance;
@@ -755,7 +746,6 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 }
 .xcard:hover{transform:translateY(-5px);box-shadow:var(--neu-hover)}
 .xcard:hover::after{opacity:1}
-.xcard .xnum{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--link);display:block;margin-bottom:10px}
 .xcard h3{font-size:21px;font-weight:700;letter-spacing:-.015em;margin-bottom:8px;color:var(--ink)}
 .xcard p{font-size:15.5px;color:var(--muted)}
 .xcard .go{display:inline-flex;align-items:center;gap:5px;margin-top:18px;font-size:14.5px;font-weight:600;color:var(--link)}
@@ -773,7 +763,10 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 .ctaband p{font-size:16px;color:var(--muted);margin-top:8px;max-width:520px}
 .ctaband .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
-/* previous / next */
+/* WhatsApp glyph keeps its own green on an otherwise neutral button */
+.ic-wa{color:#25D366}
+
+/* previous / next - kept for the 404 shortcuts */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
 @media(max-width:600px){.pager{grid-template-columns:1fr}}
 .pcard{
