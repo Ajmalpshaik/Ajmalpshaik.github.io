@@ -521,8 +521,8 @@ footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairli
 
 /* line-masked text reveal (Apple-style) */
 .rvt{display:block}
-.rvt .ln{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
-html.js .rvt .ln>i{display:block;font-style:inherit;transform:translateY(110%);opacity:0;
+.rvt .ln{display:block;overflow:hidden;padding-bottom:.22em;margin-bottom:-.22em}
+html.js .rvt .ln>i{display:block;font-style:inherit;transform:translateY(130%);opacity:0;
   transition:transform .95s var(--ease-out),opacity .8s var(--ease-out);transition-delay:var(--ld,0s)}
 html.js .rvt.in .ln>i{transform:none;opacity:1}
 
@@ -778,6 +778,16 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 #vanta-hero.on{opacity:.7}
 #vanta-hero canvas{display:block}
 .hero{overflow:hidden}
+/* On the AJ AI Brain page the flock sits behind the opening chapter instead of
+   a hero. It covers the heading and fades out before the reading column, so it
+   decorates the top of the page without flying through the text. */
+.chapter.has-birds{overflow:hidden}
+.chapter.has-birds #vanta-hero{
+  bottom:auto;height:min(78%,640px);
+  -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 52%,transparent 100%);
+}
+.chapter.has-birds #vanta-hero.on{opacity:.5}
 @media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}
 @media print{#vanta-hero{display:none !important}}
 /* High Contrast strips decoration; canvas pixels are exempt from forced-colour
