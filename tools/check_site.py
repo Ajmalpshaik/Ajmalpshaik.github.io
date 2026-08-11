@@ -22,7 +22,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES = ["index.html", "404.html"] + [
     os.path.join(d, "index.html")
     for d in ("story", "experience", "work", "aj-tools", "ai-brain",
-              "about", "skills", "faq", "contact")
+              "about", "skills", "faq", "contact",
+              "toolbox", os.path.join("toolbox", "crane-lift-calculator"))
 ]
 
 errors, warnings = [], []

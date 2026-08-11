@@ -1,0 +1,186 @@
+/* ajmalps.com - Toolbox. Shared by /toolbox/ and every tool page.
+   Built on the neumorphic tokens already in style.css, so light and dark both work. */
+
+/* ============ Toolbox landing ============ */
+.tb-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:22px;margin-top:38px;
+}
+.tb-card{
+  display:flex;flex-direction:column;gap:10px;
+  background:var(--neu-surface);border-radius:20px;padding:26px 24px;
+  box-shadow:var(--neu-out);color:inherit;
+  transition:box-shadow .3s var(--ease),transform .3s var(--ease);
+}
+a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
+.tb-card h3{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.tb-card p{font-size:14.5px;color:var(--muted);line-height:1.55}
+.tb-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:10px}
+.tb-tag{
+  font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);background:var(--neu-surface);box-shadow:var(--neu-in);
+  border-radius:20px;padding:5px 11px;
+}
+.tb-soon{opacity:.62}
+.tb-soon .tb-tag{color:var(--faint)}
+
+/* ============ Shared tool-page chrome ============ */
+.tool-head{margin-bottom:8px}
+.tool-note{
+  font-size:13px;line-height:1.6;color:var(--muted);
+  background:var(--neu-surface);box-shadow:var(--neu-in);
+  border-radius:14px;padding:16px 18px;margin-top:22px;
+}
+.tool-note b{color:var(--ink)}
+.tool-note.warn{color:#a1560f}
+:root[data-theme="dark"] .tool-note.warn{color:#f0a760}
+
+/* ============ Calculator ============ */
+.calc{--c-ok:#2f855a;--c-bad:#c53030;--c-warn:#b7601a}
+:root[data-theme="dark"] .calc{--c-ok:#4ade80;--c-bad:#f87171;--c-warn:#fbbf24}
+
+.calc-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;margin-top:34px;
+}
+.calc-card{
+  background:var(--neu-surface);border-radius:20px;padding:26px 24px;
+  box-shadow:var(--neu-out);display:flex;flex-direction:column;
+}
+.calc-card.full{grid-column:1/-1}
+.calc-card h2{
+  font-size:17px;font-weight:600;letter-spacing:-.01em;
+  padding-bottom:13px;margin-bottom:18px;border-bottom:1px solid var(--hairline);
+  display:flex;align-items:center;gap:11px;
+}
+.calc-card h2 .ic{
+  width:34px;height:34px;flex:0 0 34px;border-radius:11px;
+  background:var(--neu-surface);box-shadow:var(--neu-out-sm);
+  display:flex;align-items:center;justify-content:center;
+}
+.calc-card h2 .ic svg{width:17px;height:17px;stroke:var(--blue);fill:none;stroke-width:1.9}
+
+.f{margin-bottom:15px}
+.f label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 6px 3px;line-height:1.4;
+}
+.f-in{position:relative}
+.f-in input,.f-in select{
+  width:100%;padding:11px 13px;border-radius:12px;
+  background:var(--neu-surface);box-shadow:var(--neu-in);
+  border:none;outline:none;color:var(--ink);
+  font-family:inherit;font-weight:500;font-size:15px;
+}
+.f-in input:focus-visible,.f-in select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.f-in input[readonly]{opacity:.66;cursor:not-allowed}
+.f-in .u{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  color:var(--faint);font-size:12px;font-weight:600;pointer-events:none;
+}
+.f-in select{appearance:none;cursor:pointer;padding-right:34px}
+.f-in .caret{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  width:13px;height:13px;pointer-events:none;stroke:var(--muted);fill:none;stroke-width:2.4;
+}
+.f-in input::-webkit-outer-spin-button,.f-in input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.f-in input[type=number]{-moz-appearance:textfield}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.f-hint{font-size:11.5px;color:var(--faint);margin:6px 0 0 3px;line-height:1.45}
+.f-flag{font-size:11.5px;font-weight:600;color:var(--blue);margin:6px 0 0 3px;line-height:1.45}
+.mini{
+  width:100%;margin-top:7px;padding:7px;border-radius:10px;
+  background:var(--neu-surface);box-shadow:var(--neu-out-sm);
+  border:none;color:var(--blue);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
+.mini:active{box-shadow:var(--neu-in)}
+
+.res{
+  margin-top:auto;padding-top:17px;border-top:1px solid var(--hairline);
+  display:flex;flex-direction:column;gap:11px;
+}
+.res-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.res-row .k{font-size:13.5px;color:var(--muted);line-height:1.4}
+.res-row .v{
+  background:var(--neu-surface);box-shadow:var(--neu-out-sm);border-radius:10px;
+  padding:7px 13px;font-weight:600;min-width:98px;text-align:right;color:var(--blue);
+  font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;
+}
+.res-row .v.dim{color:var(--muted)}
+.res-row .v.big{font-size:17px}
+.v.ok{color:var(--c-ok)}
+.v.bad{color:var(--c-bad)}
+.v.warn{color:var(--c-warn)}
+
+/* ============ Record strip (project / date / prepared by) ============ */
+.rec{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:15px;background:var(--neu-surface);box-shadow:var(--neu-out);
+  border-radius:18px;padding:22px 24px;margin-top:30px;
+}
+
+/* ============ Diagrams ============ */
+.dg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.dg-t{
+  font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:9px;padding-left:9px;border-left:3px solid var(--blue);line-height:1.4;
+}
+.dg-box{
+  background:var(--neu-surface);border-radius:15px;box-shadow:var(--neu-out-sm);
+  padding:11px;overflow:hidden;
+}
+.dg-box svg{width:100%;display:block}
+.dg-box svg text{font-family:inherit}
+/* theme-aware diagram palette */
+.calc{
+  --d-sky:#e8ebf2;--d-ground:#cbd5e0;--d-line:#94a3b8;--d-ink:#374151;
+  --d-steel:#4a5568;--d-steel-d:#2d3748;--d-steel-l:#718096;--d-pale:#cbd5e0;
+  --d-load:#f6ad55;--d-load-s:#c05621;--d-glass:#a8c5e0;--d-halo:#e8ebf2;
+}
+:root[data-theme="dark"] .calc{
+  --d-sky:#161922;--d-ground:#23283340;--d-line:#4b5563;--d-ink:#cbd5e0;
+  --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#374151;
+  --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#161922;
+}
+.d-sky{fill:var(--d-sky)}
+.d-ground{fill:var(--d-ground)}
+.d-line{stroke:var(--d-line)}
+.d-ink{fill:var(--d-ink)}
+.d-steel{fill:var(--d-steel)}
+.d-steel-d{fill:var(--d-steel-d)}
+.d-steel-l{fill:var(--d-steel-l)}
+.d-pale{fill:var(--d-pale)}
+.d-load{fill:var(--d-load);stroke:var(--d-load-s)}
+.d-glass{fill:var(--d-glass)}
+.d-rope{stroke:var(--d-steel-l)}
+.d-dim{stroke:var(--d-steel-l);fill:var(--d-steel-l)}
+.d-lbl{fill:var(--d-ink);paint-order:stroke;stroke:var(--d-halo);stroke-width:4px}
+.d-lbl-a{fill:var(--blue);paint-order:stroke;stroke:var(--d-halo);stroke-width:4px}
+/* pass/fail state inside the diagrams */
+.calc svg text.ok{fill:var(--c-ok)}
+.calc svg text.bad{fill:var(--c-bad)}
+.calc svg text.warn{fill:var(--c-warn)}
+.calc svg rect.ok{fill:var(--c-ok);stroke:var(--c-ok)}
+.calc svg rect.bad{fill:var(--c-bad);stroke:var(--c-bad)}
+.calc svg rect.warn{fill:var(--c-warn);stroke:var(--c-warn)}
+
+@media(max-width:720px){
+  .dg-wrap{grid-template-columns:1fr}
+  .f2{grid-template-columns:1fr}
+}
+
+/* ============ Print ============ */
+@media print{
+  #nav,footer,.progress,.skip,.no-print,.crumbs{display:none !important}
+  body{background:#fff !important}
+  .calc{--d-sky:#f2f4f8;--d-ground:#dfe4ec}
+  .calc-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .calc-card,.rec{
+    box-shadow:none !important;border:1px solid #c8ccd4;
+    page-break-inside:avoid;padding:14px 16px;
+  }
+  .f-in input,.f-in select{box-shadow:none !important;border:1px solid #d5d9e0}
+  .res-row .v{box-shadow:none !important;border:1px solid #d5d9e0}
+  main{padding-top:0 !important}
+  .tool-note{box-shadow:none !important;border:1px solid #c8ccd4}
+}

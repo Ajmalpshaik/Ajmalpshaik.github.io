@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page not found | ajmalps.com</title>
-<meta name="description" content="That page does not exist on ajmalps.com.">
+<title>Toolbox — Free MEP and BIM Tools</title>
+<meta name="description" content="Free tools for MEP and BIM site work, built by a working BIM coordinator in Doha. They run in your browser, need no sign-up, and keep working with no signal on site.">
 <meta name="author" content="Ajmal P.S">
-<link rel="canonical" href="https://ajmalps.com/404.html">
-<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://ajmalps.com/toolbox/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" id="metaTheme" content="#f2f4f8">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
-<meta property="og:title" content="Page not found">
-<meta property="og:description" content="That page does not exist on ajmalps.com.">
-<meta property="og:url" content="https://ajmalps.com/404.html">
+<meta property="og:title" content="Toolbox — Free MEP and BIM Tools">
+<meta property="og:description" content="Free tools for MEP and BIM site work, built by a working BIM coordinator in Doha. They run in your browser, need no sign-up, and keep working with no signal on site.">
+<meta property="og:url" content="https://ajmalps.com/toolbox/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ajmalps.com">
 <meta property="og:locale" content="en_US">
@@ -22,12 +22,13 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Page not found">
-<meta name="twitter:description" content="That page does not exist on ajmalps.com.">
+<meta name="twitter:title" content="Toolbox — Free MEP and BIM Tools">
+<meta name="twitter:description" content="Free tools for MEP and BIM site work, built by a working BIM coordinator in Doha. No sign-up, and they work offline.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" href="favicon.svg">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/toolbox.css">
 <script>
 (function(){
   var d = document.documentElement;
@@ -38,9 +39,31 @@
     t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
   }
   d.setAttribute("data-theme", t);
-  /* failsafe: if app.js never runs, drop .js so nothing stays hidden */
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://ajmalps.com/toolbox/#page",
+      "name": "Toolbox — Free MEP and BIM Tools",
+      "url": "https://ajmalps.com/toolbox/",
+      "description": "Free browser tools for MEP and BIM site work.",
+      "author": { "@id": "https://ajmalps.com/#person" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://ajmalps.com/toolbox/#crumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Toolbox", "item": "https://ajmalps.com/toolbox/" }
+      ]
+    }
+  ]
+}
 </script>
 </head>
 <body>
@@ -61,7 +84,7 @@
         <a href="/experience/">Experience</a>
         <a href="/work/">Work</a>
         <a href="/aj-tools/">AJ-Tools</a>
-        <a href="/toolbox/">Toolbox</a>
+        <a href="/toolbox/" aria-current="page">Toolbox</a>
         <a href="/ai-brain/">AJ AI</a>
         <a href="/skills/">Skills</a>
         <a href="/about/">About</a>
@@ -81,18 +104,44 @@
 </nav>
 
 <main id="main">
-<section class="nf">
+<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 74px);padding-bottom:100px">
   <div class="wrap">
-    <h1 class="grad-text hero-enter">404</h1>
-    <p class="hero-enter" style="--d:.12s">That page is not on this site. The site is now split into separate
-    pages, so an old link may have moved.</p>
-    <div class="btnrow hero-enter" style="--d:.22s">
-      <a class="btn" href="/">Back to home</a>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">›</span>
+      <span>Toolbox</span>
+    </nav>
+
+    <p class="eyebrow">Free · no sign-up · works offline</p>
+    <h1 style="font-size:clamp(40px,6vw,68px);font-weight:700;letter-spacing:-.028em;line-height:1.06"><span class="grad-text">Toolbox.</span></h1>
+    <p class="sub" style="max-width:640px">Small tools I built because I needed them on real projects, then cleaned up so anyone can use them. They run entirely on your own device. Nothing is uploaded, nothing is tracked, and they keep working when the site has no signal.</p>
+
+    <div class="tb-grid">
+
+      <a class="tb-card" href="/toolbox/crane-lift-calculator/">
+        <h3>Crane Lift Calculator</h3>
+        <p>Sling tension on the BS 7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom. With live diagrams and a printable record sheet.</p>
+        <div class="tb-tags">
+          <span class="tb-tag">Lifting</span>
+          <span class="tb-tag">BS 7121</span>
+          <span class="tb-tag">Printable</span>
+        </div>
+      </a>
+
+      <div class="tb-card tb-soon">
+        <h3>More on the way</h3>
+        <p>Duct and pipe sizing with a velocity check, drainage fixture units to pipe size, an MEP unit converter, and an ISO 19650 file name builder. Each one gets published when I trust the numbers, not before.</p>
+        <div class="tb-tags">
+          <span class="tb-tag">In progress</span>
+        </div>
+      </div>
+
     </div>
-    <div class="pager" style="max-width:760px;margin:52px auto 0;text-align:left">
-      <a class="pcard prev" href="/work/"><small>Popular</small><b>Selected work</b></a>
-      <a class="pcard next" href="/aj-tools/"><small>Popular</small><b>AJ-Tools</b></a>
-    </div>
+
+    <p class="tool-note" style="margin-top:40px">
+      <b>How I treat these.</b> Every tool says which standard it follows and what it deliberately leaves out, on the tool's own page. None of them replace a competent person, a manufacturer's chart, or a signed calculation. If you find something wrong, <a href="/contact/">tell me</a> and I will fix it and say what changed. If there is a tool you want, ask, and it might be next.
+    </p>
+
   </div>
 </section>
 </main>
@@ -130,9 +179,9 @@
   </div>
 </footer>
 
-<script src="vendor/lenis.min.js" defer></script>
-<script src="vendor/gsap.min.js" defer></script>
-<script src="vendor/ScrollTrigger.min.js" defer></script>
-<script src="assets/app.js" defer></script>
+<script src="../vendor/lenis.min.js" defer></script>
+<script src="../vendor/gsap.min.js" defer></script>
+<script src="../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../assets/app.js" defer></script>
 </body>
 </html>

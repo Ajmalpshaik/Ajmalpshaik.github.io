@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crane Lift Calculator — Sling, Wind, Ground Pressure</title>
+<meta name="description" content="Free crane lift calculator: sling tension on the BS 7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, boom length and headroom. Runs offline.">
+<meta name="author" content="Ajmal P.S">
+<link rel="canonical" href="https://ajmalps.com/toolbox/crane-lift-calculator/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta property="og:title" content="Crane Lift Calculator — Sling, Wind, Ground Pressure">
+<meta property="og:description" content="Free crane lift calculator: sling tension on the BS 7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, boom length and headroom. Runs offline.">
+<meta property="og:url" content="https://ajmalps.com/toolbox/crane-lift-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ajmalps.com">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ajmalps.com/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Crane Lift Calculator — Sling, Wind, Ground Pressure">
+<meta name="twitter:description" content="Free crane lift calculator: sling tension on the BS 7121 two-leg rule, ground bearing pressure, wind speed, boom length and headroom.">
+<meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="apple-touch-icon" href="../../favicon.svg">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/toolbox.css">
+<script>
+(function(){
+  var d = document.documentElement;
+  d.classList.add("js");
+  var t = null;
+  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
+})();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://ajmalps.com/toolbox/crane-lift-calculator/#app",
+      "name": "Crane Lift Calculator",
+      "url": "https://ajmalps.com/toolbox/crane-lift-calculator/",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Any browser",
+      "browserRequirements": "Requires JavaScript",
+      "description": "Checks sling tension, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom for a mobile crane lift. Runs entirely in the browser.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@id": "https://ajmalps.com/#person" },
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://ajmalps.com/toolbox/crane-lift-calculator/#crumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Toolbox", "item": "https://ajmalps.com/toolbox/" },
+        { "@type": "ListItem", "position": 3, "name": "Crane Lift Calculator", "item": "https://ajmalps.com/toolbox/crane-lift-calculator/" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+<nav id="nav" aria-label="Main">
+  <div class="navin">
+    <a class="brand" href="/" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
+      Ajmal P.S
+    </a>
+    <div class="navcenter">
+      <div class="navlinks" id="navLinks">
+        <span class="navpill" aria-hidden="true"></span>
+        <a href="/story/">Story</a>
+        <a href="/experience/">Experience</a>
+        <a href="/work/">Work</a>
+        <a href="/aj-tools/">AJ-Tools</a>
+        <a href="/toolbox/" aria-current="page">Toolbox</a>
+        <a href="/ai-brain/">AJ AI</a>
+        <a href="/skills/">Skills</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="navend">
+      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+        <span class="track"><span class="knob">
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+        </span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 64px);padding-bottom:90px">
+  <div class="wrap">
+
+    <nav class="crumbs no-print" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">›</span>
+      <a href="/toolbox/">Toolbox</a> <span aria-hidden="true">›</span>
+      <span>Crane Lift Calculator</span>
+    </nav>
+
+    <p class="eyebrow">Free tool · runs in your browser</p>
+    <h1 class="tool-head" style="font-size:clamp(34px,5vw,54px);font-weight:700;letter-spacing:-.025em;line-height:1.08">Crane Lift Calculator</h1>
+    <p class="sub" style="max-width:660px">Sling tension, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom. Everything runs on your own device. Nothing is uploaded, nothing is stored, and it keeps working with no signal on site.</p>
+
+    <div class="tool-note warn">
+      <b>Read this before you use the numbers.</b> This is an aid to checking, not a lift plan. It does not replace the crane manufacturer's load chart, a competent Appointed Person, or your site lifting risk assessment. Three things are deliberately simplified and you must allow for them yourself:
+      <b>outrigger force ignores working radius</b> (a 5 m and a 20 m lift give the same figure here, but the real reaction rises sharply with radius);
+      <b>no shock or dynamic factor is applied</b>;
+      and <b>the centre of gravity is assumed central</b>. Confirm every figure against the crane OEM chart and your sling certificates before lifting.
+    </div>
+
+    <button class="btn no-print" id="btnPrint" type="button" style="margin-top:26px">Print / save as PDF</button>
+
+    <form class="calc" id="calc" autocomplete="off" onsubmit="return false">
+
+      <div class="rec">
+        <div class="f" style="margin:0">
+          <label for="recProject">Project</label>
+          <div class="f-in"><input type="text" id="recProject" placeholder="Project name"></div>
+        </div>
+        <div class="f" style="margin:0">
+          <label for="recRef">Lift reference</label>
+          <div class="f-in"><input type="text" id="recRef" placeholder="Lift no."></div>
+        </div>
+        <div class="f" style="margin:0">
+          <label for="recCrane">Crane / model</label>
+          <div class="f-in"><input type="text" id="recCrane" placeholder="Make and model"></div>
+        </div>
+        <div class="f" style="margin:0">
+          <label for="recBy">Prepared by</label>
+          <div class="f-in"><input type="text" id="recBy" placeholder="Name"></div>
+        </div>
+        <div class="f" style="margin:0">
+          <label for="recDate">Date</label>
+          <div class="f-in"><input type="date" id="recDate"></div>
+        </div>
+      </div>
+
+      <div class="calc-grid">
+
+        <!-- 1. LIFT DATA -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M6 21V8l6-5 6 5v13M10 21v-6h4v6"/></svg></span>Lift Data</h2>
+
+          <div class="f">
+            <label for="loadWeight">Weight of load</label>
+            <div class="f-in"><input type="number" id="loadWeight" value="5" step="0.01" min="0"><span class="u">T</span></div>
+          </div>
+          <div class="f">
+            <label for="gearWeight">Lifting gears weight</label>
+            <div class="f-in"><input type="number" id="gearWeight" value="0.2" step="0.01" min="0"><span class="u">T</span></div>
+          </div>
+          <div class="f">
+            <label for="hookBlockWeight">Hook block weight</label>
+            <div class="f-in"><input type="number" id="hookBlockWeight" value="0.5" step="0.01" min="0"><span class="u">T</span></div>
+          </div>
+          <div class="f">
+            <label for="chartCapacity">Chart capacity at this radius</label>
+            <div class="f-in"><input type="number" id="chartCapacity" value="12" step="0.01" min="0"><span class="u">T</span></div>
+            <p class="f-hint">Read from the crane load chart at your working radius and boom length.</p>
+          </div>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Total lift weight</span><div class="v"><span id="resTotalLift">0.00</span> T</div></div>
+            <div class="res-row"><span class="k">Crane utilisation</span><div class="v" id="utilizationBadge"><span id="resUtilization">--</span></div></div>
+          </div>
+        </div>
+
+        <!-- 2. GROUND PRESSURE -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18"/></svg></span>Ground Pressure</h2>
+
+          <div class="f">
+            <label for="craneWeight">Crane weight, excl. counterweight</label>
+            <div class="f-in"><input type="number" id="craneWeight" value="30" step="0.1" min="0"><span class="u">T</span></div>
+          </div>
+          <div class="f">
+            <label for="counterWeight">Counterweight</label>
+            <div class="f-in"><input type="number" id="counterWeight" value="5" step="0.1" min="0"><span class="u">T</span></div>
+          </div>
+          <div class="f">
+            <label for="outriggerFactor">Outrigger load factor</label>
+            <div class="f-in"><input type="number" id="outriggerFactor" value="0.75" step="0.05" min="0" max="1"></div>
+            <p class="f-hint">Share of the machine weight carried by the worst outrigger. A working estimate only.</p>
+          </div>
+          <div class="f2">
+            <div class="f">
+              <label for="gbp">Allowable GBP</label>
+              <div class="f-in"><input type="number" id="gbp" value="20" step="1" min="0"><span class="u">T/m²</span></div>
+            </div>
+            <div class="f">
+              <label for="padDimension">Pad size (square)</label>
+              <div class="f-in"><input type="number" id="padDimension" value="1.5" step="0.1" min="0"><span class="u">m</span></div>
+              <button type="button" class="mini" id="btnPad">Use suggested size</button>
+            </div>
+          </div>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Max outrigger force</span><div class="v"><span id="resOutriggerForce">0.00</span> T</div></div>
+            <div class="res-row"><span class="k">Required pad area</span><div class="v"><span id="resRequiredArea">0.00</span> m²</div></div>
+            <div class="res-row"><span class="k">Min pad size</span><div class="v dim"><span id="resMinPad">0.000</span> m</div></div>
+            <div class="res-row"><span class="k">Suggested pad size</span><div class="v"><span id="resSuggestedPad">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Actual pad area</span><div class="v dim"><span id="resActualArea">0.00</span> m²</div></div>
+            <div class="res-row"><span class="k">Actual ground pressure</span><div class="v" id="pressureBadge"><span id="resActualPressure">0.00</span> T/m²</div></div>
+          </div>
+          <p class="tool-note"><b>This does not account for working radius.</b> The load is added at 100%, so the same lift at 5 m and at 20 m gives the same figure here. Take the real reaction from the crane OEM outrigger load chart before setting pads. GBP must be the <b>allowable</b> bearing pressure, already factored, not the ultimate. Pad is assumed square.</p>
+        </div>
+
+        <!-- 3. SLING & RIGGING -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7a4 4 0 0 1 0 10M15 7a4 4 0 0 0 0 10M9 12h6"/></svg></span>Sling &amp; Rigging</h2>
+
+          <div class="f2">
+            <div class="f">
+              <label for="slingLegs">Sling legs fitted</label>
+              <div class="f-in">
+                <select id="slingLegs">
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+                <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <p class="f-flag" id="legShareNote">Legs assumed to carry: 2</p>
+            </div>
+            <div class="f">
+              <label for="slingWLL">Sling WLL, per leg</label>
+              <div class="f-in"><input type="number" id="slingWLL" value="5" step="0.1" min="0"><span class="u">T</span></div>
+            </div>
+          </div>
+
+          <div class="f2">
+            <div class="f">
+              <label for="slingLength">Sling leg length</label>
+              <div class="f-in"><input type="number" id="slingLength" value="4" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+            <div class="f">
+              <label for="slingAngle">Sling angle from horizontal</label>
+              <div class="f-in"><input type="number" id="slingAngle" value="60" step="1" min="1" max="90"><span class="u">°</span></div>
+            </div>
+          </div>
+
+          <div class="f">
+            <label for="hitchType">Hitch type</label>
+            <div class="f-in">
+              <select id="hitchType">
+                <option value="vertical" data-factor="1.0" data-vertical="1">Vertical, 1 leg (100%)</option>
+                <option value="choker" data-factor="0.8">Choker (80%)</option>
+                <option value="basket" data-factor="2.0" data-vertical="1">Basket, legs vertical (200%)</option>
+                <option value="bridle" data-factor="1.0" selected>Bridle / multi-leg angled</option>
+              </select>
+              <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <p class="f-flag" id="hitchNote">&nbsp;</p>
+          </div>
+
+          <div class="f2">
+            <div class="f">
+              <label for="loadLength">Load length</label>
+              <div class="f-in"><input type="number" id="loadLength" value="4" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+            <div class="f">
+              <label for="loadWidth">Load width</label>
+              <div class="f-in"><input type="number" id="loadWidth" value="2" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+          </div>
+          <div class="f">
+            <label for="loadHeight">Load height</label>
+            <div class="f-in"><input type="number" id="loadHeight" value="1.5" step="0.1" min="0"><span class="u">m</span></div>
+          </div>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Load on slings (load + gears)</span><div class="v dim"><span id="resSlingLoad">0.00</span> T</div></div>
+            <div class="res-row"><span class="k">Tension per leg</span><div class="v"><span id="resTension">0.00</span> T</div></div>
+            <div class="res-row"><span class="k">Sling utilisation</span><div class="v" id="slingUtilBadge"><span id="resSlingUtil">--</span></div></div>
+            <div class="res-row"><span class="k">Status</span><div class="v" id="slingStatusBadge"><span id="resSlingStatus">—</span></div></div>
+          </div>
+          <p class="tool-note"><b>Only 2 legs are assumed to carry the load, whatever number is fitted.</b> This follows BS 7121 site practice. EN 13414 allows at most 3 on a rigid load with equalised legs. Never assume all 4 share. Below 30° from horizontal the check fails, because tension climbs steeply. Keep 45° to 60° or better. The hook block is excluded here because it hangs above the slings. Hitch percentages are guidelines, so confirm the rated capacity from your sling's tag or certificate.</p>
+        </div>
+
+        <!-- 4. WIND -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 16h15a3 3 0 1 1-3 3M3 12h18"/></svg></span>Wind Speed</h2>
+
+          <div class="f">
+            <label for="vChart">V chart, crane wind limit</label>
+            <div class="f-in"><input type="number" id="vChart" value="20" step="0.1" min="0"><span class="u">m/s</span></div>
+          </div>
+          <div class="f2">
+            <div class="f">
+              <label for="sailArea">Sail area</label>
+              <div class="f-in"><input type="number" id="sailArea" value="3" step="0.01" min="0"><span class="u">m²</span></div>
+              <button type="button" class="mini" id="btnSail">Use suggested</button>
+            </div>
+            <div class="f">
+              <label for="dragCoeff">Drag coefficient Cw</label>
+              <div class="f-in"><input type="number" id="dragCoeff" value="1.2" step="0.1" min="0"></div>
+            </div>
+          </div>
+          <p class="f-hint">Suggested sail area: <span id="resSuggestedSail">0.00</span> m² — the larger face, length or width by height, worst case.</p>
+          <div class="f">
+            <label for="densityFactor">Chart reference ratio (fixed)</label>
+            <div class="f-in"><input type="number" id="densityFactor" value="1.2" readonly tabindex="-1"><span class="u">m²/T</span></div>
+            <p class="f-hint">A fixed constant: the sail area per tonne the crane's load chart already assumes. This is <b>not</b> air density. Locked on purpose.</p>
+          </div>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Load mass used (no hook block)</span><div class="v dim"><span id="resLoadMassUsed">0.00</span> T</div></div>
+            <div class="res-row"><span class="k">Sail area used</span><div class="v dim"><span id="resSailAreaUsed">0.00</span> m²</div></div>
+            <div class="res-row"><span class="k">Calculated from sail area</span><div class="v dim"><span id="resWindRaw">0.00</span> m/s</div></div>
+            <div class="res-row"><span class="k">Max permissible wind</span><div class="v big"><span id="resMaxWind">0.00</span> m/s</div></div>
+            <p class="f-flag" id="windCapNote">&nbsp;</p>
+          </div>
+          <p class="tool-note">A simplified estimate. The result is capped at your V chart value, because the chart wind speed is the crane's structural limit and a compact load does not raise it. Always cross-check the manufacturer's chart before lifting.</p>
+        </div>
+
+        <!-- 5. BOOM GEOMETRY -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 20 4M4 20h16M4 20V9"/></svg></span>Boom Geometry</h2>
+
+          <div class="f">
+            <label for="targetHeight">Building / target height</label>
+            <div class="f-in"><input type="number" id="targetHeight" value="12" step="0.1" min="0"><span class="u">m</span></div>
+          </div>
+          <div class="f2">
+            <div class="f">
+              <label for="workingRadius">Working radius</label>
+              <div class="f-in"><input type="number" id="workingRadius" value="8" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+            <div class="f">
+              <label for="pivotHeight">Boom pivot height</label>
+              <div class="f-in"><input type="number" id="pivotHeight" value="2" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+          </div>
+          <p class="f-hint">Pivot height is the boom foot above ground, usually 1.5 m to 2.5 m on a truck crane. Check your machine.</p>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Boom tip height needed</span><div class="v dim"><span id="resTipHeight">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Rise above pivot</span><div class="v dim"><span id="resRise">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Required boom length</span><div class="v"><span id="resBoomLength">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Required boom angle</span><div class="v"><span id="resBoomAngle">0.00</span> °</div></div>
+          </div>
+          <p class="tool-note"><b>The boom tip must clear the load, not just the building.</b> This includes the full rigging stack from the Headroom card, so the length here is longer than target height alone would give. Use the working radius to pick chart capacity. Maximum boom length and angle are fixed by the manufacturer chart, so check this sits inside your crane's range. Radius is taken from the slew centre and the pivot's horizontal offset behind it is ignored, which errs in your favour.</p>
+        </div>
+
+        <!-- 6. HEADROOM -->
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M8 6l4-3 4 3M8 18l4 3 4-3"/></svg></span>Headroom Check</h2>
+
+          <p class="f-hint" style="margin:0 0 15px 0">Target height comes from Boom Geometry. Load height, sling length and sling angle come from Sling &amp; Rigging.</p>
+
+          <div class="f2">
+            <div class="f">
+              <label for="hookHeight">Hook block height</label>
+              <div class="f-in"><input type="number" id="hookHeight" value="0.5" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+            <div class="f">
+              <label for="clearanceMargin">Clearance margin</label>
+              <div class="f-in"><input type="number" id="clearanceMargin" value="0.5" step="0.1" min="0"><span class="u">m</span></div>
+            </div>
+          </div>
+
+          <div class="res">
+            <div class="res-row"><span class="k">Sling vertical drop</span><div class="v dim"><span id="resSlingDrop">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Rigging stack (hook + sling + load)</span><div class="v dim"><span id="resRiggingStack">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Plus clearance margin</span><div class="v dim"><span id="resClearanceShown">0.00</span> m</div></div>
+            <div class="res-row"><span class="k">Boom tip height needed</span><div class="v big"><span id="resHeightRequired">0.00</span> m</div></div>
+          </div>
+          <p class="tool-note">This is the boom tip height needed above ground to place the load at target height, and it is the same number Boom Geometry uses. Check it against your crane's real maximum tip height on the load chart at this radius. The tool does not know your crane's actual reach.</p>
+        </div>
+
+        <!-- 7. DIAGRAMS -->
+        <div class="calc-card full">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m6 15 4-4 3 3 2-2 3 3"/></svg></span>Diagrams</h2>
+
+          <div class="dg-wrap">
+            <div>
+              <div class="dg-t">Ground pressure</div>
+              <div class="dg-box">
+                <svg viewBox="0 0 300 190" style="height:220px" role="img" aria-label="Outrigger pad on ground, showing force and pass or fail against the ground bearing limit">
+                  <rect x="0" y="0" width="300" height="160" class="d-sky"/>
+                  <rect x="0" y="160" width="300" height="30" class="d-ground"/>
+                  <line x1="0" y1="160" x2="300" y2="160" class="d-line" stroke-width="1.5"/>
+                  <text id="gpForceLabel" x="150" y="20" font-size="12" text-anchor="middle" font-weight="700" class="d-lbl">Force: 0.00 T</text>
+                  <line x1="150" y1="27" x2="150" y2="42" stroke="#e53e3e" stroke-width="3"/>
+                  <path d="M 144 38 L 150 50 L 156 38 Z" fill="#e53e3e"/>
+                  <rect x="126" y="52" width="48" height="13" rx="2.5" class="d-steel-d"/>
+                  <rect x="145" y="65" width="10" height="34" rx="1.5" class="d-steel"/>
+                  <rect x="133" y="99" width="34" height="8" rx="2" class="d-steel-d"/>
+                  <rect id="gpPad" x="105" y="107" width="90" height="13" rx="2.5" stroke-width="1.5"/>
+                  <line x1="105" y1="120" x2="105" y2="146" class="d-line" stroke-width="1"/>
+                  <line x1="195" y1="120" x2="195" y2="146" class="d-line" stroke-width="1"/>
+                  <line x1="105" y1="141" x2="195" y2="141" class="d-line" stroke-width="1.2"/>
+                  <path d="M 105 141 L 113 137 L 113 145 Z" class="d-dim"/>
+                  <path d="M 195 141 L 187 137 L 187 145 Z" class="d-dim"/>
+                  <text id="gpPadLabel" x="150" y="136" font-size="12" text-anchor="middle" font-weight="700" class="d-lbl">0.00 x 0.00 m</text>
+                  <text id="gpStatusLabel" x="150" y="178" font-size="13" text-anchor="middle" font-weight="700">—</text>
+                </svg>
+              </div>
+            </div>
+
+            <div>
+              <div class="dg-t">Sling &amp; rigging</div>
+              <div class="dg-box">
+                <svg viewBox="0 0 300 200" style="height:220px" role="img" aria-label="Load hanging on sling legs, showing the sling angle and tension per leg">
+                  <rect x="0" y="0" width="300" height="200" class="d-sky"/>
+                  <text id="srStatusLabel" x="150" y="16" font-size="13" text-anchor="middle" font-weight="700">—</text>
+                  <line x1="150" y1="26" x2="150" y2="50" class="d-rope" stroke-width="2"/>
+                  <rect x="140" y="50" width="20" height="15" rx="2.5" class="d-steel-d"/>
+                  <circle cx="150" cy="57.5" r="3.2" fill="var(--d-steel-l)"/>
+                  <path d="M 150 65 C 150 72, 139.5 72, 139.5 80 C 139.5 87.5, 147 91, 153.5 88 C 157.6 86, 158.8 81.6, 156.8 78" stroke="var(--d-steel-d)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                  <g id="srSlingLegs"></g>
+                  <rect id="srLoadBox" x="110" y="120" width="80" height="30" rx="3" class="d-load" stroke-width="1.5"/>
+                  <text id="srAngleLabel" x="150" y="85" font-size="13" text-anchor="middle" font-weight="700" class="d-lbl-a">60°</text>
+                  <text id="srTensionLabel" x="150" y="194" font-size="12" text-anchor="middle" font-weight="700" class="d-lbl">Tension: 0.00 T/leg</text>
+                </svg>
+              </div>
+            </div>
+
+            <div>
+              <div class="dg-t">Wind speed</div>
+              <div class="dg-box">
+                <svg viewBox="0 0 300 170" style="height:220px" role="img" aria-label="Load swinging under wind, showing the maximum permissible wind speed">
+                  <rect x="0" y="0" width="300" height="140" class="d-sky"/>
+                  <rect x="0" y="140" width="300" height="30" class="d-ground"/>
+                  <line x1="0" y1="140" x2="300" y2="140" class="d-line" stroke-width="1.5"/>
+                  <line x1="195" y1="10" x2="195" y2="40" class="d-line" stroke-width="1.2" stroke-dasharray="4,3"/>
+                  <rect x="169" y="40" width="52" height="40" rx="4" fill="none" stroke="var(--d-line)" stroke-width="1.2" stroke-dasharray="4,3"/>
+                  <g transform="rotate(9 195 10)">
+                    <line x1="195" y1="10" x2="195" y2="34" class="d-rope" stroke-width="1.5"/>
+                    <rect x="190" y="34" width="10" height="7" rx="1.5" class="d-steel-d"/>
+                    <rect x="169" y="41" width="52" height="40" rx="4" class="d-load" stroke-width="1.5"/>
+                  </g>
+                  <g>
+                    <line x1="26" y1="46" x2="140" y2="46" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M 138 40 L 150 46 L 138 52 Z" fill="var(--blue)"/>
+                    <line x1="40" y1="62" x2="140" y2="62" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+                    <path d="M 138 56 L 150 62 L 138 68 Z" fill="var(--blue)" opacity="0.75"/>
+                    <line x1="26" y1="78" x2="140" y2="78" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+                    <path d="M 138 72 L 150 78 L 138 84 Z" fill="var(--blue)" opacity="0.5"/>
+                  </g>
+                  <text id="wsSpeedLabel" x="150" y="112" font-size="14" text-anchor="middle" font-weight="700" class="d-lbl-a">Max: 0.00 m/s</text>
+                  <text x="150" y="127" font-size="10" text-anchor="middle" class="d-lbl">Permissible wind on this load</text>
+                  <text x="150" y="158" font-size="10.5" text-anchor="middle" font-weight="600" class="d-ink">Check crane chart wind limit too</text>
+                </svg>
+              </div>
+            </div>
+
+            <div>
+              <div class="dg-t">Headroom check</div>
+              <div class="dg-box">
+                <svg viewBox="0 0 260 220" style="height:220px" role="img" aria-label="Load suspended above a building, showing rigging stack and total boom tip height needed">
+                  <rect x="0" y="0" width="260" height="200" class="d-sky"/>
+                  <rect x="0" y="200" width="260" height="20" class="d-ground"/>
+                  <line x1="0" y1="200" x2="260" y2="200" class="d-line" stroke-width="2"/>
+                  <g id="hrScene"></g>
+                  <text id="hrStackLabel" x="120" y="55" font-size="11" text-anchor="middle" font-weight="700" class="d-lbl">Rig stack: 0.0m</text>
+                  <text id="hrTargetLabel" x="120" y="115" font-size="11" text-anchor="middle" font-weight="700" class="d-lbl">Target: 0.0m</text>
+                  <line x1="192" y1="200" x2="212" y2="200" class="d-line" stroke-width="1"/>
+                  <line id="hrExtTop" x1="192" y1="60" x2="212" y2="60" class="d-line" stroke-width="1"/>
+                  <line id="hrTotalLine" x1="207" y1="200" x2="207" y2="60" class="d-line" stroke-width="1.2"/>
+                  <path id="hrArrTop" d="M 207 60 L 203 70 L 211 70 Z" class="d-dim"/>
+                  <path d="M 207 200 L 203 190 L 211 190 Z" class="d-dim"/>
+                  <text id="hrTotalLabel" x="207" y="130" font-size="12" text-anchor="middle" font-weight="700" class="d-lbl-a">Total: 0.0m</text>
+                </svg>
+              </div>
+            </div>
+
+            <div style="grid-column:1/-1">
+              <div class="dg-t">Lift overview</div>
+              <div class="dg-box">
+                <svg viewBox="0 0 340 220" style="height:auto" role="img" aria-label="Side view of the crane with boom, working radius, boom angle and the suspended load">
+                  <rect x="0" y="0" width="340" height="196" class="d-sky"/>
+                  <rect x="0" y="196" width="340" height="24" class="d-ground"/>
+                  <line x1="0" y1="196" x2="340" y2="196" class="d-line" stroke-width="1.5"/>
+                  <line id="boomRadiusLine" x1="59" y1="196" x2="255" y2="196" class="d-line" stroke-width="1.2" stroke-dasharray="5,4"/>
+                  <text id="boomRadiusLabel" x="160" y="191" font-size="11.5" text-anchor="middle" font-weight="700" class="d-lbl">R: 0.0m</text>
+                  <line id="boomAngleRefLine" x1="59" y1="160" x2="150" y2="160" class="d-line" stroke-width="1.2" stroke-dasharray="5,4"/>
+                  <path id="boomAngleArc" d="" stroke="var(--blue)" stroke-width="1.5" fill="none" opacity="0.75"/>
+                  <text id="boomAngleLabel" x="110" y="150" font-size="12" text-anchor="middle" font-weight="700" class="d-lbl-a">0°</text>
+                  <line x1="20" y1="184" x2="6" y2="195" class="d-line" stroke-width="3" stroke-linecap="round"/>
+                  <rect id="outriggerPadLeft" x="1" y="193" width="10" height="4" rx="1"/>
+                  <line x1="88" y1="184" x2="102" y2="195" class="d-line" stroke-width="3" stroke-linecap="round"/>
+                  <rect id="outriggerPadRight" x="97" y="193" width="10" height="4" rx="1"/>
+                  <rect x="10" y="176" width="90" height="12" rx="2" class="d-steel-d"/>
+                  <rect x="84" y="163" width="14" height="18" rx="2" class="d-steel-d"/>
+                  <path d="M 32 176 L 32 158 Q 32 154 28 154 L 18 154 Q 13 154 11 159 L 8 176 Z" class="d-steel-l"/>
+                  <path d="M 28 158 L 18 158 Q 15 158 13.5 162 L 12 170 L 28 170 Z" class="d-glass"/>
+                  <rect x="52" y="160" width="30" height="17" rx="3" class="d-steel"/>
+                  <circle cx="30" cy="196" r="10" fill="var(--d-steel-d)"/>
+                  <circle cx="52" cy="196" r="10" fill="var(--d-steel-d)"/>
+                  <circle cx="74" cy="196" r="10" fill="var(--d-steel-d)"/>
+                  <g id="boomGroup"></g>
+                  <line id="hookCable" x1="255" y1="60" x2="255" y2="80" class="d-rope" stroke-width="1.5"/>
+                  <rect id="hookBlock" x="250" y="80" width="10" height="9" rx="1.5" class="d-steel-d"/>
+                  <circle id="hookSheave" cx="255" cy="84.5" r="2" fill="var(--d-steel-l)"/>
+                  <path id="hookCurve" d="" stroke="var(--d-steel-d)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  <line id="slingLegLeft" x1="255" y1="98" x2="235" y2="120" class="d-rope" stroke-width="1.5"/>
+                  <line id="slingLegRight" x1="255" y1="98" x2="275" y2="120" class="d-rope" stroke-width="1.5"/>
+                  <rect id="loadBox" x="235" y="120" width="40" height="20" rx="2" class="d-load" stroke-width="1"/>
+                  <text id="boomLengthLabel" x="150" y="115" font-size="11.5" text-anchor="middle" font-weight="700" class="d-lbl">0.0m</text>
+                  <text id="boomHeightLabel" x="285" y="155" font-size="11.5" text-anchor="middle" font-weight="700" class="d-lbl">H: 0.0m</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+    <p class="tool-note" style="margin-top:34px">
+      <b>What this follows.</b> Sling load sharing uses the BS 7121 site rule of two legs. Sling angle is measured from the horizontal, so tension per leg is the suspended weight divided by the legs sharing and by the sine of that angle. Wind uses the standard chart formula with a fixed 1.2 m²/T reference ratio, capped at the chart wind speed. Ground pressure is force divided by a square pad area. Boom geometry is a right triangle from the boom pivot to the required tip height.
+      <br><br>
+      Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong, or want a check added? <a href="/contact/">Tell me</a> and I will fix it.
+    </p>
+
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+    </div>
+    <div>
+      <h4>The story</h4>
+      <ul>
+        <li><a href="/story/">How it started</a></li>
+        <li><a href="/experience/">Experience</a></li>
+        <li><a href="/work/">Selected work</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>What I build</h4>
+      <ul>
+        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/toolbox/">Toolbox</a></li>
+        <li><a href="/ai-brain/">AJ AI Brain</a></li>
+        <li><a href="/skills/">Skills</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
+    <span><a href="/">ajmalps.com</a></span>
+  </div>
+</footer>
+
+<script src="../../vendor/lenis.min.js" defer></script>
+<script src="../../vendor/gsap.min.js" defer></script>
+<script src="../../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+<script src="../../assets/crane-calc.js" defer></script>
+</body>
+</html>
