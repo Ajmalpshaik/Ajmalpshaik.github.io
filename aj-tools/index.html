@@ -7,20 +7,27 @@
 <meta name="description" content="AJ-Tools is a Revit add-in suite for MEP: 47 commands across 18 ribbon panels for view, graphics, MEP, coordination, dimensioning and tagging. One codebase for Revit 2020-2027.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/aj-tools/">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta name="geo.region" content="QA-DA">
+<meta name="geo.placename" content="Doha">
 <meta property="og:title" content="AJ-Tools — Revit MEP add-in suite">
 <meta property="og:description" content="47 Revit commands for MEP modelling, coordination, dimensioning and tagging. Built and maintained by Ajmal P.S in Doha, Qatar.">
 <meta property="og:url" content="https://ajmalps.com/aj-tools/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ajmalps.com">
+<meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://ajmalps.com/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AJ-Tools — Revit MEP add-in suite">
-<meta name="twitter:description" content="47 Revit commands for MEP modelling, coordination, dimensioning and tagging.">
+<meta name="twitter:description" content="47 Revit commands for MEP modelling, coordination, dimensioning and tagging. Built and maintained by Ajmal P.S in Doha, Qatar.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../assets/style.css">
 <script>
 (function(){
   var d = document.documentElement;
@@ -31,12 +38,108 @@
     t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
   }
   d.setAttribute("data-theme", t);
+  /* failsafe: if app.js never runs, drop .js so nothing stays hidden */
+  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ajmalps.com/#person",
+      "name": "Ajmal P.S",
+      "givenName": "Ajmal",
+      "url": "https://ajmalps.com/",
+      "image": "https://ajmalps.com/og-cover.png",
+      "jobTitle": [
+        "MEP BIM Coordinator",
+        "BIM Modeller",
+        "BIM Modeler",
+        "MEP BIM Specialist"
+      ],
+      "description": "MEP BIM Coordinator in Doha, Qatar with 11 years of experience across HVAC, plumbing, drainage and firefighting — from villas and towers through schools and an international airport to a live petrochemical plant. Builds Revit automation in C# and pyRevit.",
+      "email": "mailto:ajmalnattika@gmail.com",
+      "telephone": "+97431033040",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Doha",
+        "addressCountry": "QA"
+      },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Doha, Qatar"
+      },
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Trags Electrical Engineering & Air Conditioning",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Doha",
+          "addressCountry": "QA"
+        }
+      },
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "MEP BIM Coordinator",
+        "occupationLocation": {
+          "@type": "City",
+          "name": "Doha",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "QA"
+          }
+        },
+        "skills": "Revit MEP modelling, Navisworks clash detection, federated model coordination, ISO 19650 and BEP workflows, LOD 200-400, shop and as-built drawing production, Revit API automation in C# and pyRevit",
+        "experienceRequirements": "11 years"
+      },
+      "knowsLanguage": [
+        {
+          "@type": "Language",
+          "name": "English"
+        },
+        {
+          "@type": "Language",
+          "name": "Malayalam"
+        },
+        {
+          "@type": "Language",
+          "name": "Tamil"
+        },
+        {
+          "@type": "Language",
+          "name": "Hindi"
+        },
+        {
+          "@type": "Language",
+          "name": "Arabic"
+        }
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ajmalps/",
+        "https://github.com/Ajmalpshaik"
+      ],
+      "knowsAbout": [
+        "BIM",
+        "BIM Modeling",
+        "MEP Coordination",
+        "MEP BIM Modeling",
+        "Autodesk Revit",
+        "Navisworks",
+        "HVAC",
+        "Plumbing",
+        "Firefighting Systems",
+        "Drainage",
+        "Revit API",
+        "C#",
+        "pyRevit",
+        "Dynamo",
+        "ISO 19650",
+        "Shop Drawings",
+        "Clash Detection"
+      ]
+    },
     {
       "@type": "SoftwareApplication",
       "@id": "https://ajmalps.com/aj-tools/#app",
@@ -47,7 +150,11 @@
       "softwareVersion": "1.41.0",
       "url": "https://ajmalps.com/aj-tools/",
       "description": "A Revit add-in suite for MEP work: 47 commands across 18 ribbon panels covering view control, graphics, datums, MEP routing, openings, coordination, dimensioning and tagging. Written in C# with WPF interfaces and its own installer, built from one codebase for Revit 2020 through 2027.",
-      "author": { "@type": "Person", "name": "Ajmal P.S", "url": "https://ajmalps.com/" },
+      "author": {
+        "@type": "Person",
+        "name": "Ajmal P.S",
+        "url": "https://ajmalps.com/"
+      },
       "isAccessibleForFree": false,
       "softwareRequirements": "Autodesk Revit 2020-2027, Windows"
     },
@@ -56,79 +163,36 @@
       "@id": "https://ajmalps.com/aj-tools/#page",
       "url": "https://ajmalps.com/aj-tools/",
       "name": "AJ-Tools — Revit MEP add-in suite",
-      "about": { "@id": "https://ajmalps.com/aj-tools/#app" },
-      "isPartOf": { "@id": "https://ajmalps.com/#website" },
+      "about": {
+        "@id": "https://ajmalps.com/aj-tools/#app"
+      },
+      "isPartOf": {
+        "@id": "https://ajmalps.com/#website"
+      },
       "inLanguage": "en"
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Ajmal P.S", "item": "https://ajmalps.com/" },
-        { "@type": "ListItem", "position": 2, "name": "AJ-Tools", "item": "https://ajmalps.com/aj-tools/" }
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ajmal P.S",
+          "item": "https://ajmalps.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "AJ-Tools",
+          "item": "https://ajmalps.com/aj-tools/"
+        }
       ]
     }
   ]
 }
 </script>
 <style>
-:root{
-  --ink:#1d1d1f; --muted:#6e6e73; --faint:#86868b;
-  --bg:#ffffff; --bg-alt:#f5f5f7; --hairline:#d2d2d7;
-  --link:#0071e3; --card:#ffffff;
-  --grad:linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%);
-  --radius:26px; --ease:cubic-bezier(.25,.1,.25,1); --ease-out:cubic-bezier(.16,1,.3,1);
-  --nav-h:52px;
-  --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
-  --nav-bg:rgba(245,247,251,.72);
-  --surface:#eef1f7;
-  --neu-sm:4px 4px 10px rgba(163,177,198,.35),-4px -4px 10px rgba(255,255,255,.85);
-  --glass:rgba(255,255,255,.55); --glass-border:rgba(255,255,255,.7);
-  color-scheme:light;
-}
-:root[data-theme="dark"]{
-  --ink:#f5f5f7; --muted:#a1a1a6; --faint:#86868b;
-  --bg:#0c0e13; --bg-alt:#12141b; --hairline:#2b2f38;
-  --link:#2997ff; --card:#1d1d1f;
-  --hero-bg:linear-gradient(180deg,#0c0e13 0%,#0e1118 100%);
-  --nav-bg:rgba(16,18,24,.72);
-  --surface:#171a21;
-  --neu-sm:4px 4px 10px rgba(0,0,0,.5),-4px -4px 10px rgba(255,255,255,.035);
-  --glass:rgba(255,255,255,.055); --glass-border:rgba(255,255,255,.12);
-  color-scheme:dark;
-}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 14px)}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);color:var(--ink);line-height:1.5;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
-}
-a{color:var(--link);text-decoration:none}
-img,svg{display:block;max-width:100%}
-.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-:where(a,button):focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
-.skip{position:absolute;left:14px;top:-70px;z-index:200;padding:12px 20px;border-radius:14px;
-  background:var(--link);color:#fff;font-weight:600;font-size:15px;transition:top .2s var(--ease-out)}
-.skip:focus{top:14px}
-.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:var(--nav-bg);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid transparent;transition:border-color .3s var(--ease)}
-nav.scrolled{border-bottom-color:var(--hairline)}
-@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){nav{background:var(--bg-alt)}}
-.navin{max-width:1080px;height:100%;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--ink)}
-.brand svg{width:26px;height:26px}
-.navin .back{margin-left:auto;font-size:14.5px;color:var(--muted);font-weight:500}
-.navin .back:hover{color:var(--link)}
-#themeSwitch{margin-left:4px;background:none;border:0;padding:6px;cursor:pointer;color:var(--muted);
-  display:flex;align-items:center}
-#themeSwitch:hover{color:var(--link)}
-:root[data-theme="dark"] .ic-sun{display:none}
-:root:not([data-theme="dark"]) .ic-moon{display:none}
-
 header.hero{background:var(--hero-bg);padding:calc(var(--nav-h) + 84px) 0 78px;text-align:center;
   border-bottom:1px solid var(--hairline)}
 .kicker{font-size:12.5px;font-weight:650;letter-spacing:.17em;text-transform:uppercase;color:var(--faint)}
@@ -138,14 +202,12 @@ h1{font-size:clamp(46px,9vw,92px);font-weight:700;letter-spacing:-.04em;line-hei
 .badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
 .badges span{font-size:13.5px;font-weight:500;background:var(--glass);border:1px solid var(--glass-border);
   border-radius:999px;padding:8px 16px;box-shadow:var(--neu-sm)}
-
 .nums{background:var(--bg-alt);padding:52px 0;border-bottom:1px solid var(--hairline)}
 .numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
 @media(max-width:734px){.numgrid{grid-template-columns:1fr 1fr;gap:34px 18px}}
 .numgrid b{display:block;font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-.03em;
   background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .numgrid span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
-
 .tabsec{padding:78px 0 10px}
 .tabsec:first-of-type{padding-top:70px}
 .head{font-size:clamp(28px,4.6vw,46px);font-weight:700;letter-spacing:-.032em;line-height:1.08;
@@ -161,7 +223,6 @@ h1{font-size:clamp(46px,9vw,92px);font-weight:700;letter-spacing:-.04em;line-hei
 .tlist li{padding:15px 0;border-bottom:1px solid var(--hairline)}
 .tlist b{display:block;font-size:16px;font-weight:650;letter-spacing:-.012em}
 .tlist span{display:block;margin-top:5px;font-size:14.5px;color:var(--muted);line-height:1.55}
-
 .rel{background:var(--bg-alt);margin-top:70px;padding:70px 0;border-top:1px solid var(--hairline)}
 .rlist{list-style:none;max-width:1080px;margin:26px auto 0;padding:0 22px}
 .rlist li{display:grid;grid-template-columns:96px 116px minmax(0,1fr);gap:18px;align-items:baseline;
@@ -172,7 +233,6 @@ h1{font-size:clamp(46px,9vw,92px);font-weight:700;letter-spacing:-.04em;line-hei
 .rlist span{font-size:15px;color:var(--muted);line-height:1.55}
 .rlist em{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
   color:var(--link);margin-right:8px}
-
 .cta{padding:78px 0;text-align:center}
 .cta h2{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 .cta p{margin:18px auto 0;max-width:56ch;color:var(--muted);font-size:17px}
@@ -181,15 +241,6 @@ h1{font-size:clamp(46px,9vw,92px);font-weight:700;letter-spacing:-.04em;line-hei
   transition:transform .25s var(--ease-out),opacity .25s}
 .btn:hover{transform:translateY(-2px);opacity:.93}
 .btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline)}
-
-footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairline)}
-.foot{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;gap:10px;
-  flex-wrap:wrap;font-size:12.5px;color:var(--faint)}
-.foot a{color:var(--muted)}
-
-html.js .reveal{opacity:0;transform:translateY(20px);
-  transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
-html.js .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   html.js .reveal{opacity:1;transform:none;transition:none}
@@ -209,33 +260,58 @@ html.js .reveal.in{opacity:1;transform:none}
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
 <nav id="nav" aria-label="Main">
   <div class="navin">
     <a class="brand" href="/" aria-label="Ajmal P.S — home">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
       Ajmal P.S
     </a>
-    <a class="back" href="/">&larr; Back to the site</a>
-    <button id="themeSwitch" type="button" aria-label="Switch theme">
-      <svg class="ic-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-      <svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-    </button>
+    <div class="navcenter">
+      <div class="navlinks" id="navLinks">
+        <span class="navpill" aria-hidden="true"></span>
+        <a href="/story/">Story</a>
+        <a href="/experience/">Experience</a>
+        <a href="/work/">Work</a>
+        <a href="/aj-tools/" aria-current="page">AJ-Tools</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="navend">
+      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+        <span class="track"><span class="knob">
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+        </span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
 <main id="main">
-
-<header class="hero">
+<section class="chapter first sec-alt" data-track="05-ajtools">
   <div class="wrap">
-    <span class="kicker">Revit add-in suite</span>
-    <h1><span class="grad-text">AJ-Tools</span></h1>
-    <p class="tag">47 commands I built so my team stops repeating itself.</p>
-    <p class="lead">A C# add-in suite with WPF interfaces and its own installer, so a whole drafting team runs the same version of the same tools. One codebase builds for Revit 2020 through 2027. Every command below is on the ribbon today &mdash; the descriptions are the tooltips from the source.</p>
-    <div class="badges">
-      <span>v1.41.0</span><span>Revit 2020&ndash;2027</span><span>C# &middot; WPF</span><span>Two ribbon tabs</span>
+      <div class="crumbs"><a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span> <span>AJ-Tools</span></div>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">04</span>
+      <span class="ch-eyebrow reveal">AJ-Tools</span>
+    </div>
+    <h1 class="ch-title rvt">
+      <span class="ln"><i>The scripts</i></span>
+      <span class="ln"><i>became a product.</i></span>
+    </h1>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">A personal script helps one person. The moment a tool has an installer, a version number and documentation, it helps everyone — and that is the difference between a clever trick and something a company can actually rely on.</p>
+    <p class="ch-lead reveal">Today AJ-Tools is a C# Revit add-in suite with WPF interfaces and its own installer, so the whole drafting team runs the same version of the same tools. <strong>One codebase builds for Revit 2020 through 2027, currently at v1.41.0.</strong> Two ribbon tabs carry <strong>47 tools across 18 panels</strong> &mdash; <strong>AJ Tools</strong> for view, graphics, MEP and coordination work, <strong>AJ Annotation</strong> for dimensioning, tagging and text.</p>
+
     </div>
   </div>
-</header>
+</section>
+
 
 <section class="nums" aria-label="At a glance">
   <div class="wrap">
@@ -419,47 +495,62 @@ html.js .reveal.in{opacity:1;transform:none}
   </div>
 </section>
 
+
+<section class="sec-tight">
+  <div class="wrap">
+    <div class="ctaband reveal">
+      <div>
+        <h2>Looking for an MEP BIM Coordinator?</h2>
+        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
+      </div>
+      <div class="btnrow">
+        <a class="btn" href="/contact/">Get in touch</a>
+        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>
+      </div>
+    </div>
+    <nav class="pager" aria-label="Pagination">
+      <a class="pcard prev reveal" href="/work/"><small>Previous</small><b><span class="chev">&lsaquo;</span> Selected work</b></a>
+      <a class="pcard next reveal" href="/ai-brain/"><small>Next</small><b>AJ AI Brain <span class="chev">&rsaquo;</span></b></a>
+    </nav>
+  </div>
+</section>
 </main>
 
 <footer>
+  <div class="fgrid">
+    <div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+    </div>
+    <div>
+      <h4>The story</h4>
+      <ul>
+        <li><a href="/story/">How it started</a></li>
+        <li><a href="/experience/">Experience</a></li>
+        <li><a href="/work/">Selected work</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>What I build</h4>
+      <ul>
+        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/ai-brain/">AJ AI Brain</a></li>
+        <li><a href="/skills/">Skills</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
   <div class="foot">
-    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
     <span><a href="/">ajmalps.com</a></span>
   </div>
 </footer>
 
-<script>
-(function(){
-  "use strict";
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var root = document.documentElement, sw = document.getElementById("themeSwitch");
-  var meta = document.getElementById("metaTheme");
-  function apply(t){
-    root.setAttribute("data-theme", t);
-    if(meta) meta.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
-  }
-  sw.addEventListener("click", function(){
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    apply(next);
-    try{ localStorage.setItem("ajps-theme", next); }catch(e){}
-  });
-
-  var nav = document.getElementById("nav"), ticking = false;
-  function paint(){ nav.classList.toggle("scrolled", window.scrollY > 8); ticking = false; }
-  window.addEventListener("scroll", function(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }, {passive:true});
-  paint();
-
-  var els = document.querySelectorAll(".reveal");
-  if(reduce || !("IntersectionObserver" in window)){
-    for(var i=0;i<els.length;i++) els[i].classList.add("in");
-  } else {
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, {threshold:.12, rootMargin:"0px 0px -40px 0px"});
-    els.forEach(function(el){ io.observe(el); });
-  }
-  document.getElementById("yr").textContent = new Date().getFullYear();
-})();
-</script>
+<script src="../vendor/lenis.min.js" defer></script>
+<script src="../vendor/gsap.min.js" defer></script>
+<script src="../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../assets/app.js" defer></script>
 </body>
 </html>

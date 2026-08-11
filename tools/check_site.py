@@ -19,7 +19,11 @@ import sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES = ["index.html", "404.html"]
+PAGES = ["index.html", "404.html"] + [
+    os.path.join(d, "index.html")
+    for d in ("story", "experience", "work", "aj-tools", "ai-brain",
+              "about", "skills", "faq", "contact")
+]
 
 errors, warnings = [], []
 
@@ -80,13 +84,24 @@ for required in ("Person", "WebSite", "ProfilePage"):
 
 
 # --------------------------------------------- FAQ schema vs what is on screen
-faq_nodes = [n for n in graph if n.get("@type") == "FAQPage"]
+# The FAQ has its own page now, so read the schema and the questions from there.
+faq_src = read(os.path.join("faq", "index.html"))
+faq_graph = []
+for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', faq_src, re.S):
+    try:
+        faq_graph = json.loads(block).get("@graph", [])
+    except json.JSONDecodeError as exc:
+        err(f"faq/index.html JSON-LD does not parse: {exc}")
+
+faq_nodes = [n for n in faq_graph if n.get("@type") == "FAQPage"]
+if not faq_nodes:
+    err("faq/index.html has no FAQPage node")
 if faq_nodes:
     schema_qa = [
         (q.get("name", ""), q.get("acceptedAnswer", {}).get("text", ""))
         for q in faq_nodes[0].get("mainEntity", [])
     ]
-    section = re.search(r'<section id="faq".*?</section>', src, re.S)
+    section = re.search(r'<section id="faq".*?</section>', faq_src, re.S)
     if not section:
         err("FAQPage schema exists but no #faq section is on the page")
     else:
@@ -110,10 +125,17 @@ for href in re.findall(r'href="#([^"]+)"', src):
 # ------------------------------------------------ referenced files are present
 for page in PAGES:
     page_src = read(page)
+    base = os.path.dirname(os.path.join(ROOT, page))
     refs = re.findall(r'(?:src|href)="(?!https?:|mailto:|tel:|#|//)([^"]+)"', page_src)
     for ref in refs:
-        path = ref.split("?")[0].split("#")[0].lstrip("/")
-        if path and not os.path.exists(os.path.join(ROOT, path)):
+        path = ref.split("?")[0].split("#")[0]
+        if not path:
+            continue
+        # a leading slash means the site root; anything else is relative to the
+        # page that wrote it, which is not the repo root once pages sit in folders
+        target = (os.path.join(ROOT, path.lstrip("/")) if path.startswith("/")
+                  else os.path.join(base, path))
+        if not os.path.exists(target):
             err(f"{page} references a file that is not in the repo: {ref}")
 
 for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml"):

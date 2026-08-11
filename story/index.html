@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ajmal P.S — MEP BIM Coordinator, Doha, Qatar</title>
-<meta name="description" content="MEP BIM Coordinator in Doha, Qatar. 11 years of HVAC, plumbing, drainage and firefighting in Revit — villas and towers to a live petrochemical plant.">
+<title>The story — from repeated drafting to Revit automation | Ajmal P.S</title>
+<meta name="description" content="Why an MEP BIM modeller started building his own Revit tools: the repetitive half of drafting, and the step from AutoLISP to Dynamo to pyRevit to C# add-ins.">
 <meta name="author" content="Ajmal P.S">
-<link rel="canonical" href="https://ajmalps.com/">
+<link rel="canonical" href="https://ajmalps.com/story/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" id="metaTheme" content="#f2f4f8">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
-<meta property="og:title" content="Ajmal P.S — MEP BIM Coordinator, Doha, Qatar">
-<meta property="og:description" content="11 years of MEP BIM in Qatar. I build the models, and the Revit tools my team runs on.">
-<meta property="og:url" content="https://ajmalps.com/">
-<meta property="og:type" content="profile">
+<meta property="og:title" content="The story — from repeated drafting to Revit automation | Ajmal P.S">
+<meta property="og:description" content="Why an MEP BIM modeller started building his own Revit tools: the repetitive half of drafting, and the step from AutoLISP to Dynamo to pyRevit to C# add-ins.">
+<meta property="og:url" content="https://ajmalps.com/story/">
+<meta property="og:type" content="website">
 <meta property="og:site_name" content="ajmalps.com">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://ajmalps.com/og-cover.png">
@@ -22,12 +22,12 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Ajmal P.S — MEP BIM Coordinator, Doha, Qatar">
-<meta name="twitter:description" content="11 years of MEP BIM in Qatar. I build the models, and the Revit tools my team runs on.">
+<meta name="twitter:title" content="The story — from repeated drafting to Revit automation | Ajmal P.S">
+<meta name="twitter:description" content="Why an MEP BIM modeller started building his own Revit tools: the repetitive half of drafting, and the step from AutoLISP to Dynamo to pyRevit to C# add-ins.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" href="favicon.svg">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="stylesheet" href="../assets/style.css">
 <script>
 (function(){
   var d = document.documentElement;
@@ -141,44 +141,38 @@
       ]
     },
     {
-      "@type": "WebSite",
-      "@id": "https://ajmalps.com/#website",
-      "url": "https://ajmalps.com/",
-      "name": "ajmalps.com",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://ajmalps.com/#person"
-      }
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": "https://ajmalps.com/#profilepage",
-      "url": "https://ajmalps.com/",
-      "name": "Ajmal P.S — MEP BIM Coordinator, Doha, Qatar",
+      "@type": "WebPage",
+      "@id": "https://ajmalps.com/story/#webpage",
+      "url": "https://ajmalps.com/story/",
+      "name": "The story",
+      "description": "How Ajmal P.S moved from repetitive MEP drafting into Revit automation.",
       "isPartOf": {
         "@id": "https://ajmalps.com/#website"
       },
       "about": {
         "@id": "https://ajmalps.com/#person"
       },
-      "mainEntity": {
-        "@id": "https://ajmalps.com/#person"
-      },
-      "inLanguage": "en"
+      "breadcrumb": {
+        "@id": "https://ajmalps.com/story/#crumbs"
+      }
     },
     {
-      "@type": "SoftwareApplication",
-      "@id": "https://ajmalps.com/#ajtools",
-      "name": "AJ-Tools",
-      "applicationCategory": "DesignApplication",
-      "applicationSubCategory": "Autodesk Revit add-in",
-      "operatingSystem": "Windows",
-      "softwareVersion": "1.41.0",
-      "description": "A Revit add-in suite written in C# with WPF interfaces and its own installer, so a whole drafting team runs the same tools. One codebase builds for Revit 2020 through 2027 and adds two ribbon tabs — AJ Tools for view, graphics, MEP and coordination commands, and AJ Annotation for dimensioning and tagging.",
-      "author": {
-        "@id": "https://ajmalps.com/#person"
-      },
-      "isAccessibleForFree": false
+      "@type": "BreadcrumbList",
+      "@id": "https://ajmalps.com/story/#crumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://ajmalps.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "The story",
+          "item": "https://ajmalps.com/story/"
+        }
+      ]
     }
   ]
 }
@@ -198,7 +192,7 @@
     <div class="navcenter">
       <div class="navlinks" id="navLinks">
         <span class="navpill" aria-hidden="true"></span>
-        <a href="/story/">Story</a>
+        <a href="/story/" aria-current="page">Story</a>
         <a href="/experience/">Experience</a>
         <a href="/work/">Work</a>
         <a href="/aj-tools/">AJ-Tools</a>
@@ -219,75 +213,51 @@
 </nav>
 
 <main id="main">
-<header class="hero" id="top">
+<section class="chapter first" data-track="01-problem">
   <div class="wrap">
-    <span class="kicker hero-enter" style="--d:.05s">MEP BIM &middot; Doha, Qatar</span>
-    <h1 class="hero-enter" style="--d:.15s">Ajmal&nbsp;P.S</h1>
-    <p class="tagline hero-enter" style="--d:.28s"><span class="grad-text">I build the models. And the tools that build them faster.</span></p>
-    <p class="lead hero-enter" style="--d:.4s">BIM Coordinator with <span data-yrs>11</span> years in Qatar — HVAC, plumbing, drainage and firefighting, from villas and towers through schools and an international airport to a live petrochemical plant. I also write the Revit automation my team runs on.</p>
-    <div class="btnrow hero-enter" style="--d:.52s">
-      <a class="btn" href="/story/">Start the story</a>
-      <a class="tlink" href="/work/">Skip to the work <span class="chev">&rsaquo;</span></a>
+      <div class="crumbs"><a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span> <span>The story</span></div>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">01</span>
+      <span class="ch-eyebrow reveal">The problem</span>
     </div>
-  </div>
-</header>
-<section class="sec-dark stats-band" aria-label="Career numbers">
-  <div class="wrap">
-    <h2 class="head reveal"><span data-yrs-word>Eleven</span> years on site.<br><span class="dim">The numbers behind the models.</span></h2>
-    <div class="stats-grid">
-      <div class="stat-b reveal" style="--d:.05s"><b data-count="11" data-yrs-count>11</b><span>years of MEP BIM in Qatar</span></div>
-      <div class="stat-b reveal" style="--d:.13s"><b data-count="14">14</b><span>schools delivered in one programme</span></div>
-      <div class="stat-b reveal" style="--d:.21s"><b data-count="20" data-suffix="%">20%</b><span>project timelines cut by my Revit tools</span></div>
-      <div class="stat-b reveal" style="--d:.29s"><b data-count="8">8</b><span>Revit versions built from one AJ&#8209;Tools codebase</span></div>
+    <h1 class="ch-title rvt">
+      <span class="ln"><i>Drafting is mostly</i></span>
+      <span class="ln"><i>the same hour,</i></span>
+      <span class="ln"><i>repeated.</i></span>
+    </h1>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">Every MEP project runs on the same handful of actions done thousands of times. Tag a duct. Match the graphics. Fix a level. Renumber a run of sheets. None of it is difficult and none of it is where the value is — but it eats the day, and the coordination that actually decides whether a building works gets whatever hours are left.</p>
+    <p class="ch-lead reveal">I spent my first years in Doha doing exactly that, on villas and towers, in AutoCAD and then Revit. <strong>The work I was paid for was thinking. The work I actually did was typing.</strong></p>
+
     </div>
   </div>
 </section>
-
-<section class="sec-alt">
+<section class="chapter sec-alt">
   <div class="wrap">
-    <span class="eyebrow reveal">The site</span>
-    <h2 class="head reveal">Five chapters, <span class="dim">then the practical detail.</span></h2>
-    <div class="xgrid">
-      <a class="xcard reveal" href="/story/">
-        <span class="xnum">01 &middot; 02</span>
-        <h3>The story</h3>
-        <p>Drafting is mostly the same hour repeated &mdash; and what I did about it.</p>
-        <span class="go">Start the story <span class="chev">&rsaquo;</span></span>
-      </a>
-      <a class="xcard reveal" style="--d:.06s" href="/experience/">
-        <span class="xnum">03</span>
-        <h3>Experience</h3>
-        <p>Villas to an operating petrochemical plant. Every project raised the cost of being wrong.</p>
-        <span class="go">See the timeline <span class="chev">&rsaquo;</span></span>
-      </a>
-      <a class="xcard reveal" style="--d:.12s" href="/work/">
-        <span class="xnum">&mdash;</span>
-        <h3>Selected work</h3>
-        <p>Five projects in Qatar: petrochemical, fourteen schools, an airport, towers and mixed-use.</p>
-        <span class="go">Browse the work <span class="chev">&rsaquo;</span></span>
-      </a>
-      <a class="xcard reveal" href="/aj-tools/">
-        <span class="xnum">04</span>
-        <h3>AJ-Tools</h3>
-        <p>47 Revit commands across 18 panels, one installer, one codebase for Revit 2020&ndash;2027.</p>
-        <span class="go">See every command <span class="chev">&rsaquo;</span></span>
-      </a>
-      <a class="xcard reveal" style="--d:.06s" href="/ai-brain/">
-        <span class="xnum">05</span>
-        <h3>AJ AI Brain</h3>
-        <p>An AI agent that does real modelling work on the live Revit model, and reads real BIM practice first.</p>
-        <span class="go">How it works <span class="chev">&rsaquo;</span></span>
-      </a>
-      <a class="xcard reveal" style="--d:.12s" href="/about/">
-        <span class="xnum">&mdash;</span>
-        <h3>The practical part</h3>
-        <p>Where I am, what I hold, what I coordinate &mdash; plus skills and straight answers.</p>
-        <span class="go">At a glance <span class="chev">&rsaquo;</span></span>
-      </a>
+    <div class="ch-head">    <div class="ch-top">
+      <span class="ch-idx" data-para="0.10">02</span>
+      <span class="ch-eyebrow reveal">The turn</span>
+    </div>
+    <h2 class="ch-title rvt">
+      <span class="ln"><i>So I stopped</i></span>
+      <span class="ln"><i>doing it by hand.</i></span>
+    </h2>
+    </div>
+    <div class="ch-body">
+    <p class="ch-lead reveal">Rather than work through the same task again, I started building something that would do it instead. Small routines at first, nothing sophisticated, each one taking a job off my hands that I was tired of repeating.</p>
+    <p class="ch-lead reveal"><strong>That is the turning point, and it is not really about code.</strong> It is the realisation that the repetitive half of the work can be described precisely enough to hand over &mdash; and that the half worth keeping is the judgement. Everything since has been the same idea applied to larger problems.</p>
+
+    <ol class="ladder reveal">
+      <li style="--rd:.04s"><b>AutoLISP</b><span>small routines inside AutoCAD</span></li>
+      <li style="--rd:.12s"><b>Dynamo</b><span>visual scripting against the Revit model</span></li>
+      <li style="--rd:.20s"><b>pyRevit and Python</b><span>proper tools, shared with the team</span></li>
+      <li style="--rd:.28s"><b>C# add-ins</b><span>installed, versioned and supported</span></li>
+    </ol>
+    <p class="code-note reveal">Each step covered more ground than the one before it. Where that line ends up is the next chapter.</p>
     </div>
   </div>
 </section>
-
 <section class="sec-tight">
   <div class="wrap">
     <div class="ctaband reveal">
@@ -301,8 +271,8 @@
       </div>
     </div>
     <nav class="pager" aria-label="Pagination">
-      <span></span>
-      <a class="pcard next reveal" href="/story/"><small>Next</small><b>The story <span class="chev">&rsaquo;</span></b></a>
+      <a class="pcard prev reveal" href="/"><small>Previous</small><b><span class="chev">&lsaquo;</span> Home</b></a>
+      <a class="pcard next reveal" href="/experience/"><small>Next</small><b>Experience <span class="chev">&rsaquo;</span></b></a>
     </nav>
   </div>
 </section>
@@ -340,9 +310,9 @@
   </div>
 </footer>
 
-<script src="vendor/lenis.min.js" defer></script>
-<script src="vendor/gsap.min.js" defer></script>
-<script src="vendor/ScrollTrigger.min.js" defer></script>
-<script src="assets/app.js" defer></script>
+<script src="../vendor/lenis.min.js" defer></script>
+<script src="../vendor/gsap.min.js" defer></script>
+<script src="../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../assets/app.js" defer></script>
 </body>
 </html>

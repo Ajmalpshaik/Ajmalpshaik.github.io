@@ -16,7 +16,12 @@ import { dirname, join } from 'path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const url = (p) => 'file://' + join(ROOT, p);
-const PAGES = ['index.html', '404.html'];
+const PAGES = [
+  'index.html', '404.html',
+  'story/index.html', 'experience/index.html', 'work/index.html',
+  'aj-tools/index.html', 'ai-brain/index.html', 'about/index.html',
+  'skills/index.html', 'faq/index.html', 'contact/index.html',
+];
 const WIDTHS = [1440, 1280, 834, 390];
 
 const failures = [];
@@ -101,18 +106,24 @@ for (const page of PAGES) {
   await ctx.close();
 }
 
-// ---- no JavaScript: the page must still read ------------------------------
+// ---- no JavaScript: every page must still read -----------------------------
+// Checked per page now that the site is split up. A word count is no longer a
+// useful floor - contact and 404 are short on purpose, aj-tools runs to 7k - so
+// the floor only catches a page that renders empty. The assertion that carries
+// the weight is that nothing stays invisible without JS.
 {
-  const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 900 } });
-  const p = await ctx.newPage();
-  await p.goto(url('index.html'));
-  await p.waitForTimeout(400);
-  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
-    (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-  if (hidden) fail(`no JavaScript: ${hidden} element(s) stay invisible`);
-  const chars = await p.$eval('main', (m) => m.innerText.trim().length);
-  if (chars < 3000) fail(`no JavaScript: only ${chars} characters of readable text`);
-  await ctx.close();
+  for (const page of PAGES) {
+    const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(url(page));
+    await p.waitForTimeout(400);
+    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
+      (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+    if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
+    const chars = await p.$eval('main', (m) => m.innerText.trim().length);
+    if (chars < 150) fail(`no JavaScript: ${page} renders only ${chars} characters`);
+    await ctx.close();
+  }
 }
 
 // ---- print: nothing may render as invisible ink ---------------------------
