@@ -526,12 +526,10 @@ html.js .rvt .ln>i{display:block;font-style:inherit;transform:translateY(110%);o
   transition:transform .95s var(--ease-out),opacity .8s var(--ease-out);transition-delay:var(--ld,0s)}
 html.js .rvt.in .ln>i{transform:none;opacity:1}
 
-/* parallax depth */
-[data-para]{will-change:transform}
 
 /* ---- chapters ---- */
 .chapter{position:relative}
-.ch-top{display:flex;align-items:baseline;gap:16px;margin-bottom:18px}
+.ch-top{display:flex;align-items:baseline;margin-bottom:18px}
 .ch-eyebrow{font-size:12px;font-weight:650;letter-spacing:.19em;text-transform:uppercase;color:var(--faint)}
 .ch-title{
   font-size:clamp(30px,5.4vw,62px);line-height:1.06;letter-spacing:-.035em;font-weight:700;

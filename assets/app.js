@@ -300,15 +300,6 @@ document.addEventListener("DOMContentLoaded", function(){
   var gsap = window.gsap, ST = window.ScrollTrigger;
   gsap.registerPlugin(ST);
 
-  /* depth parallax on chapter numerals */
-  gsap.utils.toArray("[data-para]").forEach(function(el){
-    var amt = parseFloat(el.getAttribute("data-para")) || 0.1;
-    gsap.fromTo(el, {yPercent: -amt * 100}, {
-      yPercent: amt * 100, ease:"none",
-      scrollTrigger:{ trigger: el.closest("section") || el, start:"top bottom", end:"bottom top", scrub:true }
-    });
-  });
-
   /* hero content drifts and fades as you leave it */
   var heroInner = document.querySelector(".hero .wrap");
   if(heroInner){
