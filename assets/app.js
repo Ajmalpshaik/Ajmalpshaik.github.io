@@ -346,7 +346,13 @@
           backgroundAlpha: 0,       /* keep the hero gradient underneath */
           color1: tint.color1,
           color2: tint.color2,
-          colorMode: "varianceGradient",
+          /* lerpGradient, not Vanta's default varianceGradient: "variance" is
+             additive (color1 + random x color2) so it clamps toward white and
+             every bird comes out the same washed teal - color2 never really
+             appears. lerp interpolates properly, so each bird lands somewhere
+             between the two colours and, with "Gradient", each wing carries the
+             blend across it. That is the two-tone wing. */
+          colorMode: "lerpGradient",
           /* tuned down from the Vanta defaults: the default 1024 birds with
              high cohesion ball up in the middle of the hero and sit all over
              the name. Fewer birds, pushed apart, moving slower. */
