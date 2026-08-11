@@ -781,6 +781,9 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 .hero{overflow:hidden}
 @media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}
 @media print{#vanta-hero{display:none !important}}
+/* High Contrast strips decoration; canvas pixels are exempt from forced-colour
+   substitution, so the flock has to remove itself */
+@media(forced-colors:active){#vanta-hero{display:none}}
 
 /* previous / next - kept for the 404 shortcuts */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}

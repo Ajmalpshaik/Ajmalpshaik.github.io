@@ -292,7 +292,13 @@
     if(!gl) return;
 
     var vendor = host.getAttribute("data-vendor") || "vendor/";
-    var effect = null, loading = null;
+    var effect = null, loading = null, retintTimer = null;
+    /* `wanted` is owned by the observer. three.js takes seconds to arrive on a
+       slow connection, and without this the hero can scroll away mid-download
+       and start() still fires afterwards, leaving a flock running off-screen
+       for the rest of the visit - exactly the battery cost this is meant to
+       avoid. stop() has to stay authoritative while the scripts are in flight. */
+    var wanted = false;
 
     function palette(){
       /* cyan reads well on the dark canvas, blue holds up on the light one;
@@ -316,13 +322,16 @@
       if(!loading){
         loading = loadScript(vendor + "three.min.js").then(function(){
           return loadScript(vendor + "vanta.birds.min.js");
+        }).catch(function(err){
+          loading = null;   /* do not cache the failure, or one dropped request kills it for the whole visit */
+          throw err;
         });
       }
       return loading;
     }
 
     function start(){
-      if(effect || !window.VANTA || !window.VANTA.BIRDS || !window.THREE) return;
+      if(!wanted || effect || !window.VANTA || !window.VANTA.BIRDS || !window.THREE) return;
       var narrow = window.innerWidth < 1025;
       var tint = palette();
       try{
@@ -358,23 +367,42 @@
     function stop(){
       if(!effect) return;
       host.classList.remove("on");
+      var renderer = effect.renderer;      /* destroy() clears the reference */
       try{ effect.destroy(); }catch(e){}
+      try{
+        /* hand the WebGL context back now instead of waiting for the collector */
+        if(renderer){
+          renderer.dispose();
+          var lose = renderer.getContext().getExtension("WEBGL_lose_context");
+          if(lose) lose.loseContext();
+        }
+      }catch(e){}
       effect = null;
     }
 
     window.__ajBirds = { retint: function(){
-      if(effect){ try{ effect.setOptions(palette()); }catch(e){} }
+      /* BIRDS bakes color1/color2 into a per-vertex attribute when it is built,
+         so setOptions cannot recolour a running flock - it has to be rebuilt.
+         Debounced so flipping the switch quickly does not thrash WebGL. */
+      if(!effect) return;
+      clearTimeout(retintTimer);
+      retintTimer = setTimeout(function(){
+        if(!effect || !wanted) return;
+        stop();
+        start();
+      }, 160);
     } };
 
     if("IntersectionObserver" in window){
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(en){
-          if(en.isIntersecting){ libs().then(start).catch(function(){}); }
-          else { stop(); }
+          if(en.isIntersecting){ wanted = true; libs().then(start).catch(function(){}); }
+          else { wanted = false; stop(); }
         });
       }, { rootMargin: "200px" });
       io.observe(host);
     } else {
+      wanted = true;
       libs().then(start).catch(function(){});
     }
   })();

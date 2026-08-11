@@ -138,7 +138,11 @@ for page in PAGES:
         if not os.path.exists(target):
             err(f"{page} references a file that is not in the repo: {ref}")
 
-for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml"):
+# The hero flock loads these from JS (assets/app.js builds the path from the
+# data-vendor attribute), so the src/href scan above cannot see them. Without
+# this, deleting either file leaves the static check green.
+for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
+              "vendor/three.min.js", "vendor/vanta.birds.min.js"):
     if not os.path.exists(os.path.join(ROOT, asset)):
         err(f"missing expected file: {asset}")
 

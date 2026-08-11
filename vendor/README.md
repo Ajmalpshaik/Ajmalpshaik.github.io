@@ -8,7 +8,7 @@ Served from this repo so the site makes no third-party requests at runtime.
 | `ScrollTrigger.min.js` | 3.15.0 | GSAP Standard "no charge" license |
 | `lenis.min.js` | 1.3.26 | MIT (see `LENIS-LICENSE`) |
 | `three.min.js` | r134 | MIT — https://github.com/mrdoob/three.js |
-| `vanta.birds.min.js` | 0.5.24 | MIT — https://github.com/tengbao/vanta |
+| `vanta.birds.min.js` | 0.5.24 | MIT (see `VANTA-LICENSE`) |
 
 To update: `npm i gsap lenis` and copy the `dist` files here.
 
