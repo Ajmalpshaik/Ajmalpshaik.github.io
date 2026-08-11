@@ -775,8 +775,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   opacity:0;transition:opacity 1.4s var(--ease);
 }
 /* held back so the birds stay scenery and the name stays the loudest thing */
-#vanta-hero.on{opacity:.55}
-:root[data-theme="dark"] #vanta-hero.on{opacity:.7}
+#vanta-hero.on{opacity:.7}
 #vanta-hero canvas{display:block}
 .hero{overflow:hidden}
 @media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}

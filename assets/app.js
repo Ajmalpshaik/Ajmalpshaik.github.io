@@ -301,11 +301,15 @@
     var wanted = false;
 
     function palette(){
-      /* cyan reads well on the dark canvas, blue holds up on the light one;
-         both land on violet, the same sweep as the tagline gradient */
-      return root.getAttribute("data-theme") === "dark"
-        ? { color1:0x00c8ff, color2:0x7c3aed }
-        : { color1:0x2563eb, color2:0x7c3aed };
+      /* Vanta's own demo is red 0xff0000 + cyan 0x00d1ff in the additive mode:
+         one channel pinned at max on every bird while the other two sweep up
+         from zero. That is what keeps its birds saturated instead of muddy, and
+         why no two look alike. This is the same construction mirrored into the
+         cool half of the wheel - blue pinned, gold sweeping red and green in -
+         so the flock spreads across blue, violet, magenta, pink and pale cyan.
+         Lerping between opposite colours instead would pass through grey.
+         One pair serves both themes; it reads on the pale hero and the dark. */
+      return { color1:0x0000ff, color2:0xffcc00 };
     }
 
     function loadScript(src){
@@ -346,13 +350,7 @@
           backgroundAlpha: 0,       /* keep the hero gradient underneath */
           color1: tint.color1,
           color2: tint.color2,
-          /* lerpGradient, not Vanta's default varianceGradient: "variance" is
-             additive (color1 + random x color2) so it clamps toward white and
-             every bird comes out the same washed teal - color2 never really
-             appears. lerp interpolates properly, so each bird lands somewhere
-             between the two colours and, with "Gradient", each wing carries the
-             blend across it. That is the two-tone wing. */
-          colorMode: "lerpGradient",
+          colorMode: "varianceGradient",   /* additive - see palette() */
           /* tuned down from the Vanta defaults: the default 1024 birds with
              high cohesion ball up in the middle of the hero and sit all over
              the name. Fewer birds, pushed apart, moving slower. */
@@ -391,6 +389,10 @@
          so setOptions cannot recolour a running flock - it has to be rebuilt.
          Debounced so flipping the switch quickly does not thrash WebGL. */
       if(!effect) return;
+      var next = palette();
+      /* both themes currently share one pair, so there is nothing to rebuild.
+         Kept so a future per-theme palette still repaints correctly. */
+      if(effect.options.color1 === next.color1 && effect.options.color2 === next.color2) return;
       clearTimeout(retintTimer);
       retintTimer = setTimeout(function(){
         if(!effect || !wanted) return;
