@@ -185,7 +185,9 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 
 @media print{
   /* No size, so the sheet follows whatever paper is loaded. */
-  @page{margin:12mm}
+  /* 15mm all round. 12mm looked cramped on paper and sits close to the
+     unprintable edge most office printers keep. */
+  @page{margin:15mm}
 
   /* --- force the light palette, overriding the dark theme --- */
   :root,:root[data-theme="dark"],:root[data-theme="light"]{
@@ -215,7 +217,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   .wrap{max-width:none;padding:0}
 
   /* --- header block --- */
-  h1{font-size:17pt !important;margin:0 0 2mm}
+  h1{font-size:17pt !important;margin:0 0 4mm;letter-spacing:-.01em}
   /* the intro sells the tool on screen; on paper the title already says it */
   .eyebrow,.sub{display:none}
   .tool-head{margin:0}
@@ -227,20 +229,37 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   }
 
   /* --- cards ---
-     Grid with align-items:start. Without it the row stretches both cards to the
-     taller one and leaves a dead box under the short one. column-count was tried
-     instead and is worse: multi-column and pagination fight, and Letter went to
-     five sheets. */
+     Two columns, paired by height with `order` below.
+     Measured alternatives, both worse, do not retry:
+       full-width stacked cards  853mm / 4 sheets (six cards in series beats
+         the ~170mm of blank column it was meant to save)
+       column-count:2            multi-column fights pagination, Letter hit 5
+     Two columns at the original order measured 780mm. */
   .calc-grid{grid-template-columns:1fr 1fr;gap:4mm;margin:0;align-items:start}
   /* Tall cards are allowed to split. Forcing break-inside:avoid on all of them
      jumped the Sling card whole to the next sheet and cost about a page of gap.
-     The pieces that must never split are the header, a field, a result block
-     and a note, handled below. */
+     The pieces that must never split are handled below. */
   .calc-card{
     border:1px solid #999;border-radius:3px;padding:3mm 4mm;
     break-inside:auto;display:block;
   }
-  .f,.res,.res-row{break-inside:avoid}
+  .f,.res,.res-row,.tool-note{break-inside:avoid}
+
+  /* Pair the cards by height. A grid row is as tall as its taller card, so the
+     screen order put 88mm beside 165mm and left the difference blank, three
+     times over: 172mm of dead column. Pairing by height cuts that to 70mm.
+     Measured heights, mm: Lift 88, Headroom 109, Ground 165, Sling 209,
+     Wind 137, Boom 132. The grouping still reads: the load, then the set-up
+     and the rigging, then the conditions and the geometry.
+     DOM order is 1 Lift, 2 Ground, 3 Sling, 4 Wind, 5 Boom, 6 Headroom,
+     7 Diagrams. Re-measure and repair if a card is added or a note changes. */
+  .calc-grid>.calc-card:nth-child(1){order:1}  /* Lift Data      88 */
+  .calc-grid>.calc-card:nth-child(6){order:2}  /* Headroom      109 */
+  .calc-grid>.calc-card:nth-child(2){order:3}  /* Ground        165 */
+  .calc-grid>.calc-card:nth-child(3){order:4}  /* Sling         209 */
+  .calc-grid>.calc-card:nth-child(4){order:5}  /* Wind          137 */
+  .calc-grid>.calc-card:nth-child(5){order:6}  /* Boom          132 */
+  .calc-grid>.calc-card:nth-child(7){order:7}  /* Diagrams, full width */
   .calc-card h2{
     font-size:10.5pt !important;padding-bottom:1.5mm;margin:0 0 2.5mm;
     border-bottom:1px solid #999;break-after:avoid;
@@ -257,7 +276,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   .f2{gap:3mm}
   .f-flag{font-size:6.8pt !important;color:#000;font-weight:600;margin-top:1mm}
 
-  .res{padding-top:2.5mm;gap:1.5mm;border-top:1px solid #999}
+  .res{padding-top:3mm;margin-top:1mm;gap:1.6mm;border-top:1px solid #999}
   .res-row .k{font-size:7.5pt !important}
   .res-row .v{
     border:1px solid #b9bec7;border-radius:2px;padding:0.8mm 2mm;
@@ -271,15 +290,24 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
     font-size:6.8pt !important;line-height:1.35;break-inside:avoid;
   }
   .tool-note *{font-size:6.8pt !important;line-height:1.35 !important}
-  .tool-note.warn{color:#000}
+  /* same specificity trap as the diagram vars: :root[data-theme="dark"]
+     .tool-note.warn out-ranks a bare .tool-note.warn, so printing from dark
+     mode left this note orange while its bold runs went black */
+  :root .tool-note.warn,:root[data-theme="dark"] .tool-note.warn,
+  :root[data-theme="light"] .tool-note.warn{color:#000}
 
   /* --- diagrams: let the card flow, keep each drawing whole --- */
   .calc-card.full{break-inside:auto}
-  .dg-wrap{grid-template-columns:1fr 1fr;gap:4mm}
+  .dg-wrap{grid-template-columns:1fr 1fr;gap:5mm}
   .dg-wrap>div{break-inside:avoid}
   .dg-t{font-size:6.5pt !important;margin-bottom:1.5mm;border-left-color:#666}
-  .dg-box{border:1px solid #b9bec7;border-radius:2px;padding:1.5mm}
-  .dg-box svg{height:auto !important;max-height:40mm}
+  .dg-box{border:1px solid #b9bec7;border-radius:2px;padding:2mm}
+  /* fixed height and centred, so the drawings line up instead of each one
+     being sized by its own aspect ratio */
+  .dg-box svg{height:33mm !important;width:auto;max-width:100%;margin:0 auto}
+  /* the lift overview spans both columns, so a 33mm drawing floats in a
+     180mm box. give it its own height. */
+  .dg-wrap>div:last-child .dg-box svg{height:54mm !important}
 
   /* sign-off strip. Needs !important: style.css sets p{font-size:9.5pt !important},
      which an inline style cannot beat. */
