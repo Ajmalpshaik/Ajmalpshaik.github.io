@@ -293,6 +293,8 @@ button,input{font:inherit;color:inherit}
   var FIRST = 48230, LAST = 48249;
 
   var token = null, port = null, ready = false, tools = [];
+  var busy = false;        // a tool run or a refresh is in flight - the heartbeat must not poll over it
+  var connecting = false;  // a connection attempt is in flight - stops the heartbeat stacking scans
   try { token = localStorage.getItem(TOKEN_KEY); } catch (e) {}
 
   function $(id) { return document.getElementById(id); }
@@ -396,6 +398,7 @@ button,input{font:inherit;color:inherit}
   function run(tool, button) {
     if (!ready) return;
     button.disabled = true;
+    busy = true;
     var pending = log(tool.name, "run", "");
 
     ask("/api/run", { method: "POST", body: { toolId: tool.id }, timeout: 95000 })
@@ -410,7 +413,7 @@ button,input{font:inherit;color:inherit}
         log(tool.name, "bad", "Lost contact with Revit. Is it still open and connected?");
         ready = false; setPill("bad", "Lost connection"); renderTools();
       })
-      .then(function () { button.disabled = false; });
+      .then(function () { button.disabled = false; busy = false; });
   }
 
   /* ---------- connection ---------- */
@@ -453,7 +456,14 @@ button,input{font:inherit;color:inherit}
 
       if (s.modelOpen) setPill("ok", "Connected");
       else setPill("warn", "No model open in Revit");
-    }).catch(function () {});
+    }).catch(function () {
+      // A status call only rejects on a real network failure - Revit closed, or AJ Connect
+      // disconnected. (A Revit that is merely busy still answers, with modelOpen false.) Say so and
+      // drop to not-ready, so the next heartbeat re-finds it instead of leaving a frozen header.
+      ready = false;
+      setPill("bad", "Lost connection");
+      renderTools();
+    });
   }
 
   function connect() {
@@ -519,11 +529,13 @@ button,input{font:inherit;color:inherit}
 
   $("refreshTools").addEventListener("click", function () {
     if (!ready) { log("Check for new tools", "bad", "Not connected."); return; }
+    busy = true;
     var pending = log("Check for new tools", "run", "");
     ask("/api/refresh", { method: "POST", body: {}, timeout: 30000 })
       .then(function (r) { return r.json(); })
       .then(function (j) { pending.remove(); log("Check for new tools", j.success ? "ok" : "bad", j.message || ""); return loadTools(); })
-      .catch(function () { pending.remove(); log("Check for new tools", "bad", "Could not reach AJ Connect."); });
+      .catch(function () { pending.remove(); log("Check for new tools", "bad", "Could not reach AJ Connect."); })
+      .then(function () { busy = false; });
   });
 
   // Tucked behind a menu on purpose: unlinking is rare, and a button that stops everything should
@@ -594,7 +606,23 @@ button,input{font:inherit;color:inherit}
     paint();
   })();
 
-  document.addEventListener("visibilitychange", function () { if (!document.hidden && !ready) connect(); });
+  /* ---------- heartbeat ---------- */
+
+  // This panel is meant to sit open beside Revit all day, so it has to keep its own picture honest
+  // without being poked: notice a model being opened or closed, notice Revit or AJ Connect going
+  // away, and pick up AJ Connect being connected - or website control being switched on - on its own.
+  // The panel AJ Connect serves locally already refreshes on a timer; this is the website panel's
+  // equivalent. It never polls while a tab is hidden or while a tool is running.
+  function tick() {
+    if (document.hidden || busy) return;
+    if (ready) { status(); return; }
+    if (connecting) return;
+    connecting = true;
+    connect().then(function () { connecting = false; }, function () { connecting = false; });
+  }
+
+  setInterval(tick, 12000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) tick(); });
 
   $("log").innerHTML = '<div class="line idle">Waiting — click a tool above.</div>';
   connect();
