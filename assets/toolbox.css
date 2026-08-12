@@ -176,18 +176,118 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   .mini{padding:13px 10px;font-size:13px}
 }
 
-/* ============ Print ============ */
+/* ============ Print ============
+   One printed result, whatever the screen is doing. Dark mode must never
+   reach paper: it wastes toner and the greys go muddy. Sized so it works
+   on both A4 (210mm, the narrower) and Letter (279mm tall, the shorter),
+   so the width is set by A4 and the height budget by Letter. */
+.print-only{display:none}
+
 @media print{
-  #nav,footer,.progress,.skip,.no-print,.crumbs{display:none !important}
-  body{background:#fff !important}
-  .calc{--d-sky:#f2f4f8;--d-ground:#dfe4ec}
-  .calc-grid{grid-template-columns:1fr 1fr;gap:12px}
-  .calc-card,.rec{
-    box-shadow:none !important;border:1px solid #c8ccd4;
-    page-break-inside:avoid;padding:14px 16px;
+  /* No size, so the sheet follows whatever paper is loaded. */
+  @page{margin:12mm}
+
+  /* --- force the light palette, overriding the dark theme --- */
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{
+    --ink:#000;--muted:#333;--faint:#555;--hairline:#b9bec7;
+    --bg:#fff;--bg-alt:#fff;--card:#fff;--link:#000;--blue:#134a8e;
+    --neu-surface:#fff;
+    --neu-out:none;--neu-out-sm:none;--neu-in:none;--neu-hover:none;
   }
-  .f-in input,.f-in select{box-shadow:none !important;border:1px solid #d5d9e0}
-  .res-row .v{box-shadow:none !important;border:1px solid #d5d9e0}
+  html,body{background:#fff !important;color:#000 !important}
+  /* status colours dark enough to survive greyscale.
+     Needs to out-specify `:root[data-theme="dark"] .calc`, hence the prefixes. */
+  :root .calc,:root[data-theme="dark"] .calc,:root[data-theme="light"] .calc{
+    --c-ok:#146c3a;--c-bad:#a31c1c;--c-warn:#8a5200;
+    --d-sky:#fff;--d-ground:#e4e7ec;--d-line:#7c838f;--d-ink:#000;
+    --d-steel:#4a5568;--d-steel-d:#2d3748;--d-steel-l:#6b7280;--d-pale:#d6dae1;
+    --d-load:#f0b46a;--d-load-s:#8a4b12;--d-glass:#cbd9e8;--d-halo:#fff;
+  }
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+
+  /* --- strip the screen chrome --- */
+  #nav,footer,.progress,.skip,.no-print,.crumbs,.mini,.f-hint,.caret{display:none !important}
+  .print-only{display:block}
   main{padding-top:0 !important}
-  .tool-note{box-shadow:none !important;border:1px solid #c8ccd4}
+  /* style.css puts break-inside:avoid on every section, which would try to hold
+     the whole tool on one sheet and spill into a blank page. */
+  main>section{padding:0 !important;break-inside:auto !important}
+  .wrap{max-width:none;padding:0}
+
+  /* --- header block --- */
+  h1{font-size:17pt !important;margin:0 0 2mm}
+  /* the intro sells the tool on screen; on paper the title already says it */
+  .eyebrow,.sub{display:none}
+  .tool-head{margin:0}
+
+  /* --- record strip stays with the title --- */
+  .rec{
+    grid-template-columns:repeat(5,1fr);gap:3mm;padding:3mm 4mm;margin:0 0 4mm;
+    border:1px solid #999;border-radius:3px;break-inside:avoid;break-after:avoid;
+  }
+
+  /* --- cards ---
+     Grid with align-items:start. Without it the row stretches both cards to the
+     taller one and leaves a dead box under the short one. column-count was tried
+     instead and is worse: multi-column and pagination fight, and Letter went to
+     five sheets. */
+  .calc-grid{grid-template-columns:1fr 1fr;gap:4mm;margin:0;align-items:start}
+  /* Tall cards are allowed to split. Forcing break-inside:avoid on all of them
+     jumped the Sling card whole to the next sheet and cost about a page of gap.
+     The pieces that must never split are the header, a field, a result block
+     and a note, handled below. */
+  .calc-card{
+    border:1px solid #999;border-radius:3px;padding:3mm 4mm;
+    break-inside:auto;display:block;
+  }
+  .f,.res,.res-row{break-inside:avoid}
+  .calc-card h2{
+    font-size:10.5pt !important;padding-bottom:1.5mm;margin:0 0 2.5mm;
+    border-bottom:1px solid #999;break-after:avoid;
+  }
+  .calc-card h2 .ic{display:none}
+
+  .f{margin-bottom:2mm}
+  .f label{font-size:6.5pt !important;margin-bottom:0.8mm;color:#333}
+  .f-in input,.f-in select{
+    padding:1.2mm 2mm;border:1px solid #b9bec7;border-radius:2px;
+    font-size:9pt !important;color:#000;background:#fff;
+  }
+  .f-in .u{font-size:7pt;color:#555}
+  .f2{gap:3mm}
+  .f-flag{font-size:6.8pt !important;color:#000;font-weight:600;margin-top:1mm}
+
+  .res{padding-top:2.5mm;gap:1.5mm;border-top:1px solid #999}
+  .res-row .k{font-size:7.5pt !important}
+  .res-row .v{
+    border:1px solid #b9bec7;border-radius:2px;padding:0.8mm 2mm;
+    font-size:9pt !important;min-width:0;
+  }
+  .res-row .v.big{font-size:10.5pt !important}
+
+  /* --- notes: keep the warnings, they belong on a filed sheet --- */
+  .tool-note{
+    border:1px solid #999;border-radius:3px;padding:2.5mm 3mm;margin-top:3mm;
+    font-size:6.8pt !important;line-height:1.35;break-inside:avoid;
+  }
+  .tool-note *{font-size:6.8pt !important;line-height:1.35 !important}
+  .tool-note.warn{color:#000}
+
+  /* --- diagrams: let the card flow, keep each drawing whole --- */
+  .calc-card.full{break-inside:auto}
+  .dg-wrap{grid-template-columns:1fr 1fr;gap:4mm}
+  .dg-wrap>div{break-inside:avoid}
+  .dg-t{font-size:6.5pt !important;margin-bottom:1.5mm;border-left-color:#666}
+  .dg-box{border:1px solid #b9bec7;border-radius:2px;padding:1.5mm}
+  .dg-box svg{height:auto !important;max-height:40mm}
+
+  /* sign-off strip. Needs !important: style.css sets p{font-size:9.5pt !important},
+     which an inline style cannot beat. */
+  .print-only{
+    font-size:6.8pt !important;line-height:1.5 !important;
+    margin:3mm 0 0;padding-top:2mm;border-top:1px solid #999;break-inside:avoid;
+  }
+
+  /* --- last element must not push a blank page --- */
+  main>section>.wrap>*:last-child{margin-bottom:0 !important;break-after:avoid}
 }
