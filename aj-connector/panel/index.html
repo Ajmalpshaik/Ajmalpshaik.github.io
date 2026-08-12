@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>AJ Connect Panel</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#EEF2F7">
+<meta name="theme-color" id="metaTheme" content="#EEF2F7">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<script>
+/* Same key the rest of the site uses ("ajps-theme"), so a choice made anywhere on ajmalps.com is
+   already in force here. Runs before any painting, so the panel never flashes the wrong theme.
+   An unset key deliberately leaves data-theme off, which lets the OS setting decide. */
+(function(){
+  var d = document.documentElement, t = null;
+  try { t = localStorage.getItem("ajps-theme"); } catch(e) {}
+  if (t === "dark" || t === "light") d.setAttribute("data-theme", t);
+})();
+</script>
 <style>
 /* ============================================================
    AJ Connect Panel — a full-screen app, not a page.
@@ -26,14 +36,27 @@
   --ui:'Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,sans-serif;
   --mono:'Cascadia Mono',Consolas,ui-monospace,monospace;
 }
+/* Three states, not two. An explicit choice stamps data-theme; the default "system" setting stamps
+   nothing, so only prefers-color-scheme separates light from dark there. The media query is guarded
+   with :not([data-theme="light"]) so choosing light beats a dark OS, and the [data-theme="dark"]
+   block repeats the tokens so choosing dark beats a light OS. Colours are only ever defined as
+   tokens - never inside these blocks directly - or the un-stamped state renders one theme's text on
+   the other theme's background. */
 @media (prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme="light"]){
     --ground:#0A1017; --surface:#141C26; --surface2:#1A2430; --sunken:#0F1720;
     --line:#273343; --ink:#E6EDF6; --ink2:#9FB0C4; --ink3:#6C7E94;
     --accent:#4E93FF; --accent-deep:#7FB2FF; --wash:#14243D;
     --ok:#3FCB86; --ok-wash:#10281E; --stop:#F0685E; --stop-wash:#2E1614;
     --warn:#E0A53F; --warn-wash:#2A2113;
   }
+}
+:root[data-theme="dark"]{
+  --ground:#0A1017; --surface:#141C26; --surface2:#1A2430; --sunken:#0F1720;
+  --line:#273343; --ink:#E6EDF6; --ink2:#9FB0C4; --ink3:#6C7E94;
+  --accent:#4E93FF; --accent-deep:#7FB2FF; --wash:#14243D;
+  --ok:#3FCB86; --ok-wash:#10281E; --stop:#F0685E; --stop-wash:#2E1614;
+  --warn:#E0A53F; --warn-wash:#2A2113;
 }
 
 *{box-sizing:border-box}
@@ -70,6 +93,34 @@ button,input{font:inherit;color:inherit}
 .pill.warn{background:var(--warn-wash);color:var(--warn)}
 .pill.bad{background:var(--stop-wash);color:var(--stop)}
 .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+/* Day / night switch. Same behaviour and same saved key as the rest of ajmalps.com, drawn here
+   because this page deliberately does not load the site stylesheet. */
+.themeswitch{
+  flex:none;padding:0;border:0;background:none;cursor:pointer;line-height:0;
+}
+.themeswitch .track{
+  display:block;width:44px;height:24px;border-radius:999px;
+  background:var(--sunken);border:1px solid var(--line);position:relative;transition:background .2s;
+}
+.themeswitch .knob{
+  position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface);color:var(--ink2);
+  display:grid;place-items:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.22);
+  transition:transform .2s cubic-bezier(.4,0,.2,1);
+}
+:root[data-theme="dark"] .themeswitch .knob{transform:translateX(20px)}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .themeswitch .knob{transform:translateX(20px)}
+}
+.themeswitch .ic-moon{display:none}
+:root[data-theme="dark"] .themeswitch .ic-sun{display:none}
+:root[data-theme="dark"] .themeswitch .ic-moon{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .themeswitch .ic-sun{display:none}
+  :root:not([data-theme="light"]) .themeswitch .ic-moon{display:block}
+}
+
 .fact{display:flex;flex-direction:column;line-height:1.25;min-width:0}
 .fk{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
 .fv{font-size:12.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;
@@ -174,6 +225,13 @@ button,input{font:inherit;color:inherit}
     <div class="fact"><span class="fk">Model</span><span class="fv" id="fModel">-</span></div>
     <div class="fact"><span class="fk">Active view</span><span class="fv" id="fView">-</span></div>
     <div class="fact"><span class="fk">Version</span><span class="fv" id="fVer">-</span></div>
+
+    <button class="themeswitch" id="themeSwitch" type="button" role="switch" aria-checked="false" aria-label="Switch between day and night">
+      <span class="track"><span class="knob">
+        <svg class="ic-sun" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+        <svg class="ic-moon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+      </span></span>
+    </button>
   </div>
 </header>
 
@@ -494,6 +552,47 @@ button,input{font:inherit;color:inherit}
         .catch(function () { log("Website control", "bad", "Could not reach AJ Connect."); });
     }
   });
+
+  /* ---------- day / night ---------- */
+
+  // Writes the same "ajps-theme" key the rest of the site uses, so switching here also switches
+  // ajmalps.com, and the other way round. With nothing saved the OS setting decides, which is why
+  // the current state is read from what is actually rendering rather than from the attribute alone.
+  (function () {
+    var root = document.documentElement, sw = $("themeSwitch");
+    if (!sw) return;
+
+    function isDark() {
+      var stamped = root.getAttribute("data-theme");
+      if (stamped === "dark") return true;
+      if (stamped === "light") return false;
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+
+    function paint() {
+      var dark = isDark();
+      sw.setAttribute("aria-checked", dark ? "true" : "false");
+      var meta = $("metaTheme");
+      if (meta) meta.setAttribute("content", dark ? "#0A1017" : "#EEF2F7");
+    }
+
+    sw.addEventListener("click", function () {
+      var next = isDark() ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("ajps-theme", next); } catch (e) {}
+      paint();
+    });
+
+    // Follow the OS while nothing has been chosen explicitly.
+    if (window.matchMedia) {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      var onChange = function () { if (!root.getAttribute("data-theme")) paint(); };
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+
+    paint();
+  })();
 
   document.addEventListener("visibilitychange", function () { if (!document.hidden && !ready) connect(); });
 
