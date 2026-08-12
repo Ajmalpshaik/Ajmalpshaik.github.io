@@ -179,6 +179,29 @@
 <section class="sec-tight" style="padding-top:0">
   <div class="wrap">
 
+    <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Tools available now</h2>
+    <p class="sub" style="max-width:660px;margin-bottom:26px">This list is read from the same place AJ Connect reads. When I publish a tool it appears here and in your Revit at the same time &mdash; I do not update this page by hand.</p>
+
+    <!-- Written into the HTML so the list is never empty: if the fetch below fails, or JavaScript is
+         off, a visitor still sees what is published. The script replaces it when it succeeds. -->
+    <div class="tb-grid" id="toolList">
+      <div class="tb-card">
+        <h3>Unhide All</h3>
+        <p>Restore hidden elements in the active view.</p>
+        <div class="tb-tags"><span class="tb-tag">View</span></div>
+      </div>
+    </div>
+
+    <p class="tool-note" id="toolCount" style="margin-top:26px;max-width:660px">
+      Every one of these is signed. AJ Connect checks the signature on your computer before it will run anything.
+    </p>
+
+  </div>
+</section>
+
+<section class="sec-tight" style="padding-top:0">
+  <div class="wrap">
+
     <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Is it safe?</h2>
     <p class="sub" style="max-width:680px;margin-bottom:26px">This downloads code and runs it in Revit, so that question deserves a real answer rather than a reassurance.</p>
 
@@ -314,6 +337,69 @@
   </div>
 </footer>
 
+<script>
+/* Builds the "Tools available now" list from the same folder AJ Connect reads, so publishing a tool
+   puts it on this page and in everyone's Revit in one action - this page is never edited by hand.
+
+   Same origin, so no CORS involved. If anything fails, the list written into the HTML above is left
+   exactly as it is: a visitor sees the published tools either way, never an empty section.
+
+   NOTE: this only DISPLAYS. It does not verify signatures and does not claim to - that check happens
+   inside AJ Connect on the person's own machine, which is the only place it means anything. */
+(function () {
+  var list = document.getElementById("toolList");
+  var note = document.getElementById("toolCount");
+  if (!list || !window.fetch) return;
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : String(s);
+    return d.innerHTML;
+  }
+
+  // payload is base64 of UTF-8 JSON. atob gives raw bytes as a string, so decode properly rather
+  // than assuming ASCII - a tool name with an accent in it would otherwise come out mangled.
+  function readPayload(b64) {
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return JSON.parse(new TextDecoder("utf-8").decode(bytes));
+  }
+
+  fetch("tools/index.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error("no index"); return r.json(); })
+    .then(function (names) {
+      return Promise.all((names || []).map(function (n) {
+        return fetch("tools/" + n, { cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(function (f) { return readPayload(f.payload); })
+          .catch(function () { return null; });
+      }));
+    })
+    .then(function (tools) {
+      tools = (tools || []).filter(Boolean);
+      if (!tools.length) return;
+
+      tools.sort(function (a, b) {
+        return (a.panel || "").localeCompare(b.panel || "") ||
+               (a.name || "").localeCompare(b.name || "");
+      });
+
+      list.innerHTML = tools.map(function (t) {
+        return '<div class="tb-card"><h3>' + esc(t.name) + "</h3>" +
+               "<p>" + esc(t.description || "") + "</p>" +
+               '<div class="tb-tags"><span class="tb-tag">' + esc(t.panel || "Tools") + "</span></div></div>";
+      }).join("");
+
+      if (note) {
+        note.innerHTML = "<b>" + tools.length + " tool" + (tools.length === 1 ? "" : "s") +
+          " published.</b> Every one of these is signed. AJ Connect checks the signature on your " +
+          "computer before it will run anything.";
+      }
+    })
+    .catch(function () { /* keep the list already in the HTML */ });
+})();
+</script>
 <script src="../vendor/lenis.min.js" defer></script>
 <script src="../vendor/gsap.min.js" defer></script>
 <script src="../vendor/ScrollTrigger.min.js" defer></script>
