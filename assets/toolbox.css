@@ -296,24 +296,31 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   :root .tool-note.warn,:root[data-theme="dark"] .tool-note.warn,
   :root[data-theme="light"] .tool-note.warn{color:#000}
 
-  /* --- diagrams: let the card flow, keep each drawing whole --- */
+  /* --- diagrams: let the card flow, keep each drawing whole ---
+     These heights are also what keeps the sheet to three pages on Letter.
+     Letter's printable height is 249mm against A4's 267mm, and the closing
+     block needs 19.6mm in one piece (break-inside:avoid). At the previous
+     sizes the last sheet ended with only ~6mm of usable room, so the block
+     tipped onto a fourth page that was otherwise blank. Trimmed by ~17mm
+     here, which A4 never notices - it had 42mm spare. Re-measure the page
+     count on BOTH papers before growing these again. */
   .calc-card.full{break-inside:auto}
-  .dg-wrap{grid-template-columns:1fr 1fr;gap:5mm}
+  .dg-wrap{grid-template-columns:1fr 1fr;gap:4mm}
   .dg-wrap>div{break-inside:avoid}
   .dg-t{font-size:6.5pt !important;margin-bottom:1.5mm;border-left-color:#666}
   .dg-box{border:1px solid #b9bec7;border-radius:2px;padding:2mm}
   /* fixed height and centred, so the drawings line up instead of each one
      being sized by its own aspect ratio */
-  .dg-box svg{height:33mm !important;width:auto;max-width:100%;margin:0 auto}
-  /* the lift overview spans both columns, so a 33mm drawing floats in a
+  .dg-box svg{height:30mm !important;width:auto;max-width:100%;margin:0 auto}
+  /* the lift overview spans both columns, so a 30mm drawing floats in a
      180mm box. give it its own height. */
-  .dg-wrap>div:last-child .dg-box svg{height:54mm !important}
+  .dg-wrap>div:last-child .dg-box svg{height:46mm !important}
 
   /* sign-off strip. Needs !important: style.css sets p{font-size:9.5pt !important},
      which an inline style cannot beat. */
   .print-only{
     font-size:6.8pt !important;line-height:1.5 !important;
-    margin:3mm 0 0;padding-top:2mm;border-top:1px solid #999;break-inside:avoid;
+    margin:2mm 0 0;padding-top:1.5mm;border-top:1px solid #999;break-inside:avoid;
   }
 
   /* --- last element must not push a blank page --- */
