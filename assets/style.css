@@ -191,11 +191,24 @@ html.js .reveal.in{opacity:1;transform:none}
   transition:color .25s var(--ease);
 }
 .navlinks a:hover{color:var(--ink)}
-/* the tab you are on: a solid pill that glides to the new tab on every page load */
-.navlinks a[aria-current="page"]{color:var(--bg);font-weight:600;view-transition-name:navpill}
+/* the tab you are on: a solid pill that glides to the new tab on every page load.
+   The name sits on the ::before - the black lozenge on its own - and NOT on the
+   <a>. Naming the <a> takes its label along for the ride, and the browser
+   cross-fades the old label into the new one while the pill moves, so a smeared
+   "AJ AI"/"Toolbox" double image drags across the bar and covers the tabs it
+   passes. With only the lozenge named, the labels stay where they are and just
+   change colour under it. Do not put the name back on the <a>.
+   Tried and rejected: z-index:-1 on ::view-transition-group(navpill) to keep the
+   labels on top - the bar's own background is painted in the site-nav snapshot,
+   so the lozenge vanishes behind it for the whole flight. */
+.navlinks a[aria-current="page"]{color:var(--bg);font-weight:600}
 .navlinks a[aria-current="page"]::before{
   content:"";position:absolute;inset:0;z-index:-1;border-radius:999px;
   background:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.18);
+  view-transition-name:navpill;
+}
+@media(prefers-reduced-motion:reduce){
+  .navlinks a[aria-current="page"]::before{view-transition-name:none}
 }
 /* hover ghost that slides between tabs */
 .navpill{
@@ -274,10 +287,12 @@ html.js .reveal.in{opacity:1;transform:none}
   .navlinks a{font-size:17px;padding:15px 6px;border-radius:0;border-bottom:1px solid var(--nav-border)}
   .navlinks a:last-child{border-bottom:none}
   .navlinks a:hover{background:none}
-  .navlinks a[aria-current="page"]{color:var(--link);font-weight:600;view-transition-name:none}
+  .navlinks a[aria-current="page"]{color:var(--link);font-weight:600}
+  /* in the drop-down menu the marker is a small blue bar, and the menu is shut
+     on load - nothing should fly anywhere, so the name comes off here */
   .navlinks a[aria-current="page"]::before{
     inset:auto auto auto -8px;top:50%;width:3px;height:22px;transform:translateY(-50%);
-    border-radius:2px;background:var(--link);box-shadow:none;
+    border-radius:2px;background:var(--link);box-shadow:none;view-transition-name:none;
   }
   .navpill{display:none}
 }
