@@ -167,6 +167,13 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 @media(max-width:720px){
   .dg-wrap{grid-template-columns:1fr}
   .f2{grid-template-columns:1fr}
+  /* fixed 220px letterboxes the drawing once the box is narrow */
+  .dg-box svg{height:auto !important}
+}
+/* Touch: 30px is too thin for a thumb, and this gets used with gloves on site.
+   hover:none catches phones and tablets that are wider than the 720px query. */
+@media(hover:none),(max-width:720px){
+  .mini{padding:13px 10px;font-size:13px}
 }
 
 /* ============ Print ============ */
