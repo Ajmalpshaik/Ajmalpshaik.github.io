@@ -123,6 +123,15 @@
         <div><div class="ajc-k">AJ Connect</div><div class="ajc-v" id="fVer">-</div></div>
         <div><div class="ajc-k">Port</div><div class="ajc-v" id="fPort">-</div></div>
       </div>
+
+      <!-- Shown, not editable. Where tools come from is a setup decision about this computer, made
+           once in the AJ Connect window inside Revit. Putting an editable box here gave a colleague
+           a way to break their own install for no benefit - the address they would be editing is the
+           site they are already on. -->
+      <p id="sourceLine" style="margin:12px 0 0;font-size:11.5px;opacity:.7;display:none">
+        Tools come from <span class="ajc-v" id="fSource" style="font-size:11.5px"></span>
+        &nbsp;&middot;&nbsp; change this in the AJ Connect window inside Revit.
+      </p>
     </div>
 
     <!-- Pairing ---------------------------------------------------------->
@@ -160,21 +169,7 @@
 
     <!-- Settings --------------------------------------------------------->
     <div class="ajc-card">
-      <div class="ajc-k" style="margin-bottom:10px">Settings</div>
-
-      <label for="sourceInput" style="font-size:12.5px;opacity:.8">Tools come from</label>
-      <div class="ajc-row">
-        <input id="sourceInput" class="ajc-in" type="text" spellcheck="false" placeholder="https://ajmalps.com/aj-connector/tools/">
-      </div>
-      <div class="ajc-row">
-        <button class="ajc-btn" id="saveSource" type="button">Save</button>
-        <button class="ajc-btn quiet" id="resetSource" type="button">Use my website</button>
-        <span id="sourceMsg" style="font-size:12.5px"></span>
-      </div>
-
-      <hr style="border:0;border-top:1px solid var(--line,#d3dce8);margin:18px 0">
-
-      <div class="ajc-k">This browser</div>
+      <div class="ajc-k" style="margin-bottom:10px">This browser</div>
       <p style="margin:8px 0 0;font-size:12.5px;opacity:.8" id="linkState">Not linked.</p>
       <div class="ajc-row">
         <button class="ajc-btn quiet" id="forgetBtn" type="button">Forget this browser</button>
@@ -386,7 +381,11 @@
       $("fView").textContent = s.view || "-";
       $("fVer").textContent = "v" + (s.version || "?");
       $("fPort").textContent = s.port || "-";
-      if (!$("sourceInput").value) $("sourceInput").value = s.source || "";
+
+      if (s.source) {
+        $("fSource").textContent = s.source;
+        $("sourceLine").style.display = "block";
+      }
 
       if (s.modelOpen) setState("#0E9B57", "Connected to Revit on this computer", "Click a tool to run it on your open model.");
       else setState("#B4700A", "Connected, but no model is open in Revit", "Open a model and press Check again.");
@@ -458,25 +457,6 @@
       .then(function (r) { return r.json(); })
       .then(function (j) { pending.remove(); log("Check for new tools", j.success ? "ok" : "bad", j.message || ""); return loadTools(); })
       .catch(function () { pending.remove(); log("Check for new tools", "bad", "Could not reach AJ Connect."); });
-  });
-
-  $("saveSource").addEventListener("click", function () {
-    if (!ready) { $("sourceMsg").textContent = "Not connected."; $("sourceMsg").style.color = "#C8342B"; return; }
-    var value = ($("sourceInput").value || "").trim();
-    if (!value) { $("sourceMsg").textContent = "Enter a folder or web address."; $("sourceMsg").style.color = "#C8342B"; return; }
-
-    ask("/api/settings", { method: "POST", body: { source: value }, timeout: 10000 })
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        $("sourceMsg").textContent = j.success ? "Saved." : (j.message || "Could not save.");
-        $("sourceMsg").style.color = j.success ? "#0E9B57" : "#C8342B";
-        if (j.success) { log("Tool source changed", "ok", j.message || ""); }
-      })
-      .catch(function () { $("sourceMsg").textContent = "Could not reach AJ Connect."; $("sourceMsg").style.color = "#C8342B"; });
-  });
-
-  $("resetSource").addEventListener("click", function () {
-    $("sourceInput").value = "https://ajmalps.com/aj-connector/tools/";
   });
 
   $("forgetBtn").addEventListener("click", function () {
