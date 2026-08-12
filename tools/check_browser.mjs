@@ -19,7 +19,8 @@ const url = (p) => 'file://' + join(ROOT, p);
 const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
-  'aj-tools/index.html', 'ai-brain/index.html', 'about/index.html',
+  'aj-tools/index.html', 'ai-brain/index.html', 'aj-connector/index.html',
+  'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
 ];
 const WIDTHS = [1440, 1280, 834, 390];

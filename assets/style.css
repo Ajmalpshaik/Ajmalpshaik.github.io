@@ -186,7 +186,7 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .navlinks a{
   position:relative;z-index:1;display:inline-flex;align-items:center;
-  color:var(--muted);font-size:13.5px;font-weight:500;padding:8px 15px;border-radius:999px;
+  color:var(--muted);font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:999px;
   white-space:nowrap;
   transition:color .25s var(--ease);
 }
@@ -248,8 +248,14 @@ html.js .reveal.in{opacity:1;transform:none}
 #themeSwitch .ic-moon{color:#0071e3;opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-sun{opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-moon{opacity:1}
-/* 1100, not 1024: the capsule is 679px wide at nine tabs and collides with the
-   brand and the theme switch below about 1089px. Re-measure if a tab is added. */
+/* 1100, not 1024: the capsule is centred on the viewport while the brand and the
+   theme switch sit inside the 1080px .navin, so the clearance on the brand side
+   stops shrinking above 1080px and is the same at every wider screen.
+   Measured: nine tabs at 15px side padding = 679px capsule, 77px clear.
+   Ten tabs (AJ Connector added 2026-08-12) at the same padding = 796px and only
+   19px clear, which reads as touching, so the side padding went to 12px:
+   736px capsule, 49px clear on the brand side, 86px on the switch side.
+   Re-measure both gaps here if an eleventh tab is ever added. */
 @media(max-width:1100px){
   /* menu button first, theme switch stays last in the corner */
   #menuBtn{display:flex}
