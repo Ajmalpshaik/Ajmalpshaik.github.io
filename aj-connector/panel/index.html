@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AJ Connect Panel | Ajmal P.S</title>
+<meta name="description" content="Run AJ Connect tools on the Revit model open on this computer, and manage the connector's settings.">
+<meta name="author" content="Ajmal P.S">
+<link rel="canonical" href="https://ajmalps.com/aj-connector/panel/">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="apple-touch-icon" href="../../favicon.svg">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/toolbox.css">
+<script>
+(function(){
+  var d = document.documentElement;
+  d.classList.add("js");
+  var t = null;
+  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
+})();
+</script>
+<style>
+  .ajc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+  .ajc-tool{display:flex;flex-direction:column;gap:6px;padding:13px 14px;text-align:left;
+            border:1px solid var(--line,#d3dce8);border-radius:11px;background:transparent;
+            color:inherit;font:inherit;width:100%;transition:transform .13s,border-color .13s}
+  .ajc-tool[data-live="1"]{cursor:pointer}
+  .ajc-tool[data-live="1"]:hover{transform:translateY(-2px);border-color:#1F76FF}
+  .ajc-tool[data-live="0"]{opacity:.6}
+  .ajc-tool:disabled{opacity:.5;cursor:wait}
+  .ajc-name{font-size:14px;font-weight:600}
+  .ajc-desc{font-size:12px;opacity:.7}
+  .ajc-panel{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+  .ajc-card{padding:16px;border:1px solid var(--line,#d3dce8);border-radius:13px;margin-bottom:14px}
+  .ajc-k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;font-weight:600}
+  .ajc-v{font-family:Consolas,monospace;font-size:13px;font-weight:600}
+  .ajc-facts{display:flex;gap:22px;flex-wrap:wrap;margin-top:10px}
+  .ajc-log{margin:0;padding:12px 14px;max-height:220px;overflow-y:auto;border-radius:10px;
+           background:rgba(127,127,127,.09);font-family:Consolas,monospace;font-size:12px;line-height:1.6}
+  .ajc-line{display:flex;gap:12px;padding:2px 0}
+  .ajc-t{opacity:.5;flex:none}
+  .ajc-in{font:inherit;font-size:13px;padding:9px 12px;border:1px solid var(--line,#d3dce8);
+          border-radius:8px;background:transparent;color:inherit;width:100%;max-width:460px}
+  .ajc-btn{font:inherit;font-size:13px;padding:9px 16px;border:0;border-radius:8px;
+           background:#1F76FF;color:#fff;cursor:pointer}
+  .ajc-btn.quiet{background:transparent;color:inherit;border:1px solid var(--line,#d3dce8)}
+  .ajc-btn.danger{background:transparent;color:#C8342B;border:1px solid #C8342B}
+  .ajc-btn:disabled{opacity:.5;cursor:default}
+  .ajc-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav id="nav" aria-label="Main">
+  <div class="navin">
+    <a class="brand" href="/" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
+      Ajmal P.S
+    </a>
+    <div class="navcenter">
+      <div class="navlinks" id="navLinks">
+        <span class="navpill" aria-hidden="true"></span>
+        <a href="/story/">Story</a>
+        <a href="/experience/">Experience</a>
+        <a href="/work/">Work</a>
+        <a href="/aj-tools/">AJ-Tools</a>
+        <a href="/ai-brain/">AJ AI</a>
+        <a href="/aj-connector/" aria-current="page">AJ Connect</a>
+        <a href="/toolbox/">Toolbox</a>
+        <a href="/skills/">Skills</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="navend">
+      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+        <span class="track"><span class="knob">
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+        </span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 58px);padding-bottom:40px">
+  <div class="wrap">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span>
+      <a href="/aj-connector/">AJ Connect</a> <span aria-hidden="true">&rsaquo;</span>
+      <span>Panel</span>
+    </nav>
+
+    <h1 style="font-size:clamp(30px,4.4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:6px">
+      <span class="grad-text">AJ Connect Panel.</span>
+    </h1>
+    <p class="sub" style="max-width:640px;margin-bottom:26px">Runs tools on the Revit model open <b>on this computer</b>. Nothing here can reach another machine.</p>
+
+    <!-- Connection ------------------------------------------------------->
+    <div class="ajc-card">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span id="dot" style="width:10px;height:10px;border-radius:50%;background:#7A8AA0;flex:none"></span>
+        <span id="state" style="font-size:15px;font-weight:700">Looking for AJ Connect&hellip;</span>
+        <button class="ajc-btn quiet" id="recheck" type="button" style="margin-left:auto">Check again</button>
+      </div>
+      <p id="stateHint" style="margin:8px 0 0;font-size:12.5px;opacity:.75"></p>
+
+      <div class="ajc-facts" id="facts" style="display:none">
+        <div><div class="ajc-k">Revit</div><div class="ajc-v" id="fRevit">-</div></div>
+        <div><div class="ajc-k">Model</div><div class="ajc-v" id="fModel">-</div></div>
+        <div><div class="ajc-k">Active view</div><div class="ajc-v" id="fView">-</div></div>
+        <div><div class="ajc-k">AJ Connect</div><div class="ajc-v" id="fVer">-</div></div>
+        <div><div class="ajc-k">Port</div><div class="ajc-v" id="fPort">-</div></div>
+      </div>
+    </div>
+
+    <!-- Pairing ---------------------------------------------------------->
+    <div class="ajc-card" id="pairCard" style="display:none">
+      <div class="ajc-k">Link this browser</div>
+      <p style="margin:8px 0 0;font-size:13px">In Revit open <b>AJ Connect</b>, tick <b>Let my website run tools in this Revit</b>, and type the 6-character code it shows.</p>
+      <div class="ajc-row">
+        <input id="pairInput" class="ajc-in" type="text" maxlength="6" autocomplete="off" spellcheck="false"
+               placeholder="ABC123"
+               style="width:160px;font-family:Consolas,monospace;font-size:18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">
+        <button class="ajc-btn" id="pairBtn" type="button">Link</button>
+        <span id="pairMsg" style="font-size:12.5px"></span>
+      </div>
+      <p style="margin:10px 0 0;font-size:11.5px;opacity:.7">Once only. It links this browser to Revit on this computer.</p>
+    </div>
+
+    <!-- Tools ------------------------------------------------------------>
+    <div class="ajc-card">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <span class="ajc-k">Tools</span>
+        <span id="toolCount" style="font-size:12px;opacity:.7"></span>
+        <button class="ajc-btn quiet" id="refreshTools" type="button" style="margin-left:auto">Check for new tools</button>
+      </div>
+      <div class="ajc-grid" id="tools"><p style="opacity:.7;font-size:13px">Loading&hellip;</p></div>
+    </div>
+
+    <!-- Output ----------------------------------------------------------->
+    <div class="ajc-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span class="ajc-k">Output</span>
+        <button class="ajc-btn quiet" id="clearLog" type="button" style="margin-left:auto">Clear</button>
+      </div>
+      <div class="ajc-log" id="log" role="log" aria-live="polite"></div>
+    </div>
+
+    <!-- Settings --------------------------------------------------------->
+    <div class="ajc-card">
+      <div class="ajc-k" style="margin-bottom:10px">Settings</div>
+
+      <label for="sourceInput" style="font-size:12.5px;opacity:.8">Tools come from</label>
+      <div class="ajc-row">
+        <input id="sourceInput" class="ajc-in" type="text" spellcheck="false" placeholder="https://ajmalps.com/aj-connector/tools/">
+      </div>
+      <div class="ajc-row">
+        <button class="ajc-btn" id="saveSource" type="button">Save</button>
+        <button class="ajc-btn quiet" id="resetSource" type="button">Use my website</button>
+        <span id="sourceMsg" style="font-size:12.5px"></span>
+      </div>
+
+      <hr style="border:0;border-top:1px solid var(--line,#d3dce8);margin:18px 0">
+
+      <div class="ajc-k">This browser</div>
+      <p style="margin:8px 0 0;font-size:12.5px;opacity:.8" id="linkState">Not linked.</p>
+      <div class="ajc-row">
+        <button class="ajc-btn quiet" id="forgetBtn" type="button">Forget this browser</button>
+        <button class="ajc-btn danger" id="offBtn" type="button">Switch website control off</button>
+      </div>
+      <p style="margin:10px 0 0;font-size:11.5px;opacity:.7">
+        <b>Forget</b> clears the link from this browser only. <b>Switch off</b> stops every browser at once
+        and can only be turned back on inside Revit &mdash; a website is never allowed to grant itself permission.
+      </p>
+    </div>
+
+    <p class="tool-note" style="margin-top:22px;max-width:680px">
+      Every tool is signed. AJ Connect checks the signature <b>on this computer</b> before running anything, so a
+      tool that was not published by me &mdash; or was altered afterwards &mdash; is refused and never appears here.
+    </p>
+
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+    </div>
+    <div>
+      <h4>The story</h4>
+      <ul>
+        <li><a href="/story/">How it started</a></li>
+        <li><a href="/experience/">Experience</a></li>
+        <li><a href="/work/">Selected work</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>What I build</h4>
+      <ul>
+        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/ai-brain/">AJ AI Brain</a></li>
+        <li><a href="/aj-connector/">AJ Connect</a></li>
+        <li><a href="/toolbox/">Toolbox</a></li>
+        <li><a href="/skills/">Skills</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
+    <span><a href="/">ajmalps.com</a></span>
+  </div>
+</footer>
+
+<script>
+/* AJ Connect control panel.
+
+   Talks to the connector running on THIS computer at http://localhost:<port>/. That address does not
+   exist outside this machine, so this page can never reach anyone else's Revit - not by a rule, but
+   because a local address is not routable. Same reason it cannot work from a phone.
+
+   Four states, each said plainly rather than collapsed into "error":
+     - no connector found        (not running, or website control switched off - the browser refuses
+                                  to tell us which, so both are named)
+     - found, needs pairing
+     - linked and ready
+     - linked but no model open
+
+   Signature checking is NOT done here and is not implied. It happens inside AJ Connect, which is the
+   only place it means anything. */
+(function () {
+  var TOKEN_KEY = "ajconnect.token", PORT_KEY = "ajconnect.port";
+  var FIRST = 48230, LAST = 48249;
+
+  var token = null, port = null, ready = false, tools = [];
+  try { token = localStorage.getItem(TOKEN_KEY); } catch (e) {}
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+
+  function now() {
+    var d = new Date();
+    return [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (v) { return String(v).padStart(2, "0"); }).join(":");
+  }
+
+  function log(name, kind, body) {
+    var colour = kind === "ok" ? "#0E9B57" : kind === "bad" ? "#C8342B" : "#1F76FF";
+    var mark = kind === "run" ? "&middot;" : kind === "ok" ? "OK" : "X";
+    var row = document.createElement("div");
+    row.className = "ajc-line";
+    row.innerHTML = '<span class="ajc-t">' + now() + "</span><span><b style=\"color:" + colour + '">' +
+                    mark + " " + esc(name) + "</b>" + (body ? '<div style="opacity:.8;white-space:pre-wrap"></div>' : "") + "</span>";
+    if (body) row.querySelector("div").textContent = body;
+    $("log").appendChild(row);
+    $("log").scrollTop = $("log").scrollHeight;
+    return row;
+  }
+
+  function ask(path, options) {
+    options = options || {};
+    var c = window.AbortController ? new AbortController() : null;
+    if (c) setTimeout(function () { c.abort(); }, options.timeout || 2500);
+
+    var headers = { "Content-Type": "application/json" };
+    if (token) headers["X-AJ-Token"] = token;
+
+    return fetch("http://localhost:" + (options.port || port) + path, {
+      method: options.method || "GET",
+      headers: headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: c ? c.signal : undefined
+    });
+  }
+
+  function setState(colour, title, hint) {
+    $("dot").style.background = colour;
+    $("state").textContent = title;
+    $("stateHint").textContent = hint || "";
+  }
+
+  /* ---------- tools ---------- */
+
+  function renderTools() {
+    var host = $("tools");
+    if (!tools.length) {
+      host.innerHTML = '<p style="opacity:.7;font-size:13px">No tools published yet.</p>';
+      return;
+    }
+
+    host.innerHTML = tools.map(function (t, i) {
+      return '<button type="button" class="ajc-tool" data-live="' + (ready ? "1" : "0") + '" data-i="' + i + '"' +
+             (ready ? "" : " disabled") + ">" +
+             '<span class="ajc-name">' + esc(t.name) + "</span>" +
+             '<span class="ajc-desc">' + esc(t.description || "") + "</span>" +
+             '<span class="ajc-panel">' + esc(t.panel || "Tools") + "</span></button>";
+    }).join("");
+
+    $("toolCount").textContent = tools.length + (tools.length === 1 ? " tool" : " tools") +
+                                 (ready ? "" : " — connect to run them");
+
+    if (ready) {
+      Array.prototype.forEach.call(host.querySelectorAll(".ajc-tool"), function (b) {
+        b.addEventListener("click", function () { run(tools[+b.getAttribute("data-i")], b); });
+      });
+    }
+  }
+
+  function loadTools() {
+    if (!port) return Promise.resolve();
+    return ask("/api/tools").then(function (r) { return r.json(); })
+      .then(function (j) { tools = j.tools || []; renderTools(); })
+      .catch(function () {});
+  }
+
+  function run(tool, button) {
+    if (!ready) return;
+    button.disabled = true;
+    var pending = log(tool.name, "run", "");
+
+    ask("/api/run", { method: "POST", body: { toolId: tool.id }, timeout: 95000 })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        pending.remove();
+        log(tool.name, j.success ? "ok" : "bad", j.message || "");
+        refreshStatus();
+      })
+      .catch(function () {
+        pending.remove();
+        log(tool.name, "bad", "Lost contact with Revit. Is it still open and connected?");
+        ready = false; renderTools();
+      })
+      .then(function () { button.disabled = false; });
+  }
+
+  /* ---------- connection ---------- */
+
+  function find() {
+    var ports = [], remembered = null;
+    try { remembered = localStorage.getItem(PORT_KEY); } catch (e) {}
+    if (remembered) ports.push(+remembered);
+    for (var p = FIRST; p <= LAST; p++) if (+remembered !== p) ports.push(p);
+
+    var done = false;
+    return new Promise(function (resolve) {
+      var left = ports.length;
+      ports.forEach(function (p) {
+        ask("/api/tools", { port: p }).then(function (r) {
+          if (done) return;
+          if (r.status === 200 || r.status === 401) {
+            done = true;
+            try { localStorage.setItem(PORT_KEY, String(p)); } catch (e) {}
+            resolve({ port: p, status: r.status });
+          }
+        }).catch(function () {}).then(function () {
+          if (--left === 0 && !done) resolve(null);
+        });
+      });
+      if (!ports.length) resolve(null);
+    });
+  }
+
+  function refreshStatus() {
+    if (!port || !ready) return Promise.resolve();
+    return ask("/api/status", { timeout: 95000 }).then(function (r) { return r.json(); }).then(function (s) {
+      $("facts").style.display = "flex";
+      $("fRevit").textContent = s.revit || "-";
+      $("fModel").textContent = s.model || "(none open)";
+      $("fView").textContent = s.view || "-";
+      $("fVer").textContent = "v" + (s.version || "?");
+      $("fPort").textContent = s.port || "-";
+      if (!$("sourceInput").value) $("sourceInput").value = s.source || "";
+
+      if (s.modelOpen) setState("#0E9B57", "Connected to Revit on this computer", "Click a tool to run it on your open model.");
+      else setState("#B4700A", "Connected, but no model is open in Revit", "Open a model and press Check again.");
+    }).catch(function () {});
+  }
+
+  function connect() {
+    setState("#7A8AA0", "Looking for AJ Connect…", "");
+    return find().then(function (found) {
+      if (!found) {
+        ready = false; port = null;
+        $("pairCard").style.display = "none";
+        $("facts").style.display = "none";
+        setState("#C8342B", "Not connected",
+          "Either AJ Connect is not running in Revit, or “Let my website run tools” is switched off in it.");
+        renderTools();
+        return;
+      }
+
+      port = found.port;
+
+      if (found.status === 401) {
+        ready = false;
+        $("pairCard").style.display = "block";
+        $("linkState").textContent = "Not linked.";
+        setState("#B4700A", "AJ Connect found on this computer", "Link this browser once, using the code it shows.");
+        renderTools();
+        return;
+      }
+
+      ready = true;
+      $("pairCard").style.display = "none";
+      $("linkState").textContent = "Linked to AJ Connect on this computer.";
+      return loadTools().then(refreshStatus);
+    });
+  }
+
+  /* ---------- actions ---------- */
+
+  $("recheck").addEventListener("click", connect);
+
+  $("pairBtn").addEventListener("click", function () {
+    var code = ($("pairInput").value || "").trim().toUpperCase();
+    if (code.length !== 6) { $("pairMsg").textContent = "The code is 6 characters."; $("pairMsg").style.color = "#C8342B"; return; }
+
+    $("pairMsg").textContent = "Linking…"; $("pairMsg").style.color = "";
+    ask("/api/pair", { method: "POST", body: { code: code } })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok || !res.j.token) {
+          $("pairMsg").textContent = res.j.message || "That did not work.";
+          $("pairMsg").style.color = "#C8342B";
+          return;
+        }
+        token = res.j.token;
+        try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+        $("pairMsg").textContent = "Linked.";
+        $("pairMsg").style.color = "#0E9B57";
+        log("Browser linked", "ok", "");
+        connect();
+      })
+      .catch(function () { $("pairMsg").textContent = "Could not reach AJ Connect."; $("pairMsg").style.color = "#C8342B"; });
+  });
+
+  $("refreshTools").addEventListener("click", function () {
+    if (!ready) { log("Check for new tools", "bad", "Not connected."); return; }
+    var pending = log("Check for new tools", "run", "");
+    ask("/api/refresh", { method: "POST", body: {}, timeout: 30000 })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { pending.remove(); log("Check for new tools", j.success ? "ok" : "bad", j.message || ""); return loadTools(); })
+      .catch(function () { pending.remove(); log("Check for new tools", "bad", "Could not reach AJ Connect."); });
+  });
+
+  $("saveSource").addEventListener("click", function () {
+    if (!ready) { $("sourceMsg").textContent = "Not connected."; $("sourceMsg").style.color = "#C8342B"; return; }
+    var value = ($("sourceInput").value || "").trim();
+    if (!value) { $("sourceMsg").textContent = "Enter a folder or web address."; $("sourceMsg").style.color = "#C8342B"; return; }
+
+    ask("/api/settings", { method: "POST", body: { source: value }, timeout: 10000 })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        $("sourceMsg").textContent = j.success ? "Saved." : (j.message || "Could not save.");
+        $("sourceMsg").style.color = j.success ? "#0E9B57" : "#C8342B";
+        if (j.success) { log("Tool source changed", "ok", j.message || ""); }
+      })
+      .catch(function () { $("sourceMsg").textContent = "Could not reach AJ Connect."; $("sourceMsg").style.color = "#C8342B"; });
+  });
+
+  $("resetSource").addEventListener("click", function () {
+    $("sourceInput").value = "https://ajmalps.com/aj-connector/tools/";
+  });
+
+  $("forgetBtn").addEventListener("click", function () {
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+    token = null; ready = false;
+    $("linkState").textContent = "Not linked.";
+    log("This browser forgotten", "ok", "AJ Connect itself is untouched.");
+    connect();
+  });
+
+  $("offBtn").addEventListener("click", function () {
+    if (!ready) { log("Switch off", "bad", "Not connected."); return; }
+    if (!window.confirm("Switch website control off?\n\nEvery linked browser stops working, and it can only be turned back on inside Revit.")) return;
+
+    ask("/api/unpair", { method: "POST", body: {}, timeout: 10000 })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        log("Website control", j.success ? "ok" : "bad", j.message || "");
+        try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+        token = null; ready = false;
+        connect();
+      })
+      .catch(function () { log("Website control", "bad", "Could not reach AJ Connect."); });
+  });
+
+  $("clearLog").addEventListener("click", function () { $("log").innerHTML = ""; });
+
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && !ready) connect(); });
+
+  log("Panel opened", "ok", "Looking for AJ Connect on this computer.");
+  connect();
+})();
+</script>
+<script src="../../vendor/lenis.min.js" defer></script>
+<script src="../../vendor/gsap.min.js" defer></script>
+<script src="../../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+</body>
+</html>
