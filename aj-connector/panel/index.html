@@ -145,6 +145,26 @@ button,input{font:inherit;color:inherit}
 .mini:hover{border-color:var(--accent);color:var(--accent)}
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 
+/* ---------- settings menu ----------
+   Replaces a window.prompt() that asked people to "type a number" to choose an action. A real menu
+   of labelled buttons says what each one does, and cannot be answered wrongly by typing 3. */
+.menuwrap{position:relative}
+.menu{
+  position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:250px;padding:6px;
+  background:var(--surface);border:1px solid var(--line);border-radius:11px;
+  box-shadow:0 12px 30px rgba(0,0,0,.17);
+}
+.menu[hidden]{display:none}
+.menu button{
+  display:block;width:100%;text-align:left;padding:9px 11px;border:0;border-radius:8px;
+  background:none;color:var(--ink);font-size:13px;cursor:pointer;
+}
+.menu button:hover{background:var(--wash)}
+.menu button .sub{display:block;font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.35}
+.menu button.danger{color:var(--stop)}
+.menu button.danger:hover{background:var(--stop-wash)}
+.menu hr{border:0;border-top:1px solid var(--line);margin:5px 2px}
+
 /* ---------- tools ---------- */
 .main{flex:1;overflow-y:auto;padding:16px 18px;min-height:0}   /* only this scrolls */
 .gname{
@@ -244,16 +264,39 @@ button,input{font:inherit;color:inherit}
   </div>
   <button class="mini" id="recheck" type="button">Reconnect</button>
   <button class="mini" id="refreshTools" type="button">Check for new tools</button>
-  <button class="mini danger" id="moreBtn" type="button" title="Unlink options">&#8942;</button>
+
+  <div class="menuwrap">
+    <button class="mini" id="moreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">Settings</button>
+    <div class="menu" id="menu" role="menu" hidden>
+      <button type="button" id="miPair" role="menuitem">Enter pairing code
+        <span class="sub">Link this browser using the 6-character code shown in Revit.</span>
+      </button>
+      <button type="button" id="miReconnect" role="menuitem">Look for Revit again
+        <span class="sub">Re-scan this computer for a connected AJ Connect.</span>
+      </button>
+      <hr>
+      <button type="button" id="miForget" role="menuitem" class="danger">Forget this browser
+        <span class="sub">Clears the link saved here only. Revit is left untouched.</span>
+      </button>
+      <button type="button" id="miOff" role="menuitem" class="danger">Switch website control off
+        <span class="sub">Unlinks every browser. Can only be turned back on inside Revit.</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <main class="main" id="main">
   <div class="pair" id="pairCard" style="display:none">
     <h3>Link this browser to Revit</h3>
-    <p>In Revit open <b>AJ Connect</b>, tick <b>Let my website run tools in this Revit</b>, and type the 6-character code it shows.</p>
+    <p>
+      In Revit: open the <b>AJ Connect</b> tab and press <b>AJ Connect</b>, press <b>Connect</b>,
+      then tick <b>Let my website run tools in this Revit</b>. A 6-character code appears &mdash;
+      type it here.
+    </p>
     <div class="pairrow">
       <input class="pairin" id="pairInput" type="text" maxlength="6" autocomplete="off" spellcheck="false" placeholder="ABC123">
       <button class="go" id="pairBtn" type="button">Link</button>
+      <button class="mini" id="pairClose" type="button">Cancel</button>
       <span id="pairMsg" style="font-size:12.5px"></span>
     </div>
   </div>
@@ -471,12 +514,15 @@ button,input{font:inherit;color:inherit}
     return find().then(function (found) {
       if (!found) {
         ready = false; port = null; tools = [];
-        $("pairCard").style.display = "none";
+        if (!pairManual) hidePairCard();   // leave a card the person deliberately opened alone
         clearFacts();
         setPill("bad", "Not connected");
-        $("groups").innerHTML = '<div class="empty">AJ Connect is not running on this computer,<br>' +
-          'or &ldquo;Let my website run tools&rdquo; is switched off in it.<br><br>' +
-          'Open <b>AJ Connect</b> in Revit, press <b>Connect</b>, then press Reconnect above.</div>';
+        $("groups").innerHTML = '<div class="empty">' +
+          'Nothing answered on this computer.<br><br>' +
+          'In Revit: open the <b>AJ Connect</b> tab, press <b>AJ Connect</b>, press <b>Connect</b>,<br>' +
+          'then tick <b>Let my website run tools in this Revit</b>.<br><br>' +
+          'This panel only ever talks to Revit on <b>this same computer</b>.' +
+          '</div>';
         return;
       }
 
@@ -484,7 +530,7 @@ button,input{font:inherit;color:inherit}
 
       if (found.status === 401) {
         ready = false;
-        $("pairCard").style.display = "block";
+        showPairCard(false);
         clearFacts();
         setPill("warn", "Found — not linked");
         renderTools();
@@ -492,7 +538,7 @@ button,input{font:inherit;color:inherit}
       }
 
       ready = true;
-      $("pairCard").style.display = "none";
+      hidePairCard();
       return loadTools().then(status);
     });
   }
@@ -505,26 +551,70 @@ button,input{font:inherit;color:inherit}
     $("log").innerHTML = '<div class="line idle">Waiting — click a tool above.</div>';
   });
 
+  /* ---------- pairing ---------- */
+
+  var pairManual = false;   // opened from Settings, so a background scan must not snatch it away
+
+  function setPairMsg(text, bad) {
+    $("pairMsg").textContent = text;
+    $("pairMsg").style.color = bad ? "var(--stop)" : "";
+  }
+
+  function showPairCard(manual) {
+    if (manual) pairManual = true;
+    $("pairCard").style.display = "block";
+    $("pairClose").style.display = pairManual ? "" : "none";
+    try { $("pairInput").focus(); } catch (e) {}
+  }
+
+  function hidePairCard() {
+    pairManual = false;
+    $("pairCard").style.display = "none";
+    setPairMsg("", false);
+  }
+
+  $("pairClose").addEventListener("click", function () { hidePairCard(); connect(); });
+
+  // Enter should submit - this is a 6-character code, nobody wants to reach for the mouse.
+  $("pairInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") $("pairBtn").click();
+  });
+
   $("pairBtn").addEventListener("click", function () {
     var code = ($("pairInput").value || "").trim().toUpperCase();
-    if (code.length !== 6) { $("pairMsg").textContent = "The code is 6 characters."; $("pairMsg").style.color = "var(--stop)"; return; }
+    if (code.length !== 6) { setPairMsg("The code is 6 characters.", true); return; }
 
-    $("pairMsg").textContent = "Linking…"; $("pairMsg").style.color = "";
-    ask("/api/pair", { method: "POST", body: { code: code } })
-      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        if (!res.ok || !res.j.token) {
-          $("pairMsg").textContent = res.j.message || "That did not work.";
-          $("pairMsg").style.color = "var(--stop)";
-          return;
-        }
-        token = res.j.token;
-        try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
-        $("pairMsg").textContent = "";
-        log("Browser linked", "ok", "");
-        connect();
-      })
-      .catch(function () { $("pairMsg").textContent = "Could not reach AJ Connect."; $("pairMsg").style.color = "var(--stop)"; });
+    setPairMsg("Linking…", false);
+
+    // The card can now be opened from Settings before anything has been found, so there may be no
+    // port yet. Look for one first - otherwise the request would go to "http://localhost:null/".
+    var locate = port
+      ? Promise.resolve(true)
+      : find().then(function (f) { if (f) { port = f.port; return true; } return false; });
+
+    locate.then(function (found) {
+      if (!found) {
+        setPairMsg("AJ Connect is not running on this computer, or it is not connected yet.", true);
+        return;
+      }
+
+      return ask("/api/pair", { method: "POST", body: { code: code } })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok || !res.j.token) {
+            setPairMsg(res.j.message || "That did not work.", true);
+            return;
+          }
+          token = res.j.token;
+          try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+          $("pairInput").value = "";
+          hidePairCard();
+          log("Browser linked", "ok", "");
+          connect();
+        });
+    }).catch(function () {
+      setPairMsg("Could not reach AJ Connect. Is website control switched on in Revit?", true);
+    });
   });
 
   $("refreshTools").addEventListener("click", function () {
@@ -538,31 +628,64 @@ button,input{font:inherit;color:inherit}
       .then(function () { busy = false; });
   });
 
-  // Tucked behind a menu on purpose: unlinking is rare, and a button that stops everything should
-  // not sit next to the ones used all day.
-  $("moreBtn").addEventListener("click", function () {
-    var choice = window.prompt(
-      "Type a number:\n\n" +
-      "1  Forget this browser (clears the link here only)\n" +
-      "2  Switch website control off (stops every browser; can only be turned back on inside Revit)\n");
+  /* ---------- settings menu ----------
 
-    if (choice === "1") {
-      try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
-      token = null; ready = false;
-      log("This browser forgotten", "ok", "AJ Connect itself is untouched.");
-      connect();
-    } else if (choice === "2") {
-      if (!ready) { log("Switch off", "bad", "Not connected."); return; }
-      ask("/api/unpair", { method: "POST", body: {}, timeout: 10000 })
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          log("Website control", j.success ? "ok" : "bad", j.message || "");
-          try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
-          token = null; ready = false;
-          connect();
-        })
-        .catch(function () { log("Website control", "bad", "Could not reach AJ Connect."); });
-    }
+     Was a window.prompt() asking the person to "type a number" to pick an action. That hid the two
+     destructive options behind an unlabelled ⋮, gave no way to reach the pairing box at all, and let
+     a mistyped digit pick the wrong one. These are plain labelled buttons instead. */
+
+  function closeMenu() {
+    $("menu").hidden = true;
+    $("moreBtn").setAttribute("aria-expanded", "false");
+  }
+
+  $("moreBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    var open = $("menu").hidden;
+    $("menu").hidden = !open;
+    $("moreBtn").setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!$("menu").hidden && !$("menu").contains(e.target)) closeMenu();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // The pairing box used to appear ONLY on a 401, which never arrives while website control is off -
+  // so the one thing a new person needs to find was the one thing they could not. It is now always
+  // reachable from here.
+  $("miPair").addEventListener("click", function () {
+    closeMenu();
+    showPairCard(true);
+  });
+
+  $("miReconnect").addEventListener("click", function () { closeMenu(); connect(); });
+
+  $("miForget").addEventListener("click", function () {
+    closeMenu();
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+    token = null; ready = false;
+    log("This browser forgotten", "ok", "AJ Connect itself is untouched.");
+    connect();
+  });
+
+  $("miOff").addEventListener("click", function () {
+    closeMenu();
+    if (!ready) { log("Switch off", "bad", "Not connected."); return; }
+    if (!window.confirm("Switch website control off?\n\nEvery linked browser stops working, and it " +
+                        "can only be turned back on inside Revit.")) return;
+
+    ask("/api/unpair", { method: "POST", body: {}, timeout: 10000 })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        log("Website control", j.success ? "ok" : "bad", j.message || "");
+        try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+        token = null; ready = false;
+        connect();
+      })
+      .catch(function () { log("Website control", "bad", "Could not reach AJ Connect."); });
   });
 
   /* ---------- day / night ---------- */
