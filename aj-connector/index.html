@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AJ Connector — Coming soon | Ajmal P.S</title>
-<meta name="description" content="AJ Connector is the next thing being built for the AJ toolkit. Not released yet — this page will carry what it does and how to get it once it is ready.">
+<title>AJ Connect — Revit tools in your browser | Ajmal P.S</title>
+<meta name="description" content="A small Revit add-in that puts my tools in your browser and runs them on the model you have open. Install once — new tools arrive on their own. Free, no admin rights, source published.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/aj-connector/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" id="metaTheme" content="#f2f4f8">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
-<meta property="og:title" content="AJ Connector — Coming soon | Ajmal P.S">
-<meta property="og:description" content="AJ Connector is the next thing being built for the AJ toolkit. Not released yet — this page will carry what it does and how to get it once it is ready.">
+<meta property="og:title" content="AJ Connect — Revit tools in your browser | Ajmal P.S">
+<meta property="og:description" content="Install once. New tools arrive on their own, checked for my signature before anything runs.">
 <meta property="og:url" content="https://ajmalps.com/aj-connector/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ajmalps.com">
@@ -22,8 +22,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AJ Connector — Coming soon | Ajmal P.S">
-<meta name="twitter:description" content="The next thing being built for the AJ toolkit. Not released yet.">
+<meta name="twitter:title" content="AJ Connect — Revit tools in your browser">
+<meta name="twitter:description" content="Install once. New tools arrive on their own.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="../favicon.svg">
@@ -47,20 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://ajmalps.com/aj-connector/#app",
+      "name": "AJ Connect",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Windows",
+      "softwareRequirements": "Autodesk Revit 2020",
+      "url": "https://ajmalps.com/aj-connector/",
+      "downloadUrl": "https://github.com/Ajmalpshaik/AJ-Connect/releases/latest",
+      "description": "A Revit add-in that shows published tools in your browser and runs them on the open model. Tools are signature-checked before they run.",
+      "author": { "@id": "https://ajmalps.com/#person" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
       "@type": "WebPage",
       "@id": "https://ajmalps.com/aj-connector/#page",
-      "name": "AJ Connector — Coming soon",
+      "name": "AJ Connect — Revit tools in your browser",
       "url": "https://ajmalps.com/aj-connector/",
-      "description": "AJ Connector is in build and not released yet.",
+      "description": "Install once. New tools arrive on their own.",
       "author": { "@id": "https://ajmalps.com/#person" },
-      "isPartOf": { "@id": "https://ajmalps.com/#website" }
+      "isPartOf": { "@id": "https://ajmalps.com/#website" },
+      "mainEntity": { "@id": "https://ajmalps.com/aj-connector/#app" }
     },
     {
       "@type": "BreadcrumbList",
       "@id": "https://ajmalps.com/aj-connector/#crumbs",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
-        { "@type": "ListItem", "position": 2, "name": "AJ Connector", "item": "https://ajmalps.com/aj-connector/" }
+        { "@type": "ListItem", "position": 2, "name": "AJ Connect", "item": "https://ajmalps.com/aj-connector/" }
       ]
     }
   ]
@@ -86,7 +100,7 @@
         <a href="/work/">Work</a>
         <a href="/aj-tools/">AJ-Tools</a>
         <a href="/ai-brain/">AJ AI</a>
-        <a href="/aj-connector/" aria-current="page">AJ Connector</a>
+        <a href="/aj-connector/" aria-current="page">AJ Connect</a>
         <a href="/toolbox/">Toolbox</a>
         <a href="/skills/">Skills</a>
         <a href="/about/">About</a>
@@ -111,43 +125,140 @@
 
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span>
-      <span>AJ Connector</span>
+      <span>AJ Connect</span>
     </nav>
 
-    <p class="eyebrow">Coming soon &middot; in build</p>
-    <h1 style="font-size:clamp(40px,6vw,68px);font-weight:700;letter-spacing:-.028em;line-height:1.06"><span class="grad-text">AJ Connector.</span></h1>
-    <p class="sub" style="max-width:640px">The next piece of the AJ toolkit. It is not finished, so there is nothing to download yet &mdash; and I would rather leave the page honest than fill it with promises. When it is ready, this is where it lands.</p>
+    <p class="eyebrow">Free &middot; Revit 2020 &middot; source published</p>
+    <h1 style="font-size:clamp(40px,6vw,68px);font-weight:700;letter-spacing:-.028em;line-height:1.06"><span class="grad-text">AJ Connect.</span></h1>
+    <p class="sub" style="max-width:660px">My Revit tools, in your browser. You install it once &mdash; and after that, when I publish a new tool it simply appears. Nothing to reinstall, nothing to chase.</p>
+
+    <div class="btnrow" style="margin-top:30px">
+      <a class="btn" href="https://github.com/Ajmalpshaik/AJ-Connect/releases/latest" rel="noopener">Download AJ Connect</a>
+      <a class="tlink" href="https://github.com/Ajmalpshaik/AJ-Connect" rel="noopener">Read the source <span class="chev">&rsaquo;</span></a>
+    </div>
+
+    <p class="tool-note" style="margin-top:22px;max-width:640px">
+      About 5.5&nbsp;MB &middot; Revit 2020 &middot; no admin rights needed, and Windows will not ask you about the firewall.
+      Revit 2021&ndash;2024 should work but are not tested yet; 2025 and newer need a separate build, and the installer will tell you rather than leave you guessing.
+    </p>
+
+  </div>
+</section>
+
+<section class="sec-tight" style="padding-top:0">
+  <div class="wrap">
+
+    <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">What it actually does</h2>
+    <p class="sub" style="max-width:660px;margin-bottom:26px">A small add-in sits inside Revit. Press one button and your browser opens with the tools as buttons. Click one, and it works on the model you have open.</p>
 
     <div class="tb-grid">
 
-      <div class="tb-card tb-soon">
-        <h3>Being built now</h3>
-        <p>Same way as everything else here: used on real project work first, published only once I trust what it does. That is slower than announcing it, and it is the reason the tools that are already out hold up.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">In progress</span>
-        </div>
+      <div class="tb-card">
+        <h3>The browser is where you click</h3>
+        <p>All the buttons, the search, the results. With enough tools, searching beats hunting through ribbon tabs &mdash; that is the honest reason it lives in a browser rather than the ribbon.</p>
+        <div class="tb-tags"><span class="tb-tag">One page</span><span class="tb-tag">Searchable</span></div>
       </div>
 
       <div class="tb-card">
-        <h3>You will see it here first</h3>
-        <p>When it is ready this page becomes the real one &mdash; what it does, what it deliberately does not do, and how to get hold of it. No sign-up, no waiting list, nothing to give me in the meantime.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">This page</span>
-        </div>
+        <h3>Revit is where the work happens</h3>
+        <p>The page never touches your model itself. It asks Revit, and Revit does it &mdash; on your current view, exactly as if you had pressed a ribbon button. The answer comes back on the page instead of as a popup you have to dismiss.</p>
+        <div class="tb-tags"><span class="tb-tag">Your open model</span></div>
       </div>
 
       <div class="tb-card">
-        <h3>Say what you need from it</h3>
-        <p>If there is something you would want it to handle, tell me while it is still being shaped. What gets asked for early tends to end up in the first version instead of a later one.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">Open to input</span>
-        </div>
+        <h3>You install once</h3>
+        <p>New tools arrive on their own. So do fixes inside a tool. Only the add-in itself would ever need installing again, and that will be rare.</p>
+        <div class="tb-tags"><span class="tb-tag">No reinstalling</span></div>
       </div>
 
     </div>
 
-    <p class="tool-note" style="margin-top:40px">
-      <b>Why the page exists before the tool does.</b> The tab is here so it is easy to find later, and so anyone who is curious can ask now rather than wonder. If you want to be told the day it goes live, <a href="/contact/">send me a line</a> and I will remember. In the meantime the released work is in <a href="/aj-tools/">AJ&#8209;Tools</a> and the free <a href="/toolbox/">Toolbox</a>.
+  </div>
+</section>
+
+<section class="sec-tight" style="padding-top:0">
+  <div class="wrap">
+
+    <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Is it safe?</h2>
+    <p class="sub" style="max-width:680px;margin-bottom:26px">This downloads code and runs it in Revit, so that question deserves a real answer rather than a reassurance.</p>
+
+    <div class="tb-grid">
+
+      <div class="tb-card">
+        <h3>Every tool carries my signature</h3>
+        <p>Before anything runs, AJ Connect checks the tool against my key &mdash; on your computer, not on my website. If a tool was not signed by me, or if one character of it changed after I published it, it is refused. Not shown, not run, no button to click by mistake.</p>
+        <div class="tb-tags"><span class="tb-tag">Checked on your PC</span></div>
+      </div>
+
+      <div class="tb-card">
+        <h3>Even if my site were hacked</h3>
+        <p>Nothing harmful could be made to run. Whoever took over the site would still need my private key, which never leaves my machine. That is the whole reason the checking happens on your computer rather than mine.</p>
+        <div class="tb-tags"><span class="tb-tag">By design</span></div>
+      </div>
+
+      <div class="tb-card">
+        <h3>Nothing runs in the background</h3>
+        <p>It listens only while you have it connected, and only on your own computer &mdash; nobody on your network or the internet can reach it. A web page on any other site cannot drive it either.</p>
+        <div class="tb-tags"><span class="tb-tag">Local only</span></div>
+      </div>
+
+      <div class="tb-card">
+        <h3>You can read every line of it</h3>
+        <p>The source is public. Not open source &mdash; you cannot take it and republish it &mdash; but published so that anyone asked to install it can check what it does first. If you are the sort of person who checks, please do.</p>
+        <div class="tb-tags"><span class="tb-tag">On GitHub</span></div>
+      </div>
+
+    </div>
+
+    <p class="tool-note" style="margin-top:34px;max-width:680px">
+      <b>What a signature does not promise.</b> It proves who published a tool and that nobody altered it. It does not promise the tool is right for your model. It is free software with no warranty, it changes live models, and you remain responsible for your own work &mdash; so keep backups and check the results before you rely on them. The <a href="https://github.com/Ajmalpshaik/AJ-Connect/blob/main/LICENSE" rel="noopener">full terms</a> are shown to you during install, before anything is written to your computer.
+    </p>
+
+  </div>
+</section>
+
+<section class="sec-tight" style="padding-top:0">
+  <div class="wrap">
+
+    <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Getting it running</h2>
+    <p class="sub" style="max-width:660px;margin-bottom:26px">Five steps, once. After that you never do this again.</p>
+
+    <div class="tb-grid">
+
+      <div class="tb-card">
+        <h3>1 &middot; Download and extract</h3>
+        <p>Take the zip from the button above and extract all of it to a folder. Not just part of it, and do not run it from inside the zip.</p>
+      </div>
+
+      <div class="tb-card">
+        <h3>2 &middot; Close Revit</h3>
+        <p>If Revit is open while you install, the new tab will not appear until you restart it anyway. Easier to close it first.</p>
+      </div>
+
+      <div class="tb-card">
+        <h3>3 &middot; Double-click Install.cmd</h3>
+        <p>It shows the terms, waits for you, then installs. If Windows warns about an unrecognised file, choose <b>More info</b> and then <b>Run anyway</b> &mdash; that warning appears for anything downloaded, not because something is wrong.</p>
+      </div>
+
+      <div class="tb-card">
+        <h3>4 &middot; Start Revit and open a model</h3>
+        <p>There will be a new <b>AJ Connect</b> tab on the ribbon. Nothing else of mine is installed &mdash; no other tabs, no other add-ins.</p>
+      </div>
+
+      <div class="tb-card">
+        <h3>5 &middot; Press AJ Connect, then Connect</h3>
+        <p>Your browser opens with the tools. Click one and it works on your model. That is it.</p>
+      </div>
+
+      <div class="tb-card tb-soon">
+        <h3>If something looks wrong</h3>
+        <p>No tab? Revit was probably open during the install &mdash; close it fully and start again. Browser will not load the page? Press the ribbon button again and let it open the browser for you; the address needs its port number on the end.</p>
+      </div>
+
+    </div>
+
+    <p class="tool-note" style="margin-top:34px;max-width:680px">
+      <b>Removing it is one line.</b> Run <code>install-connector.ps1 -Uninstall</code> from the same folder. It removes only AJ Connect &mdash; every other add-in you have, including AJ&#8209;Tools itself, is left alone.
     </p>
 
   </div>
@@ -157,12 +268,12 @@
   <div class="wrap">
     <div class="ctaband">
       <div>
-        <h2>Want to know when it lands?</h2>
-        <p>One message is enough &mdash; I will come back to you when there is something real to show.</p>
+        <h2>Something you would want it to do?</h2>
+        <p>Tell me the job you do by hand &mdash; not how you think it should be built. That is what turns into a tool, and once it exists it reaches everyone without anybody reinstalling.</p>
       </div>
       <div class="btnrow">
         <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/toolbox/">See the Toolbox <span class="chev">&rsaquo;</span></a>
+        <a class="tlink" href="/aj-tools/">See AJ&#8209;Tools <span class="chev">&rsaquo;</span></a>
       </div>
     </div>
   </div>
@@ -189,7 +300,7 @@
       <ul>
         <li><a href="/aj-tools/">AJ-Tools</a></li>
         <li><a href="/ai-brain/">AJ AI Brain</a></li>
-        <li><a href="/aj-connector/">AJ Connector</a></li>
+        <li><a href="/aj-connector/">AJ Connect</a></li>
         <li><a href="/toolbox/">Toolbox</a></li>
         <li><a href="/skills/">Skills</a></li>
         <li><a href="/faq/">FAQ</a></li>
