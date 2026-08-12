@@ -83,6 +83,10 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   position:absolute;right:13px;top:50%;transform:translateY(-50%);
   width:13px;height:13px;pointer-events:none;stroke:var(--muted);fill:none;stroke-width:2.4;
 }
+/* Printed twin of the control, written by preparePrint in crane-calc.js and
+   shown only by the print stylesheet. It is left in the DOM after printing, so
+   it has to stay hidden here or the value appears twice on screen. */
+.f-in .pv{display:none}
 .f-in input::-webkit-outer-spin-button,.f-in input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .f-in input[type=number]{-moz-appearance:textfield}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -177,20 +181,29 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 
 /* ============ Print ============
-   One printed result, whatever the screen is doing. Dark mode must never
-   reach paper: it wastes toner and the greys go muddy. Sized so it works
-   on both A4 (210mm, the narrower) and Letter (279mm tall, the shorter),
-   so the width is set by A4 and the height budget by Letter. */
+   One printed result, whatever the screen is doing. The sheet is a record of a
+   check that gets filed, so it prints as a record: every control is replaced by
+   its value (preparePrint in crane-calc.js writes the .pv spans) and every row
+   is label left, value right, the same shape the results already use on screen.
+   Dark mode must never reach paper: it wastes toner and the greys go muddy.
+   Sized so it works on both A4 (210mm, the narrower) and Letter (279mm tall,
+   the shorter), so the width is set by A4 and the height budget by Letter. */
 .print-only{display:none}
 
 @media print{
-  /* No size, so the sheet follows whatever paper is loaded. */
-  /* 15mm all round. 12mm looked cramped on paper and sits close to the
-     unprintable edge most office printers keep. */
-  @page{margin:15mm}
+  /* No size, so the sheet follows whatever paper is loaded.
+     14mm top and bottom, 13mm sides: clear of the unprintable edge every
+     office printer keeps (~6.4mm), and it leaves the two card columns wide
+     enough that "Crane weight, excl. counterweight" stays on one line. */
+  @page{margin:14mm 13mm}
 
   /* --- force the light palette, overriding the dark theme --- */
+  /* color-scheme has to be forced with it. Left on dark, Chrome paints the
+     canvas - the whole sheet behind the page box - in its dark UA colour, so
+     printing from dark mode came out framed in solid black on all four sides,
+     whatever html and body were set to. */
   :root,:root[data-theme="dark"],:root[data-theme="light"]{
+    color-scheme:light !important;
     --ink:#000;--muted:#333;--faint:#555;--hairline:#b9bec7;
     --bg:#fff;--bg-alt:#fff;--card:#fff;--link:#000;--blue:#134a8e;
     --neu-surface:#fff;
@@ -216,80 +229,134 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   main>section{padding:0 !important;break-inside:auto !important}
   .wrap{max-width:none;padding:0}
 
-  /* --- header block --- */
-  h1{font-size:17pt !important;margin:0 0 4mm;letter-spacing:-.01em}
+  /* --- masthead: title left, what-this-is and where-it-came-from under it --- */
+  h1{font-size:16pt !important;margin:0;letter-spacing:-.01em;line-height:1.1}
   /* the intro sells the tool on screen; on paper the title already says it */
   .eyebrow,.sub{display:none}
   .tool-head{margin:0}
+  .print-sub{
+    font-size:7.5pt !important;line-height:1.3 !important;color:#333;
+    margin:1mm 0 3mm;padding-bottom:2mm;border-bottom:1.2pt solid #000;
+    letter-spacing:.02em;break-after:avoid;
+  }
 
   /* --- record strip stays with the title --- */
   .rec{
-    grid-template-columns:repeat(5,1fr);gap:3mm;padding:3mm 4mm;margin:0 0 4mm;
-    border:1px solid #999;border-radius:3px;break-inside:avoid;break-after:avoid;
+    /* not five equal columns: a real project name and a crane model are long
+       and everything else is short, and equal columns wrapped "Al Wakrah
+       Sewage Pumping Station" down five lines and dragged the strip with it */
+    grid-template-columns:1.9fr 0.85fr 1.5fr 1.1fr 0.85fr;
+    gap:0 4mm;padding:2.2mm 3mm;margin:0 0 3.5mm;
+    border:0.7pt solid #99a0ab;border-radius:1.5mm;break-inside:avoid;break-after:avoid;
   }
+  /* the record fields read better stacked than as label-and-value rows: five
+     narrow columns leave no room for a value beside its own label */
+  .rec .f{display:block;margin:0;border:0;padding:0}
+  .rec .f label{margin-bottom:0.6mm}
+  .rec .f-in{max-width:none;text-align:left}
+  .rec .f-in .pv{font-size:8.5pt !important;min-height:4.6mm}
+  .rec .f-in .pv.empty{width:100%;min-width:0}
 
   /* --- cards ---
-     Two columns, paired by height with `order` below.
-     Measured alternatives, both worse, do not retry:
-       full-width stacked cards  853mm / 4 sheets (six cards in series beats
-         the ~170mm of blank column it was meant to save)
-       column-count:2            multi-column fights pagination, Letter hit 5
-     Two columns at the original order measured 780mm. */
-  .calc-grid{grid-template-columns:1fr 1fr;gap:4mm;margin:0;align-items:start}
-  /* Tall cards are allowed to split. Forcing break-inside:avoid on all of them
-     jumped the Sling card whole to the next sheet and cost about a page of gap.
-     The pieces that must never split are handled below. */
-  .calc-card{
-    border:1px solid #999;border-radius:3px;padding:3mm 4mm;
-    break-inside:auto;display:block;
+     Two columns that flow, in the page order the screen uses, so a printed
+     sheet can be read alongside the tool.
+     The grid has to become a multi-column flow to print well. A grid row is as
+     tall as its taller card, and these cards run 60-143mm, so on a grid the
+     mismatch inside every row was dead column - about 170mm of it, which is
+     what the old hand-tuned `order` list existed to claw back, at the cost of
+     printing the cards out of the order the page shows them in. Worse, page one
+     could only ever hold one row: a row and the header together overflow the
+     sheet, so a third of page one was blank whatever the order. A column flow
+     has no rows to couple heights, so the cards simply pack: three fit on page
+     one, and the order stays the DOM's.
+     Measured alternative, worse, do not retry: full-width stacked cards, six
+     cards in series beats the column it saves. */
+  .calc-grid{
+    display:block;column-count:2;column-gap:4mm;column-fill:auto;margin:0;
   }
+  /* Whole cards only. A card that splits leaves its results, or worse its
+     safety note, orphaned on the next sheet away from the numbers they
+     qualify. They now fit in a column, so this no longer costs a page. */
+  .calc-card{
+    border:0.7pt solid #99a0ab;border-radius:1.5mm;padding:2.5mm 3mm;
+    break-inside:avoid;display:block;margin:0 0 4mm;
+  }
+  /* The diagrams run the full width under both columns, on a sheet of their
+     own. Left to flow they straddled the page break, so half the drawings sat
+     on one sheet and half on the next with the card's border hanging open
+     between them. Whole, they are the drawing sheet you can put beside the
+     numbers. Sized below to fill that sheet without tipping onto a fourth. */
+  .calc-card.full{-webkit-column-span:all;column-span:all;margin-bottom:0;break-before:page}
   .f,.res,.res-row,.tool-note{break-inside:avoid}
-
-  /* Pair the cards by height. A grid row is as tall as its taller card, so the
-     screen order put 88mm beside 165mm and left the difference blank, three
-     times over: 172mm of dead column. Pairing by height cuts that to 70mm.
-     Measured heights, mm: Lift 88, Headroom 109, Ground 165, Sling 209,
-     Wind 137, Boom 132. The grouping still reads: the load, then the set-up
-     and the rigging, then the conditions and the geometry.
-     DOM order is 1 Lift, 2 Ground, 3 Sling, 4 Wind, 5 Boom, 6 Headroom,
-     7 Diagrams. Re-measure and repair if a card is added or a note changes. */
-  .calc-grid>.calc-card:nth-child(1){order:1}  /* Lift Data      88 */
-  .calc-grid>.calc-card:nth-child(6){order:2}  /* Headroom      109 */
-  .calc-grid>.calc-card:nth-child(2){order:3}  /* Ground        165 */
-  .calc-grid>.calc-card:nth-child(3){order:4}  /* Sling         209 */
-  .calc-grid>.calc-card:nth-child(4){order:5}  /* Wind          137 */
-  .calc-grid>.calc-card:nth-child(5){order:6}  /* Boom          132 */
-  .calc-grid>.calc-card:nth-child(7){order:7}  /* Diagrams, full width */
   .calc-card h2{
-    font-size:10.5pt !important;padding-bottom:1.5mm;margin:0 0 2.5mm;
-    border-bottom:1px solid #999;break-after:avoid;
+    font-size:10pt !important;padding-bottom:1.5mm;margin:0 0 2mm;
+    border-bottom:0.7pt solid #99a0ab;break-after:avoid;color:#000;
   }
   .calc-card h2 .ic{display:none}
 
-  .f{margin-bottom:2mm}
-  .f label{font-size:6.5pt !important;margin-bottom:0.8mm;color:#333}
-  .f-in input,.f-in select{
-    padding:1.2mm 2mm;border:1px solid #b9bec7;border-radius:2px;
-    font-size:9pt !important;color:#000;background:#fff;
+  /* --- entered values: label left, value right, one line each ---
+     The controls themselves are replaced by .pv spans. Printing the real
+     inputs clipped anything wider than its box, printed the placeholder of a
+     field nobody filled, and put the date picker's glyph on the paper. */
+  .f{
+    display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+    gap:0 3mm;margin:0 0 1.4mm;padding-bottom:1.2mm;
+    border-bottom:0.4pt dotted #b9bec7;
   }
-  .f-in .u{font-size:7pt;color:#555}
-  .f2{gap:3mm}
-  .f-flag{font-size:6.8pt !important;color:#000;font-weight:600;margin-top:1mm}
+  .f label{
+    flex:1 1 auto;font-size:6.8pt !important;margin:0;color:#333;
+    text-transform:uppercase;letter-spacing:.04em;
+  }
+  /* margin-left:auto, not justify-content alone: a long label in a half-width
+     pair ("Sling angle from horizontal") pushes the value onto its own line,
+     where space-between has nothing to push it against and it fell back to the
+     left, out of the value column */
+  .f-in{flex:0 0 auto;max-width:56%;margin-left:auto;text-align:right}
+  /* .pv-ready is set by preparePrint once the twins exist. Without the guard, a
+     browser that never ran the script would print a sheet of labels with the
+     controls hidden and nothing in their place. */
+  .calc.pv-ready .f-in input,
+  .calc.pv-ready .f-in select,
+  .calc.pv-ready .f-in .u{display:none !important}
+  .f-in .pv{
+    display:block;font-size:9pt !important;line-height:1.25 !important;
+    font-weight:600;color:#000;word-break:break-word;
+  }
+  /* an untouched field prints as a rule to be filled in by hand on site */
+  .f-in .pv.empty{min-width:22mm;border-bottom:0.5pt solid #6b7280;height:3.2mm}
+  .f-in .pv .pv-u{
+    font-style:normal;font-weight:500;color:#444;
+    font-size:7.5pt !important;margin-left:1mm;
+  }
+  /* the two-up fields keep their pairing, each half still a label/value row */
+  .f2{gap:0 4mm;margin-bottom:0}
+  .f-flag{
+    flex:1 0 100%;font-size:6.8pt !important;color:#000;font-weight:600;
+    margin:0.8mm 0 0;text-align:left;
+  }
 
-  .res{padding-top:3mm;margin-top:1mm;gap:1.6mm;border-top:1px solid #999}
-  .res-row .k{font-size:7.5pt !important}
+  /* --- calculated results: same row shape, boxed value, as on screen --- */
+  .res{padding-top:2mm;margin-top:2mm;gap:1.4mm;border-top:0.7pt solid #99a0ab}
+  .res-row{gap:3mm}
+  .res-row .k{font-size:7.5pt !important;line-height:1.3 !important;color:#333}
   .res-row .v{
-    border:1px solid #b9bec7;border-radius:2px;padding:0.8mm 2mm;
-    font-size:9pt !important;min-width:0;
+    border:0.5pt solid #b9bec7;border-radius:1mm;padding:0.6mm 1.8mm;
+    font-size:8.5pt !important;min-width:0;
   }
-  .res-row .v.big{font-size:10.5pt !important}
+  .res-row .v.big{font-size:10pt !important}
 
   /* --- notes: keep the warnings, they belong on a filed sheet --- */
   .tool-note{
-    border:1px solid #999;border-radius:3px;padding:2.5mm 3mm;margin-top:3mm;
+    border:0.5pt solid #b9bec7;border-radius:1mm;padding:2mm 2.5mm;margin-top:2.5mm;
     font-size:6.8pt !important;line-height:1.35;break-inside:avoid;
   }
   .tool-note *{font-size:6.8pt !important;line-height:1.35 !important}
+  /* the one at the top is the disclaimer that governs the whole sheet */
+  .tool-note.warn{
+    border:0.9pt solid #000;padding:2.5mm 3mm;margin:0 0 3.5mm;
+    font-size:7.2pt !important;
+  }
+  .tool-note.warn *{font-size:7.2pt !important}
   /* same specificity trap as the diagram vars: :root[data-theme="dark"]
      .tool-note.warn out-ranks a bare .tool-note.warn, so printing from dark
      mode left this note orange while its bold runs went black */
@@ -297,31 +364,41 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   :root[data-theme="light"] .tool-note.warn{color:#000}
 
   /* --- diagrams: let the card flow, keep each drawing whole ---
-     These heights are also what keeps the sheet to three pages on Letter.
-     Letter's printable height is 249mm against A4's 267mm, and the closing
-     block needs 19.6mm in one piece (break-inside:avoid). At the previous
-     sizes the last sheet ended with only ~6mm of usable room, so the block
-     tipped onto a fourth page that was otherwise blank. Trimmed by ~17mm
-     here, which A4 never notices - it had 42mm spare. Re-measure the page
-     count on BOTH papers before growing these again. */
+     The drawings are the part of the screen the paper should keep, so they get
+     the room the compact cards freed up. These heights are what keeps the sheet
+     to two pages on BOTH papers: Letter's printable height is 251mm against
+     A4's 269mm, and the closing note and the sign-off strip below need 30mm in
+     one piece. Re-measure the page count on both before growing them. */
   .calc-card.full{break-inside:auto}
   .dg-wrap{grid-template-columns:1fr 1fr;gap:4mm}
   .dg-wrap>div{break-inside:avoid}
-  .dg-t{font-size:6.5pt !important;margin-bottom:1.5mm;border-left-color:#666}
-  .dg-box{border:1px solid #b9bec7;border-radius:2px;padding:2mm}
+  .dg-t{font-size:6.8pt !important;margin-bottom:1.5mm;border-left-color:#134a8e}
+  .dg-box{border:0.5pt solid #b9bec7;border-radius:1mm;padding:2mm}
   /* fixed height and centred, so the drawings line up instead of each one
      being sized by its own aspect ratio */
-  .dg-box svg{height:30mm !important;width:auto;max-width:100%;margin:0 auto}
-  /* the lift overview spans both columns, so a 30mm drawing floats in a
-     180mm box. give it its own height. */
-  .dg-wrap>div:last-child .dg-box svg{height:46mm !important}
+  /* Sized to the sheet, not to taste. The drawing sheet carries two rows of
+     small drawings, the overview, the closing note and the sign-off strip, and
+     it has to hold all of it on Letter, whose printable height is 251mm against
+     A4's 269mm. Budget: 2*small + overview <= 145mm. At 42 and 68 the total
+     came to about 1mm over and the sign-off tipped onto a fourth sheet that was
+     otherwise blank. Re-measure the page count on BOTH papers before growing
+     these again. */
+  .dg-box svg{height:40mm !important;width:auto;max-width:100%;margin:0 auto}
+  /* The lift overview spans both columns. Sized by height like the others it
+     is 96mm of drawing adrift in a 184mm box, so it gets its own height and
+     the block is shrunk to the drawing rather than the drawing lost in the box.
+     Its title rides with it, not out at the card's left edge. */
+  .dg-wrap>div:last-child{width:fit-content;max-width:100%;margin:0 auto}
+  .dg-wrap>div:last-child .dg-box svg{height:64mm !important}
 
   /* sign-off strip. Needs !important: style.css sets p{font-size:9.5pt !important},
      which an inline style cannot beat. */
   .print-only{
     font-size:6.8pt !important;line-height:1.5 !important;
-    margin:2mm 0 0;padding-top:1.5mm;border-top:1px solid #999;break-inside:avoid;
+    margin:2.5mm 0 0;padding-top:2mm;border-top:0.9pt solid #000;break-inside:avoid;
   }
+  /* ...except the masthead line, which is a .print-only too */
+  .print-sub{border-top:0;padding-top:0}
 
   /* --- last element must not push a blank page --- */
   main>section>.wrap>*:last-child{margin-bottom:0 !important;break-after:avoid}

@@ -413,6 +413,64 @@
     tot.textContent = 'Total: ' + total.toFixed(1) + 'm';
   }
 
+  /* ---------- Print ----------
+     A printed sheet is a record of the check, so it has to read as one. Left as
+     live controls it did not: the boxes printed the way an empty form does, a
+     value wider than its box was clipped ("Liebherr LTM 1090-4.2" came out as
+     "Liebherr LTM 1090-"), an untouched field printed its grey placeholder, and
+     the date printed as 12-08-2026 with the picker glyph beside it. So every
+     control is mirrored into a plain span that the print stylesheet shows in its
+     place. Rebuilt on each print, because the values change as they are typed. */
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function prettyDate(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+    if (!m) return v || '';
+    return String(parseInt(m[3], 10)) + ' ' + MONTHS[parseInt(m[2], 10) - 1] + ' ' + m[1];
+  }
+
+  function controlText(ctrl) {
+    if (ctrl.tagName === 'SELECT') {
+      var o = ctrl.options[ctrl.selectedIndex];
+      return o ? o.textContent.trim() : '';
+    }
+    if (ctrl.type === 'date') return prettyDate(ctrl.value);
+    return (ctrl.value || '').trim();
+  }
+
+  function preparePrint() {
+    var form = document.getElementById('calc');
+    if (!form) return;
+    var wraps = form.querySelectorAll('.f-in');
+    Array.prototype.forEach.call(wraps, function (w) {
+      var ctrl = w.querySelector('input,select');
+      if (!ctrl) return;
+      var pv = w.querySelector('.pv');
+      if (!pv) {
+        pv = document.createElement('span');
+        pv.className = 'pv';
+        pv.setAttribute('aria-hidden', 'true');
+        w.appendChild(pv);
+      }
+      var v = controlText(ctrl);
+      pv.textContent = v;
+      /* blank stays blank, so the sheet can be filled in by hand on site */
+      if (v === '') pv.classList.add('empty');
+      else pv.classList.remove('empty');
+      /* the unit sits in an absolutely positioned span on screen; on paper it
+         belongs with the number */
+      var unit = w.querySelector('.u');
+      if (v !== '' && unit) {
+        var u = document.createElement('i');
+        u.className = 'pv-u';
+        u.textContent = unit.textContent;
+        pv.appendChild(u);
+      }
+    });
+    /* only now may the print stylesheet hide the controls themselves */
+    form.classList.add('pv-ready');
+  }
+
   function init() {
     var form = document.getElementById('calc');
     if (!form) return;
@@ -423,7 +481,17 @@
     var s = document.getElementById('btnSail');
     if (s) s.addEventListener('click', useSuggestedSail);
     var pr = document.getElementById('btnPrint');
-    if (pr) pr.addEventListener('click', function () { window.print(); });
+    if (pr) pr.addEventListener('click', function () { preparePrint(); window.print(); });
+
+    /* beforeprint covers Chrome, Edge and Firefox, including Ctrl+P. Safari
+       only fires the media query, so both are wired. */
+    window.addEventListener('beforeprint', preparePrint);
+    if (window.matchMedia) {
+      var mq = window.matchMedia('print');
+      var onMedia = function (e) { if (e.matches) preparePrint(); };
+      if (mq.addEventListener) mq.addEventListener('change', onMedia);
+      else if (mq.addListener) mq.addListener(onMedia);
+    }
     var d = document.getElementById('recDate');
     if (d && !d.value) {
       var n = new Date();
