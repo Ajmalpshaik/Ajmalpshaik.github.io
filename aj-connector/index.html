@@ -128,17 +128,16 @@
       <span>AJ Connect</span>
     </nav>
 
-    <p class="eyebrow">Free &middot; Revit 2020 &middot; source published</p>
+    <p class="eyebrow">Free &middot; Revit 2020&ndash;2027 &middot; source published</p>
     <h1 style="font-size:clamp(40px,6vw,68px);font-weight:700;letter-spacing:-.028em;line-height:1.06"><span class="grad-text">AJ Connect.</span></h1>
-    <p class="sub" style="max-width:660px">My Revit tools, in your browser. You install it once &mdash; and after that, when I publish a new tool it simply appears. Nothing to reinstall, nothing to chase.</p>
+    <p class="sub" style="max-width:660px">My Revit tools, in your browser. You install it once &mdash; and after that, when I publish a new tool, or improve the panel itself, it simply appears. Nothing to reinstall, nothing to chase.</p>
 
     <div class="btnrow" style="margin-top:30px">
       <a class="btn" href="https://github.com/Ajmalpshaik/AJ-Connect/releases/latest" rel="noopener">Download AJ Connect</a>
-      <a class="btn btn-ghost" href="/aj-connector/panel/">Open the panel</a>
       <a class="tlink" href="https://github.com/Ajmalpshaik/AJ-Connect" rel="noopener">Read the source <span class="chev">&rsaquo;</span></a>
     </div>
     <p class="tool-note" style="margin-top:14px;max-width:640px;opacity:.8">
-      Already installed it? <b>Open the panel</b> is where you run the tools and change the settings, on the Revit open on this computer.
+      Already installed it? The panel opens from inside Revit &mdash; <b>AJ Connect</b> tab &rarr; <b>Connect</b> &rarr; <b>Open the tools page</b>. There is no code to type and nothing to allow in your browser.
     </p>
 
     <p class="tool-note" style="margin-top:22px;max-width:640px">
@@ -184,7 +183,7 @@
   <div class="wrap">
 
     <h2 style="font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Tools available now</h2>
-    <p class="sub" style="max-width:660px;margin-bottom:26px">This list is read from the same place AJ Connect reads. When I publish a tool it appears here and in your Revit at the same time &mdash; I do not update this page by hand. To <b>run</b> them, <a href="/aj-connector/panel/">open the panel</a>.</p>
+    <p class="sub" style="max-width:660px;margin-bottom:26px">This list is read from the same place AJ Connect reads. When I publish a tool it appears here and in your Revit at the same time &mdash; I do not update this page by hand. To <b>run</b> them, install AJ Connect and open the panel from inside Revit.</p>
 
     <!-- Written into the HTML so the list is never empty: if the fetch below fails, or JavaScript is
          off, a visitor still sees what is published. The script replaces it when it succeeds. -->
@@ -345,9 +344,15 @@
 /* Lists the published tools, read from the same folder AJ Connect reads - so publishing a tool puts
    it on this page and in everyone's Revit in one action, and this page is never edited by hand.
 
-   DISPLAY ONLY. Running them lives in the panel (/aj-connector/panel/), which needs AJ Connect on the
-   same computer. Keeping this page passive is deliberate: most visitors have no Revit, and probing
+   DISPLAY ONLY. Running them lives in the panel, which AJ Connect serves from the computer Revit is
+   open on. Keeping this page passive is deliberate: most visitors have no Revit, and probing
    localhost here would show them a connection failure for something they never asked to do.
+
+   There used to be a second, runnable copy of the panel at /aj-connector/panel/. It was removed in
+   AJ Connect v1.5.0 - Chrome and Edge 138+ block a public page from reaching a local address until
+   the visitor grants a permission almost nobody finds, so it reported "not connected" on a working
+   setup. The panel is published as a signed file that AJ Connect downloads and serves itself, which
+   updates just as freely and needs no browser permission at all.
 
    The list written into the HTML is the fallback - if this fetch fails, a visitor still sees what is
    published rather than an empty section. */
@@ -399,7 +404,7 @@
       if (note) {
         note.innerHTML = "<b>" + tools.length + " tool" + (tools.length === 1 ? "" : "s") +
           " published.</b> Every one of these is signed. AJ Connect checks the signature on your " +
-          'computer before it will run anything. <a href="/aj-connector/panel/">Open the panel</a> to run them.';
+          "computer before it will run anything. Open the panel from inside Revit to run them.";
       }
     })
     .catch(function () { /* keep the fallback list already in the HTML */ });
