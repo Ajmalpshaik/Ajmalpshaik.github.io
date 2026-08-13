@@ -21,11 +21,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // ---- serve the site over HTTP, the way it is actually served ---------------
 //
 // These pages used to be opened as file:// URLs. That looks equivalent and is
-// not: Chromium refuses fetch() over file://, so any page that reads something
-// at runtime threw "URL scheme file is not supported" and failed the run. The
-// AJ Connect page reads its published tool list that way, which is deliberate -
-// publishing a tool puts it on the page without the page being edited - so the
-// checks went red the day it was added and stayed red.
+// not: Chromium refuses fetch() over file://, so any page reading something at
+// runtime threw "URL scheme file is not supported" and failed the run - and the
+// checks stayed red for as long as such a page was on the site.
 //
 // Serving over HTTP is not a workaround for that, it is the more faithful test.
 // Root-relative paths (/favicon.svg), fetch, and response codes all behave the
@@ -62,7 +60,7 @@ const url = (p) => `${ORIGIN}/${p}`;
 const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
-  'aj-tools/index.html', 'ai-brain/index.html', 'aj-connector/index.html',
+  'aj-tools/index.html', 'ai-brain/index.html',
   'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
 ];
