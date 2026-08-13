@@ -11,11 +11,54 @@
  */
 
 import { chromium } from 'playwright';
+import { createServer } from 'http';
+import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, extname, join, normalize } from 'path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const url = (p) => 'file://' + join(ROOT, p);
+
+// ---- serve the site over HTTP, the way it is actually served ---------------
+//
+// These pages used to be opened as file:// URLs. That looks equivalent and is
+// not: Chromium refuses fetch() over file://, so any page that reads something
+// at runtime threw "URL scheme file is not supported" and failed the run. The
+// AJ Connect page reads its published tool list that way, which is deliberate -
+// publishing a tool puts it on the page without the page being edited - so the
+// checks went red the day it was added and stayed red.
+//
+// Serving over HTTP is not a workaround for that, it is the more faithful test.
+// Root-relative paths (/favicon.svg), fetch, and response codes all behave the
+// way they will on ajmalps.com, and none of them can be exercised over file://.
+const TYPES = {
+  '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
+  '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml',
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',
+  '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2',
+  '.xml': 'application/xml', '.txt': 'text/plain', '.webmanifest': 'application/manifest+json',
+};
+
+const server = createServer(async (req, res) => {
+  let path = decodeURIComponent(req.url.split('?')[0]);
+  if (path.endsWith('/')) path += 'index.html';
+
+  // normalize before joining, so a "../" in a request cannot walk out of ROOT
+  const file = join(ROOT, normalize(path));
+  if (!file.startsWith(ROOT)) { res.writeHead(403).end(); return; }
+
+  try {
+    const body = await readFile(file);
+    res.writeHead(200, { 'Content-Type': TYPES[extname(file).toLowerCase()] || 'application/octet-stream' });
+    res.end(body);
+  } catch {
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<!doctype html><title>404</title>not found');
+  }
+});
+
+await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+const ORIGIN = `http://127.0.0.1:${server.address().port}`;
+const url = (p) => `${ORIGIN}/${p}`;
 const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
@@ -35,7 +78,17 @@ for (const page of PAGES) {
   p.on('pageerror', (e) => fail(`${page}: uncaught script error — ${e.message}`));
   p.on('console', (m) => { if (m.type() === 'error') fail(`${page}: console error — ${m.text()}`); });
   p.on('requestfailed', (r) => {
-    if (r.url().startsWith('file://')) fail(`${page}: failed to load ${r.url().split('/').pop()}`);
+    if (r.url().startsWith(ORIGIN)) fail(`${page}: failed to load ${r.url().split('/').pop()}`);
+  });
+  // Over file:// a missing file was a failed request. Over HTTP it is a perfectly
+  // successful response that happens to say 404, so without this the checks would
+  // quietly stop noticing a broken local link - the one thing this handler exists
+  // for. Only our own origin is judged; a blocked font on someone's CDN is not
+  // this repository's problem.
+  p.on('response', (r) => {
+    if (r.url().startsWith(ORIGIN) && r.status() >= 400) {
+      fail(`${page}: ${r.status()} loading ${r.url().slice(ORIGIN.length)}`);
+    }
   });
 
   await p.goto(url(page));
@@ -144,6 +197,7 @@ for (const page of PAGES) {
 }
 
 await browser.close();
+await new Promise((resolve) => server.close(resolve));
 
 if (failures.length) {
   console.log(failures.map((f) => `ERROR:   ${f}`).join('\n'));
