@@ -109,7 +109,7 @@
   /* links from the old single-page version land on the right page now */
   var legacy = {
     story:"/story/", experience:"/experience/", projects:"/work/", work:"/work/",
-    ajtools:"/aj-tools/", "aj-tools":"/aj-tools/", brain:"/ai-brain/",
+    ajtools:"/aj-tools/", "aj-tools":"/aj-tools/", brain:"/heron-ai/",
     about:"/about/", skills:"/skills/", faq:"/faq/", contact:"/contact/"
   };
   if(location.hash){

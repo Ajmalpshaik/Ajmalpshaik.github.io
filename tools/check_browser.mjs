@@ -60,7 +60,7 @@ const url = (p) => `${ORIGIN}/${p}`;
 const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
-  'aj-tools/index.html', 'ai-brain/index.html',
+  'aj-tools/index.html', 'heron-ai/index.html',
   'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
 ];
