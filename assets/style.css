@@ -264,10 +264,11 @@ html.js .reveal.in{opacity:1;transform:none}
 /* 1100, not 1024: the capsule is centred on the viewport while the brand and the
    theme switch sit inside the 1080px .navin, so the clearance on the brand side
    stops shrinking above 1080px and is the same at every wider screen.
-   Measured at 1280px: eight tabs at 15px side padding = 616px capsule, 109px clear.
-   The padding was briefly 12px to fit a tenth tab; that tab and the ninth are both
-   gone now, so 15px stays with room to spare.
-   Re-measure both gaps here if a ninth tab is ever added again. */
+   Measured at 1280px: nine tabs at 15px side padding = 702px capsule, 66px clear.
+   Re-measure when a tab is added OR renamed - this is 23px wider than the same
+   nine tabs measured before, purely because "Heron AI" is a longer label than the
+   tab it replaced. The padding was briefly 12px to fit a tenth tab; that tab is
+   gone, so it is back to 15px. */
 @media(max-width:1100px){
   /* menu button first, theme switch stays last in the corner */
   #menuBtn{display:flex}
@@ -800,23 +801,15 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 #vanta-hero.on{opacity:.7}
 #vanta-hero canvas{display:block}
 .hero{overflow:hidden}
-/* On the Heron AI page the flock sits behind the opening chapter instead of
-   a hero. It covers the heading and fades out before the reading column, so it
-   decorates the top of the page without flying through the text. */
-.chapter.has-birds{overflow:hidden}
-.chapter.has-birds #vanta-hero{
-  bottom:auto;height:min(78%,640px);
-  -webkit-mask-image:linear-gradient(to bottom,#000 52%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 52%,transparent 100%);
-}
-.chapter.has-birds #vanta-hero.on{opacity:.5}
-/* A page that only announces something carries one heading and two lines, so
-   without a floor the section collapses to the height of its own text: the
-   flock gets a strip too short to read as flight, and the footer arrives
-   directly under the heading. Centred rather than top-aligned, because the
-   floor otherwise just leaves dead space below the words. */
-.chapter.first.soon{min-height:76vh;display:flex;align-items:center}
-.chapter.first.soon .wrap{width:100%}
+/* A page that only announces something is one full screen and nothing else: no
+   footer under it, nothing below the fold to scroll to. It reuses the hero
+   rather than a chapter, because the chapter's two-column grid put the heading
+   and the lines on different baselines and left the flock clumped in the gap
+   between them, flying over the text instead of behind it.
+   svh, not vh: on a phone vh is the tallest the viewport ever gets, so with the
+   browser chrome showing the last line sits under it. */
+.hero.soon{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.hero.soon .wrap{width:100%}
 @media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}
 @media print{#vanta-hero{display:none !important}}
 /* High Contrast strips decoration; canvas pixels are exempt from forced-colour
