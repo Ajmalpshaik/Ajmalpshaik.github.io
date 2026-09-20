@@ -63,6 +63,11 @@ const PAGES = [
   'aj-tools/index.html', 'heron-ai/index.html',
   'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
+  // Added 2026-09-20. These two shipped on 2026-08-12 and were never in this
+  // list, so for five weeks the only thing checking them was check_site.py,
+  // which reads the file and never renders it - a page that threw on load or
+  // scrolled sideways would have looked exactly like a passing one.
+  'toolbox/index.html', 'toolbox/crane-lift-calculator/index.html',
 ];
 const WIDTHS = [1440, 1280, 834, 390];
 
