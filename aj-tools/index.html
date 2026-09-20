@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AJ-Tools — Revit MEP add-in suite by Ajmal P.S</title>
-<meta name="description" content="AJ-Tools is a Revit add-in suite for MEP: 46 commands across 18 ribbon panels for view, graphics, MEP, coordination, dimensioning and tagging. One codebase for Revit 2020-2027.">
+<meta name="description" content="AJ-Tools is a Revit add-in suite for MEP: 46 commands across 17 ribbon panels for view, graphics, MEP, coordination, dimensioning and tagging. One codebase for Revit 2020-2027.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/aj-tools/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -147,9 +147,9 @@
       "applicationCategory": "DesignApplication",
       "applicationSubCategory": "Autodesk Revit add-in",
       "operatingSystem": "Windows",
-      "softwareVersion": "1.41.0",
+      "softwareVersion": "1.56.0",
       "url": "https://ajmalps.com/aj-tools/",
-      "description": "A Revit add-in suite for MEP work: 46 commands across 18 ribbon panels covering view control, graphics, datums, MEP routing, openings, coordination, dimensioning and tagging. Written in C# with WPF interfaces and its own installer, built from one codebase for Revit 2020 through 2027.",
+      "description": "A Revit add-in suite for MEP work: 46 commands across 17 ribbon panels covering view control, graphics, datums, MEP routing, openings, coordination, dimensioning and tagging. Written in C# with WPF interfaces and its own installer, built from one codebase for Revit 2020 through 2027.",
       "author": {
         "@type": "Person",
         "name": "Ajmal P.S",
@@ -225,6 +225,21 @@
 .rlist span{font-size:15px;color:var(--muted);line-height:1.55}
 .rlist em{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
   color:var(--link);margin-right:8px}
+.rlist .q{color:var(--faint);font-style:italic}
+/* The newest ten sit open; the rest are one click away. <details> rather than
+   a script, so it still opens with JavaScript off and find-in-page can reach
+   a version inside a closed one. */
+.allrel{max-width:1080px;margin:0 auto;padding:0 22px}
+.allrel summary{list-style:none;cursor:pointer;padding:18px 0 6px;-webkit-tap-highlight-color:transparent}
+.allrel summary::-webkit-details-marker{display:none}
+.allrel summary b{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:650;
+  letter-spacing:-.01em;color:var(--link)}
+.allrel summary b::after{content:"";flex:none;width:7px;height:7px;border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .25s var(--ease-out)}
+.allrel[open] summary b::after{transform:rotate(-135deg)}
+.allrel summary span{display:block;margin-top:4px;font-size:13.5px;color:var(--faint)}
+.allrel summary:focus-visible{outline:2px solid var(--link);outline-offset:4px;border-radius:8px}
+.allrel .rlist{padding:0}
 .cta{padding:78px 0;text-align:center}
 .cta h2{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 .cta p{margin:18px auto 0;max-width:56ch;color:var(--muted);font-size:17px}
@@ -300,7 +315,7 @@
     </div>
     <div class="ch-body">
     <p class="ch-lead reveal">A personal script helps one person. The moment a tool has an installer, a version number and documentation, it helps everyone — and that is the difference between a clever trick and something a company can actually rely on.</p>
-    <p class="ch-lead reveal">Today AJ-Tools is a C# Revit add-in suite with WPF interfaces and its own installer, so the whole drafting team runs the same version of the same tools. <strong>One codebase builds for Revit 2020 through 2027, currently at v1.41.0.</strong> Two ribbon tabs carry <strong>46 tools across 18 panels</strong> &mdash; <strong>AJ Tools</strong> for view, graphics, MEP and coordination work, <strong>AJ Annotation</strong> for dimensioning, tagging and text.</p>
+    <p class="ch-lead reveal">Today AJ-Tools is a C# Revit add-in suite with WPF interfaces and its own installer, so the whole drafting team runs the same version of the same tools. <strong>One codebase builds for Revit 2020 through 2027, currently at v1.56.0.</strong> Two ribbon tabs carry <strong>46 tools across 17 panels</strong> &mdash; <strong>AJ Tools</strong> for view, graphics, MEP and coordination work, <strong>AJ Annotation</strong> for dimensioning, tagging and text.</p>
 
     </div>
   </div>
@@ -311,9 +326,9 @@
   <div class="wrap">
     <div class="numgrid">
       <div><b>46</b><span>commands on the ribbon</span></div>
-      <div><b>18</b><span>panels across two tabs</span></div>
+      <div><b>17</b><span>panels across two tabs</span></div>
       <div><b>8</b><span>Revit versions, one codebase</span></div>
-      <div><b>117</b><span>tagged releases</span></div>
+      <div><b>160</b><span>tagged releases</span></div>
     </div>
   </div>
 </section>
@@ -400,9 +415,9 @@
         </ul>
       </div>
       <div class="pgrp reveal">
-        <h3>AI Assistant <i>1</i></h3>
+        <h3>Quick <i>1</i></h3>
         <ul class="tlist">
-          <li><b>C#</b><span>Open the interactive AI-powered C# shell for Revit.</span></li>
+          <li><b>Quick Menu</b><span>A tool wheel that opens around the mouse pointer, with the slots you choose. Customise opens the wheel itself to set them.</span></li>
         </ul>
       </div>
       <div class="pgrp reveal">
@@ -413,16 +428,11 @@
       </div>
     </section>
     <section class="tabsec">
-      <h2 class="head reveal">AJ Annotation <span class="dim">15 tools &middot; 6 panels</span></h2>
+      <h2 class="head reveal">AJ Annotation <span class="dim">15 tools &middot; 5 panels</span></h2>
       <div class="pgrp reveal">
-        <h3>Auto Dimension <i>1</i></h3>
+        <h3>Dimensions <i>4</i></h3>
         <ul class="tlist">
-          <li><b>Auto Duct Dimension</b><span>Create a chained perpendicular reference dimension for ducts, nearby ducts, walls, structural columns, and structural beams.</span></li>
-        </ul>
-      </div>
-      <div class="pgrp reveal">
-        <h3>Dimensions <i>3</i></h3>
-        <ul class="tlist">
+          <li><b>Auto MEP Dimension</b><span>Create a chained perpendicular reference dimension for ducts, nearby ducts, walls, structural columns, and structural beams.</span></li>
           <li><b>Automatic Dimension</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
           <li><b>Quick Dimension</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
           <li><b>Copy Dimension Text</b><span>Copy Above/Below/Prefix/Suffix text from one dimension to others.</span></li>
@@ -463,18 +473,175 @@
 
 <section class="rel" aria-label="Recent releases">
   <div class="wrap">
-    <h2 class="head reveal" style="padding:0">Recent releases <span class="dim">117 tagged so far</span></h2>
+    <h2 class="head reveal" style="padding:0">Recent releases <span class="dim">160 versions so far</span></h2>
   </div>
   <ul class="rlist">
-        <li class="reveal"><b>v1.41.0</b><time>2026-08-05</time><span><em>Added</em> NVIDIA is now a fourth AI option in the C# panel</span></li>
-        <li class="reveal"><b>v1.40.6</b><time>2026-08-05</time><span><em>Fixed</em> Game Mode — the camera flew off every time you shot something with the SELECTOR gun</span></li>
-        <li class="reveal"><b>v1.40.5</b><time>2026-08-05</time><span><em>Added</em> The little status pop-up now fades in and out instead of appearing and</span></li>
-        <li class="reveal"><b>v1.40.4</b><time>2026-08-05</time><span><em>Fixed</em> You could close a Purge window while it was still scanning</span></li>
-        <li class="reveal"><b>v1.40.3</b><time>2026-08-05</time><span><em>Added</em> Purge Unplaced Views</span></li>
-        <li class="reveal"><b>v1.40.2</b><time>2026-08-05</time><span><em>Changed</em> Tick boxes and radio buttons now look like AJ Tools</span></li>
-        <li class="reveal"><b>v1.40.1</b><time>2026-08-05</time><span><em>Added</em> Purge Unused Elements</span></li>
-        <li class="reveal"><b>v1.40.0</b><time>2026-08-05</time><span><em>Important</em> Every window still returns exactly the same answer as before</span></li>
+        <li class="reveal"><b>v1.56.0</b><time>2026-08-20</time><span><em>Added</em> a command can say which open project it means</span></li>
+        <li class="reveal"><b>v1.55.0</b><time>2026-08-20</time><span><em>Added</em> each session says which one it is</span></li>
+        <li class="reveal"><b>v1.54.0</b><time>2026-08-20</time><span><em>Fixed</em> Quick Menu slots that quietly did nothing</span></li>
+        <li class="reveal"><b>v1.53.0</b><time>2026-08-19</time><span><em>Changed</em> Quick Menu → Customise now shows the wheel itself, instead of a numbered list standing in for it</span></li>
+        <li class="reveal"><b>v1.52.0</b><time>2026-08-19</time><span><em>Changed</em> New tool: Quick Menu — a game-style tool wheel that opens around your mouse pointer, holding the AJ Tools buttons you use most</span></li>
+        <li class="reveal"><b>v1.51.0</b><time>2026-08-18</time><span><em>Changed</em> accessory tags now sit 150mm from their element instead of 300mm</span></li>
+        <li class="reveal"><b>v1.50.5</b><time>2026-08-18</time><span><em>Fixed</em> tags without a leader could land on top of a duct or fitting</span></li>
+        <li class="reveal"><b>v1.50.4</b><time>2026-08-18</time><span><em>Fixed</em> the category list in Create Tags Settings was squashed to two rows</span></li>
+        <li class="reveal"><b>v1.50.3</b><time>2026-08-18</time><span><em>Changed</em> the whole Tags panel is now small stacked buttons, instead of a mix of small and large, and laid out in two columns: | | | |---|---| |...</span></li>
+        <li class="reveal"><b>v1.50.1</b><time>2026-08-17</time><span><em>Changed</em> Create Tags no longer asks you where to put each tag</span></li>
   </ul>
+  <details class="allrel">
+    <summary><b>Show every release</b><span>150 more, back to v1.2.0 on 2026-04-07</span></summary>
+    <ul class="rlist">
+        <li><b>v1.49.10</b><time>2026-08-17</time><span><em>Fixed</em> the tag spacing setting now means the gap you can see between tags, not the distance between their centres</span></li>
+        <li><b>v1.49.9</b><time>2026-08-17</time><span><em>Fixed</em> accessory tags with the leader turned off were still landing below the accessory instead of beside it</span></li>
+        <li><b>v1.49.8</b><time>2026-08-17</time><span><em>Fixed</em> the tag spacing setting can no longer be set too small to work</span></li>
+        <li><b>v1.49.7</b><time>2026-08-17</time><span><em>Added</em> Smart MEP Tag Settings now has two tabs</span></li>
+        <li><b>v1.49.6</b><time>2026-08-17</time><span><em>Changed</em> Fix Tag Clash now moves a tag the shortest way out, instead of always shifting it by a whole tag height</span></li>
+        <li><b>v1.49.5</b><time>2026-08-17</time><span><em>Added</em> the &quot;this is a big job, continue?&quot; warning now covers the whole Tags panel, not just the two tools that got it in 1.49.4</span></li>
+        <li><b>v1.49.4</b><time>2026-08-17</time><span><em>Added</em> a count-and-confirm before a long run</span></li>
+        <li><b>v1.49.3</b><time>2026-08-17</time><span><em>Added</em> the Skip vertical ducts, pipes and cable trays tick box now also appears in Smart MEP Tag Settings, so it can be set from either tagging...</span></li>
+        <li><b>v1.49.2</b><time>2026-08-17</time><span><em>Changed</em> the Skip vertical ducts, pipes and cable trays tick box moved out of the Fix Tag Clash settings window and into the Create Tags settings...</span></li>
+        <li><b>v1.49.1</b><time>2026-08-16</time><span><em>Changed</em> the five tag tools now share three common blocks instead of each carrying its own copy</span></li>
+        <li><b>v1.49.0</b><time>2026-08-16</time><span><em>Added</em> NEW TOOL — Fix Tag Clash, on the AJ Annotation &quot;Tags&quot; panel, with Clear Tag Clash Marks and its own settings</span></li>
+        <li><b>v1.48.3</b><time>2026-08-16</time><span><em>Changed</em> the Auto MEP Dimension settings window is now in two tabs — What to dimension (which services, and what they are measured to) and How...</span></li>
+        <li><b>v1.48.2</b><time>2026-08-16</time><span><em>Fixed</em> Auto MEP Dimension left two dimensions on the same ducts</span></li>
+        <li><b>v1.48.1</b><time>2026-08-16</time><span><em>Fixed</em> the Connect MEP Elements settings window cut off the bottom of the Main tab — the &quot;Warn me if the new run hits something&quot; box was half...</span></li>
+        <li><b>v1.48.0</b><time>2026-08-16</time><span><em>Changed</em> the tool always stretches what you picked</span></li>
+        <li><b>v1.47.8</b><time>2026-08-16</time><span><em>Fixed</em> repo housekeeping pass — several docs had drifted from the real code:</span></li>
+        <li><b>v1.47.7</b><time>2026-08-16</time><span><em>Fixed</em> the Connect MEP Elements button was getting stuck on Settings</span></li>
+        <li><b>v1.47.6</b><time>2026-08-16</time><span><em>Removed</em> three more pieces of leftover code found by that check — a number that was being tracked and passed around but never actually read by...</span></li>
+        <li><b>v1.47.5</b><time>2026-08-16</time><span><em>Removed</em> the automatic pairing for a big selection</span></li>
+        <li><b>v1.47.4</b><time>2026-08-15</time><span><em>Fixed</em> a bug Ajmal caught by testing the tool live</span></li>
+        <li><b>v1.47.3</b><time>2026-08-15</time><span><em>Changed</em> the Bend angle section is tidier</span></li>
+        <li><b>v1.47.2</b><time>2026-08-15</time><span><em>Fixed</em> the 45° crank was being built backwards whenever the two runs overlapped</span></li>
+        <li><b>v1.47.1</b><time>2026-08-15</time><span><em>Changed</em> the Connect MEP Elements settings window was too much to take in</span></li>
+        <li><b>v1.47.0</b><time>2026-08-15</time><span><em>Changed</em> no more dialog on every click</span></li>
+        <li><b>v1.46.0</b><time>2026-08-15</time><span><em>Added</em> &quot;A separate row for each run, stacked&quot; — a third way of drawing the dimensions, from Ajmal&#x27;s own sketch</span></li>
+        <li><b>v1.45.2</b><time>2026-08-15</time><span><em>Removed</em> &quot;Overhang past the end reference&quot;</span></li>
+        <li><b>v1.45.1</b><time>2026-08-15</time><span><em>Changed</em> No popup when it works</span></li>
+        <li><b>v1.45.0</b><time>2026-08-15</time><span><em>Changed</em> &quot;Auto Duct Dimension&quot; is now &quot;Auto MEP Dimension&quot;</span></li>
+        <li><b>v1.44.0</b><time>2026-08-13</time><span><em>Removed</em> Web Panel</span></li>
+        <li><b>v1.43.1</b><time>2026-08-13</time><span><em>Fixed</em> The installer could not install Revit 2025, 2026 or 2027 at all</span></li>
+        <li><b>v1.43.0</b><time>2026-08-12</time><span><em>Added</em> Web Panel</span></li>
+        <li><b>v1.42.1</b><time>2026-08-11</time><span><em>Fixed</em> Transferred legends and drafting views arrived empty</span></li>
+        <li><b>v1.42.0</b><time>2026-08-11</time><span><em>Note</em> This entry also records the voice&#x27;s original arrival</span></li>
+        <li><b>v1.41.0</b><time>2026-08-05</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.40.6</b><time>2026-08-05</time><span><em>Fixed</em> Game Mode — the camera flew off every time you shot something with the SELECTOR gun</span></li>
+        <li><b>v1.40.5</b><time>2026-08-05</time><span><em>Note</em> Found by listing every UI surface in the add-in and checking them off one by one, rather than trusting the running list</span></li>
+        <li><b>v1.40.4</b><time>2026-08-05</time><span><em>Fixed</em> You could close a Purge window while it was still scanning</span></li>
+        <li><b>v1.40.3</b><time>2026-08-05</time><span><em>Changed</em> The tick boxes inside the scrolling lists (View Crop target views, Section Mark views) now match the rest of AJ Tools too</span></li>
+        <li><b>v1.40.2</b><time>2026-08-05</time><span><em>Changed</em> Tick boxes and radio buttons now look like AJ Tools</span></li>
+        <li><b>v1.40.1</b><time>2026-08-05</time><span><em>Added</em> Purge Unused Elements now shows a progress bar and a running count while it scans - &quot;Checking element 340 of 1,200...&quot; - instead of...</span></li>
+        <li><b>v1.40.0</b><time>2026-08-05</time><span><em>Added</em> Windows now close with a short fade and a slight sink, instead of vanishing</span></li>
+        <li><b>v1.39.7</b><time>2026-08-05</time><span><em>Added</em> Switching tabs no longer hard-cuts</span></li>
+        <li><b>v1.39.6</b><time>2026-08-05</time><span><em>Added</em> The last four windows that have their own separate styling now react to the mouse too, so the whole suite is consistent</span></li>
+        <li><b>v1.39.5</b><time>2026-08-05</time><span><em>Added</em> a checking script, tools/verify-wpf-styles.ps1</span></li>
+        <li><b>v1.39.4</b><time>2026-08-05</time><span><em>Added</em> Buttons now react when you touch them</span></li>
+        <li><b>v1.39.3</b><time>2026-08-05</time><span><em>Added</em> Every AJ Tools window now opens with a short fade and a small upward settle instead of snapping onto the screen</span></li>
+        <li><b>v1.39.2</b><time>2026-08-05</time><span><em>Added</em> The About window now animates</span></li>
+        <li><b>v1.39.1</b><time>2026-08-04</time><span><em>Fixed</em> The Revit 2025, 2026 and 2027 builds now compile with zero warnings, matching the 2020 baseline</span></li>
+        <li><b>v1.39.0</b><time>2026-07-30</time><span><em>Added</em> Game Mode laser now also shows the element&#x27;s System and Level in its identity line (e.g</span></li>
+        <li><b>v1.38.4</b><time>2026-07-29</time><span><em>Changed</em> Game Mode full audit pass, zero behaviour change - no logic bug found</span></li>
+        <li><b>v1.38.3</b><time>2026-07-29</time><span><em>Changed</em> Game Mode - final weapon color scheme applied everywhere (crosshair, beams, glows, texts): GUN amber, LASER green, CLEANER black &amp;...</span></li>
+        <li><b>v1.38.2</b><time>2026-07-29</time><span><em>Fixed</em> Game Mode aim/display sync - shots could land beside the crosshair when Revit had 2D-zoomed/panned the perspective view; the game now...</span></li>
+        <li><b>v1.38.1</b><time>2026-07-29</time><span><em>Changed</em> Game Mode teleport visual finalized to the approved VR reference - solid green ballistic arc dropping onto a landing disc drawn flat on...</span></li>
+        <li><b>v1.38.0</b><time>2026-07-29</time><span><em>Added</em> Game Mode PROFESSIONAL MODE (N, remembered across sessions) - no gun ever shows, presentable in meetings, every tool keeps working with...</span></li>
+        <li><b>v1.37.0</b><time>2026-07-29</time><span><em>Removed</em> Game Mode measuring (not working properly) - the laser keeps its live distance in mm and element identity</span></li>
+        <li><b>v1.36.4</b><time>2026-07-29</time><span><em>Fixed</em> Game Mode CLEANER rifle rotated and repositioned so barrel and beam form one straight line to the crosshair</span></li>
+        <li><b>v1.36.3</b><time>2026-07-29</time><span><em>Changed</em> Game Mode SNAG MARKER now shows Ajmal&#x27;s blaster picture - every weapon has its own gun: pistol (gun + laser), rifle (cleaner), blaster...</span></li>
+        <li><b>v1.36.2</b><time>2026-07-29</time><span><em>Changed</em> Game Mode CLEANER weapon now shows Ajmal&#x27;s rifle picture instead of the pistol</span></li>
+        <li><b>v1.36.1</b><time>2026-07-29</time><span><em>Changed</em> Game Mode saved positions are now unlimited - B keeps counting past 9, the tour (O) visits every slot, the left-side list shows them all...</span></li>
+        <li><b>v1.36.0</b><time>2026-07-29</time><span><em>Added</em> Game Mode round 11 - true rubber-band measure line (superseded - removed in 1.37.0), SNAG MARKER weapon (paints red + punch-list report...</span></li>
+        <li><b>v1.35.1</b><time>2026-07-29</time><span><em>Removed</em> Game Mode follow-me section box (X) - the game is back to zero undo entries in every mode</span></li>
+        <li><b>v1.35.0</b><time>2026-07-29</time><span><em>Changed</em> Game Mode teleport reworked to the Autodesk Workshop XR feel - hold T for a glowing jump arc with landing ring and distance, release to go</span></li>
+        <li><b>v1.34.1</b><time>2026-07-29</time><span><em>Changed</em> Game Mode restructure, zero behaviour change - everything now lives in one folder (src/GameMode) with one small file per feature...</span></li>
+        <li><b>v1.34.0</b><time>2026-07-29</time><span><em>Added</em> Game Mode &quot;add all&quot; round - teleport (T), saved positions (B / 1-9), photo mode (K, to Pictures\AJ Game Photos), CLEANER weapon...</span></li>
+        <li><b>v1.33.0</b><time>2026-07-29</time><span><em>Added</em> Game Mode scroll-wheel holster (gun slides away; scroll up or click to draw), and the measure card&#x27;s axis breakdown (Total, X/Y/Z deltas...</span></li>
+        <li><b>v1.32.2</b><time>2026-07-28</time><span><em>Fixed</em> Game Mode laser/bullet/flash now start at the gun picture&#x27;s real barrel tip (they were starting from the striker plate at the rear -...</span></li>
+        <li><b>v1.32.1</b><time>2026-07-28</time><span><em>Fixed</em> Game Mode gun picture now displays exactly as generated - no flip, no tilt</span></li>
+        <li><b>v1.32.0</b><time>2026-07-28</time><span><em>Added</em> Game Mode laser measuring, BIM-360 style - hold on the first face, release on the second; Total / Horizontal / Vertical in mm...</span></li>
+        <li><b>v1.31.1</b><time>2026-07-28</time><span><em>Changed</em> Game Mode HUD gun is now Ajmal&#x27;s own pistol picture (vector pistol stays as fallback); freshly created &quot;AJ Game View&quot; views come with...</span></li>
+        <li><b>v1.31.0</b><time>2026-07-28</time><span><em>Changed</em> Game Mode weapon + speed rework after Ajmal&#x27;s first play - hold left-click for automatic fire with impact sparks, right-click switches...</span></li>
+        <li><b>v1.30.0</b><time>2026-07-28</time><span><em>Added</em> New tool - AJ Game Mode (&quot;Game&quot; panel, AJ Tools tab)</span></li>
+        <li><b>v1.29.1</b><time>2026-07-28</time><span><em>Fixed</em> Stack Tags&#x27; first-click tags now use Rearrange Tags&#x27; exact leader routine (no leader end-condition fallback)</span></li>
+        <li><b>v1.29.0</b><time>2026-07-28</time><span><em>Added</em> New tool - Stack Tags (AJ Annotation, Tags panel): select MEP elements, click once, a tag per eligible element is created and stacked...</span></li>
+        <li><b>v1.28.0</b><time>2026-07-28</time><span><em>Added</em> 9 new tools across the Transfer and Purge pulldowns (Manage panel) - Transfer Schedules / Legends / Drafting Views, Purge Unused View...</span></li>
+        <li><b>v1.27.0</b><time>2026-07-28</time><span><em>Added</em> New tool - Create Tags (AJ Annotation, Tags panel): select MEP elements, click a location for each in turn; creates fresh tags with...</span></li>
+        <li><b>v1.26.0</b><time>2026-07-28</time><span><em>Added</em> Reassign Reference Level now has a Selected Elements scope alongside Whole Project - pre-select elements and only those move to the...</span></li>
+        <li><b>v1.25.8</b><time>2026-07-28</time><span><em>Changed</em> HVAC Schematic error dialogs now name the exact failing method and line (exception type + trimmed stack trace) instead of only a bare...</span></li>
+        <li><b>v1.25.7</b><time>2026-07-27</time><span><em>Fixed</em> HVAC Schematic crash, &quot;An unexpected error occurred</span></li>
+        <li><b>v1.25.6</b><time>2026-07-28</time><span><em>Fixed</em> Full UI audit pass over every window in the suite</span></li>
+        <li><b>v1.25.5</b><time>2026-07-28</time><span><em>Changed</em> Smart MEP Tagging Settings rebuilt as a themed WPF window - the last WinForms dialog in the suite is gone, every AJ Tools window is now...</span></li>
+        <li><b>v1.25.4</b><time>2026-07-28</time><span><em>Changed</em> Reassign Reference Level&#x27;s level picker rebuilt as a themed WPF window (reassignment logic untouched)</span></li>
+        <li><b>v1.25.3</b><time>2026-07-27</time><span><em>Added</em> The credit line &quot;Created &amp; All Rights Reserved @ Ajmal P.S.&quot; now appears in every window in the suite - added as a bottom-centred footer...</span></li>
+        <li><b>v1.25.2</b><time>2026-07-27</time><span><em>Fixed</em> On comma-decimal Windows regional settings the old dialog could read &quot;12.5&quot; as 125 and silently save a 10x tag spacing - both decimal...</span></li>
+        <li><b>v1.25.1</b><time>2026-07-26</time><span><em>Changed</em> Improved: Highlight Selection now completes the insulation story in both directions: selecting insulation or lining directly also turns...</span></li>
+        <li><b>v1.25.0</b><time>2026-07-25</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.24.0</b><time>2026-07-21</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.23.1</b><time>2026-07-20</time><span><em>Fixed</em> Smart Selection swapped its multi-pick window/crossing/click loop (needed an explicit Finish/Enter to end) for a single one-shot...</span></li>
+        <li><b>v1.23.0</b><time>2026-07-20</time><span><em>Added</em> Smart Selection tool (AJ Tools tab, Modify panel) - pick one reference element, then window, crossing, or click-select more elements in...</span></li>
+        <li><b>v1.22.0</b><time>2026-07-20</time><span><em>Changed</em> Elements to Ceiling Grid (Ceiling Magnet) now offers both the original one-at-a-time workflow and the newer window-select-then-loop...</span></li>
+        <li><b>v1.21.0</b><time>2026-07-20</time><span><em>Changed</em> Ceiling Magnet reworked - elements to snap are now window/click multi-selected once up front, then the tool repeats a...</span></li>
+        <li><b>v1.20.2</b><time>2026-07-19</time><span><em>Changed</em> new About icon (Ajmal&#x27;s own artwork), used for both the ribbon button and the About window&#x27;s taskbar icon</span></li>
+        <li><b>v1.20.1</b><time>2026-07-19</time><span><em>Fixed</em> Highlight Selection left a selected duct/pipe&#x27;s insulation gray instead of red; insulation is now colored along with its host element</span></li>
+        <li><b>v1.20.0</b><time>2026-07-19</time><span><em>Added</em> Highlight Selection tool (View panel) - colors the current selection red and every other element in the active view gray, for instant...</span></li>
+        <li><b>v1.19.1</b><time>2026-07-19</time><span><em>Changed</em> About window overhaul - real taskbar/window icon, a Minimize button, a maximize-size fix, the house Neon Blue accent color, and a...</span></li>
+        <li><b>v1.19.0</b><time>2026-07-19</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.18.0</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.17.1</b><time>2026-07-18</time><span><em>Changed</em> &quot;Generate C# Code&quot; button resized to match the other buttons; added a Stop button beside it, visible while busy</span></li>
+        <li><b>v1.17.0</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.16.2</b><time>2026-07-18</time><span><em>Fixed</em> three visual issues from the first live launch - clipped button labels, Settings ComboBoxes ignoring their background color, and a...</span></li>
+        <li><b>v1.16.1</b><time>2026-07-18</time><span><em>Fixed</em> a real startup crash (AiShellView/SettingsWindow StaticResource lookups failing before their Resources dictionary was populated) that...</span></li>
+        <li><b>v1.16.0</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.15.2</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.15.1</b><time>2026-07-18</time><span><em>Changed</em> pane label shortened to &quot;C#&quot;</span></li>
+        <li><b>v1.15.0</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.14.0</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.13.11</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.13.10</b><time>2026-07-18</time><span><span class="q">no note recorded</span></span></li>
+        <li><b>v1.13.9</b><time>2026-07-18</time><span><em>Fixed</em> McpBridgeService.Start() leaked a named-pipe handle on every failed start attempt</span></li>
+        <li><b>v1.13.8</b><time>2026-07-18</time><span><em>Changed</em> Perf: SmartMepTagService.MarkDenseZones and SmartTagPlacementEngine&#x27;s parallel-group check both replaced an O(n^2) full pairwise scan...</span></li>
+        <li><b>v1.13.7</b><time>2026-07-18</time><span><em>Fixed</em> a naming collision between two unrelated DuctSelectionFilter classes (not a live bug, a future trap) - renamed one to...</span></li>
+        <li><b>v1.13.6</b><time>2026-07-17</time><span><em>Fixed</em> AJ Annotation ribbon typo (&quot;Auto Dimention&quot; -&gt; &quot;Auto Dimension&quot;, visible on the tab)</span></li>
+        <li><b>v1.13.5</b><time>2026-07-16</time><span><em>Changed</em> Multi-version build: one codebase now builds Revit 2020 through 2027 from a single project, via root Directory.Build.props/.targets...</span></li>
+        <li><b>v1.11.3</b><time>2026-07-07</time><span><em>Fixed</em> revit startup dependency resolution so bundled DLLs such as CommunityToolkit.Mvvm.dll load from the AJ Tools install folder</span></li>
+        <li><b>v1.11.2</b><time>2026-07-06</time><span><em>Changed</em> Optimized IndependentTag compatibility so Revit 2022 and newer use the cleaner reference-based tag and leader APIs</span></li>
+        <li><b>v1.11.1</b><time>2026-07-06</time><span><em>Changed</em> Split Revit 2020-2024 into separate .NET Framework package payloads built against matching Revit API reference packages</span></li>
+        <li><b>v1.11.0</b><time>2026-07-06</time><span><em>Added</em> modern Revit builds for Revit 2025-2026 on .NET 8 and Revit 2027 on .NET 10</span></li>
+        <li><b>v1.10.1</b><time>2026-07-06</time><span><em>Changed</em> Updated the installer to stage AJ Tools folders and .addin manifests for Revit 2020-2027</span></li>
+        <li><b>v1.10.0</b><time>2026-07-03</time><span><em>Added</em> the MEP Openings split-button workflow in the MEP panel</span></li>
+        <li><b>v1.9.1</b><time>2026-07-02</time><span><em>Fixed</em> colorize shuffle behavior so repeated shuffles stay in the window and apply immediately</span></li>
+        <li><b>v1.9.0</b><time>2026-07-02</time><span><em>Added</em> the Colorize tool in the View panel for per-view element overrides by category or parameter values</span></li>
+        <li><b>v1.8.0</b><time>2026-07-01</time><span><em>Changed</em> Full project audit: added the Pipe Sizing tool (MEP panel) for domestic water pipe sizing from fixture units, system type, pipe...</span></li>
+        <li><b>v1.7.0</b><time>2026-07-01</time><span><em>Changed</em> AJ Annotation tab refactor/audit: full metadata blocks across every Dimensions, Auto Duct Dimension, Tags, Duct Flow, Revision Cloud,...</span></li>
+        <li><b>v1.6.0</b><time>2026-07-01</time><span><em>Changed</em> Modify / MEP / Coordination / Data / Manage / Family panels refactor/audit: full metadata blocks across every tool in these panels;...</span></li>
+        <li><b>v1.5.4</b><time>2026-06-30</time><span><em>Changed</em> Datums panel refactor/audit: full metadata blocks across all datum tools, removed success popups (silent success), single-undo batch for...</span></li>
+        <li><b>v1.5.3</b><time>2026-06-30</time><span><em>Changed</em> Graphics panel refactor/audit: single-undo TransactionGroup for both Match tools, view-scoped Reset Element Graphics in View, full...</span></li>
+        <li><b>v1.5.2</b><time>2026-06-27</time><span><em>Changed</em> View Crop tool refactor/audit pass: shared helpers, bulk-edit confirmation, ElementId helper for 2024+ readiness</span></li>
+        <li><b>v1.5.1</b><time>2026-06-24</time><span><em>Fixed</em> MSBuild compilation errors related to legacy PackageReference restores in the zero-warnings 2020 project configuration</span></li>
+        <li><b>v1.5.0</b><time>2026-05-30</time><span><em>Added</em> search and Sort functionality for Categories and Parameters in the Filter Pro tool</span></li>
+        <li><b>v1.4.9</b><time>2026-05-25</time><span><em>Added</em> new Section Mark Visibility tool to automatically manage section visibility in plan views based on Sheet Number filters or...</span></li>
+        <li><b>v1.4.8</b><time>2026-05-17</time><span><em>Fixed</em> transfer View Templates so the Copy From and Copy To document dropdowns show readable Revit document names instead of the internal...</span></li>
+        <li><b>v1.4.7</b><time>2026-05-14</time><span><em>Added</em> separate Purge Unplaced 3D Views and Purge Unplaced Sections tools under the AJ Tools Purge menu with preview, selection,...</span></li>
+        <li><b>v1.4.6</b><time>2026-05-10</time><span><em>Changed</em> Reduced the Apply Graphics startup window size again for smaller screens</span></li>
+        <li><b>v1.4.5</b><time>2026-05-10</time><span><em>Changed</em> Reduced the Apply Graphics default window size for smaller screens while keeping the settings area scrollable</span></li>
+        <li><b>v1.4.4</b><time>2026-05-09</time><span><em>Changed</em> Rebuilt Apply Graphics around a dark, compact settings manager with separate apply actions for element and category overrides</span></li>
+        <li><b>v1.4.3</b><time>2026-05-07</time><span><em>Changed</em> Restored preset color buttons in Apply Graphics, but scoped each preset row to its own color field so preset clicks never spill into...</span></li>
+        <li><b>v1.4.2</b><time>2026-05-07</time><span><em>Removed</em> the unused Preset Target UI and quick-preset dependency from Apply Graphics</span></li>
+        <li><b>v1.4.1</b><time>2026-05-07</time><span><em>Changed</em> Combined Element Graphics and Category Graphics into one Apply Graphics tool with a shared UI mode switch</span></li>
+        <li><b>v1.4.0</b><time>2026-05-07</time><span><em>Added</em> the HVAC Schematic tool to create drafting-view schematics from selected ducts, air terminals, and mechanical equipment</span></li>
+        <li><b>v1.3.9</b><time>2026-05-06</time><span><em>Changed</em> Cleaned the Graphics Tools command group: Apply Graphics, Match Graphics, and Reset Graphics</span></li>
+        <li><b>v1.3.8</b><time>2026-05-06</time><span><em>Changed</em> Cleaned the Toggle Link command and added standardized production metadata</span></li>
+        <li><b>v1.3.7</b><time>2026-05-06</time><span><em>Changed</em> Standardized production metadata headers for all View Crop C# and XAML files</span></li>
+        <li><b>v1.3.6</b><time>2026-05-06</time><span><em>Changed</em> Cleaned the Unhide All command and removed old debug-style comments</span></li>
+        <li><b>v1.3.5</b><time>2026-05-06</time><span><em>Changed</em> Cleaned the View Crop command flow, shared target-view selection path, and command result handling</span></li>
+        <li><b>v1.3.4</b><time>2026-04-19</time><span><em>Changed</em> Refactored the About command to use a dedicated WPF About window</span></li>
+        <li><b>v1.3.3</b><time>2026-04-19</time><span><em>Added</em> pin tools and family parameter purge tools</span></li>
+        <li><b>v1.3.2</b><time>2026-04-13</time><span><em>Added</em> manual Smart MEP tag priority controls in the settings UI</span></li>
+        <li><b>v1.3.1</b><time>2026-04-13</time><span><em>Changed</em> Improved Smart MEP tag priority placement behavior</span></li>
+        <li><b>v1.3.0</b><time>2026-04-12</time><span><em>Added</em> a new tool suite</span></li>
+        <li><b>v1.2.1</b><time>2026-04-07</time><span><em>Changed</em> Updated the About tool to a dedicated About window</span></li>
+        <li><b>v1.2.0</b><time>2026-04-07</time><span><em>Added</em> the Smart MEP Tag workflow</span></li>
+    </ul>
+  </details>
 </section>
 
 <section class="cta">
