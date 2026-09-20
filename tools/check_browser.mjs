@@ -172,10 +172,12 @@ for (const page of PAGES) {
     const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
       (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
     if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
-    // heron-ai is one statement on purpose - a name, a status and a single link -
-    // so the shared 150 would fail it for being exactly what it is meant to be. It
-    // keeps a floor, low enough to pass and high enough to catch an empty render.
-    const floor = page === 'heron-ai/index.html' ? 20 : 150;
+    // heron-ai used to sit at 20 here: it was one statement on purpose - a name,
+    // a status and a single link - so the shared floor would have failed it for
+    // being exactly what it was meant to be. It became a full page on 2026-09-20
+    // and now clears 150 like everything else, so the exception is gone. A page
+    // that bare again needs its own floor back rather than a lower shared one.
+    const floor = 150;
     const chars = await p.$eval('main', (m) => m.innerText.trim().length);
     if (chars < floor) fail(`no JavaScript: ${page} renders only ${chars} characters`);
     await ctx.close();

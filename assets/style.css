@@ -788,7 +788,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 /* WhatsApp glyph keeps its own green on an otherwise neutral button */
 .ic-wa{color:#25D366}
 
-/* ---- animated flock behind the hero (home page only) ----
+/* ---- animated flock behind the hero (home and /heron-ai/) ----
    The canvas is transparent, so the hero gradient and the ambient blobs still
    show through and the birds fly over them. It sits under the hero content and
    ignores the pointer, so nothing here can swallow a click on the buttons.
@@ -807,7 +807,13 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
    and the lines on different baselines and left the flock clumped in the gap
    between them, flying over the text instead of behind it.
    svh, not vh: on a phone vh is the tallest the viewport ever gets, so with the
-   browser chrome showing the last line sits under it. */
+   browser chrome showing the last line sits under it.
+   UNUSED SINCE 2026-09-20: /heron-ai/ was its only user and is now a full page.
+   Kept because the next announcement page wants exactly this, and because the
+   note above is the reason not to reach for a chapter when that day comes. The
+   flock still needs a real .hero around it either way - `.hero{overflow:hidden}`
+   above is the only thing clipping that absolutely-positioned canvas, and
+   without it the document widens and the sideways-scroll check fails. */
 .hero.soon{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
 .hero.soon .wrap{width:100%}
 @media(prefers-reduced-motion:reduce){#vanta-hero{display:none}}
