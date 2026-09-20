@@ -406,6 +406,83 @@
 </section>
 
 <section class="tabsec sec-alt" style="padding-bottom:70px">
+  <h2 class="head reveal">What is actually there <span class="dim">one ribbon tab &middot; 34 commands</span></h2>
+
+  <div class="pgrp reveal">
+    <h3>The Heron AI tab <i>3 buttons</i></h3>
+    <ul class="tlist">
+      <li><b>Heron</b><span>Connect or disconnect this Revit session. Click again to reverse it. The picture is the state &mdash; lit when connected, dark when not &mdash; so &ldquo;am I connected?&rdquo; is answered without clicking anything. <em>Bridge panel</em></span></li>
+      <li><b>Bridge Status</b><span>Whether the bridge is running, and on which pipe. The detail you only want when something looks wrong, so it sits under the arrow instead of taking a button of its own. <em>Bridge panel</em></span></li>
+      <li><b>Changes</b><span>Whether Heron may change this model. Closed padlock: it can read and nothing else. Open padlock: it may change it. Turning it on asks first; turning it off never does. <em>Bridge panel</em></span></li>
+    </ul>
+    <div class="note">
+      <b>Three buttons, and that is the whole ribbon</b>
+      <p><a href="/aj-tools/">AJ-Tools</a> puts 46 commands on the ribbon because each one is a button you press. Heron is the other way round &mdash; you say what you want, so there is nothing to press. The only things that earn a button are the two questions a picture answers faster than a menu: <em>am I connected</em>, and <em>can this thing change my model</em>.</p>
+      <p>It is also what keeps the part inside Revit down to 39&nbsp;KB. Everything below this list runs in the chat and on your own PC, on the far side of the bridge &mdash; not inside Revit.</p>
+    </div>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Reading the model <i>17</i></h3>
+    <ul class="tlist">
+      <li><b>Views</b><span>The views, what governs each of them, and what the active view is showing through. <em>revit_views</em></span></li>
+      <li><b>Sheets</b><span>The sheets &mdash; numbering, titleblocks and revisions. <em>revit_sheets</em></span></li>
+      <li><b>Rooms and spaces</b><span>Rooms, MEP spaces and areas, and the two states that cost real time. <em>revit_rooms</em></span></li>
+      <li><b>Systems</b><span>The duct and pipe systems &mdash; and the MEP elements connected to nothing. <em>revit_systems</em></span></li>
+      <li><b>Linked models</b><span>What is linked, whether each one is loaded, and how many elements each holds. <em>revit_links</em></span></li>
+      <li><b>Phases</b><span>Phases and design options, with how many elements sit in each. <em>revit_phases</em></span></li>
+      <li><b>Worksets</b><span>The worksets, what is on each, and a sampled reading of who owns what. <em>revit_worksets</em></span></li>
+      <li><b>Levels and grids</b><span>The levels and grids, and what sits on each level. <em>revit_levels</em></span></li>
+      <li><b>Families</b><span>Families and types, and how many of each are actually placed. <em>revit_families</em></span></li>
+      <li><b>Schedules</b><span>The schedules, and what governs each of them. <em>revit_schedules</em></span></li>
+      <li><b>Parameters</b><span>Which parameters are filled in across a whole category, or what one element holds. <em>revit_parameters</em></span></li>
+      <li><b>Groups</b><span>Which elements sit inside a group, and how many other placements an edit would travel into. <em>revit_groups</em></span></li>
+      <li><b>Annotation</b><span>Dimensions, tags, text and keynotes &mdash; and finding the ones that lie. <em>revit_annotation</em></span></li>
+      <li><b>Imports</b><span>What has been brought in from outside, with linked and imported told apart. <em>revit_imports</em></span></li>
+      <li><b>Export check</b><span>Whether an export would be worth sending &mdash; without exporting anything. <em>revit_export_check</em></span></li>
+      <li><b>Pick the session</b><span>Which connected Revit this chat should work with, when more than one is open. <em>revit_use_session</em></span></li>
+      <li><b>Follow the front model</b><span>Move this chat onto whichever model is now in front in Revit. <em>revit_use_this_model</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Reaching into the model <i>4</i></h3>
+    <ul class="tlist">
+      <li><b>Select by category</b><span>Select every element of one or more categories, so you can see them highlighted on screen. <em>revit_select_by_category &middot; execute</em></span></li>
+      <li><b>Preview a move</b><span>Show what moving elements up or down <em>would</em> do, without changing anything. <em>revit_preview_move &middot; analyse</em></span></li>
+      <li><b>Apply the move</b><span>Carry out the move you have just approved, after seeing the preview. <em>revit_apply_move &middot; modify</em></span></li>
+      <li><b>Run a change</b><span>Change the open model and keep the change &mdash; the one command that carries a fragment into Revit and leaves it there. <em>revit_change &middot; modify</em></span></li>
+    </ul>
+    <p>These four are the only ones on this page that do anything to a model, and only the last two can leave a mark. Of all 34 commands, <strong>30 can only look</strong> &mdash; and the two that change something are still behind the padlock on the ribbon.</p>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Heron&rsquo;s own knowledge <i>9</i></h3>
+    <ul class="tlist">
+      <li><b>What it can do</b><span>The jobs Heron can be asked for, what each one needs, and which of those needs nothing provides yet. <em>heron_capabilities</em></span></li>
+      <li><b>Work out what you meant</b><span>Which capability serves a request written in your own words. <em>heron_lookup</em></span></li>
+      <li><b>Who can do this</b><span>Ask who provides one named capability. <em>heron_resolve</em></span></li>
+      <li><b>Standards</b><span>Ask each knowledge scope on its own, and say where their answers disagree. <em>heron_standards</em></span></li>
+      <li><b>Check an answer</b><span>Check a drafted standards answer against the clauses it cites. Flags, never rewrites. <em>heron_check</em></span></li>
+      <li><b>What it does not know</b><span>Say what Heron does <em>not</em> know about a question, and what an outside answer would have to carry. <em>heron_research</em></span></li>
+      <li><b>Check an outside answer</b><span>Check the citations in an answer that came from elsewhere. Never the facts. <em>heron_research_check</em></span></li>
+      <li><b>Context</b><span>What an agent would be given for a request &mdash; and what it may not carry. <em>heron_context</em></span></li>
+      <li><b>Gaps</b><span>What Heron has been asked to do lately, what failed, and what is slow. <em>heron_gaps</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Health and setup <i>4</i></h3>
+    <ul class="tlist">
+      <li><b>Is Revit there</b><span>Whether Revit is reachable, and what model is open. <em>revit_health</em></span></li>
+      <li><b>Version</b><span>Heron&rsquo;s version, the protocol it speaks, and the version of each connected add-in &mdash; and whether all three agree. <em>heron_version</em></span></li>
+      <li><b>Revit compatibility</b><span>Which Revit versions Heron&rsquo;s tools actually work on, and how well checked. <em>heron_compatibility</em></span></li>
+      <li><b>Diagnose</b><span>Check everything about Heron at once, and say what is wrong. <em>heron_diagnose</em></span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="tabsec">
   <h2 class="head reveal">The library behind it <span class="dim">395 fragments &middot; 19 areas of Revit</span></h2>
 
   <div class="pgrp reveal">
@@ -444,7 +521,7 @@
   </div>
 </section>
 
-<section class="tabsec">
+<section class="tabsec sec-alt" style="padding-bottom:70px">
   <h2 class="head reveal">How it is built <span class="dim">four parts, and only one of them is inside Revit</span></h2>
 
   <div class="pgrp reveal">
@@ -479,7 +556,7 @@
   </div>
 </section>
 
-<section class="tabsec sec-alt" style="padding-bottom:70px">
+<section class="tabsec">
   <h2 class="head reveal">Why it is safe to point at a real model <span class="dim">the part that matters most</span></h2>
 
   <div class="pgrp reveal">
@@ -511,7 +588,7 @@
   </div>
 </section>
 
-<section class="tabsec">
+<section class="tabsec sec-alt" style="padding-bottom:70px">
   <h2 class="head reveal">Where it actually stands <span class="dim">version 0.1.0 &middot; not released</span></h2>
 
   <div class="pgrp reveal">
@@ -525,7 +602,7 @@
     <div class="note">
       <b>Please do not install this yet</b>
       <p>The repository is public only so the work is open. It is still not finished. I will announce it on LinkedIn and here on this site when it is ready to install. Until then, feel free to read and follow along.</p>
-      <p><strong>Programmers and AI engineers &mdash; your thoughts are very welcome.</strong> Please read the code and share your suggestions, ideas or corrections through an Issue. That help is what I am asking for now, not installs.</p>
+      <p><strong>Programmers and AI engineers &mdash; your thoughts are very welcome.</strong> Please read the code and share your suggestions, ideas or corrections through an <a href="https://github.com/Ajmalpshaik/Heron-AI/issues" rel="noopener">Issue</a> or a <a href="https://github.com/Ajmalpshaik/Heron-AI/discussions" rel="noopener">Discussion</a>. That help is what I am asking for now, not installs.</p>
     </div>
   </div>
 
