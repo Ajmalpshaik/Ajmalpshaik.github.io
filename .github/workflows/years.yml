@@ -1,0 +1,57 @@
+name: years
+
+# The years-of-experience figure a crawler sees.
+#
+# The VISIBLE one on every page already computes itself in assets/app.js. This
+# is for the text app.js cannot reach - the JSON-LD Person description,
+# experienceRequirements, and the meta / og: / twitter: descriptions - which a
+# search engine or a link preview reads straight out of the file, often without
+# running any JavaScript at all. Those were typed as "11 years" and would have
+# been wrong from May 2027 with nothing to catch it.
+#
+# Runs on the 1st of every month. Eleven of those twelve runs change nothing
+# and exit in seconds; the one in May does the work. Cron is UTC, and the
+# rollover is a whole-month boundary, so the hour does not matter.
+#
+# It cannot loop: this fires on a schedule, never on push. The commit it makes
+# does touch index.html, which wakes the sitemap workflow - that one only ever
+# writes sitemap.xml and only fires on push, so the chain stops there.
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rewrite any stale figure
+        run: |
+          python3 tools/update_years.py
+          if git diff --quiet; then
+            echo "Nothing to do - the files already say the right number."
+            exit 0
+          fi
+          YEARS=$(python3 -c "
+          from datetime import date
+          s, t = date(2015, 5, 1), date.today()
+          y = t.year - s.year
+          if (t.month, t.day) < (s.month, s.day): y -= 1
+          print(y)
+          ")
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Years of experience is now $YEARS
+
+          Rewritten by tools/update_years.py on its monthly run. This is the
+          text app.js cannot reach - JSON-LD and the meta descriptions - so it
+          has to change in the file rather than in the browser."
+          git push

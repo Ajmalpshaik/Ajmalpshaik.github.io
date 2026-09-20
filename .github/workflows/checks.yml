@@ -17,6 +17,12 @@ jobs:
       - name: Static checks
         run: python3 tools/check_site.py
 
+      # The visible years compute themselves in app.js; these are the ones a
+      # crawler reads without running any JavaScript, so they live in the file
+      # and can go stale. Fails the build rather than waiting to be noticed.
+      - name: Years of experience are current
+        run: python3 tools/update_years.py --check
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
