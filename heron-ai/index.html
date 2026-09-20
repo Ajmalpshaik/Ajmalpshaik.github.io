@@ -223,6 +223,25 @@
 .tlist b{display:block;font-size:16px;font-weight:650;letter-spacing:-.012em}
 .tlist span{display:block;margin-top:5px;font-size:14.5px;color:var(--muted);line-height:1.55}
 .tlist em{font-style:normal;color:var(--faint)}
+/* Each area opens to its whole list. <details> rather than a script, so it
+   still opens with JavaScript off and the keyboard gets it for free. */
+.tlist.doms li{padding:0}
+.doms details{padding:15px 0}
+.doms summary{list-style:none;cursor:pointer;display:block;-webkit-tap-highlight-color:transparent}
+.doms summary::-webkit-details-marker{display:none}
+.doms summary b{display:flex;align-items:center;gap:10px}
+.doms summary b::after{content:"";flex:none;margin-left:auto;width:7px;height:7px;
+  border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);
+  transform:rotate(45deg);transition:transform .25s var(--ease-out)}
+.doms details[open] summary b::after{transform:rotate(-135deg)}
+.doms summary:hover b{color:var(--link)}
+.doms summary:focus-visible{outline:2px solid var(--link);outline-offset:4px;border-radius:8px}
+.frags{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}
+.frags i{font-style:normal;font-size:12.5px;line-height:1.45;color:var(--muted);
+  background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:4px 10px}
+/* draft = has never met a real model. Faded, not hidden: the honest count on
+   the summary line is only checkable if the faded ones are there to count. */
+.frags i.d{opacity:.5}
 .say{margin:22px 0 0;padding:20px 24px;border-radius:16px;background:var(--bg);
   border:1px solid var(--hairline);max-width:62ch}
 .say p{font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.85}
@@ -251,6 +270,11 @@
   .grad-text,.numgrid b{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
   .reveal{opacity:1 !important;transform:none !important}
   .pgrp,.tlist li,.ladder li{break-inside:avoid}
+  /* a closed <details> prints nothing of its contents and cannot be forced
+     open from CSS, so the chips are dropped rather than printed at random -
+     the summary line still carries the area, the count and the draft split */
+  .frags{display:none !important}
+  .doms summary b::after{display:none !important}
   a{color:#000 !important}
 }
 </style>
@@ -492,26 +516,84 @@
 
   <div class="pgrp reveal">
     <h3>Every area covered <i>395</i></h3>
-    <ul class="tlist">
-      <li><b>Views <em>&middot; 76</em></b><span>apply view filter, add spot elevations, add schedule fields</span></li>
-      <li><b>MEP <em>&middot; 49</em></b><span>align MEP elevation, auto-size MEP, auto-size pipe</span></li>
-      <li><b>Elements <em>&middot; 48</em></b><span>change element type, convert CAD to DirectShape, create ceiling</span></li>
-      <li><b>Selection <em>&middot; 33</em></b><span>create selection filter, read selection, select by categories</span></li>
-      <li><b>Geometry <em>&middot; 29</em></b><span>align elements, radial array, array elements</span></li>
-      <li><b>Document <em>&middot; 28</em></b><span>copy from link, create family document, create levels</span></li>
-      <li><b>QA <em>&middot; 24</em></b><span>audit MEP openings, check category mismatch, check ceiling coordination</span></li>
-      <li><b>Sheets <em>&middot; 19</em></b><span>add revision cloud, align viewports across sheets, create revision</span></li>
-      <li><b>Parameters <em>&middot; 17</em></b><span>add project parameter, assign location data, copy parameter value</span></li>
-      <li><b>Annotation <em>&middot; 16</em></b><span>arrange tags to view edges, arrange tags, centre room tags</span></li>
-      <li><b>Reporting <em>&middot; 13</em></b><span>count by spatial container, count elements, describe elements</span></li>
-      <li><b>Schedules <em>&middot; 11</em></b><span>add combined field, create key schedule, create schedule</span></li>
-      <li><b>Quality <em>&middot; 8</em></b><span>check room MEP completeness, find degenerate lines, find duplicate elements</span></li>
-      <li><b>Families <em>&middot; 7</em></b><span>load family, open family for editing, report family parameters</span></li>
-      <li><b>Datums <em>&middot; 6</em></b><span>create grid, list grids, maximise datum extents</span></li>
-      <li><b>Export <em>&middot; 5</em></b><span>export families, export model to IFC, export view image</span></li>
-      <li><b>Rooms <em>&middot; 3</em></b><span>place room at point, place rooms, report room and space data</span></li>
-      <li><b>Levels <em>&middot; 2</em></b><span>create level, list levels</span></li>
-      <li><b>Phases <em>&middot; 1</em></b><span>set element phase</span></li>
+    <p>Click an area to open its full list. A name shown faded is still draft &mdash; it has not met a real model yet.</p>
+    <ul class="tlist doms">
+      <li><details>
+        <summary><b>Views <em>&middot; 76</em></b><span>add schedule fields, add spot elevations, apply view filter&hellip; <em>&middot; 68 proven, 8 still draft</em></span></summary>
+        <div class="frags"><i>add schedule fields</i><i>add spot elevations</i><i>apply view filter</i><i>apply view template</i><i>assign scope box to view</i><i>audit view filters</i><i>close view tabs</i><i>color by parameter</i><i>copy view filters</i><i>create 3D view</i><i class="d">create assembly views</i><i>create callout</i><i>create drafting view</i><i>create filled region</i><i>create legend view</i><i>create plan view</i><i>create room elevations</i><i>create section view</i><i class="d">create view filter</i><i>create view filters by value</i><i>create view template from view</i><i class="d">create workset 3D views</i><i>diagnose visibility</i><i>dimension family instances</i><i>dimension MEP runs</i><i>duplicate view</i><i>duplicate view template</i><i>duplicate views</i><i>find dates in views</i><i>find overlapping tags</i><i>find schedules</i><i>find unplaced views</i><i>find untagged elements</i><i>find views</i><i>hide elements</i><i>highlight vs rest</i><i>isolate elements</i><i>open view</i><i>override graphics in view</i><i>place view on sheet</i><i>read graphic overrides</i><i class="d">refresh view</i><i>remove tags</i><i>remove view filter</i><i>remove view template</i><i class="d">repoint view reference</i><i>report category overrides</i><i>report category visibility</i><i>report filterable parameters</i><i>report view filters</i><i>report view references</i><i>report view template control</i><i>reset graphic overrides</i><i>reset view graphics</i><i>set category graphics</i><i>set category visibility</i><i>set crop box settings</i><i>set link graphics</i><i class="d">set section mark visibility</i><i>set view crop</i><i class="d">set view crop to shape</i><i>set view phase</i><i>set view properties</i><i>set view range</i><i>set view scale</i><i>set view section box</i><i>set view template control</i><i>set view underlay</i><i>set view workset visibility</i><i class="d">show analysis heatmap</i><i>show elements</i><i>tag elements</i><i>tag elements in view</i><i>test view filter match</i><i>transfer view filters between documents</i><i>transfer views between documents</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>MEP <em>&middot; 49</em></b><span>align mep elevation, auto size mep, auto size pipe&hellip; <em>&middot; 41 proven, 8 still draft</em></span></summary>
+        <div class="frags"><i>align MEP elevation</i><i>auto size MEP</i><i class="d">auto size pipe</i><i>cap open pipe ends</i><i>check equipment connectors</i><i>check fixture connectivity</i><i>check flow direction</i><i class="d">connect air terminals</i><i>connect open ends</i><i>copy routing preferences</i><i>create duct</i><i class="d">create electrical circuit</i><i>create electrical run</i><i>create flex duct</i><i>create HVAC zone</i><i>create MEP system type</i><i>create pipe</i><i>create pipe segment</i><i>disconnect connectors</i><i>find dead ends</i><i>find system islands</i><i class="d">measure available fall</i><i>measure fitting area</i><i>measure MEP slope</i><i>measure MEP velocity</i><i>measure run quantities</i><i class="d">place accessory on run</i><i>place MEP fitting</i><i>read MEP system</i><i>read space loads</i><i>report connector loads</i><i>report connectors</i><i>report duct weight</i><i>report MEP pressure drop</i><i>report pipe schedules</i><i>report pipe segments</i><i>report routing preferences</i><i>report space airflow</i><i>select by connection status</i><i class="d">select by electrical circuit</i><i>select by insulation</i><i>select by MEP system</i><i>set MEP insulation</i><i class="d">set MEP justification</i><i>set MEP size</i><i>set MEP slope</i><i>set routing preference</i><i>split MEP run</i><i class="d">trace connectivity</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Elements <em>&middot; 48</em></b><span>change element type, convert cad to directshape, create ceiling&hellip; <em>&middot; 38 proven, 10 still draft</em></span></summary>
+        <div class="frags"><i>change element type</i><i class="d">convert CAD to DirectShape</i><i>create ceiling</i><i>create floor</i><i>create from room boundaries</i><i>create grids</i><i>create line</i><i>create material</i><i class="d">create opening</i><i class="d">create roof</i><i>create wall</i><i>delete elements</i><i>disallow join</i><i>duplicate type</i><i class="d">extract CAD curves</i><i>filter elements by category</i><i>filter elements by ID</i><i>filter elements by type</i><i>filter elements in room</i><i>flip elements</i><i>group by assembly</i><i>group elements</i><i>join geometry</i><i>match element type</i><i>move elements to point</i><i>place family instances</i><i class="d">place family on face</i><i class="d">place hosted family</i><i class="d">place line based family</i><i class="d">place structural family</i><i>read element ownership</i><i>remap line styles</i><i>rename family</i><i>replace material</i><i>report joined elements</i><i>rotate elements about axis</i><i>set compound layer width</i><i>set element level</i><i>set element workset</i><i>set material colour</i><i>set pin state</i><i>set wall constraints</i><i class="d">switch join order</i><i>transfer line styles between documents</i><i>transfer materials between documents</i><i>transfer object styles between documents</i><i>ungroup elements</i><i class="d">unjoin geometry</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Selection <em>&middot; 33</em></b><span>create selection filter, read selection, select by categories&hellip; <em>&middot; 28 proven, 5 still draft</em></span></summary>
+        <div class="frags"><i>create selection filter</i><i>read selection</i><i>select by categories</i><i>select by category name</i><i>select by connector size</i><i>select by design option</i><i>select by family</i><i class="d">select by host</i><i>select by level</i><i>select by material</i><i>select by numeric parameter</i><i>select by parameter value</i><i>select by phase</i><i>select by pin state</i><i>select by workset</i><i>select from link</i><i>select from saved set</i><i class="d">select group members</i><i>select hidden in view</i><i>select in region</i><i class="d">select openings</i><i>select scope boxes</i><i class="d">select subcomponents</i><i class="d">select touching</i><i>select types</i><i>select unenclosed rooms</i><i>select view templates</i><i>select visible in view</i><i>select with warnings</i><i>select without level</i><i>set selection</i><i>update saved set</i><i>zoom to elements</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Geometry <em>&middot; 29</em></b><span>align elements, array elements, array elements radial&hellip; <em>&middot; 24 proven, 5 still draft</em></span></summary>
+        <div class="frags"><i>align elements</i><i>array elements</i><i>array elements radial</i><i>check obstructions</i><i>copy elements</i><i>distribute along run</i><i>fillet lines</i><i class="d">find nearest elements</i><i>measure ceiling height</i><i class="d">measure distance</i><i>measure perimeter</i><i>measure room dimensions</i><i>mirror elements</i><i>move elements</i><i>move to ray hit</i><i>offset elements</i><i>plan connection order</i><i>probe around elements</i><i class="d">read ceiling grid</i><i>read room geometry</i><i>read scope box extent</i><i class="d">report areas</i><i>report bounding box</i><i>report centroid</i><i class="d">report door room links</i><i>report location</i><i>rotate elements</i><i>snap to grid</i><i>trim extend elements</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Document <em>&middot; 28</em></b><span>activate document, copy from link, create family document&hellip; <em>&middot; 19 proven, 9 still draft</em></span></summary>
+        <div class="frags"><i>activate document</i><i class="d">copy from link</i><i class="d">create family document</i><i>create levels</i><i>create workset</i><i class="d">export model to NWC</i><i>extract dates from text</i><i class="d">list categories</i><i>list linked models</i><i>list worksets</i><i>read model file info</i><i>reload links</i><i>rename workset</i><i>report addin data</i><i>report coverage</i><i>report design options</i><i>report external references</i><i>report geometry complexity</i><i>report level elevations</i><i>report material takeoff</i><i class="d">report open documents</i><i>report phases</i><i class="d">save document</i><i class="d">set design option</i><i class="d">switch active project</i><i class="d">sync with central</i><i>unload links</i><i>upgrade family files</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>QA <em>&middot; 24</em></b><span>audit mep openings, check category mismatch, check ceiling coordination&hellip; <em>&middot; 19 proven, 5 still draft</em></span></summary>
+        <div class="frags"><i>audit MEP openings</i><i>check category mismatch</i><i>check ceiling coordination</i><i>check equipment clearance</i><i>check family standards</i><i>check insulation clearance</i><i>check minimum clearance</i><i class="d">check model standards</i><i>check sleeve size</i><i>check surface fit</i><i>check valve accessibility</i><i>check vertical clearance</i><i>compare elements</i><i>compare models</i><i class="d">describe blank parameters</i><i class="d">find clashes</i><i>find unused definitions</i><i>find unused group types</i><i class="d">find unused materials</i><i>propose MEP openings</i><i>report constraints</i><i>report element dependencies</i><i>report element ownership</i><i class="d">report findings</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Sheets <em>&middot; 19</em></b><span>add revision cloud, align viewports across sheets, create revision&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>add revision cloud</i><i>align viewports across sheets</i><i>create revision</i><i>create sheet</i><i>create sheet list</i><i>create sheets</i><i>delete revision</i><i>duplicate sheets</i><i>edit revision</i><i>export sheets to PDF</i><i>find sheets</i><i>list revisions</i><i>list sheets</i><i>manage sheet sets</i><i>place views on sheet</i><i>report sheet title blocks</i><i>set print settings</i><i>set sheet revisions</i><i>set sheet title block</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Parameters <em>&middot; 17</em></b><span>add project parameter, assign location data, copy parameter value&hellip; <em>&middot; 13 proven, 4 still draft</em></span></summary>
+        <div class="frags"><i class="d">add project parameter</i><i>assign location data</i><i>copy parameter value</i><i class="d">create global parameter</i><i>edit parameter text</i><i>edit text values</i><i>export parameters to CSV</i><i>import parameter values</i><i>read element parameters</i><i>remove parameter value</i><i>rename elements</i><i>renumber sequential</i><i>report global parameters</i><i>report parameter inventory</i><i class="d">set global parameter</i><i class="d">transfer project parameters between documents</i><i>write element parameters</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Annotation <em>&middot; 16</em></b><span>arrange tags, arrange tags to view edges, center room tags&hellip; <em>&middot; 10 proven, 6 still draft</em></span></summary>
+        <div class="frags"><i>arrange tags</i><i>arrange tags to view edges</i><i class="d">center room tags</i><i class="d">create angular dimension</i><i>create dimension</i><i class="d">create linear dimension</i><i class="d">create radial dimension</i><i>create text note</i><i>dimension grids and levels</i><i>dimension rooms</i><i>dimension wall openings</i><i>force tag leader lshape</i><i class="d">move annotation</i><i class="d">place flow arrows</i><i>report tags and targets</i><i>stack tags</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Reporting <em>&middot; 13</em></b><span>count by spatial container, count elements, describe elements&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>count by spatial container</i><i>count elements</i><i>describe elements</i><i>find views showing element</i><i>group and count</i><i>measure element lengths</i><i>measure element volume</i><i>read element level</i><i>read element material</i><i>read element phase</i><i>report compound structure</i><i>report curtain elements</i><i>sum by group</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Schedules <em>&middot; 11</em></b><span>add schedule combined field, create key schedule, create schedule&hellip; <em>&middot; 10 proven, 1 still draft</em></span></summary>
+        <div class="frags"><i>add schedule combined field</i><i>create key schedule</i><i>create schedule</i><i class="d">export schedule to CSV</i><i>place schedule on sheet</i><i>read schedule contents</i><i>remove schedule fields</i><i>report schedule definition</i><i>set schedule appearance</i><i>set schedule filters</i><i>set schedule sort group</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Quality <em>&middot; 8</em></b><span>check room mep completeness, find degenerate lines, find duplicate elements&hellip; <em>&middot; 7 proven, 1 still draft</em></span></summary>
+        <div class="frags"><i>check room MEP completeness</i><i>find degenerate lines</i><i>find duplicate elements</i><i>find duplicate values</i><i>find overlapping lines</i><i class="d">find unused families</i><i>find views without template</i><i>read model warnings</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Families <em>&middot; 7</em></b><span>load family, open family for editing, report family parameters&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>load family</i><i>open family for editing</i><i>report family parameters</i><i>report family size table</i><i>report family tables in project</i><i>report nested families</i><i>write family size table</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Datums <em>&middot; 6</em></b><span>create grid, list grids, maximize datum extents&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>create grid</i><i>list grids</i><i>maximize datum extents</i><i>reset datum extents</i><i>set datum bubbles</i><i>set datum extent type</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Export <em>&middot; 5</em></b><span>export families, export model to ifc, export view image&hellip; <em>&middot; 2 proven, 3 still draft</em></span></summary>
+        <div class="frags"><i class="d">export families</i><i class="d">export model to IFC</i><i>export view image</i><i class="d">export views to DWG</i><i>export views to fbx</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Rooms <em>&middot; 3</em></b><span>place room at point, place rooms, report room space data&hellip; <em>&middot; 2 proven, 1 still draft</em></span></summary>
+        <div class="frags"><i>place room at point</i><i class="d">place rooms</i><i>report room space data</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Levels <em>&middot; 2</em></b><span>create level, list levels&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>create level</i><i>list levels</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Phases <em>&middot; 1</em></b><span>set element phase&hellip; <em>&middot; proven</em></span></summary>
+        <div class="frags"><i>set element phase</i></div>
+      </details></li>
     </ul>
   </div>
 
