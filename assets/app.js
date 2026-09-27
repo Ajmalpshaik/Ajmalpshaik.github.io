@@ -240,7 +240,8 @@
   var GOATCOUNTER = "ajmalps";
 
   (function(){
-    if(!GOATCOUNTER) return;
+    /* <html data-no-count> opts a page out entirely (the AR viewer promises no analytics) */
+    if(!GOATCOUNTER || root.hasAttribute("data-no-count")) return;
     var dnt = navigator.doNotTrack === "1" || window.doNotTrack === "1" ||
               navigator.globalPrivacyControl === true;
     if(dnt) return;

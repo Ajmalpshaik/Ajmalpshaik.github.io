@@ -1,6 +1,10 @@
 # Vendored libraries
 
-Served from this repo so the site makes no third-party requests at runtime.
+Served from this repo, so no page depends on someone else's CDN for its code.
+One exception: `/toolbox/ar-viewer/` loads three.js 0.186.1 from jsDelivr,
+pinned to that exact version, with a SHA-384 fingerprint for every file in the
+page's import map. It needs a current three.js; `three.min.js` here stays at
+r134 because Vanta needs it.
 
 | File | Version | License |
 |---|---|---|

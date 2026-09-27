@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" data-no-count>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR Viewer — Revit FBX to USDZ for iPhone AR</title>
+<meta name="description" content="Free AR viewer for Revit models. Turn an FBX export into a USDZ file in your browser and see it at real size on iPhone. Your file never leaves your device.">
+<meta name="author" content="Ajmal P.S">
+<link rel="canonical" href="https://ajmalps.com/toolbox/ar-viewer/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta property="og:title" content="AR Viewer — Revit FBX to USDZ for iPhone AR">
+<meta property="og:description" content="Free AR viewer for Revit models. Turn an FBX export into a USDZ file in your browser and see it at real size on iPhone. Your file never leaves your device.">
+<meta property="og:url" content="https://ajmalps.com/toolbox/ar-viewer/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ajmalps.com">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ajmalps.com/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AR Viewer — Revit FBX to USDZ for iPhone AR">
+<meta name="twitter:description" content="Turn a Revit FBX export into a USDZ file in your browser and see it at real size in AR on iPhone. The file never leaves your device.">
+<meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="apple-touch-icon" href="../../favicon.svg">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/toolbox.css">
+<script>
+(function(){
+  var d = document.documentElement;
+  d.classList.add("js");
+  var t = null;
+  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
+})();
+</script>
+<!-- three.js 0.186.1, pinned. Each file carries its SHA-384 fingerprint, so a
+     browser that checks them refuses any copy that differs from the npm release.
+     To upgrade: change the version everywhere below and recompute every hash. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  },
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js": "sha384-m8JoFX52V6NGv2usipnlLJKnJfL7IE8dbniPDDCSGSQv3Hm4n6PjfV6syVwfuoRc",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.core.js": "sha384-mdKeCwPEcbDvzaxwhm+MVuLoMou+E7jQqrs4tmu/n8HBYPGI1kZt0MkJxlMR4zFM",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/controls/OrbitControls.js": "sha384-LSqANrugPGTgf0eYsQTloqKWy926dOOXo2iZ9y6wLMIDEQoU9AaCLJF1Vcc7oJXr",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/loaders/FBXLoader.js": "sha384-T6jgctCBflP/WBDL4jiwAYn+X6tlIMFD+hhT7W7PigRdiRfGuwkgFzOXhOkdTGQG",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/exporters/USDZExporter.js": "sha384-76/NW2aHOZuBbNdwl2F3Eu5DwARpPN81nhoDr1xfUYU/ud48r6ET60nbGD2gdBAA",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/libs/fflate.module.js": "sha384-WfAf3P1ihuiJhAj/FmfdKxOqoKSzTJ1JQEyTB4vuhzg+4QYUKf4Abi6Bijn0sbr6",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/curves/NURBSCurve.js": "sha384-8pYUrQOD/9icWJHIt9sPF3RqL+xHDGW/PKtsHU4y+foOUIS2i5zUF3zp+20rlCA/",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/curves/NURBSUtils.js": "sha384-Cu2oZY5IDaRj/C7bT2XpamgZ2jLza8cD0U0CnHiQGpqP1AaHd/W2G44FIJBWXrzX",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/utils/BufferGeometryUtils.js": "sha384-Rm97j4mcjlLkGsYC2LX3nZG9VU2R8lgK0QE+DmBr4thue+H7J+SHm+68If2ZLBVg"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://ajmalps.com/toolbox/ar-viewer/#app",
+      "name": "AR Viewer",
+      "url": "https://ajmalps.com/toolbox/ar-viewer/",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Any browser. AR view on iPhone and iPad with iOS 16.4 or newer.",
+      "browserRequirements": "Requires JavaScript",
+      "description": "Converts a Revit FBX export to a USDZ file in the browser and opens it in AR Quick Look on iPhone and iPad. Runs entirely on the user's device; the file is never uploaded.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@id": "https://ajmalps.com/#person" },
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://ajmalps.com/toolbox/ar-viewer/#crumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Toolbox", "item": "https://ajmalps.com/toolbox/" },
+        { "@type": "ListItem", "position": 3, "name": "AR Viewer", "item": "https://ajmalps.com/toolbox/ar-viewer/" }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+/* AR Viewer - page-local. Everything else comes from style.css and toolbox.css,
+   so light and dark both follow the site tokens. */
+main [hidden]{display:none !important}   /* .btn and .calc-grid set display, which beats the UA [hidden] rule */
+
+.arv-private{
+  display:flex;gap:14px;align-items:flex-start;max-width:760px;margin-top:26px;
+  padding:18px 20px;border-radius:16px;background:var(--neu-surface);box-shadow:var(--neu-out-sm);
+}
+.arv-private svg{flex:0 0 26px;width:26px;height:26px;margin-top:1px;stroke:var(--blue);fill:none;stroke-width:1.9}
+.arv-private p{font-size:15px;line-height:1.55;color:var(--muted)}
+.arv-private b{color:var(--ink)}
+
+/* choose file: the real input covers the whole zone, so click, tap and drop all land on it */
+.arv-drop{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  padding:28px 18px;border-radius:16px;background:var(--neu-surface);box-shadow:var(--neu-in);
+  border:2px dashed transparent;text-align:center;cursor:pointer;transition:border-color .2s var(--ease);
+}
+.arv-drop:hover,.arv-drop.over{border-color:var(--blue)}
+.arv-drop:focus-within{outline:2px solid var(--blue);outline-offset:3px}
+.arv-drop.busy{opacity:.55;cursor:progress}
+.arv-drop svg{width:34px;height:34px;margin-bottom:4px;stroke:var(--blue);fill:none;stroke-width:1.8}
+.arv-drop b{font-size:16px;font-weight:600;color:var(--ink)}
+.arv-drop span{font-size:13px;color:var(--muted)}
+.arv-file{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.arv-file:disabled{cursor:progress}
+
+/* two cards side by side, then preview and export full width. toolbox.css's
+   auto-fit grid would leave an empty third column beside the first two */
+.arv .calc-grid{grid-template-columns:1fr 1fr}
+@media(max-width:760px){.arv .calc-grid{grid-template-columns:1fr}}
+
+.arv .res-row .v.wrap{white-space:normal;overflow-wrap:anywhere;min-width:0;flex:0 1 auto}
+.arv .res{margin-top:16px}
+.arv .tool-note{margin-top:14px}
+
+/* status line; the spinner turns on the compositor, so it keeps moving while a big file is parsed */
+.arv-status{display:flex;align-items:flex-start;gap:9px;margin-top:14px;font-size:13.5px;font-weight:500;line-height:1.45;color:var(--muted)}
+.arv-status:empty{display:none}
+.arv-status.ok{color:var(--c-ok)}
+.arv-status.warn{color:var(--c-warn)}
+.arv-status.error{color:var(--c-bad)}
+.arv-status.busy::before{
+  content:"";flex:0 0 15px;width:15px;height:15px;margin-top:1px;border-radius:50%;
+  border:2px solid currentColor;border-right-color:transparent;animation:arvSpin .8s linear infinite;
+}
+@keyframes arvSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.arv-status.busy::before{animation:none;border-right-color:currentColor;opacity:.5}}
+
+/* 3D preview */
+.arv-stage{
+  position:relative;height:clamp(300px,56vh,560px);border-radius:16px;overflow:hidden;
+  background:var(--neu-surface);box-shadow:var(--neu-in);
+}
+.arv-stage canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;outline:none}
+.arv-empty{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:24px;text-align:center;font-size:14px;line-height:1.5;color:var(--faint);pointer-events:none;
+}
+.arv-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:12px}
+.arv-bar .f-hint{margin:0}
+.arv .mini{width:auto;margin-top:0;padding:9px 16px}
+.arv .mini:disabled{opacity:.45;cursor:not-allowed}
+
+/* create + AR */
+.arv .btn{border:0;font-family:inherit}
+.arv .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.arv-make{margin-top:4px;align-self:flex-start}
+.arv-out{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px}
+.arv-alt{background:var(--neu-surface);color:var(--blue);box-shadow:var(--neu-out-sm)}
+.arv-alt:hover{background:var(--neu-surface);box-shadow:var(--neu-out)}
+.arv-ar::before,.arv-alt::before{
+  content:"";flex:0 0 20px;width:20px;height:20px;background:currentColor;
+  -webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;
+}
+.arv-ar{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3'/%3E%3Cpath d='m12 7 4 2.2v4.6L12 16l-4-2.2V9.2zM8 9.2l4 2.2 4-2.2M12 11.4V16'/%3E%3C/svg%3E")}
+.arv-alt{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 10l5 5 5-5M5 20h14'/%3E%3C/svg%3E")}
+/* Safari's rule for an AR link: its first element child is an <img>. This one is
+   the required child and nothing more; the icon and label are drawn around it. */
+.arv-ar img{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.arv-ar{position:relative}
+
+.arv-notes p+p{margin-top:9px}
+
+@media(max-width:520px){
+  .arv-out .btn,.arv-make{width:100%;align-self:stretch}
+  .arv-drop{padding:24px 14px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+<nav id="nav" aria-label="Main">
+  <div class="navin">
+    <a class="brand" href="/" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
+      Ajmal P.S
+    </a>
+    <div class="navcenter">
+      <div class="navlinks" id="navLinks">
+        <span class="navpill" aria-hidden="true"></span>
+        <a href="/story/">Story</a>
+        <a href="/experience/">Experience</a>
+        <a href="/work/">Work</a>
+        <a href="/aj-tools/">AJ-Tools</a>
+        <a href="/heron-ai/">Heron AI</a>
+        <a href="/toolbox/" aria-current="page">Toolbox</a>
+        <a href="/skills/">Skills</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="navend">
+      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+        <span class="track"><span class="knob">
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+        </span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 64px);padding-bottom:90px">
+  <div class="wrap">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">›</span>
+      <a href="/toolbox/">Toolbox</a> <span aria-hidden="true">›</span>
+      <span>AR Viewer</span>
+    </nav>
+
+    <p class="eyebrow">Free tool · runs in your browser</p>
+    <h1 class="tool-head" style="font-size:clamp(34px,5vw,54px);font-weight:700;letter-spacing:-.025em;line-height:1.08">AR Viewer</h1>
+    <p class="sub" style="max-width:660px">See a Revit model at real size in AR on your iPhone. Choose an FBX export, check the size, create the USDZ file, then tap View in AR.</p>
+
+    <div class="arv-private" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <p><b>Your file stays on your device.</b> It is opened and converted inside this browser tab. Nothing is uploaded, stored or shared, and this page runs no analytics.</p>
+    </div>
+
+    <p class="tool-note" id="arvNeeds">The AR Viewer needs JavaScript and a recent browser: Safari on iOS 16.4 or newer, or a current Chrome, Edge, Firefox or Safari on a computer.</p>
+
+    <div class="calc arv" id="arvTool" hidden>
+      <div class="calc-grid">
+
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></svg></span>1. Choose your FBX</h2>
+          <label class="arv-drop" id="arvDrop">
+            <input type="file" id="arvFile" class="arv-file">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7zM3 7l9 5 9-5M12 12v10"/></svg>
+            <b>Choose FBX file</b>
+            <span>or drop it here</span>
+          </label>
+          <p class="f-hint">In Revit, open a 3D view and use File › Export › FBX. For a phone, export one level or zone at a time.</p>
+          <div class="res" id="arvInfo" hidden>
+            <div class="res-row"><span class="k">File</span><div class="v dim wrap" id="arvName">—</div></div>
+            <div class="res-row"><span class="k">Size</span><div class="v dim" id="arvSize">—</div></div>
+          </div>
+          <p class="tool-note warn" id="arvBigIn" hidden><b>Large model.</b> Large models may be slow on phone. Export one zone or level from Revit.</p>
+          <p class="arv-status" id="arvStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="calc-card">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2"/></svg></span>2. Units and real size</h2>
+          <div class="f">
+            <label for="arvUnit">Units in the file</label>
+            <div class="f-in">
+              <!-- NEEDS_REVIEW: Feet is the default. Both of Ajmal's Revit exports tested on
+                   2026-09-27 declare feet and their coordinates are feet. Confirm with one
+                   known size in AR on an iPhone before trusting it. -->
+              <select id="arvUnit">
+                <option value="ft" selected>Feet (Revit default)</option>
+                <option value="mm">Millimetres</option>
+                <option value="m">Metres</option>
+              </select>
+              <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <p class="f-hint" id="arvDeclared">Revit writes FBX files in feet.</p>
+          </div>
+          <div class="res">
+            <div class="res-row"><span class="k">Length along Revit X</span><div class="v" id="arvX">—</div></div>
+            <div class="res-row"><span class="k">Length along Revit Y</span><div class="v" id="arvY">—</div></div>
+            <div class="res-row"><span class="k">Height</span><div class="v" id="arvH">—</div></div>
+            <div class="res-row"><span class="k">Objects</span><div class="v dim" id="arvObjs">—</div></div>
+            <div class="res-row"><span class="k">Triangles</span><div class="v dim" id="arvTris">—</div></div>
+          </div>
+          <p class="f-hint">Check one size you know, like a room or a duct run. If it is wrong, change the unit.</p>
+          <p class="tool-note warn" id="arvOdd" hidden><b>That size looks unusual</b> for a building model. Check the unit above.</p>
+        </div>
+
+        <div class="calc-card full">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7zM3 7l9 5 9-5M12 12v10"/></svg></span>3. Preview</h2>
+          <div class="arv-stage" id="arvStage" data-lenis-prevent>
+            <canvas id="arvCanvas" role="img" aria-label="3D preview of your model"></canvas>
+            <p class="arv-empty" id="arvEmpty">Your model shows here after you choose a file.</p>
+          </div>
+          <div class="arv-bar">
+            <p class="f-hint">Drag to turn, pinch or scroll to zoom, right-drag or two fingers to move. <span id="arvGrid"></span></p>
+            <button type="button" class="mini" id="arvReset" disabled>Reset view</button>
+          </div>
+        </div>
+
+        <div class="calc-card full">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="m12 7 4 2.2v4.6L12 16l-4-2.2V9.2zM8 9.2l4 2.2 4-2.2M12 11.4V16"/></svg></span>4. Create USDZ and view in AR</h2>
+          <p class="f-hint" style="margin:0 0 16px 3px">Makes the AR file from the model above: real size in metres, centred, with its lowest point on the floor.</p>
+          <button type="button" class="btn arv-make" id="arvMake" disabled>Create USDZ</button>
+          <p class="arv-status" id="arvMakeStatus" role="status" aria-live="polite"></p>
+          <div class="arv-out" id="arvOut" hidden>
+            <a class="btn arv-ar" id="arvAR" rel="ar" href="#" download="model.usdz"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" width="1" height="1">View in AR</a>
+            <a class="btn arv-alt" id="arvDL" href="#" download="model.usdz">Download .usdz</a>
+            <span class="f-hint" style="margin:0" id="arvOutSize"></span>
+          </div>
+          <p class="tool-note" id="arvNoAR" hidden>AR works on iPhone/iPad Safari. You can still download the USDZ file.</p>
+          <p class="tool-note warn" id="arvSafari" hidden>If AR does not open, open this page in Safari.</p>
+          <p class="tool-note warn" id="arvBigOut" hidden></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tool-note arv-notes" style="margin-top:34px">
+      <p><b>What this does, and what it does not.</b></p>
+      <p><b>Scale.</b> Revit writes FBX in feet, and the tool converts to metres before it makes the USDZ, so AR shows the model at real size. Check one known dimension before you rely on it.</p>
+      <p><b>Position.</b> The model is centred and its lowest point sits on the floor. It is not placed at its site location or turned to face north.</p>
+      <p><b>Colours.</b> Only materials saved inside the FBX come across. An FBX with none shows plain grey, and textures stored on the computer that made the FBX are skipped.</p>
+      <p><b>Faces.</b> AR draws each face from its front side only, the same as the preview.</p>
+      <p><b>Size.</b> In testing, a 27.6 MB Revit FBX made an 84 MB USDZ. If a phone struggles, create the USDZ on a computer, send it to the phone, and open it from the Files app.</p>
+      <p>Built with three.js 0.186.1 (FBXLoader and USDZExporter), loaded from jsDelivr. AR opens in Safari on iPhone and iPad with iOS 16.4 or newer. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="/contact/">Tell me</a> and I will fix it.</p>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+    </div>
+    <div>
+      <h4>The story</h4>
+      <ul>
+        <li><a href="/story/">How it started</a></li>
+        <li><a href="/experience/">Experience</a></li>
+        <li><a href="/work/">Selected work</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>What I build</h4>
+      <ul>
+        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/heron-ai/">Heron AI</a></li>
+        <li><a href="/toolbox/">Toolbox</a></li>
+        <li><a href="/skills/">Skills</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
+    <span><a href="/">ajmalps.com</a></span>
+  </div>
+</footer>
+
+<script src="../../vendor/lenis.min.js" defer></script>
+<script src="../../vendor/gsap.min.js" defer></script>
+<script src="../../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+<script type="module">
+/* AR Viewer. Reads a Revit FBX with three.js FBXLoader, previews it, and writes
+   a USDZ with three.js USDZExporter for AR Quick Look. The file is read with the
+   browser's File API and never leaves this tab. */
+
+const $ = (id) => document.getElementById(id);
+const ui = {
+  needs: $('arvNeeds'), tool: $('arvTool'), drop: $('arvDrop'), file: $('arvFile'),
+  info: $('arvInfo'), name: $('arvName'), size: $('arvSize'), bigIn: $('arvBigIn'), status: $('arvStatus'),
+  unit: $('arvUnit'), declared: $('arvDeclared'), x: $('arvX'), y: $('arvY'), h: $('arvH'),
+  objs: $('arvObjs'), tris: $('arvTris'), odd: $('arvOdd'),
+  stage: $('arvStage'), canvas: $('arvCanvas'), empty: $('arvEmpty'), grid: $('arvGrid'), reset: $('arvReset'),
+  make: $('arvMake'), makeStatus: $('arvMakeStatus'), out: $('arvOut'), ar: $('arvAR'), dl: $('arvDL'),
+  outSize: $('arvOutSize'), noAR: $('arvNoAR'), safari: $('arvSafari'), bigOut: $('arvBigOut'),
+};
+
+// NEEDS_REVIEW: first guesses from one PC test (a 27.6 MB Revit FBX used about
+// 650 MB of browser memory and made an 84 MB USDZ). Tune on a real iPhone.
+const BIG_FBX = 25 * 1048576;
+const BIG_USDZ = 60 * 1048576;
+
+// metres per file unit. The default (feet) is NEEDS_REVIEW, see the note on the <select>.
+const UNITS = { ft: 0.3048, mm: 0.001, m: 1 };
+// FBX states its unit as centimetres per unit (UnitScaleFactor)
+const FBX_UNITS = [[30.48, 'feet', 'ft'], [0.1, 'millimetres', 'mm'], [100, 'metres', 'm'],
+                   [1, 'centimetres'], [2.54, 'inches']];
+
+const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);   // iPadOS reports itself as a Mac
+const probe = document.createElement('a');
+const quickLook = !!(probe.relList && probe.relList.supports && probe.relList.supports('ar'));
+const importMaps = typeof HTMLScriptElement !== 'undefined' &&
+  typeof HTMLScriptElement.supports === 'function' && HTMLScriptElement.supports('importmap');
+
+if (importMaps) start();
+else ui.needs.textContent = 'This browser is too old for the AR Viewer. On an iPhone, update to iOS 16.4 or newer. On a computer, use a current Chrome, Edge, Firefox or Safari.';
+
+function start() {
+  ui.needs.hidden = true;
+  ui.tool.hidden = false;
+  ui.noAR.hidden = isAppleMobile;
+  // iOS greys out files it has no type for, and it has none for .fbx, so only filter elsewhere
+  if (!isAppleMobile) ui.file.accept = '.fbx';
+
+  let E = null;          // three.js modules, once downloaded
+  let enginePromise = null;
+  let view = null;       // preview, or false when this browser has no WebGL
+  let model = null;      // unit scale + centring, wraps what FBXLoader returned
+  let box0 = null;       // model bounds in file units, Y up
+  let usdzURL = null;
+  let baseName = 'model';
+  let busy = false;
+
+  const engine = () => {
+    enginePromise ??= Promise.all([
+      import('three'),
+      import('three/addons/controls/OrbitControls.js'),
+      import('three/addons/loaders/FBXLoader.js'),
+      import('three/addons/exporters/USDZExporter.js'),
+      import('three/addons/utils/BufferGeometryUtils.js'),
+    ]).then(([THREE, oc, fbx, usdz, bgu]) => (E = {
+      THREE, OrbitControls: oc.OrbitControls, FBXLoader: fbx.FBXLoader,
+      USDZExporter: usdz.USDZExporter, mergeVertices: bgu.mergeVertices,
+    })).catch((err) => { enginePromise = null; throw err; });
+    return enginePromise;
+  };
+  // start the 2 MB download as soon as someone reaches for the file picker
+  for (const t of ['pointerdown', 'dragenter', 'focusin']) {
+    ui.drop.addEventListener(t, () => engine().catch(() => {}), { once: true });
+  }
+
+  const say = (el, kind, text) => { el.className = 'arv-status ' + kind; el.textContent = text; };
+  const paint = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+  const mb = (b) => (b / 1048576).toFixed(b < 10 * 1048576 ? 2 : 1) + ' MB';
+  const metres = (v) => v.toLocaleString('en', { minimumFractionDigits: v < 1 ? 3 : 2, maximumFractionDigits: v < 1 ? 3 : 2 }) + ' m';
+
+  function setBusy(on) {
+    busy = on;
+    ui.file.disabled = on;
+    ui.unit.disabled = on;
+    ui.make.disabled = on || !model;
+    ui.drop.classList.toggle('busy', on);
+  }
+
+  // ---------------------------------------------------------------- choosing a file
+  ui.file.addEventListener('change', () => {
+    const f = ui.file.files && ui.file.files[0];
+    ui.file.value = '';                    // so choosing the same file again still fires
+    if (f) openFile(f);
+  });
+  ui.drop.addEventListener('dragenter', () => ui.drop.classList.add('over'));
+  ui.drop.addEventListener('dragleave', () => ui.drop.classList.remove('over'));
+  ui.drop.addEventListener('drop', () => ui.drop.classList.remove('over'));
+  // a file dropped anywhere else would make the browser leave the page
+  for (const t of ['dragover', 'drop']) {
+    window.addEventListener(t, (e) => { if (!ui.drop.contains(e.target)) e.preventDefault(); });
+  }
+
+  async function openFile(file) {
+    if (busy) return;
+    clearOutput();
+    dropModel();
+    ui.info.hidden = false;
+    ui.name.textContent = file.name;
+    ui.size.textContent = mb(file.size);
+    ui.bigIn.hidden = file.size <= BIG_FBX;
+    baseName = file.name.replace(/\.fbx$/i, '').replace(/[\\/:*?"<>|]+/g, '_').slice(0, 120) || 'model';
+
+    const ext = (file.name.includes('.') ? file.name.split('.').pop() : '').toLowerCase();
+    if (ext !== 'fbx') {
+      say(ui.status, 'error', ext === 'rvt' || ext === 'rfa'
+        ? 'That is a Revit file, not an FBX. In Revit, open a 3D view and use File › Export › FBX, then choose that file here.'
+        : 'Please choose an .fbx file exported from Revit.');
+      return;
+    }
+    if (file.size === 0) { say(ui.status, 'error', 'This file is empty. Export the FBX from Revit again.'); return; }
+
+    setBusy(true);
+    try {
+      if (!E) {
+        say(ui.status, 'busy', 'Loading the 3D engine (first time only)…');
+        try { await engine(); } catch (err) {
+          say(ui.status, 'error', 'The 3D engine could not be downloaded. Check your internet connection and try again. Your file was not sent anywhere.');
+          return;
+        }
+      }
+      say(ui.status, 'busy', 'Reading your file…');
+      await paint();
+      const buffer = await file.arrayBuffer();
+      say(ui.status, 'busy', 'Building the 3D model. A big file can take a minute…');
+      await paint();
+      const loaded = await loadFBX(buffer);
+      say(ui.status, 'busy', 'Preparing the model for AR…');
+      await paint();
+      const stats = prepare(loaded.root);
+      if (!stats.meshes) {
+        disposeTree(loaded.root);
+        say(ui.status, 'error', 'No 3D geometry was found in this file. In Revit, export from a 3D view where the elements are visible.');
+        return;
+      }
+      showModel(loaded.root, stats);
+      readUnit(loaded.root.userData.unitScaleFactor);
+      applyUnit();
+      say(ui.status, 'ok', 'Model ready. Check the size, then create the USDZ.' +
+        (loaded.skipped ? ` ${loaded.skipped} texture${loaded.skipped > 1 ? 's were' : ' was'} skipped because the FBX does not contain ${loaded.skipped > 1 ? 'them' : 'it'}.` : ''));
+    } catch (err) {
+      dropModel();
+      say(ui.status, 'error', friendly(err, 'load'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function loadFBX(buffer) {
+    const { THREE, FBXLoader } = E;
+    const manager = new THREE.LoadingManager();
+    let started = false, settle;
+    const settled = new Promise((r) => { settle = r; });
+    manager.onStart = () => { started = true; };
+    manager.onLoad = () => settle();
+    // A texture that is not embedded in the FBX would be requested from this web
+    // server by its file name. Never request it: nothing about the model leaves the device.
+    const skipped = new Set();
+    class LocalTextures extends THREE.TextureLoader {
+      load(url, onLoad, onProgress, onError) {
+        if (/^(blob|data):/i.test(url)) return super.load(url, onLoad, onProgress, onError);
+        skipped.add(url);
+        return new THREE.Texture();
+      }
+    }
+    manager.addHandler(/./, new LocalTextures(manager));
+    const root = new FBXLoader(manager).parse(buffer, '');
+    // embedded textures decode in the background; give them a moment before they are used
+    if (started) await Promise.race([settled, new Promise((r) => setTimeout(r, 15000))]);
+    return { root, skipped: skipped.size };
+  }
+
+  // Keep what AR Quick Look can show. Lights, cameras and lines are dropped (USDZ
+  // here carries meshes only). Materials become MeshStandardMaterial, the type
+  // USDZExporter is written for. Duplicate corner points are joined with three.js
+  // mergeVertices: same shape, and on a 27.6 MB Revit FBX the USDZ fell from 212 MB to 84 MB.
+  function prepare(root) {
+    const { THREE, mergeVertices } = E;
+    const junk = [];
+    root.traverse((o) => { if (o !== root && (o.isLight || o.isCamera || o.isLine || o.isPoints)) junk.push(o); });
+    junk.forEach((o) => o.removeFromParent());
+
+    const loaded = (t) => !!(t && t.image && (t.image.naturalWidth || t.image.width));
+    const swapped = new Map();
+    const toStandard = (m) => {
+      let s = swapped.get(m);
+      if (!s) {
+        s = new THREE.MeshStandardMaterial({
+          name: m.name,
+          color: m.color ? m.color.clone() : new THREE.Color(0xcccccc),
+          map: loaded(m.map) ? m.map : null,
+          opacity: m.opacity,
+          transparent: m.opacity < 1,
+          roughness: 0.8,
+          metalness: 0,
+        });
+        swapped.set(m, s);
+      }
+      return s;
+    };
+
+    const meshes = [];
+    root.traverse((o) => { if (o.isMesh) meshes.push(o); });
+    const keepUV = new Set();
+    for (const mesh of meshes) {
+      mesh.material = Array.isArray(mesh.material) ? mesh.material.map(toStandard) : toStandard(mesh.material);
+      if ([].concat(mesh.material).some((m) => m.map)) keepUV.add(mesh.geometry);
+    }
+    for (const [old, now] of swapped) {
+      if (old.map && old.map !== now.map) old.map.dispose();
+      old.dispose();
+    }
+
+    const merged = new Map();
+    let tris = 0;
+    for (const mesh of meshes) {
+      const g = mesh.geometry;
+      let m = merged.get(g);
+      if (!m) {
+        if (!keepUV.has(g)) ['uv', 'uv1', 'uv2', 'uv3'].forEach((n) => g.deleteAttribute(n));
+        g.deleteAttribute('color');
+        if (!g.attributes.normal) g.computeVertexNormals();
+        m = mergeVertices(g);
+        g.dispose();
+        merged.set(g, m);
+      }
+      mesh.geometry = m;
+      tris += m.index.count / 3;
+    }
+    return { meshes: meshes.length, tris };
+  }
+
+  function showModel(root, stats) {
+    const { THREE } = E;
+    box0 = new THREE.Box3().setFromObject(root, true);   // file units; FBXLoader has already stood Z-up files upright
+    model = new THREE.Group();
+    model.name = 'Model';
+    model.add(root);
+    ui.objs.textContent = stats.meshes.toLocaleString('en');
+    ui.tris.textContent = Math.round(stats.tris).toLocaleString('en');
+    if (view === null) view = makeView();
+    if (view) view.show(model);
+  }
+
+  function readUnit(scale) {
+    if (typeof scale !== 'number') {
+      ui.declared.textContent = 'This file does not say which unit it uses. Check the size below.';
+      return;
+    }
+    const hit = FBX_UNITS.find(([cm]) => Math.abs(scale - cm) < cm * 1e-6);
+    if (hit && hit[2]) {
+      ui.unit.value = hit[2];
+      ui.declared.textContent = `This file says its unit is ${hit[1]}, so that is selected.`;
+    } else {
+      ui.declared.textContent = `This file says its unit is ${hit ? hit[1] : scale + ' cm'}, which is not in this list. Pick the unit that gives the right size below.`;
+    }
+  }
+
+  function applyUnit() {
+    if (!model) return;
+    const { THREE } = E;
+    const f = UNITS[ui.unit.value];
+    const c = box0.getCenter(new THREE.Vector3());
+    model.scale.setScalar(f);
+    model.position.set(-c.x * f, -box0.min.y * f, -c.z * f);   // centred, lowest point on the floor
+    model.updateMatrixWorld(true);
+    const s = box0.getSize(new THREE.Vector3()).multiplyScalar(f);
+    // FBXLoader turned Revit's Z up into three.js Y up: X stays X, Revit Y runs along Z
+    ui.x.textContent = metres(s.x);
+    ui.y.textContent = metres(s.z);
+    ui.h.textContent = metres(s.y);
+    const longest = Math.max(s.x, s.y, s.z);
+    ui.odd.hidden = longest >= 0.5 && longest <= 3000;
+    if (view) view.frame(s);
+  }
+
+  ui.unit.addEventListener('change', () => {
+    if (!model) return;
+    applyUnit();
+    if (usdzURL) {
+      clearOutput();
+      say(ui.makeStatus, 'warn', 'The unit changed, so create the USDZ again.');
+    }
+  });
+
+  // ---------------------------------------------------------------- preview
+  function makeView() {
+    const { THREE, OrbitControls } = E;
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: ui.canvas, antialias: true, alpha: true });
+    } catch (err) {
+      ui.empty.textContent = 'This browser cannot show the 3D preview (WebGL is off or not supported). You can still create and download the USDZ.';
+      return false;
+    }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x9aa3b2, 2.4));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+    sun.position.set(0.5, 1, 0.75);
+    scene.add(sun);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    let grid = null, current = null, last = null, queued = false;
+    const render = () => { queued = false; renderer.render(scene, camera); };
+    const redraw = () => { if (!queued) { queued = true; requestAnimationFrame(render); } };
+    controls.addEventListener('change', redraw);
+    const resize = () => {
+      const w = ui.stage.clientWidth, h = ui.stage.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      redraw();
+    };
+    new ResizeObserver(resize).observe(ui.stage);
+    resize();
+    const dropGrid = () => {
+      if (!grid) return;
+      scene.remove(grid);
+      grid.geometry.dispose();
+      grid.material.dispose();
+      grid = null;
+    };
+    return {
+      show(obj) {
+        if (current) scene.remove(current);
+        current = obj;
+        scene.add(obj);
+        ui.empty.hidden = true;
+        ui.reset.disabled = false;
+      },
+      clear() {
+        if (current) scene.remove(current);
+        current = null;
+        last = null;
+        dropGrid();
+        ui.grid.textContent = '';
+        ui.empty.hidden = false;
+        ui.reset.disabled = true;
+        redraw();
+      },
+      frame(size) {
+        last = size.clone();
+        // floor grid in round-number squares, so the scale reads at a glance
+        dropGrid();
+        const span = Math.max(size.x, size.z) * 1.25 || 1;
+        const cell = Math.pow(10, Math.floor(Math.log10(span / 10)));
+        const cells = Math.min(Math.ceil(span / cell), 400);
+        grid = new THREE.GridHelper(cells * cell, cells, 0x7c8698, 0x7c8698);
+        grid.material.transparent = true;
+        grid.material.opacity = 0.3;
+        grid.material.depthWrite = false;
+        scene.add(grid);
+        ui.grid.textContent = 'Grid squares: ' + (cell >= 1 ? cell + ' m' : Math.round(cell * 1000) + ' mm') + '.';
+        // whole model in view from a three-quarter angle: back the camera off
+        // until all 8 corners of the model's box sit inside the picture
+        const target = new THREE.Vector3(0, size.y / 2, 0);
+        const dir = new THREE.Vector3(0.9, 0.7, 1.1).normalize();
+        const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), dir).normalize();
+        const up = new THREE.Vector3().crossVectors(dir, right);
+        const tanV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+        const tanH = tanV * camera.aspect;
+        const half = size.clone().multiplyScalar(0.5);
+        const corner = new THREE.Vector3();
+        let dist = 0;
+        for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) {
+          corner.set(sx * half.x, sy * half.y, sz * half.z);
+          const z = corner.dot(dir);
+          dist = Math.max(dist, z + Math.abs(corner.dot(right)) / tanH, z + Math.abs(corner.dot(up)) / tanV);
+        }
+        dist = (dist || 1) * 1.12;
+        const r = size.length() / 2 || 1;
+        camera.near = Math.max(dist / 2000, 0.001);
+        camera.far = dist * 20;
+        camera.position.copy(target).addScaledVector(dir, dist);
+        camera.updateProjectionMatrix();
+        controls.target.copy(target);
+        controls.minDistance = r * 0.02;
+        controls.maxDistance = dist * 6;
+        controls.update();
+        redraw();
+      },
+      reset() { if (last) this.frame(last); },
+    };
+  }
+  ui.reset.addEventListener('click', () => { if (view) view.reset(); });
+
+  // ---------------------------------------------------------------- USDZ + AR
+  ui.make.addEventListener('click', async () => {
+    if (!model || busy) return;
+    setBusy(true);
+    clearOutput();
+    say(ui.makeStatus, 'busy', 'Creating the USDZ file…');
+    await paint();
+    try {
+      model.updateMatrixWorld(true);
+      const data = await new E.USDZExporter().parseAsync(model, { quickLookCompatible: true, maxTextureSize: 1024 });
+      const blob = new Blob([data], { type: 'model/vnd.usdz+zip' });
+      usdzURL = URL.createObjectURL(blob);
+      const name = baseName + '.usdz';
+      ui.ar.href = usdzURL;
+      ui.ar.download = name;
+      ui.dl.href = usdzURL;
+      ui.dl.download = name;
+      ui.ar.hidden = !isAppleMobile;
+      ui.safari.hidden = !(isAppleMobile && !quickLook);
+      ui.outSize.textContent = 'USDZ file: ' + mb(blob.size);
+      if (blob.size > BIG_USDZ) {
+        ui.bigOut.hidden = false;
+        ui.bigOut.innerHTML = '<b>This USDZ is ' + mb(blob.size) + '.</b> Big files can take a while to open in AR, and may not open on older iPhones. A smaller Revit export (one level or zone) opens faster.';
+      }
+      ui.out.hidden = false;
+      say(ui.makeStatus, 'ok', isAppleMobile
+        ? 'USDZ ready. Tap View in AR.'
+        : 'USDZ ready. Download it, or open this page on an iPhone or iPad to view it in AR.');
+    } catch (err) {
+      clearOutput();
+      say(ui.makeStatus, 'error', friendly(err, 'export'));
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  function clearOutput() {
+    if (usdzURL) URL.revokeObjectURL(usdzURL);
+    usdzURL = null;
+    ui.ar.href = '#';
+    ui.dl.href = '#';
+    ui.out.hidden = true;
+    ui.safari.hidden = true;
+    ui.bigOut.hidden = true;
+    ui.outSize.textContent = '';
+    say(ui.makeStatus, '', '');
+  }
+
+  // ---------------------------------------------------------------- tidy up
+  function disposeTree(obj) {
+    obj.traverse((o) => {
+      if (!o.isMesh) return;
+      o.geometry.dispose();
+      for (const m of [].concat(o.material)) {
+        if (m.map) m.map.dispose();
+        m.dispose();
+      }
+    });
+  }
+
+  function dropModel() {
+    if (model) {
+      if (view) view.clear();
+      disposeTree(model);
+      model = null;
+      box0 = null;
+    }
+    for (const el of [ui.x, ui.y, ui.h, ui.objs, ui.tris]) el.textContent = '—';
+    ui.odd.hidden = true;
+    ui.make.disabled = true;
+  }
+
+  function friendly(err, stage) {
+    const msg = String((err && err.message) || err || '');
+    if (/memory|allocation failed|invalid (array|string|typed array) length/i.test(msg)) {
+      return 'Your device ran out of memory with this model. Export a smaller part from Revit (one level or zone), or create the USDZ on a computer.';
+    }
+    if (/version not supported/i.test(msg)) return 'This FBX is in an old format this viewer cannot read. Export it again from a recent version of Revit.';
+    if (/unknown format|cannot find the version/i.test(msg)) return 'This is not a readable FBX file. Export it again from Revit (File › Export › FBX).';
+    // a file cut short: DataView reads run past the end, or fflate hits the end of a packed array
+    if (/outside the bounds|DataView|offset|unexpected EOF|invalid (block|length|distance|zlib)/i.test(msg)) {
+      return 'This FBX looks damaged or incomplete. Export it again from Revit.';
+    }
+    return (stage === 'export' ? 'The USDZ could not be created. ' : 'This FBX could not be opened. Export it again from Revit. ') + '(Details: ' + msg + ')';
+  }
+}
+</script>
+</body>
+</html>

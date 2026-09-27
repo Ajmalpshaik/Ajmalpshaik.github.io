@@ -23,7 +23,8 @@ PAGES = ["index.html", "404.html"] + [
     os.path.join(d, "index.html")
     for d in ("story", "experience", "work", "aj-tools", "heron-ai",
               "about", "skills", "faq", "contact",
-              "toolbox", os.path.join("toolbox", "crane-lift-calculator"))
+              "toolbox", os.path.join("toolbox", "crane-lift-calculator"),
+              os.path.join("toolbox", "ar-viewer"))
 ]
 
 errors, warnings = [], []
@@ -127,7 +128,8 @@ for href in re.findall(r'href="#([^"]+)"', src):
 for page in PAGES:
     page_src = read(page)
     base = os.path.dirname(os.path.join(ROOT, page))
-    refs = re.findall(r'(?:src|href)="(?!https?:|mailto:|tel:|#|//)([^"]+)"', page_src)
+    # a data: URI carries its content inline, so there is no file to look for
+    refs = re.findall(r'(?:src|href)="(?!https?:|mailto:|tel:|#|//|data:)([^"]+)"', page_src)
     for ref in refs:
         path = ref.split("?")[0].split("#")[0]
         if not path:

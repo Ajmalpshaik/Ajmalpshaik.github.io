@@ -47,12 +47,17 @@
   </url>
   <url>
     <loc>https://ajmalps.com/toolbox/</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-27</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ajmalps.com/toolbox/crane-lift-calculator/</loc>
     <lastmod>2026-09-20</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ajmalps.com/toolbox/ar-viewer/</loc>
+    <lastmod>2026-09-27</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
