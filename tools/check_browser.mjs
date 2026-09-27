@@ -68,6 +68,7 @@ const PAGES = [
   // which reads the file and never renders it - a page that threw on load or
   // scrolled sideways would have looked exactly like a passing one.
   'toolbox/index.html', 'toolbox/crane-lift-calculator/index.html',
+  'toolbox/ar-viewer/index.html',
 ];
 const WIDTHS = [1440, 1280, 834, 390];
 
