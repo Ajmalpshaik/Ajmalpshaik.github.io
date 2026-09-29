@@ -118,7 +118,10 @@ for (const page of PAGES) {
   const shell = await p.evaluate(() => ({
     main: document.querySelectorAll('main').length,
     h1: document.querySelectorAll('h1').length,
-    imgNoAlt: [...document.querySelectorAll('img')].filter((i) => !i.alt).length,
+    // alt="" is a deliberate answer - the image is decoration - so only a
+    // missing attribute counts. The home page's marquee and corner objects say
+    // alt="" on purpose.
+    imgNoAlt: [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length,
   }));
   if (shell.main !== 1) fail(`expected 1 <main>, found ${shell.main}`);
   if (shell.h1 !== 1) fail(`expected 1 <h1>, found ${shell.h1}`);
@@ -142,14 +145,74 @@ for (const page of PAGES) {
     if (!ok) fail('ribbon tab click does not switch panels');
   }
 
-  // counters must land on their target, not sit at 0
-  await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
-  await p.waitForTimeout(2200);
-  const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
-    els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
-  if (stuck) fail(`${stuck} counter(s) did not reach their value`);
+  // counters, if present, must land on their target, not sit at 0
+  if (await p.$('.stats-band')) {
+    await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
+    await p.waitForTimeout(2200);
+    const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
+      els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
+    if (stuck) fail(`${stuck} counter(s) did not reach their value`);
+  }
+
+  // The home page is built from landing/ and arrives as finished HTML that
+  // React then attaches to. It marks <html data-ready> when it has; a bundle
+  // that failed to load or threw on the way would leave that unset.
+  if (!(await p.evaluate(() => document.documentElement.hasAttribute('data-ready')))) {
+    fail('index.html: the page script never attached (no data-ready on <html>)');
+  }
+
+  // The hero name is one line that must not be cut. It sits in an
+  // overflow-hidden box, so if it ever outgrew the screen it would be clipped
+  // silently rather than scroll - which the sideways check above cannot see.
+  for (const w of [1920, 1440, 1024, 834, 640, 390, 320]) {
+    await p.setViewportSize({ width: w, height: 900 });
+    await p.waitForTimeout(150);
+    const cut = await p.evaluate(() => {
+      const h = document.querySelector('h1.hero-heading');
+      return h ? h.scrollWidth - h.clientWidth : 0;
+    });
+    if (cut > 1) fail(`index.html: the hero name is cut off by ${cut}px at ${w}px wide`);
+  }
 
   await ctx.close();
+}
+
+// ---- script never arrives: the failsafe must show the page ------------------
+// Every section on the home page fades in when its script runs. If the script
+// is blocked or the network drops it, an inline timer in index.html shows
+// everything after 4s instead of leaving a dark, empty page.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await ctx.newPage();
+  await p.route(/\/assets\/home\/.*\.js$/, (route) => route.abort());
+  await p.goto(url('index.html'));
+  await p.waitForTimeout(4600);
+  const hidden = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+  if (hidden) fail(`script blocked: ${hidden} element(s) on index.html stay invisible`);
+  await ctx.close();
+}
+
+// ---- every entrance on the home page actually plays -------------------------
+// Each .fade-in waits to be scrolled into view. One that can never count as in
+// view - clipped by its own box, say, which is what the hero name did on a
+// 320px phone - would stay invisible for good, with nothing in the console.
+// Scroll the whole page at a few sizes and require every one to have arrived.
+{
+  for (const [w, h] of [[1440, 900], [390, 844], [320, 640]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const p = await ctx.newPage();
+    await p.goto(url('index.html'));
+    await p.waitForTimeout(600);
+    const total = await p.evaluate(() => document.documentElement.scrollHeight);
+    for (let y = 0; y <= total; y += Math.round(h * 0.6)) {
+      await p.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
+      await p.waitForTimeout(120);
+    }
+    await p.waitForTimeout(1600);
+    const stuck = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+    if (stuck) fail(`index.html at ${w}px: ${stuck} element(s) never faded in after scrolling the whole page`);
+    await ctx.close();
+  }
 }
 
 // ---- reduced motion: nothing may stay hidden -------------------------------
@@ -158,7 +221,7 @@ for (const page of PAGES) {
   const p = await ctx.newPage();
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
-  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
+  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
     (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
   await ctx.close();
@@ -175,7 +238,7 @@ for (const page of PAGES) {
     const p = await ctx.newPage();
     await p.goto(url(page));
     await p.waitForTimeout(400);
-    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
+    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
       (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
     if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
     // heron-ai used to sit at 20 here: it was one statement on purpose - a name,
@@ -197,7 +260,7 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
-  const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b',
+  const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;
       return f === 'rgba(0, 0, 0, 0)' || f === 'transparent';

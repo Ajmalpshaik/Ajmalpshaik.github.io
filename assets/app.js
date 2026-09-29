@@ -272,8 +272,9 @@
   })();
 
   /* ---------- Vanta BIRDS behind the hero, any page with #vanta-hero ----------
-     Home and /heron-ai/ today. It was home-only when written; the gate below has
-     always been the element, not the page, so adding one is all a page needs.
+     /heron-ai/ today; the home page had one until it moved to landing/. The
+     gate below has always been the element, not the page, so adding one is
+     all a page needs.
      three.js is 600kb, so it is fetched only when it will actually be drawn:
      never for reduced-motion, never on Save-Data, never without WebGL, and
      never on the pages that have no hero. The flock is destroyed when the hero

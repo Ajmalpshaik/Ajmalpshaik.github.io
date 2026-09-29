@@ -16,10 +16,11 @@ r134 because Vanta needs it.
 
 To update: `npm i gsap lenis` and copy the `dist` files here.
 
-`three.min.js` and `vanta.birds.min.js` power the flock behind the hero on the
-home page. They are **not** in any `<script>` tag: three.js alone is 600 kB, so
-`assets/app.js` fetches both only when the effect will really be drawn — home
-page, no reduced-motion preference, no Save-Data, WebGL present. Every other
-page, and every visitor who cannot or does not want to see it, downloads
-neither file. r134 is the version Vanta targets; newer three.js releases move
+`three.min.js` and `vanta.birds.min.js` power the flock behind the hero on
+`/heron-ai/` (the home page had it too, until it moved to `landing/`). They are
+**not** in any `<script>` tag: three.js alone is 600 kB, so `assets/app.js`
+fetches both only when the effect will really be drawn — a page with a
+`#vanta-hero`, no reduced-motion preference, no Save-Data, WebGL present.
+Every other page, and every visitor who cannot or does not want to see it,
+downloads neither file. r134 is the version Vanta targets; newer three.js releases move
 APIs that Vanta still calls.
