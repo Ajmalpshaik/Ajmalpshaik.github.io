@@ -7,11 +7,12 @@ complete without them. Replace them in any order.
 ## How to swap one in
 
 1. Paste the prompt into your image model and generate.
-2. On GitHub, open the `claude/dark-landing-page` branch, go to
-   `assets/home/img/`, choose **Add file → Upload files**, and upload it with
-   the slot's name. PNG or JPG is fine, e.g. `hero-portrait.png`.
-3. Tell Claude the images are uploaded. It converts them to WebP at the right
-   size, replaces the placeholders and checks the page.
+2. Attach the image in your chat with Claude and say which slot it is for.
+   PNG or JPG is fine.
+3. Claude fits it to the slot as WebP, replaces the placeholder, checks the
+   page and pushes it.
+
+Done so far: `about-hardhat`.
 
 Order that matters most: the portrait, then the three projects, then the four
 About icons, then the marquee.
