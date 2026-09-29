@@ -8,7 +8,8 @@ complete without them. Replace them in any order.
 
 1. Paste the prompt into your image model and generate.
 2. Attach the image in your chat with Claude and say which slot it is for.
-   PNG or JPG is fine.
+   PNG or JPG is fine. If your tool cannot make the exact shape, any
+   landscape size works: the picture is cropped to fit, keeping the middle.
 3. Claude fits it to the slot as WebP, replaces the placeholder, checks the
    page and pushes it.
 
@@ -25,7 +26,7 @@ About icons, then the marquee.
 
 Upload your own photo to the image model together with this prompt:
 
-> Use the uploaded photo as the face reference and keep my face, skin tone, hair and beard exactly the same. Create a professional half-body portrait of me facing the camera with a calm, confident expression and a slight smile. Frame from just above the head down to the waist, centred, with the body cut off cleanly by the bottom edge of the image. I am wearing a plain black crew-neck t-shirt with no logos. Soft studio key light from the left, a subtle cool rim light on the shoulders and hair, gentle shadows. Ultra-realistic photograph, sharp focus, 85mm lens look. Transparent background, PNG. Portrait 4:5, 1600×2000 px. No text, no watermark.
+> Use the uploaded photo as the face reference and keep my face, skin tone, hairstyle and any facial hair exactly as in the photo. Create a professional half-body portrait of me facing the camera with a calm, confident expression and a slight smile. Frame from just above the head down to the waist, centred, with the body cut off cleanly by the bottom edge of the image. I am wearing a plain black crew-neck t-shirt with no logos. Soft studio key light from the left, a subtle cool rim light on the shoulders and hair, gentle shadows. Ultra-realistic photograph, sharp focus, 85mm lens look. Transparent background, PNG. Portrait 4:5, 1600×2000 px. No text, no watermark.
 
 If your tool cannot do a transparent background, ask for a plain solid black
 background instead and say so when you upload it.
@@ -33,8 +34,9 @@ background instead and say so when you upload it.
 ## 2. About section icons
 
 Four small glossy 3D objects in the corners around "About me". Each is a
-**1:1 transparent PNG, 1024×1024**. Make all four in the same chat, so they
-come out in one style.
+**1:1 transparent PNG, 1024×1024**. The valve, duct and cube are done. For
+the hard hat, upload those three images together with its prompt, so it comes
+out in the same style.
 
 | File | Where |
 |---|---|
@@ -44,7 +46,7 @@ come out in one style.
 | `about-cube` | bottom right |
 
 **about-hardhat**
-> A glossy 3D icon of a yellow construction safety helmet with raised ridges on top and a short front peak, smooth rounded shapes, soft clay-plastic look. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
+> The three uploaded images are a set of icons: a valve, a duct elbow and a glass cube. Make a fourth icon for the same set, matching their style exactly: the same glossy realistic 3D render with fine detail, the same three-quarter view from the front-left and slightly above, the same soft studio lighting with the strong pink-magenta rim light on the right edge, and the same size in the frame. The object is a yellow construction safety helmet with raised ridges on top, a short front peak and a smooth glossy shell. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text, no logos.
 
 **about-valve**
 > A glossy 3D icon of an industrial gate valve: a bright red round handwheel on top, a dark grey metal valve body with bolted flanges, and short cyan pipe ends on both sides. Smooth rounded shapes, soft clay-plastic look, same style as the hard hat icon. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
