@@ -12,7 +12,7 @@ complete without them. Replace them in any order.
 3. Claude fits it to the slot as WebP, replaces the placeholder, checks the
    page and pushes it.
 
-Done so far: `about-valve`.
+Done so far: `about-valve`, `about-duct`.
 
 Order that matters most: the portrait, then the three projects, then the four
 About icons, then the marquee.
