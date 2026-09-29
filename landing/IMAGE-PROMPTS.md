@@ -12,8 +12,6 @@ complete without them. Replace them in any order.
 3. Claude fits it to the slot as WebP, replaces the placeholder, checks the
    page and pushes it.
 
-Done so far: `about-hardhat`.
-
 Order that matters most: the portrait, then the three projects, then the four
 About icons, then the marquee.
 
@@ -33,7 +31,8 @@ background instead and say so when you upload it.
 ## 2. About section icons
 
 Four small glossy 3D objects in the corners around "About me". Each is a
-**1:1 transparent PNG, 1024×1024**.
+**1:1 transparent PNG, 1024×1024**. Make all four in the same chat, so they
+come out in one style.
 
 | File | Where |
 |---|---|
@@ -43,16 +42,16 @@ Four small glossy 3D objects in the corners around "About me". Each is a
 | `about-cube` | bottom right |
 
 **about-hardhat**
-> A glossy 3D icon of a yellow construction safety helmet with three raised ridges on top and a short front peak, smooth rounded shapes, soft clay-plastic material, seen at a three-quarter angle from slightly above. Soft studio lighting with a subtle magenta rim light on the back edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
+> A glossy 3D icon of a yellow construction safety helmet with raised ridges on top and a short front peak, smooth rounded shapes, soft clay-plastic look. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
 
 **about-valve**
-> A glossy 3D icon of an industrial gate valve with a bright red handwheel on top, a dark grey metal body with bolted flanges, and short cyan pipe stubs on both sides, smooth rounded shapes, seen at a three-quarter angle from slightly above. Soft studio lighting with a subtle magenta rim light. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
+> A glossy 3D icon of an industrial gate valve: a bright red round handwheel on top, a dark grey metal valve body with bolted flanges, and short cyan pipe ends on both sides. Smooth rounded shapes, soft clay-plastic look, same style as the hard hat icon. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
 
 **about-duct**
-> A glossy 3D icon of a rectangular HVAC ductwork 90-degree elbow in galvanised silver sheet metal, with flange connectors at both ends and softly rounded edges, seen at a three-quarter angle from above. Soft studio lighting with a subtle magenta rim light. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
+> A glossy 3D icon of a rectangular HVAC ductwork 90-degree elbow in galvanised silver sheet metal, with flange connectors at both ends and softly rounded edges, same style as the hard hat icon. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
 
 **about-cube**
-> A glossy 3D icon of a clear glass cube with rounded edges, with three shiny pipes inside it, red, cyan and magenta, each bending through the cube with smooth elbows, like a tiny coordinated BIM model sealed in glass. Three-quarter view from slightly above. Soft studio lighting with a subtle magenta rim light. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
+> A glossy 3D icon of a clear glass cube with rounded edges, with three shiny pipes inside it, red, cyan and magenta, each bending through the cube with smooth elbows, like a tiny coordinated BIM model sealed in glass. Same style as the hard hat icon. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
 
 ## 3. Marquee (the two moving rows under the first screen)
 
