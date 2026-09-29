@@ -1,7 +1,9 @@
 name: checks
 
 # The site deploys straight from main with no build step, so a mistake is live
-# the moment it merges. These run before that happens.
+# the moment it merges. These run before that happens. (The home page is the
+# one built file: its source is landing/, and the check below keeps the two in
+# step.)
 on:
   pull_request:
   push:
@@ -26,6 +28,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      # The home page is built from landing/ and the output is committed, since
+      # nothing builds on deploy. Rebuild it and fail if the committed files are
+      # not what the source produces - an edit to landing/src that was never
+      # built would otherwise pass every check and never reach the site.
+      - name: Home page build is current
+        working-directory: landing
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          if [ -n "$(git status --porcelain -- ../index.html ../assets/home)" ]; then
+            git status --short -- ../index.html ../assets/home
+            echo "::error::index.html or assets/home/ is out of date with landing/. Run: cd landing && npm install && npm run build - then commit the result."
+            exit 1
+          fi
 
       - name: Install Chromium
         run: |
