@@ -96,6 +96,42 @@
     border-radius: 9999px;
   }
 
+  /* A 3D model over its still. The model fades in over the still, which is
+     then hidden; both are the same picture, so nothing seems to change. */
+  .model3d {
+    position: relative;
+  }
+  .model3d-stage {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .model3d[data-live] .model3d-stage {
+    opacity: 1;
+  }
+  .model3d[data-live] .model3d-poster {
+    opacity: 0;
+    transition: opacity 0s linear 0.5s;
+  }
+
+  /* The tower rises out of the bottom of the first screen. */
+  .hero-model {
+    -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+    mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+  }
+
+  /* The project models stand in a softly lit case, the light in the colour
+     of what they show. */
+  .model-panel {
+    --lit: #1b2129;
+    background: radial-gradient(85% 70% at 50% 45%, var(--lit) 0%, #111317 60%, #0e0f11 100%);
+  }
+  .model-xray {
+    --lit: #0f2a31;
+  }
+  .model-void {
+    --lit: #1e1b2b;
+  }
+
   .skip {
     position: absolute;
     left: 16px;
@@ -159,8 +195,17 @@
   }
   .marquee,
   .about-deco,
+  .model3d-stage,
   .skip {
     display: none !important;
+  }
+  .model3d-poster {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  .hero-model {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .hero-screen {
     height: auto;

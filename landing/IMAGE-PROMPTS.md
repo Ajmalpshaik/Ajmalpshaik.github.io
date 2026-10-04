@@ -1,8 +1,13 @@
 # Home page images
 
-The home page has 26 image slots. Each one has a placeholder in
+The home page has 22 image slots. Each one has a placeholder in
 `assets/home/img/` right now (3D renders made for the layout), so the page is
 complete without them. Replace them in any order.
+
+The first screen and the big picture on the right of each project card are
+not images: they are live 3D models built in code (see `README.md`). Their
+stills, `model-*.webp`, are rendered from the models, so leave those four
+files alone.
 
 ## How to swap one in
 
@@ -15,23 +20,10 @@ complete without them. Replace them in any order.
 
 Done so far: `about-valve`, `about-duct`, `about-cube`.
 
-Order that matters most: the portrait, then the three projects, then the four
-About icons, then the marquee.
+Order that matters most: the six project pictures, then the hard hat, then
+the marquee.
 
-## 1. Hero portrait
-
-| File | Shape | Where |
-|---|---|---|
-| `hero-portrait` | 4:5 portrait, at least 1600×2000, **transparent PNG** | centre of the first screen, standing on the bottom edge |
-
-Upload your own photo to the image model together with this prompt:
-
-> Use the uploaded photo as the face reference and keep my face, skin tone, hairstyle and any facial hair exactly as in the photo. Create a professional half-body portrait of me facing the camera with a calm, confident expression and a slight smile. Frame from just above the head down to the waist, centred, with the body cut off cleanly by the bottom edge of the image. I am wearing a plain black crew-neck t-shirt with no logos. Soft studio key light from the left, a subtle cool rim light on the shoulders and hair, gentle shadows. Ultra-realistic photograph, sharp focus, 85mm lens look. Transparent background, PNG. Portrait 4:5, 1600×2000 px. No text, no watermark.
-
-If your tool cannot do a transparent background, ask for a plain solid black
-background instead and say so when you upload it.
-
-## 2. About section icons
+## 1. About section icons
 
 Four small glossy 3D objects in the corners around "About me". Each is a
 **1:1 transparent PNG, 1024×1024**. The valve, duct and cube are done. For
@@ -57,7 +49,7 @@ out in the same style.
 **about-cube**
 > A glossy 3D icon of a clear glass cube with rounded edges, with three shiny pipes inside it, red, cyan and magenta, each bending through the cube with smooth elbows, like a tiny coordinated BIM model sealed in glass. Same style as the hard hat icon. Three-quarter view from the front-left, slightly above. Soft studio lighting with a pink-magenta rim light on the right edge. Centred, floating, isolated on a transparent background, no ground shadow. Square 1:1, 1024×1024. No text.
 
-## 3. Marquee (the two moving rows under the first screen)
+## 2. Marquee (the two moving rows under the first screen)
 
 AI images get MEP details wrong - fittings, connections, supports - and an
 engineer notices. So none of these show MEP parts up close: they are
@@ -102,18 +94,17 @@ in the middle. Row one is 01–06, row two is 07–12.
 **marquee-12**
 > An abstract city made entirely of glowing wireframe lines seen from above at an angle, cyan and magenta light on a black background, soft glow and depth of field. Futuristic, minimal, 3:2 landscape. No text, no logos, no watermark.
 
-## 4. Project cards
+## 3. Project cards
 
-Each card has three images: a wide one top left, a medium one bottom left, and
-a big one on the right. Keep the subject in the middle of the frame: the
-picture is cropped differently on a phone and on a wide screen. The same rule
-as the marquee: no MEP parts up close.
+Each card has two images on the left, a wide one on top and a medium one
+under it; the right side is a 3D model. Keep the subject in the middle of the
+frame: the picture is cropped differently on a phone and on a wide screen.
+The same rule as the marquee: no MEP parts up close.
 
 | Slot | Shape |
 |---|---|
 | `project-N-a` (top left) | 16:9, 1920×1080 |
 | `project-N-b` (bottom left) | 4:3, 1600×1200 |
-| `project-N-c` (right) | 1:1, 1600×1600 |
 
 When these arrive, the alt text for each one in `src/content.ts` changes to
 match it (that one needs a rebuild).
@@ -126,9 +117,6 @@ match it (that one needs a rebuild).
 **project-1-b**
 > Inside a modern airport terminal at sunset, a sweeping curved roof and tall glass walls, warm golden light and long shadows on a polished floor, empty and calm. Cinematic photorealistic architecture photo, 4:3, subject centred. No text, no signs, no logos, no watermark.
 
-**project-1-c**
-> A high-rise tower under construction at dusk with two tower cranes beside it, glowing site lights, purple and orange sky. Cinematic photorealistic image, square 1:1, subject centred. No text, no logos, no watermark.
-
 ### Project 02 · AJ-Tools
 
 **project-2-a**
@@ -137,9 +125,6 @@ match it (that one needs a rebuild).
 **project-2-b**
 > Glossy 3D icons floating on a dark plum background: a wrench, a measuring ruler, a gear, a tag and a magic wand, smooth rounded cartoon style, purple, magenta, orange and cyan colours, soft studio light. 4:3, subject centred. No text, no logos, no watermark.
 
-**project-2-c**
-> A robotic arm made of glowing cyan lines assembling a small building out of glowing magenta blocks, dark background, soft glow. Futuristic, minimal, square 1:1, subject centred. No text, no logos, no watermark.
-
 ### Project 03 · Heron AI
 
 **project-3-a**
@@ -147,6 +132,3 @@ match it (that one needs a rebuild).
 
 **project-3-b**
 > A person seen from the side wearing a VR headset in a dark room, reaching toward a floating holographic building made of glowing magenta and cyan lines. Cinematic, futuristic, 4:3, subject centred. No text, no logos, no watermark.
-
-**project-3-c**
-> A glowing speech bubble made of light floating above a holographic building model, dark background, cyan and magenta glow, minimal and futuristic. Square 1:1, subject centred. No text inside the bubble, no logos, no watermark.

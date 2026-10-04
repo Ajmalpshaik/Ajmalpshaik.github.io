@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import ContactButton from '../components/ContactButton'
 import FadeIn from '../components/FadeIn'
 import Magnet from '../components/Magnet'
+import Model3D from '../components/Model3D'
 import { hero } from '../content'
 
 export default function HeroSection() {
@@ -60,16 +61,19 @@ export default function HeroSection() {
             activeTransition="transform 0.3s ease-out"
             inactiveTransition="transform 0.6s ease-in-out"
           >
-            <img
-              src={hero.portrait.src}
-              alt={hero.portrait.alt}
-              width={hero.portrait.width}
-              height={hero.portrait.height}
-              // React 18 only knows the lowercase attribute; this is the LCP image.
-              {...{ fetchpriority: 'high' }}
-              decoding="async"
-              draggable={false}
-              className="block h-auto w-full select-none"
+            {/* The still is the largest thing on the first screen; the model
+                takes its place once the page has loaded. */}
+            <Model3D
+              scene={hero.model.scene}
+              poster={hero.model.poster}
+              alt={hero.model.alt}
+              width={hero.model.width}
+              height={hero.model.height}
+              mode="follow"
+              eager
+              priority
+              className="hero-model"
+              posterClassName="block h-auto w-full"
             />
           </Magnet>
         </FadeIn>

@@ -216,15 +216,74 @@ for (const page of PAGES) {
 }
 
 // ---- reduced motion: nothing may stay hidden -------------------------------
+// The home page's 3D models are motion too: asked for less, the page keeps
+// their stills and must not even fetch three.js.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const p = await ctx.newPage();
+  let fetched3D = false;
+  p.on('request', (r) => { if (/\/assets\/home\/viewer-[^/]*\.js$/.test(r.url())) fetched3D = true; });
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
   const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
     (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
+  await p.evaluate(() => document.getElementById('projects')?.scrollIntoView());
+  await p.waitForTimeout(1500);
+  if (fetched3D) fail('reduced motion: index.html fetched the 3D models instead of keeping their stills');
   await ctx.close();
+}
+
+// ---- the home page's 3D models: each must come alive, cleanly --------------
+// Headless Chromium has no GPU, and on a software renderer the page rightly
+// keeps the stills (it asks for WebGL with failIfMajorPerformanceCaveat). So
+// here WebGL is drawn by SwiftShader and that refusal is taken out, which is
+// what a visitor with a real GPU gets: every model must replace its still,
+// with no script error and no warning from three.js on the way.
+{
+  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  for (const [w, h] of [[1440, 900], [390, 844]]) {
+    const ctx = await gpu.newContext({ viewport: { width: w, height: h } });
+    await ctx.addInitScript(() => {
+      const get = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (type, opts) {
+        if (opts && typeof opts === 'object') {
+          opts = { ...opts };
+          delete opts.failIfMajorPerformanceCaveat;
+        }
+        return get.call(this, type, opts);
+      };
+    });
+    // other origins (the visit counter) are not what is being tested here
+    await ctx.route((u) => !u.href.startsWith(ORIGIN), (r) => r.fulfill({ status: 204, body: '' }));
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => fail(`3D at ${w}px: uncaught script error — ${e.message}`));
+    p.on('console', (m) => {
+      if (m.type() === 'error' || (m.type() === 'warning' && m.text().includes('THREE'))) fail(`3D at ${w}px: console ${m.type()} — ${m.text()}`);
+    });
+    await p.goto(url('index.html'));
+    if (!(await p.evaluate(() => !!document.createElement('canvas').getContext('webgl2')))) {
+      console.log('note: no WebGL 2 in this Chromium, even in software; the 3D models were not checked');
+      await ctx.close();
+      break;
+    }
+    const total = await p.$$eval('.model3d', (els) => els.length);
+    if (total !== 4) fail(`3D at ${w}px: expected 4 models on index.html, found ${total}`);
+    for (let i = 0; i < total; i++) {
+      await p.evaluate((i) => document.querySelectorAll('.model3d')[i].scrollIntoView({ block: 'center' }), i);
+      const live = await p.waitForFunction((i) => document.querySelectorAll('.model3d')[i].hasAttribute('data-live'), i, { timeout: 15000 })
+        .then(() => true, () => false);
+      if (!live) fail(`3D at ${w}px: model ${i + 1} never replaced its still`);
+    }
+    // printed, a live model gives way to its still again
+    await p.emulateMedia({ media: 'print' });
+    const unprinted = await p.$$eval('.model3d', (els) => els.filter((e) =>
+      getComputedStyle(e.querySelector('.model3d-poster')).opacity !== '1' ||
+      getComputedStyle(e.querySelector('.model3d-stage')).display !== 'none').length);
+    if (unprinted) fail(`3D at ${w}px: ${unprinted} live model(s) would print as a blank canvas, not their still`);
+    await ctx.close();
+  }
+  await gpu.close();
 }
 
 // ---- no JavaScript: every page must still read -----------------------------
@@ -260,6 +319,9 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
+  // a model prints as its still
+  const stills = await p.$$eval('.model3d-poster', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+  if (stills) fail(`print: ${stills} 3D model still(s) would print blank`);
   const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;

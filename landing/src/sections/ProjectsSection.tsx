@@ -2,6 +2,7 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 import { useRef } from 'react'
 import FadeIn from '../components/FadeIn'
 import LiveProjectButton from '../components/LiveProjectButton'
+import Model3D from '../components/Model3D'
 import { projects, type Project } from '../content'
 
 type CardProps = {
@@ -16,7 +17,7 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
   // Earlier cards shrink a little more, so the stack reads as a stack.
   const targetScale = 1 - (total - 1 - index) * 0.03
   const scale = useTransform(progress, [index / total, 1], [1, targetScale])
-  const [first, second, tall] = project.images
+  const [first, second] = project.images
   // Image heights and the number follow the viewport height as well as its
   // width, so a stuck card still fits on a short laptop screen.
 
@@ -70,17 +71,18 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
               style={{ height: 'clamp(160px, min(22vw, 30vh), 340px)' }}
             />
           </div>
-          {/* Absolutely placed so the tall image takes the height of the left
+          {/* Absolutely placed so the model takes the height of the left
               column instead of setting it from its own proportions. */}
           <div className="relative w-[60%]">
-            <img
-              src={tall.src}
-              alt={tall.alt}
-              width={1200}
-              height={1200}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full rounded-[40px] object-cover sm:rounded-[50px] md:rounded-[60px]"
+            <Model3D
+              scene={project.model.scene}
+              poster={project.model.poster}
+              alt={project.model.alt}
+              width={project.model.width}
+              height={project.model.height}
+              mode="drag"
+              className={`model-panel model-${project.model.scene} absolute inset-0 overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px]`}
+              posterClassName="absolute inset-0 h-full w-full object-contain"
             />
           </div>
         </div>
