@@ -1,8 +1,8 @@
 # Home page images
 
-The home page has 22 image slots. Each one has a placeholder in
-`assets/home/img/` right now (3D renders made for the layout), so the page is
-complete without them. Replace them in any order.
+The home page has 22 image slots, in `assets/home/img/`. All 22 now hold the
+final generated images. The prompts below are kept so any one can be made
+again in the same style.
 
 The first screen and the big picture on the right of each project card are
 not images: they are live 3D models built in code (see `README.md`). Their
@@ -15,20 +15,14 @@ files alone.
 2. Attach the image in your chat with Claude and say which slot it is for.
    PNG or JPG is fine. If your tool cannot make the exact shape, any
    landscape size works: the picture is cropped to fit, keeping the middle.
-3. Claude fits it to the slot as WebP, replaces the placeholder, checks the
+3. Claude fits it to the slot as WebP, replaces the old one, checks the
    page and pushes it.
-
-Done so far: `about-valve`, `about-duct`, `about-cube`.
-
-Order that matters most: the six project pictures, then the hard hat, then
-the marquee.
 
 ## 1. About section icons
 
 Four small glossy 3D objects in the corners around "About me". Each is a
-**1:1 transparent PNG, 1024×1024**. The valve, duct and cube are done. For
-the hard hat, upload those three images together with its prompt, so it comes
-out in the same style.
+**1:1 transparent PNG, 1024×1024**. To remake one, upload the other three
+together with its prompt, so it comes out in the same style.
 
 | File | Where |
 |---|---|
@@ -106,8 +100,8 @@ The same rule as the marquee: no MEP parts up close.
 | `project-N-a` (top left) | 16:9, 1920×1080 |
 | `project-N-b` (bottom left) | 4:3, 1600×1200 |
 
-When these arrive, the alt text for each one in `src/content.ts` changes to
-match it (that one needs a rebuild).
+A new picture here also needs its alt text in `src/content.ts` changed to
+match it, and that one needs a rebuild.
 
 ### Project 01 · MEP BIM Coordination
 

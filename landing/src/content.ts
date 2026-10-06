@@ -101,8 +101,8 @@ export const projects: Project[] = [
     name: 'MEP BIM Coordination',
     href: '/work/',
     images: [
-      { src: `${IMG}project-1-a.webp`, alt: 'Illustration: a coordinated MEP model, colour-coded by system' },
-      { src: `${IMG}project-1-b.webp`, alt: 'Illustration: services on an industrial pipe rack at dusk' },
+      { src: `${IMG}project-1-a.webp`, alt: 'Illustration: a petrochemical plant on the coast at dusk, its lights reflected in the sea' },
+      { src: `${IMG}project-1-b.webp`, alt: 'Illustration: an airport terminal at sunset, with a curved roof and tall glass walls' },
     ],
     model: {
       scene: 'riser',
@@ -118,8 +118,8 @@ export const projects: Project[] = [
     name: 'AJ-Tools',
     href: '/aj-tools/',
     images: [
-      { src: `${IMG}project-2-a.webp`, alt: 'Illustration: ducts and pipes tagged and dimensioned automatically' },
-      { src: `${IMG}project-2-b.webp`, alt: 'Illustration: a ribbon of Revit tool buttons' },
+      { src: `${IMG}project-2-a.webp`, alt: 'Illustration: a glowing lightbulb with a skyscraper made of light inside it' },
+      { src: `${IMG}project-2-b.webp`, alt: 'Illustration: glossy 3D icons of a wrench, a ruler, a gear, a tag and a magic wand' },
     ],
     model: {
       scene: 'void',
@@ -135,8 +135,8 @@ export const projects: Project[] = [
     name: 'Heron AI',
     href: '/heron-ai/',
     images: [
-      { src: `${IMG}project-3-a.webp`, alt: 'Illustration: a plain-language question and the pipe it traces' },
-      { src: `${IMG}project-3-b.webp`, alt: 'Illustration: a system traced through connected pipework' },
+      { src: `${IMG}project-3-a.webp`, alt: 'Illustration: a heron drawn in cyan light, standing in water before a city skyline at night' },
+      { src: `${IMG}project-3-b.webp`, alt: 'Illustration: a man in a VR headset reaching toward a holographic building' },
     ],
     model: {
       scene: 'xray',
