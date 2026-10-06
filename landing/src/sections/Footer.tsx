@@ -74,7 +74,7 @@ export default function Footer() {
           ))}
         </ul>
       </nav>
-      <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#D7E2EA]/50">
+      <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#D7E2EA]/60">
         &copy; {year} Ajmal P.S &middot; Designed and built in Doha, Qatar
       </p>
     </footer>

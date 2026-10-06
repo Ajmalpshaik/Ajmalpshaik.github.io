@@ -187,7 +187,7 @@ for (const page of PAGES) {
   await p.route(/\/assets\/home\/.*\.js$/, (route) => route.abort());
   await p.goto(url('index.html'));
   await p.waitForTimeout(4600);
-  const hidden = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+  const hidden = await p.$$eval('.fade-in, .enter', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`script blocked: ${hidden} element(s) on index.html stay invisible`);
   await ctx.close();
 }
@@ -209,7 +209,7 @@ for (const page of PAGES) {
       await p.waitForTimeout(120);
     }
     await p.waitForTimeout(1600);
-    const stuck = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+    const stuck = await p.$$eval('.fade-in, .enter', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
     if (stuck) fail(`index.html at ${w}px: ${stuck} element(s) never faded in after scrolling the whole page`);
     await ctx.close();
   }
@@ -225,7 +225,7 @@ for (const page of PAGES) {
   p.on('request', (r) => { if (/\/assets\/home\/viewer-[^/]*\.js$/.test(r.url())) fetched3D = true; });
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
-  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
+  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in, .enter',
     (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
   await p.evaluate(() => document.getElementById('projects')?.scrollIntoView());
@@ -297,7 +297,12 @@ for (const page of PAGES) {
     const p = await ctx.newPage();
     await p.goto(url(page));
     await p.waitForTimeout(400);
-    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
+    // The home page's first screen fades in with CSS, which runs without
+    // script; let any entrance that ends on its own finish before judging.
+    await p.evaluate(() => Promise.all(document.getAnimations()
+      .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
+      .map((a) => a.finished.catch(() => {}))));
+    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in, .enter',
       (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
     if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
     // heron-ai used to sit at 20 here: it was one statement on purpose - a name,

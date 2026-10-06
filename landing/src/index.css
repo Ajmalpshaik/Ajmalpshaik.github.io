@@ -96,6 +96,22 @@
     border-radius: 9999px;
   }
 
+  /* The first screen's entrance. It runs in CSS rather than script, so it
+     starts with the first paint instead of waiting for the JavaScript; each
+     element sets its own --enter-delay and --enter-y, and --enter-opacity to
+     start from. The name and the model start fully visible and only rise: a
+     browser marks the moment the page's main picture appears by when it is
+     first painted, and a picture painted invisible never gets that moment. */
+  .enter {
+    animation: enter 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) var(--enter-delay, 0s) both;
+  }
+  @keyframes enter {
+    from {
+      opacity: var(--enter-opacity, 0);
+      transform: translate3d(0, var(--enter-y, 30px), 0);
+    }
+  }
+
   /* A 3D model over its still. The model fades in over the still, which is
      then hidden; both are the same picture, so nothing seems to change. */
   .model3d {
@@ -160,6 +176,9 @@
     opacity: 1 !important;
     transform: none !important;
   }
+  .enter {
+    animation: none;
+  }
 }
 .no-motion .fade-in {
   opacity: 1 !important;
@@ -182,6 +201,7 @@
     color-scheme: light;
   }
   .fade-in,
+  .enter,
   .project-card,
   .char {
     opacity: 1 !important;
