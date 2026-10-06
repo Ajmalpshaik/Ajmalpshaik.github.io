@@ -1,0 +1,33 @@
+{
+  "name": "ajmalps-home",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Source of the ajmalps.com home page. `npm run build` renders it to static HTML and writes ../index.html and ../assets/home/.",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "posters": "node scripts/posters.mjs"
+  },
+  "dependencies": {
+    "@fontsource/kanit": "^5.2.8",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "0.186.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.6.3",
+    "vite": "^6.4.1"
+  }
+}

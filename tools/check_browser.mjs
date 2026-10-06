@@ -118,7 +118,10 @@ for (const page of PAGES) {
   const shell = await p.evaluate(() => ({
     main: document.querySelectorAll('main').length,
     h1: document.querySelectorAll('h1').length,
-    imgNoAlt: [...document.querySelectorAll('img')].filter((i) => !i.alt).length,
+    // alt="" is a deliberate answer - the image is decoration - so only a
+    // missing attribute counts. The home page's marquee and corner objects say
+    // alt="" on purpose.
+    imgNoAlt: [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length,
   }));
   if (shell.main !== 1) fail(`expected 1 <main>, found ${shell.main}`);
   if (shell.h1 !== 1) fail(`expected 1 <h1>, found ${shell.h1}`);
@@ -142,26 +145,145 @@ for (const page of PAGES) {
     if (!ok) fail('ribbon tab click does not switch panels');
   }
 
-  // counters must land on their target, not sit at 0
-  await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
-  await p.waitForTimeout(2200);
-  const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
-    els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
-  if (stuck) fail(`${stuck} counter(s) did not reach their value`);
+  // counters, if present, must land on their target, not sit at 0
+  if (await p.$('.stats-band')) {
+    await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
+    await p.waitForTimeout(2200);
+    const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
+      els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
+    if (stuck) fail(`${stuck} counter(s) did not reach their value`);
+  }
+
+  // The home page is built from landing/ and arrives as finished HTML that
+  // React then attaches to. It marks <html data-ready> when it has; a bundle
+  // that failed to load or threw on the way would leave that unset.
+  if (!(await p.evaluate(() => document.documentElement.hasAttribute('data-ready')))) {
+    fail('index.html: the page script never attached (no data-ready on <html>)');
+  }
+
+  // The hero name is one line that must not be cut. It sits in an
+  // overflow-hidden box, so if it ever outgrew the screen it would be clipped
+  // silently rather than scroll - which the sideways check above cannot see.
+  for (const w of [1920, 1440, 1024, 834, 640, 390, 320]) {
+    await p.setViewportSize({ width: w, height: 900 });
+    await p.waitForTimeout(150);
+    const cut = await p.evaluate(() => {
+      const h = document.querySelector('h1.hero-heading');
+      return h ? h.scrollWidth - h.clientWidth : 0;
+    });
+    if (cut > 1) fail(`index.html: the hero name is cut off by ${cut}px at ${w}px wide`);
+  }
 
   await ctx.close();
 }
 
+// ---- script never arrives: the failsafe must show the page ------------------
+// Every section on the home page fades in when its script runs. If the script
+// is blocked or the network drops it, an inline timer in index.html shows
+// everything after 4s instead of leaving a dark, empty page.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await ctx.newPage();
+  await p.route(/\/assets\/home\/.*\.js$/, (route) => route.abort());
+  await p.goto(url('index.html'));
+  await p.waitForTimeout(4600);
+  const hidden = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+  if (hidden) fail(`script blocked: ${hidden} element(s) on index.html stay invisible`);
+  await ctx.close();
+}
+
+// ---- every entrance on the home page actually plays -------------------------
+// Each .fade-in waits to be scrolled into view. One that can never count as in
+// view - clipped by its own box, say, which is what the hero name did on a
+// 320px phone - would stay invisible for good, with nothing in the console.
+// Scroll the whole page at a few sizes and require every one to have arrived.
+{
+  for (const [w, h] of [[1440, 900], [390, 844], [320, 640]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const p = await ctx.newPage();
+    await p.goto(url('index.html'));
+    await p.waitForTimeout(600);
+    const total = await p.evaluate(() => document.documentElement.scrollHeight);
+    for (let y = 0; y <= total; y += Math.round(h * 0.6)) {
+      await p.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
+      await p.waitForTimeout(120);
+    }
+    await p.waitForTimeout(1600);
+    const stuck = await p.$$eval('.fade-in', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+    if (stuck) fail(`index.html at ${w}px: ${stuck} element(s) never faded in after scrolling the whole page`);
+    await ctx.close();
+  }
+}
+
 // ---- reduced motion: nothing may stay hidden -------------------------------
+// The home page's 3D models are motion too: asked for less, the page keeps
+// their stills and must not even fetch three.js.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const p = await ctx.newPage();
+  let fetched3D = false;
+  p.on('request', (r) => { if (/\/assets\/home\/viewer-[^/]*\.js$/.test(r.url())) fetched3D = true; });
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
-  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
+  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
     (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
+  await p.evaluate(() => document.getElementById('projects')?.scrollIntoView());
+  await p.waitForTimeout(1500);
+  if (fetched3D) fail('reduced motion: index.html fetched the 3D models instead of keeping their stills');
   await ctx.close();
+}
+
+// ---- the home page's 3D models: each must come alive, cleanly --------------
+// Headless Chromium has no GPU, and on a software renderer the page rightly
+// keeps the stills (it asks for WebGL with failIfMajorPerformanceCaveat). So
+// here WebGL is drawn by SwiftShader and that refusal is taken out, which is
+// what a visitor with a real GPU gets: every model must replace its still,
+// with no script error and no warning from three.js on the way.
+{
+  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  for (const [w, h] of [[1440, 900], [390, 844]]) {
+    const ctx = await gpu.newContext({ viewport: { width: w, height: h } });
+    await ctx.addInitScript(() => {
+      const get = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (type, opts) {
+        if (opts && typeof opts === 'object') {
+          opts = { ...opts };
+          delete opts.failIfMajorPerformanceCaveat;
+        }
+        return get.call(this, type, opts);
+      };
+    });
+    // other origins (the visit counter) are not what is being tested here
+    await ctx.route((u) => !u.href.startsWith(ORIGIN), (r) => r.fulfill({ status: 204, body: '' }));
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => fail(`3D at ${w}px: uncaught script error — ${e.message}`));
+    p.on('console', (m) => {
+      if (m.type() === 'error' || (m.type() === 'warning' && m.text().includes('THREE'))) fail(`3D at ${w}px: console ${m.type()} — ${m.text()}`);
+    });
+    await p.goto(url('index.html'));
+    if (!(await p.evaluate(() => !!document.createElement('canvas').getContext('webgl2')))) {
+      console.log('note: no WebGL 2 in this Chromium, even in software; the 3D models were not checked');
+      await ctx.close();
+      break;
+    }
+    const total = await p.$$eval('.model3d', (els) => els.length);
+    if (total !== 4) fail(`3D at ${w}px: expected 4 models on index.html, found ${total}`);
+    for (let i = 0; i < total; i++) {
+      await p.evaluate((i) => document.querySelectorAll('.model3d')[i].scrollIntoView({ block: 'center' }), i);
+      const live = await p.waitForFunction((i) => document.querySelectorAll('.model3d')[i].hasAttribute('data-live'), i, { timeout: 15000 })
+        .then(() => true, () => false);
+      if (!live) fail(`3D at ${w}px: model ${i + 1} never replaced its still`);
+    }
+    // printed, a live model gives way to its still again
+    await p.emulateMedia({ media: 'print' });
+    const unprinted = await p.$$eval('.model3d', (els) => els.filter((e) =>
+      getComputedStyle(e.querySelector('.model3d-poster')).opacity !== '1' ||
+      getComputedStyle(e.querySelector('.model3d-stage')).display !== 'none').length);
+    if (unprinted) fail(`3D at ${w}px: ${unprinted} live model(s) would print as a blank canvas, not their still`);
+    await ctx.close();
+  }
+  await gpu.close();
 }
 
 // ---- no JavaScript: every page must still read -----------------------------
@@ -175,7 +297,7 @@ for (const page of PAGES) {
     const p = await ctx.newPage();
     await p.goto(url(page));
     await p.waitForTimeout(400);
-    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li',
+    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in',
       (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
     if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
     // heron-ai used to sit at 20 here: it was one statement on purpose - a name,
@@ -197,7 +319,10 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
-  const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b',
+  // a model prints as its still
+  const stills = await p.$$eval('.model3d-poster', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+  if (stills) fail(`print: ${stills} 3D model still(s) would print blank`);
+  const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;
       return f === 'rgba(0, 0, 0, 0)' || f === 'transparent';

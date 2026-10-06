@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Kanit, self-hosted: Latin only, and only the four weights the page uses. */
+@font-face {
+  font-family: 'Kanit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300;
+  src: url('../node_modules/@fontsource/kanit/files/kanit-latin-300-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Kanit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../node_modules/@fontsource/kanit/files/kanit-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Kanit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('../node_modules/@fontsource/kanit/files/kanit-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Kanit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 900;
+  src: url('../node_modules/@fontsource/kanit/files/kanit-latin-900-normal.woff2') format('woff2');
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    background: #0c0c0c;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'Kanit', sans-serif;
+    color: #d7e2ea;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a:focus-visible {
+    outline: 2px solid #d7e2ea;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .hero-heading {
+    background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* h-screen, but measured against the small viewport on phones, so the
+     bottom row is not hidden behind the browser's own toolbar. */
+  .hero-screen {
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+  }
+
+  .contact-btn {
+    background: linear-gradient(123deg, #18011f 7%, #b600a8 37%, #7621b0 72%, #be4c00 100%);
+    box-shadow:
+      0px 4px 4px rgba(181, 1, 167, 0.25),
+      4px 4px 12px #7721b1 inset;
+    outline: 2px solid #fff;
+    outline-offset: -3px;
+  }
+  .contact-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+    border-radius: 9999px;
+  }
+
+  /* A 3D model over its still. The model fades in over the still, which is
+     then hidden; both are the same picture, so nothing seems to change. */
+  .model3d {
+    position: relative;
+  }
+  .model3d-stage {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .model3d[data-live] .model3d-stage {
+    opacity: 1;
+  }
+  .model3d[data-live] .model3d-poster {
+    opacity: 0;
+    transition: opacity 0s linear 0.5s;
+  }
+
+  /* The tower rises out of the bottom of the first screen. */
+  .hero-model {
+    -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+    mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
+  }
+
+  /* The project models stand in a softly lit case, the light in the colour
+     of what they show. */
+  .model-panel {
+    --lit: #1b2129;
+    background: radial-gradient(85% 70% at 50% 45%, var(--lit) 0%, #111317 60%, #0e0f11 100%);
+  }
+  .model-xray {
+    --lit: #0f2a31;
+  }
+  .model-void {
+    --lit: #1e1b2b;
+  }
+
+  .skip {
+    position: absolute;
+    left: 16px;
+    top: -100px;
+    z-index: 100;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    background: #d7e2ea;
+    color: #0c0c0c;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+  }
+  .skip:focus {
+    top: 16px;
+  }
+}
+
+/* Safety nets. Each one shows the content as it is, without the entrance. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .fade-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+.no-motion .fade-in {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Paper is white and backgrounds do not print, so print dark text on white. */
+@media print {
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color-scheme: light;
+  }
+  .fade-in,
+  .project-card,
+  .char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero-portrait {
+    position: static !important;
+    transform: none !important;
+    width: 240px !important;
+    margin: 24px auto;
+  }
+  .marquee,
+  .about-deco,
+  .model3d-stage,
+  .skip {
+    display: none !important;
+  }
+  .model3d-poster {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  .hero-model {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hero-screen {
+    height: auto;
+    min-height: 0;
+  }
+  .sticky {
+    position: static !important;
+    height: auto !important;
+  }
+}
