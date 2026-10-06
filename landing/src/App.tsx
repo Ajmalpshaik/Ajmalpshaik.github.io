@@ -1,7 +1,6 @@
 import { MotionConfig } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, type CSSProperties } from 'react'
 import { startAnalytics } from './analytics'
-import FadeIn from './components/FadeIn'
 import { nav } from './content'
 import AboutSection from './sections/AboutSection'
 import Footer from './sections/Footer'
@@ -25,11 +24,11 @@ export default function App() {
         </a>
 
         <header className="absolute inset-x-0 top-0 z-30">
-          <FadeIn
-            as="nav"
-            y={-20}
+          {/* Comes in with the first paint, like the hero (see .enter). */}
+          <nav
             aria-label="Main"
-            className="flex items-center justify-between px-6 pt-6 md:px-10 md:pt-8"
+            className="enter flex items-center justify-between px-6 pt-6 md:px-10 md:pt-8"
+            style={{ '--enter-y': '-20px' } as CSSProperties}
           >
             {nav.map((item) => (
               <a
@@ -40,7 +39,7 @@ export default function App() {
                 {item.label}
               </a>
             ))}
-          </FadeIn>
+          </nav>
         </header>
 
         <main id="main" tabIndex={-1} className="outline-none">

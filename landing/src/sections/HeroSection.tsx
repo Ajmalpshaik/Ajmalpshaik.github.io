@@ -1,9 +1,15 @@
-import { motion } from 'framer-motion'
+import type { CSSProperties } from 'react'
 import ContactButton from '../components/ContactButton'
-import FadeIn from '../components/FadeIn'
 import Magnet from '../components/Magnet'
 import Model3D from '../components/Model3D'
 import { hero } from '../content'
+
+// The first screen comes in with a CSS animation (.enter in index.css), not
+// with script like the rest of the page: it starts with the first paint, so a
+// slow phone shows the name and the model before the JavaScript has arrived.
+// The name and the model start visible and only rise; the rest fades in.
+const enter = (delay: number, y: number, opacity = 0) =>
+  ({ '--enter-delay': `${delay}s`, '--enter-y': `${y}px`, '--enter-opacity': opacity }) as CSSProperties
 
 export default function HeroSection() {
   return (
@@ -17,44 +23,30 @@ export default function HeroSection() {
       {/* Sized so "Hi, i'm Ajmal" fills the width in the same proportion the
           original four-letter name did: 74% on phones, 93% from 1024px.
 
-          The heading rises out of a clipping box. The box, not the heading,
-          decides when it is in view: on a narrow phone the heading starts
-          40px down, wholly inside the clipped area, and would never count as
-          visible - so it would never appear. */}
-      <motion.div
-        className="mt-6 overflow-hidden sm:mt-4 md:-mt-5"
-        initial="hidden"
-        whileInView="shown"
-        viewport={{ once: true, margin: '50px', amount: 0 }}
-      >
-        <motion.h1
-          className="fade-in hero-heading w-full whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[12.1vw] sm:text-[13vw] md:text-[13.8vw] lg:text-[15.1vw]"
-          variants={{
-            hidden: { opacity: 0, y: 40 },
-            shown: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] } },
-          }}
+          The heading rises out of a clipping box. */}
+      <div className="mt-6 overflow-hidden sm:mt-4 md:-mt-5">
+        <h1
+          className="enter hero-heading w-full whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[12.1vw] sm:text-[13vw] md:text-[13.8vw] lg:text-[15.1vw]"
+          style={enter(0.1, 40, 1)}
         >
           {hero.heading}
-        </motion.h1>
-      </motion.div>
+        </h1>
+      </div>
 
       <div className="relative z-20 mt-auto flex items-end justify-between gap-4 px-6 pb-7 sm:pb-8 md:px-10 md:pb-10">
-        <FadeIn
-          as="p"
-          delay={0.35}
-          y={20}
-          className="max-w-[160px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA] sm:max-w-[220px] md:max-w-[260px]"
-          style={{ fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}
+        <p
+          className="enter max-w-[160px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA] sm:max-w-[220px] md:max-w-[260px]"
+          style={{ ...enter(0.35, 20), fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}
         >
           {hero.tagline}
-        </FadeIn>
-        <FadeIn delay={0.5} y={20}>
+        </p>
+        <div className="enter" style={enter(0.45, 20)}>
           <ContactButton />
-        </FadeIn>
+        </div>
       </div>
 
       <div className="hero-portrait absolute left-1/2 top-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 sm:bottom-0 sm:top-auto sm:w-[360px] sm:translate-y-0 md:w-[440px] lg:w-[520px]">
-        <FadeIn delay={0.6} y={30}>
+        <div className="enter" style={enter(0.25, 30, 1)}>
           <Magnet
             padding={150}
             strength={3}
@@ -76,7 +68,7 @@ export default function HeroSection() {
               posterClassName="block h-auto w-full"
             />
           </Magnet>
-        </FadeIn>
+        </div>
       </div>
     </section>
   )
