@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" data-no-count>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIM Viewer — open IFC in your browser and walk inside it</title>
+<meta name="description" content="Free IFC viewer for Revit models. See properties, levels and categories, cut sections and measure, then walk inside the building as a robot, game style. Runs in your browser.">
+<meta name="author" content="Ajmal P.S">
+<link rel="canonical" href="https://ajmalps.com/toolbox/bim-viewer/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta property="og:title" content="BIM Viewer — open IFC in your browser and walk inside it">
+<meta property="og:description" content="Free IFC viewer for Revit models. See properties, cut sections and measure, then walk inside the building as a robot, game style. Your file never leaves your device.">
+<meta property="og:url" content="https://ajmalps.com/toolbox/bim-viewer/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ajmalps.com">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ajmalps.com/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BIM Viewer — open IFC in your browser and walk inside it">
+<meta name="twitter:description" content="Open a Revit IFC export in your browser, check its properties, then walk inside it as a robot. The file never leaves your device.">
+<meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="apple-touch-icon" href="../../favicon.svg">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/toolbox.css">
+<link rel="stylesheet" href="viewer.css">
+<script>
+(function(){
+  var d = document.documentElement;
+  d.classList.add("js");
+  var t = null;
+  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
+})();
+</script>
+<!-- IMPORTMAP:START (written by tools/pin_three.mjs - do not edit by hand) -->
+<!-- three.js 0.186.1, pinned. Each file carries its SHA-384 fingerprint, so a
+     browser that checks them refuses any copy that differs from the npm release.
+     To upgrade: change VERSION in tools/pin_three.mjs and run it again. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  },
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.core.js": "sha384-mdKeCwPEcbDvzaxwhm+MVuLoMou+E7jQqrs4tmu/n8HBYPGI1kZt0MkJxlMR4zFM",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js": "sha384-m8JoFX52V6NGv2usipnlLJKnJfL7IE8dbniPDDCSGSQv3Hm4n6PjfV6syVwfuoRc",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/controls/OrbitControls.js": "sha384-LSqANrugPGTgf0eYsQTloqKWy926dOOXo2iZ9y6wLMIDEQoU9AaCLJF1Vcc7oJXr",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/environments/RoomEnvironment.js": "sha384-/H49oz0ZtMgJNgMZ+OhhuMuKBOsaiC3kY0/PZSvgJJXAOJJwmSBJjzlV5lJul3MB",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/loaders/GLTFLoader.js": "sha384-jmhN0si8z6E7+h0t9KiwQ71oyrC3PhTpols1FXeN/vODuFa/L4bPIe9sLbOlhjq7",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/math/Capsule.js": "sha384-PgaS0Dmix6dOjYvsbQNxpuyZUq5HzOuLZg43//tG0qZvlEIvD3Pe8gfKKh1C8vda",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/math/Octree.js": "sha384-Rf3UyceuB6aUCIq7/toixqydc7mMyzbLEXplFzE1QUA077O3ddADpaEWBMM+xPxU",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/math/SimplexNoise.js": "sha384-IwC6d45K1GYEOKIe6xPySXxRzXCN862+MGz2r55ZDvPrc1LxaLCbaKWCRGLAFk16",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/objects/Sky.js": "sha384-gHul8FeGcg6U8FJnOtoQ4uR+6i/NVtFv9BdPegZ/xdtEFE9vdowetkGWV6H69qQu",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/EffectComposer.js": "sha384-9Rdp95mYHRj8gGxPz4TqkDaCUh8rd67b7V5slkjz7GA9uNXtykhptQdEPPOocbUn",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/GTAOPass.js": "sha384-YvTlnX5ZV8iyXD41aGDTNz+CXwK4EGxSPE0vnYoJ0VW9/31DFynBMuJ4yhjhD7kY",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/MaskPass.js": "sha384-5MFlCMNYgjI2KQDXH12DjwyKtWiXRsrFMMGKIP3pCQemWtt1INLwPKwZDF0TEKG9",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/OutputPass.js": "sha384-3IFYrRLOw90S3gt5Xi3JVTJrETpklthjLSmnmeyqxQmh1knUIaGPwbRsk35kgNoW",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/Pass.js": "sha384-927X5fcqlqKPsXZV1w3tv5BZx797OXX3D/TDJk0FHwJd12z58B5aqS77g5LZoprI",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/RenderPass.js": "sha384-uXlYrFHzQTAiW5xsJFs0kB/Pym7jA0qunZ+aS1V25CJ1MjaKbgNQv5SjoEzNoa4F",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/ShaderPass.js": "sha384-0DjIyth2/18aCmCo4x7GEOqSJTu3uNx5ptRg+rlkZ7zs9MlNfUXVEhbUuzVzglaG",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/UnrealBloomPass.js": "sha384-J699EvlO1FVuoaUhw+StnAgeSEEK6d2YjxWcmFt5WIQznsMXDgyfAY5Q4F7fhSgn",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/CopyShader.js": "sha384-Hxod3deUgRexb42wOr+7J8ySu/QNr1oXlCfY9bivrSKBseng+R34eirHq/Rvvxee",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/GTAOShader.js": "sha384-Vzy332Htapj4ylV0T8/PWIycS377IR435ZYJFP3+FIP1hBppZKHK6uB4X5Z9uwQM",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/LuminosityHighPassShader.js": "sha384-pJrfb1+CmauCtIjocA5YIJaosvBlTpTYBJLn6km9pktlMGoyTXhviuXjgzV2jcns",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/OutputShader.js": "sha384-7B5u2okAR4bArb4emcYnTiZPFpV3wPNvV3ZY9xre0xp3cNKs2TeaYiOyMDa/bDAi",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/shaders/PoissonDenoiseShader.js": "sha384-9TmXYAPLd/EezQq3Ak+vYUGEvDtanSVB6I8VfwK7qspzZfUmhxsXk28mseonzROP",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/utils/BufferGeometryUtils.js": "sha384-Rm97j4mcjlLkGsYC2LX3nZG9VU2R8lgK0QE+DmBr4thue+H7J+SHm+68If2ZLBVg",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/utils/SkeletonUtils.js": "sha384-Pozn8j5+YFr3ak8Pm90ayqDrGYn/DV7vVs/YIIqzJhzeJT0LQksoS1fZQ5lfsYlw"
+  }
+}
+</script>
+<!-- IMPORTMAP:END -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://ajmalps.com/toolbox/bim-viewer/#app",
+      "name": "BIM Viewer",
+      "url": "https://ajmalps.com/toolbox/bim-viewer/",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Any current browser with WebGL 2: Chrome, Edge, Firefox or Safari.",
+      "browserRequirements": "Requires JavaScript and WebGL 2",
+      "description": "Opens an IFC file in the browser with a BIM view (properties, levels, categories, plan cut, section, x-ray, measure) and a game-style walk view where a robot character walks through the building. Runs entirely on the user's device; the file is never uploaded.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@id": "https://ajmalps.com/#person" },
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://ajmalps.com/toolbox/bim-viewer/#crumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Toolbox", "item": "https://ajmalps.com/toolbox/" },
+        { "@type": "ListItem", "position": 3, "name": "BIM Viewer", "item": "https://ajmalps.com/toolbox/bim-viewer/" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+<nav id="nav" aria-label="Main">
+  <div class="navin">
+    <a class="brand" href="/" aria-label="Ajmal P.S — home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
+      Ajmal P.S
+    </a>
+    <div class="navcenter">
+      <div class="navlinks" id="navLinks">
+        <span class="navpill" aria-hidden="true"></span>
+        <a href="/story/">Story</a>
+        <a href="/experience/">Experience</a>
+        <a href="/work/">Work</a>
+        <a href="/aj-tools/">AJ-Tools</a>
+        <a href="/heron-ai/">Heron AI</a>
+        <a href="/toolbox/" aria-current="page">Toolbox</a>
+        <a href="/skills/">Skills</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </div>
+    </div>
+    <div class="navend">
+      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+        <span class="track"><span class="knob">
+          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
+        </span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 64px);padding-bottom:90px">
+  <div class="wrap">
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">›</span>
+      <a href="/toolbox/">Toolbox</a> <span aria-hidden="true">›</span>
+      <span>BIM Viewer</span>
+    </nav>
+
+    <p class="eyebrow">Free tool · runs in your browser · no API key</p>
+    <h1 class="tool-head" style="font-size:clamp(34px,5vw,54px);font-weight:700;letter-spacing:-.025em;line-height:1.08">BIM Viewer</h1>
+    <p class="sub" style="max-width:680px">Open a Revit model as IFC. Check every element's properties, levels and categories, cut a plan or a section, and measure. Then switch to the walk view and walk through the building as a robot, a soldier or X Bot, like a game.</p>
+
+    <div class="bvp-private" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <p><b>Your file stays on your device.</b> The IFC is opened inside this browser tab. Nothing is uploaded, stored or shared, and there is no server and no API key behind it.</p>
+    </div>
+
+    <p class="tool-note" id="bvNeeds">The BIM Viewer needs JavaScript and a browser with WebGL 2: a current Chrome, Edge, Firefox or Safari.</p>
+
+    <div class="bv" id="bv" data-lenis-prevent data-state="idle" data-mode="bim" hidden>
+      <canvas id="bvCanvas" tabindex="0" aria-label="3D view of the model. Drag to turn, scroll to zoom."></canvas>
+      <div class="bv-measures" id="bvMeasures"></div>
+
+      <div class="bv-top">
+        <div class="bv-seg" role="tablist" aria-label="View">
+          <button type="button" role="tab" id="bvTabBim" aria-selected="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7zM3 7l9 5 9-5M12 12v10"/></svg><span>BIM view</span>
+          </button>
+          <button type="button" role="tab" id="bvTabWalk" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r=".9"/><circle cx="18" cy="13.8" r=".9"/></svg><span>Walk view</span>
+          </button>
+        </div>
+        <div class="bv-acts">
+          <button type="button" class="bv-ico" id="bvTreeBtn" aria-label="Model tree" title="Model tree" aria-expanded="true" aria-controls="bvTree">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/></svg>
+          </button>
+          <label class="bv-ico bv-open" title="Open an IFC file">
+            <input type="file" id="bvFile" accept=".ifc">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></svg><span>Open IFC</span>
+          </label>
+          <button type="button" class="bv-ico" id="bvShot" aria-label="Save a screenshot" title="Save a screenshot">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <button type="button" class="bv-ico" id="bvGear" aria-label="Settings" title="Settings" aria-expanded="false" aria-controls="bvSettings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          </button>
+          <button type="button" class="bv-ico" id="bvFull" aria-label="Full screen" title="Full screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <aside class="bv-panel bv-tree" id="bvTree" aria-label="Model tree">
+        <div class="bv-ph"><b id="bvName">Model</b><button type="button" class="bv-x" id="bvTreeClose" aria-label="Close the model tree">×</button></div>
+        <p class="bv-meta" id="bvMeta"></p>
+        <h3>Levels</h3>
+        <ul class="bv-list" id="bvLevels"></ul>
+        <h3>Categories</h3>
+        <ul class="bv-list" id="bvCats"></ul>
+      </aside>
+
+      <aside class="bv-panel bv-props" id="bvProps" aria-label="Properties" hidden>
+        <div class="bv-ph"><b id="bvPropTitle">Properties</b><button type="button" class="bv-x" id="bvPropsClose" aria-label="Close properties">×</button></div>
+        <div class="bv-pbody" id="bvPropBody"></div>
+      </aside>
+
+      <div class="bv-tools" id="bvTools" role="toolbar" aria-label="BIM tools">
+        <div class="bv-tgroup">
+          <button type="button" data-view="home" title="3D view">3D</button>
+          <button type="button" data-view="top" title="Top view">Top</button>
+          <button type="button" data-view="front" title="South elevation">Front</button>
+          <button type="button" data-view="side" title="East elevation">Side</button>
+        </div>
+        <div class="bv-tgroup">
+          <button type="button" id="bvMeasure" aria-pressed="false" title="Measure between two points (M)">Measure</button>
+          <button type="button" id="bvXray" aria-pressed="false" title="See through the model (X)">X-ray</button>
+          <button type="button" id="bvHide" title="Hide the selected element (H)">Hide</button>
+          <button type="button" id="bvIsolate" title="Show only the selected element (I)">Isolate</button>
+          <button type="button" id="bvReset" title="Show what was hidden or isolated (U)">Show all</button>
+        </div>
+        <div class="bv-tgroup bv-cuts">
+          <label class="bv-cut" title="Cut the model at a height, like a plan view"><input type="checkbox" id="bvCutOn"><span>Plan cut</span><input type="range" id="bvCut" min="0" max="1000" value="1000" aria-label="Plan cut height"></label>
+          <label class="bv-cut" title="Cut the model north to south, like a section"><input type="checkbox" id="bvSecOn"><span>Section</span><input type="range" id="bvSec" min="0" max="1000" value="500" aria-label="Section position"></label>
+        </div>
+      </div>
+
+      <div class="bv-hud" id="bvHud" hidden>
+        <div class="bv-level" id="bvLevel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Outside</span></div>
+        <div class="bv-cross" id="bvCross" hidden></div>
+        <div class="bv-look" id="bvLook" hidden></div>
+        <div class="bv-keys" id="bvKeys">
+          <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Shift</kbd> run &nbsp; <kbd>Space</kbd> jump</p>
+          <p><kbd>C</kbd> camera &nbsp; <kbd>Q</kbd> character &nbsp; <kbd>E</kbd> inspect &nbsp; <kbd>F</kbd> torch &nbsp; <kbd>M</kbd> map &nbsp; <kbd>R</kbd> restart &nbsp; <kbd>Esc</kbd> pause</p>
+        </div>
+        <div class="bv-emotes" id="bvEmotes" aria-label="Emotes">
+          <button type="button" data-emote="Wave" title="Wave (1)">👋<span>1</span></button>
+          <button type="button" data-emote="Dance" title="Dance (2)">💃<span>2</span></button>
+          <button type="button" data-emote="ThumbsUp" title="Thumbs up (3)">👍<span>3</span></button>
+          <button type="button" data-emote="Yes" title="Yes (4)">✅<span>4</span></button>
+          <button type="button" data-emote="No" title="No (5)">❌<span>5</span></button>
+          <button type="button" data-emote="Punch" title="Punch (6)">🥊<span>6</span></button>
+        </div>
+        <div class="bv-mini" id="bvMini"><span aria-hidden="true">N</span></div>
+        <label class="bv-go">Go to <select id="bvGoLevel" aria-label="Go to level"></select></label>
+        <label class="bv-go bv-who">Play as <select id="bvChar" aria-label="Character">
+          <option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option>
+        </select></label>
+      </div>
+
+      <div class="bv-touch" id="bvTouch" hidden>
+        <div class="bv-stick" id="bvStick"><i></i></div>
+        <div class="bv-tbtns">
+          <button type="button" id="bvTJump">Jump</button>
+          <button type="button" id="bvTRun" aria-pressed="false">Run</button>
+          <button type="button" id="bvTCam">View</button>
+          <button type="button" id="bvTLook">Inspect</button>
+        </div>
+      </div>
+
+      <div class="bv-pause" id="bvPause" hidden>
+        <div class="bv-card">
+          <p class="bv-kicker">Walk view</p>
+          <h3>Walk through the model</h3>
+          <p>Steer your character through the building. Doors let you through, walls do not. Look at any element and press <kbd>E</kbd> to see what it is.</p>
+          <div class="bv-chars" id="bvChars" role="radiogroup" aria-label="Character">
+            <button type="button" role="radio" data-char="robot" aria-checked="true"><b aria-hidden="true">🤖</b><span>Robot</span></button>
+            <button type="button" role="radio" data-char="soldier" aria-checked="false"><b aria-hidden="true">🪖</b><span>Soldier</span></button>
+            <button type="button" role="radio" data-char="xbot" aria-checked="false"><b aria-hidden="true">🦾</b><span>X Bot</span></button>
+          </div>
+          <div class="bv-cardbtns">
+            <button type="button" class="bv-primary" id="bvPlay">Play</button>
+            <button type="button" class="bv-ghost" id="bvBack">Back to BIM view</button>
+          </div>
+          <p class="bv-small" id="bvPauseNote">Click Play, then move the mouse to look around. Press Esc to get the pointer back.</p>
+        </div>
+      </div>
+
+      <div class="bv-panel bv-settings" id="bvSettings" hidden>
+        <div class="bv-ph"><b>Settings</b><button type="button" class="bv-x" id="bvSetClose" aria-label="Close settings">×</button></div>
+        <div class="bv-sbody">
+          <h3>Graphics</h3>
+          <label class="bv-row">Quality
+            <select id="sQuality"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option></select>
+          </label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sShadows"><span>Shadows</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sAo"><span>Ambient occlusion</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sBloom"><span>Bloom glow</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sClouds"><span>Clouds</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sTrees"><span>Trees</span></label>
+          <label class="bv-row">Background
+            <select id="sEnv"><option value="sky">Sky</option><option value="studio">Studio grey</option></select>
+          </label>
+          <label class="bv-row bv-col"><span>Time of day <output id="sTimeOut"></output></span><input type="range" id="sTime" min="0" max="24" step="0.25"></label>
+          <p class="bv-small">Ambient occlusion and bloom need High or Ultra quality.</p>
+          <h3>Walk view</h3>
+          <label class="bv-row">Character
+            <select id="sChar"><option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option></select>
+          </label>
+          <label class="bv-row">Camera
+            <select id="sCam"><option value="third">Third person</option><option value="first">First person</option></select>
+          </label>
+          <label class="bv-row bv-col"><span>Field of view <output id="sFovOut"></output></span><input type="range" id="sFov" min="40" max="95" step="1"></label>
+          <label class="bv-row bv-col"><span>Look sensitivity <output id="sSensOut"></output></span><input type="range" id="sSens" min="0.3" max="2.5" step="0.1"></label>
+          <label class="bv-row bv-col"><span>Walk speed <output id="sSpeedOut"></output></span><input type="range" id="sSpeed" min="0.5" max="2" step="0.1"></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sInvert"><span>Invert look up and down</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sMini"><span>Minimap</span></label>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sTorch"><span>Torch on after dark</span></label>
+          <h3>Display</h3>
+          <label class="bv-row bv-tog"><input type="checkbox" id="sFps"><span>Show frame rate</span></label>
+          <button type="button" class="bv-ghost bv-wide" id="sReset">Reset settings</button>
+        </div>
+      </div>
+
+      <div class="bv-loading" id="bvLoading">
+        <div class="bv-spin" aria-hidden="true"></div>
+        <p id="bvLoadText" role="status" aria-live="polite">Starting…</p>
+        <div class="bv-bar"><i id="bvLoadBar"></i></div>
+      </div>
+      <div class="bv-drop" id="bvDrop" hidden><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>Drop your IFC file</div></div>
+      <div class="bv-fps" id="bvFps" hidden></div>
+      <div class="bv-toast" id="bvToast" role="status" aria-live="polite"></div>
+    </div>
+
+    <div class="bvp-cols">
+      <div class="tool-note bvp-notes">
+        <p><b>From Revit to here</b></p>
+        <p><b>1.</b> In Revit, open a 3D view and use <b>File › Export › IFC</b>. IFC 2x3 Coordination View 2.0 or IFC4 Reference View both work.</p>
+        <p><b>2.</b> Tick <b>Export only elements visible in view</b> to keep the file small. For a phone, export one level or one zone at a time.</p>
+        <p><b>3.</b> Drop the .ifc file on the viewer above, or press Open IFC. A browser cannot read a .rvt file, so it has to be IFC.</p>
+      </div>
+      <div class="tool-note bvp-notes">
+        <p><b>Controls</b></p>
+        <p><b>BIM view.</b> Drag to turn, right-drag or middle-drag to pan, scroll to zoom at the cursor. Click an element for its properties, double-click to zoom to it. Keys: <kbd>H</kbd> hide, <kbd>I</kbd> isolate, <kbd>U</kbd> show all, <kbd>X</kbd> x-ray, <kbd>M</kbd> measure, <kbd>F</kbd> fit, <kbd>Esc</kbd> clear.</p>
+        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>1</kbd>–<kbd>6</kbd> for emotes. On a phone, use the stick on the left and drag on the right to look.</p>
+      </div>
+    </div>
+
+    <div class="tool-note bvp-notes" style="margin-top:22px">
+      <p><b>What this does, and what it does not.</b></p>
+      <p><b>Properties.</b> Everything shown comes from the IFC: names, types, property sets and quantities, as the exporter wrote them. Revit's own parameter groups, like Identity Data and Dimensions, appear when the export includes them.</p>
+      <p><b>Walls and doors.</b> In the walk view you collide with what is visible. Doors and rooms are left out, so doorways are open. Hide a category in the BIM view and it stops blocking you too. Very large models collide with walls, floors, roofs and stairs only, to stay smooth.</p>
+      <p><b>Position.</b> The model is moved near the origin when it opens, so georeferenced exports far from 0,0,0 still draw cleanly. The sun is not set to the site's real north or location.</p>
+      <p><b>Size.</b> Everything runs on your device, so a big model needs a big device. If a file struggles, export less of it, or lower the Quality setting.</p>
+      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 by That Open Company (MPL-2.0), served from this site, and three.js 0.186.1 from jsDelivr. The robot is RobotExpressive by Tomás Laulhé, with changes by Don McCurdy, released as CC0. The soldier and X Bot are Adobe Mixamo characters from the three.js examples; they load from three.js's own copy on jsDelivr when you pick them and are not stored on this site. The sample villa was made for this page. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="/contact/">Tell me</a> and I will fix it.</p>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+    </div>
+    <div>
+      <h4>The story</h4>
+      <ul>
+        <li><a href="/story/">How it started</a></li>
+        <li><a href="/experience/">Experience</a></li>
+        <li><a href="/work/">Selected work</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>What I build</h4>
+      <ul>
+        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/heron-ai/">Heron AI</a></li>
+        <li><a href="/toolbox/">Toolbox</a></li>
+        <li><a href="/skills/">Skills</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
+    <span><a href="/">ajmalps.com</a></span>
+  </div>
+</footer>
+
+<script src="../../vendor/lenis.min.js" defer></script>
+<script src="../../vendor/gsap.min.js" defer></script>
+<script src="../../vendor/ScrollTrigger.min.js" defer></script>
+<script src="../../assets/app.js" defer></script>
+<script type="module">
+/* Starts the viewer only where it can run: import maps for three.js, and
+   WebGL 2 for drawing. Anywhere else the note above says why, and nothing
+   heavy is downloaded. */
+const needs = document.getElementById('bvNeeds');
+const maps = typeof HTMLScriptElement.supports === 'function' && HTMLScriptElement.supports('importmap');
+let gl = false;
+try {
+  const ctx = document.createElement('canvas').getContext('webgl2');
+  gl = !!ctx;
+  if (ctx) { const lose = ctx.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext(); }
+} catch { gl = false; }
+if (!maps) needs.textContent = 'This browser is too old for the BIM Viewer. Use a current Chrome, Edge, Firefox or Safari.';
+else if (!gl) needs.textContent = 'The BIM Viewer needs WebGL 2, and this browser has it switched off or does not have it. Turn on hardware acceleration in the browser settings, or try another browser.';
+else {
+  import('./app.js').then((m) => m.start()).catch((err) => {
+    needs.hidden = false;
+    needs.textContent = 'The BIM Viewer could not start: ' + (err && err.message ? err.message : err);
+  });
+}
+</script>
+</body>
+</html>
