@@ -31,7 +31,7 @@ export function start() {
     cutOn: $('bvCutOn'), cut: $('bvCut'), secOn: $('bvSecOn'), sec: $('bvSec'),
     hud: $('bvHud'), level: $('bvLevel'), cross: $('bvCross'), look: $('bvLook'), keys: $('bvKeys'), emotes: $('bvEmotes'),
     mini: $('bvMini'), goLevel: $('bvGoLevel'), who: $('bvChar'), chars: $('bvChars'), touch: $('bvTouch'), stick: $('bvStick'),
-    tJump: $('bvTJump'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'),
+    tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'),
     pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'),
     settings: $('bvSettings'), setClose: $('bvSetClose'),
     loading: $('bvLoading'), loadText: $('bvLoadText'), loadBar: $('bvLoadBar'), drop: $('bvDrop'), fps: $('bvFps'), toast: $('bvToast'),
@@ -54,6 +54,7 @@ export function start() {
     onMinimap: (on) => { settings.minimap = on; save(); syncSettingsUI(); ui.stage.dataset.minimap = on ? 'on' : 'off'; },
     onCycle: () => { const keys = Object.keys(CHARACTERS); chooseCharacter(keys[(keys.indexOf(settings.char) + 1) % keys.length]); },
     onEmote: (name) => emote(name),
+    onAim: (aim) => showAim(aim),
   });
 
   let model = null;
@@ -298,8 +299,19 @@ export function start() {
     return list;
   }
 
+  function showAim(aim) {
+    ui.tPort.setAttribute('aria-pressed', !!aim);
+    ui.cross.hidden = !(aim || walk.firstPerson);
+    if (!aim) { ui.aim.hidden = true; return; }
+    ui.look.hidden = true;
+    ui.aim.hidden = false;
+    ui.aim.classList.toggle('bad', !aim.valid);
+    const go = isTouch ? 'Tap Teleport again to go' : 'Let go of T to teleport';
+    ui.aim.textContent = aim.valid ? `${go} · ${Math.round(aim.dist)} m` : 'Cannot land there';
+  }
+
   function showLook(id) {
-    if (id == null || !model) { ui.look.hidden = true; return; }
+    if (id == null || !model || walk.aiming) { ui.look.hidden = true; return; }
     const el = model.elements.get(id);
     ui.look.hidden = false;
     ui.look.innerHTML = '';
@@ -518,6 +530,8 @@ export function start() {
   ui.canvas.addEventListener('pointerup', endLook);
   ui.canvas.addEventListener('pointercancel', endLook);
   ui.tJump.addEventListener('click', () => walk.jump());
+  // first tap shows the pad, second tap goes there
+  ui.tPort.addEventListener('click', () => { if (walk.aiming) walk.endAim(true); else walk.startAim(); });
   ui.tRun.addEventListener('click', () => { walk.run = !walk.run; ui.tRun.setAttribute('aria-pressed', walk.run); });
   ui.tCam.addEventListener('click', () => { walk.setFirstPerson(!walk.firstPerson); settings.cam = walk.firstPerson ? 'first' : 'third'; ui.cross.hidden = !walk.firstPerson; save(); syncSettingsUI(); });
   ui.tLook.addEventListener('click', () => { if (walk.lookId != null) select(walk.lookId); else hideProps(); });

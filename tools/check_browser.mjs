@@ -384,6 +384,29 @@ for (const page of PAGES) {
       fail(`${tag}: the robot moved ${Math.hypot(end[0] - start[0], end[1] - start[1]).toFixed(2)} m in 20 s of being told to walk`);
     }
 
+    // teleport: hold T with the camera on open ground, let go, and land there
+    if (!phone) {
+      const before = await p.evaluate(() => {
+        const w = document.getElementById('bv').viewer.walk;
+        w.yaw = 0; w.pitch = -0.15;              // facing south, away from the villa, onto the lawn
+        return [w.robot.position.x, w.robot.position.z];
+      });
+      await p.keyboard.down('KeyT');
+      const aimed = await p.waitForFunction(() => {
+        const w = document.getElementById('bv').viewer.walk;
+        return w.aiming && w.aim.valid && w.aim.dist > 2;
+      }, null, { timeout: 20000 }).then(() => true, () => false);
+      await p.keyboard.up('KeyT');
+      if (!aimed) fail(`${tag}: holding T never showed a place to teleport to`);
+      else {
+        const landed = await p.waitForFunction((b) => {
+          const r = document.getElementById('bv').viewer.walk.robot.position;
+          return Math.hypot(r.x - b[0], r.z - b[1]) > 1.5;
+        }, before, { timeout: 10000 }).then(() => true, () => false);
+        if (!landed) fail(`${tag}: letting go of T did not teleport`);
+      }
+    }
+
     // a player gives the pointer back with Esc; the check does it directly.
     // The pause card that comes up must leave the view tabs usable.
     await p.evaluate(() => document.pointerLockElement && document.exitPointerLock());

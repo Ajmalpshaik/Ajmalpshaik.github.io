@@ -239,8 +239,9 @@
         <div class="bv-level" id="bvLevel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Outside</span></div>
         <div class="bv-cross" id="bvCross" hidden></div>
         <div class="bv-look" id="bvLook" hidden></div>
+        <div class="bv-aim" id="bvAim" hidden></div>
         <div class="bv-keys" id="bvKeys">
-          <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Shift</kbd> run &nbsp; <kbd>Space</kbd> jump</p>
+          <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Shift</kbd> run &nbsp; <kbd>Space</kbd> jump &nbsp; hold <kbd>T</kbd> teleport</p>
           <p><kbd>C</kbd> camera &nbsp; <kbd>Q</kbd> character &nbsp; <kbd>E</kbd> inspect &nbsp; <kbd>F</kbd> torch &nbsp; <kbd>M</kbd> map &nbsp; <kbd>R</kbd> restart &nbsp; <kbd>Esc</kbd> pause</p>
         </div>
         <div class="bv-emotes" id="bvEmotes" aria-label="Emotes">
@@ -261,6 +262,7 @@
       <div class="bv-touch" id="bvTouch" hidden>
         <div class="bv-stick" id="bvStick"><i></i></div>
         <div class="bv-tbtns">
+          <button type="button" id="bvTPort" class="bv-tport" aria-pressed="false">Teleport</button>
           <button type="button" id="bvTJump">Jump</button>
           <button type="button" id="bvTRun" aria-pressed="false">Run</button>
           <button type="button" id="bvTCam">View</button>
@@ -342,7 +344,7 @@
       <div class="tool-note bvp-notes">
         <p><b>Controls</b></p>
         <p><b>BIM view.</b> Drag to turn, right-drag or middle-drag to pan, scroll to zoom at the cursor. Click an element for its properties, double-click to zoom to it. Keys: <kbd>H</kbd> hide, <kbd>I</kbd> isolate, <kbd>U</kbd> show all, <kbd>X</kbd> x-ray, <kbd>M</kbd> measure, <kbd>F</kbd> fit, <kbd>Esc</kbd> clear.</p>
-        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>1</kbd>–<kbd>6</kbd> for emotes. On a phone, use the stick on the left and drag on the right to look.</p>
+        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, hold <kbd>T</kbd> to aim a teleport and let go to land there, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>1</kbd>–<kbd>6</kbd> for emotes. On a phone, use the stick on the left and drag on the right to look; tap Teleport to aim and again to go.</p>
       </div>
     </div>
 

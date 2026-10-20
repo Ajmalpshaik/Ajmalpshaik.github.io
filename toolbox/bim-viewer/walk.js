@@ -12,6 +12,8 @@ const RADIUS = 0.3;
 const GRAVITY = 24;
 const JUMP = 7.2;
 const STEP = 0.36;            // tallest riser or kerb the robot walks up without jumping
+const TELEPORT_RANGE = 60;    // metres
+const AIM_OK = new THREE.Color(0x39d0ff), AIM_BAD = new THREE.Color(0xff5050);
 const SPEED = { walk: 2.3, run: 5.6 };
 const EMOTE_KEYS = { 1: 'Wave', 2: 'Dance', 3: 'ThumbsUp', 4: 'Yes', 5: 'No', 6: 'Punch' };
 const FACE = { No: 'Sad', Punch: 'Angry', Jump: 'Surprised' };
@@ -45,12 +47,14 @@ const up = new THREE.Vector3(0, 1, 0);
 const v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), v3 = new THREE.Vector3();
 const stepDir = new THREE.Vector3(), stepMove = new THREE.Vector3();
 const ray = new THREE.Ray();
+const aimDir = new THREE.Vector3(), aimNormal = new THREE.Vector3(), aimTmp = new THREE.Vector3();
+const roomCheck = new Capsule(new THREE.Vector3(), new THREE.Vector3(), RADIUS);
 
 export class Walk {
   constructor(world, canvas, hooks) {
     this.world = world;
     this.canvas = canvas;
-    this.hooks = hooks;               // { onPause, onLook, onLevel, onCamera, onMinimap, onInspect, onCycle }
+    this.hooks = hooks;               // { onPause, onLook, onLevel, onCamera, onMinimap, onInspect, onCycle, onAim }
     this.active = false;
     this.ready = false;
     this.model = null;
@@ -106,7 +110,201 @@ export class Walk {
     this.marker = arrow;
     world.scene.add(arrow);
 
+    this.aiming = false;
+    this.aim = { point: new THREE.Vector3(), valid: false, dist: 0 };
+    this.aimRaycaster = new THREE.Raycaster();
+    this.aimRaycaster.far = TELEPORT_RANGE;
+    this.poofs = [];
+    this._buildTeleportFx(world.scene);
+
     this._bindInput();
+  }
+
+  // ------------------------------------------------------------ teleport
+  // Hold T: a glowing pad shows where you would land, with a dotted arc to
+  // it. Let go: you are there. On a phone the Teleport button does the same
+  // in two taps. You can only land on something you could stand on.
+  _buildTeleportFx(scene) {
+    // the ring and disc are painted, so they read even on a white wall; the beam glows
+    const glow = (opacity, additive) => new THREE.MeshBasicMaterial({ color: AIM_OK, transparent: true, opacity, depthWrite: false,
+      side: THREE.DoubleSide, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, fog: false });
+    const fade = document.createElement('canvas');
+    fade.width = 1; fade.height = 64;
+    const g = fade.getContext('2d');
+    const grad = g.createLinearGradient(0, 0, 0, 64);
+    grad.addColorStop(0, 'rgba(255,255,255,0)');
+    grad.addColorStop(1, 'rgba(255,255,255,1)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 1, 64);
+    const beamMat = glow(0.65, true);
+    beamMat.alphaMap = new THREE.CanvasTexture(fade);     // bright at the floor, gone at the top
+    const pad = new THREE.Group();
+    pad.add(
+      new THREE.Mesh(new THREE.RingGeometry(0.42, 0.56, 48).rotateX(-Math.PI / 2), glow(0.95)),
+      new THREE.Mesh(new THREE.CircleGeometry(0.42, 40).rotateX(-Math.PI / 2), glow(0.3)),
+      new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.46, 2.4, 32, 1, true).translate(0, 1.2, 0), beamMat),
+    );
+    pad.children.forEach((m) => { m.renderOrder = 8; });
+    pad.visible = false;
+    this.pad = pad;
+
+    const dots = new Float32Array(26 * 3);
+    const arcGeo = new THREE.BufferGeometry();
+    arcGeo.setAttribute('position', new THREE.BufferAttribute(dots, 3));
+    const dot = document.createElement('canvas');
+    dot.width = dot.height = 32;
+    const d = dot.getContext('2d');
+    const r = d.createRadialGradient(16, 16, 0, 16, 16, 16);
+    r.addColorStop(0, 'rgba(255,255,255,1)');
+    r.addColorStop(0.55, 'rgba(255,255,255,1)');
+    r.addColorStop(1, 'rgba(255,255,255,0)');
+    d.fillStyle = r;
+    d.fillRect(0, 0, 32, 32);
+    this.arc = new THREE.Points(arcGeo, new THREE.PointsMaterial({ color: AIM_OK, size: 9, sizeAttenuation: false,
+      map: new THREE.CanvasTexture(dot), transparent: true, opacity: 0.95, depthWrite: false, fog: false }));
+    this.arc.frustumCulled = false;
+    this.arc.visible = false;
+    this.arc.renderOrder = 8;
+    this.poofGeo = new THREE.RingGeometry(0.3, 0.42, 48).rotateX(-Math.PI / 2);
+    scene.add(pad, this.arc);
+  }
+
+  startAim() {
+    if (!this.active || !this.ready) return;
+    this.aiming = true;
+    this.aim.valid = false;
+    this._aimKey = '';
+    this._aimTeleport();
+  }
+
+  // go: true to jump to the target, false to put the pad away
+  endAim(go) {
+    if (!this.aiming) return false;
+    this.aiming = false;
+    this.pad.visible = false;
+    this.arc.visible = false;
+    let went = false;
+    if (go && this.aim.valid) {
+      this._poof(this.robot.position);
+      const p = this.aim.point;
+      this.teleport(p.x, p.y + 0.02, p.z);
+      this._poof(p);
+      this._face('Surprised', 0.7);
+      went = true;
+    }
+    this.hooks.onAim && this.hooks.onAim(null);
+    return went;
+  }
+
+  // finds where the line of sight lands, and whether there is room to stand there
+  _aimTeleport() {
+    // along the crosshair: from the eyes in first person, from the camera,
+    // past the character, in third
+    const cam = this.world.camera;
+    const dir = cam.getWorldDirection(aimDir);
+    const rc = this.aimRaycaster;
+    let eye;
+    if (this.firstPerson) {
+      eye = v3.set(this.robot.position.x, this.robot.position.y + this.height * 0.92, this.robot.position.z);
+      rc.near = 0.3;
+    } else {
+      eye = v3.copy(cam.position);
+      rc.near = cam.position.distanceTo(this.robot.position) + 0.2;
+    }
+    rc.set(eye, dir);
+    rc.far = rc.near + TELEPORT_RANGE;
+    const hit = rc.intersectObjects(this.model.meshes(), false)[0];
+    const g = this.model.groundY;
+    const tGround = dir.y < -1e-3 ? (g - eye.y) / dir.y : Infinity;
+    const p = this.aim.point;
+    let valid = false;
+    if (hit && hit.distance < tGround) {
+      aimNormal.copy(hit.face.normal);
+      if (aimNormal.dot(dir) > 0) aimNormal.negate();         // faces drawn from both sides
+      if (aimNormal.y > 0.6) { p.copy(hit.point); valid = true; }
+      else {
+        // a wall: land at its foot, on this side of it
+        const back = aimTmp.copy(dir).setY(0).normalize().multiplyScalar(-0.55).add(hit.point);
+        const floor = this._floorBelow(back.x, back.z, hit.point.y + 0.05);
+        if (floor !== null) { p.set(back.x, floor, back.z); valid = true; } else p.copy(hit.point);
+      }
+    } else if (tGround >= rc.near && tGround <= rc.far) {
+      p.copy(eye).addScaledVector(dir, tGround);
+      valid = true;
+    } else {
+      // pointing at the sky: show where it would fall, but do not go
+      p.copy(eye).addScaledVector(dir, 14);
+      const floor = this._floorBelow(p.x, p.z, p.y);
+      p.y = floor !== null ? floor : g;
+    }
+
+    // room to stand: nudge away from a wall that is close, refuse a squeeze
+    if (valid && this.octree) {
+      roomCheck.start.set(p.x, p.y + RADIUS + 0.04, p.z);
+      roomCheck.end.set(p.x, p.y + this.height - RADIUS, p.z);
+      const hitRoom = this.octree.capsuleIntersect(roomCheck);
+      if (hitRoom) {
+        if (hitRoom.normal.y < 0.5 && hitRoom.depth < 0.35) {
+          p.x += hitRoom.normal.x * (hitRoom.depth + 0.02);
+          p.z += hitRoom.normal.z * (hitRoom.depth + 0.02);
+          roomCheck.translate(aimTmp.set(hitRoom.normal.x * (hitRoom.depth + 0.02), 0, hitRoom.normal.z * (hitRoom.depth + 0.02)));
+          const again = this.octree.capsuleIntersect(roomCheck);
+          if (again && again.depth > 0.05) valid = false;
+        } else if (hitRoom.depth > 0.05) valid = false;
+      }
+    }
+    this.aim.valid = valid;
+    this.aim.dist = Math.hypot(p.x - this.robot.position.x, p.z - this.robot.position.z);
+
+    const col = valid ? AIM_OK : AIM_BAD;
+    this.pad.visible = true;
+    this.pad.position.copy(p).setY(p.y + 0.02);
+    this.pad.children.forEach((m) => m.material.color.copy(col));
+    this.arc.material.color.copy(col);
+    // a throw arc from the chest to the pad, higher the further it goes
+    const a = this.robot.position, pos = this.arc.geometry.getAttribute('position');
+    const h0 = a.y + this.height * 0.6, lift = Math.min(4, 0.6 + this.aim.dist * 0.18);
+    for (let i = 0; i < pos.count; i++) {
+      const t = i / (pos.count - 1);
+      pos.setXYZ(i, a.x + (p.x - a.x) * t, h0 + (p.y + 0.05 - h0) * t + Math.sin(Math.PI * t) * lift, a.z + (p.z - a.z) * t);
+    }
+    pos.needsUpdate = true;
+    this.arc.visible = true;
+
+    const key = `${valid}|${Math.round(this.aim.dist)}`;
+    if (key !== this._aimKey) { this._aimKey = key; this.hooks.onAim && this.hooks.onAim({ valid, dist: this.aim.dist }); }
+  }
+
+  // the first thing below (x, fromY, z) you could stand on: a floor in the
+  // model, or the ground
+  _floorBelow(x, z, fromY) {
+    let best = fromY >= this.model.groundY ? this.model.groundY : null;
+    if (this.octree) {
+      ray.origin.set(x, fromY, z);
+      ray.direction.set(0, -1, 0);
+      const hit = this.octree.rayIntersect(ray);
+      if (hit) { const y = fromY - hit.distance; if (best === null || y > best) best = y; }
+    }
+    return best;
+  }
+
+  _poof(at) {
+    const m = new THREE.Mesh(this.poofGeo, new THREE.MeshBasicMaterial({ color: AIM_OK, transparent: true, opacity: 1,
+      depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false }));
+    m.position.copy(at).setY(at.y + 0.04);
+    m.renderOrder = 8;
+    this.world.scene.add(m);
+    this.poofs.push({ m, t: 0 });
+  }
+
+  _poofs(dt) {
+    for (let i = this.poofs.length - 1; i >= 0; i--) {
+      const f = this.poofs[i];
+      f.t += dt / 0.5;
+      f.m.scale.setScalar(1 + f.t * 4);
+      f.m.material.opacity = Math.max(0, 1 - f.t);
+      if (f.t >= 1) { this.world.scene.remove(f.m); f.m.material.dispose(); this.poofs.splice(i, 1); }
+    }
   }
 
   // -------------------------------------------------------- characters
@@ -207,6 +405,7 @@ export class Walk {
     this.active = false;
     this.keys.clear();
     this.stick.set(0, 0);
+    this.endAim(false);
     this.robot.visible = false;
     this.marker.visible = false;
     this.torch.intensity = 0;
@@ -279,15 +478,20 @@ export class Walk {
       else if (k === 'KeyE') this.hooks.onInspect && this.hooks.onInspect(this.lookId);
       else if (k === 'KeyR') this.spawnOutside();
       else if (k === 'KeyQ') this.hooks.onCycle && this.hooks.onCycle();
+      else if (k === 'KeyT') this.startAim();
       else if (EMOTE_KEYS[e.key]) this.hooks.onEmote ? this.hooks.onEmote(EMOTE_KEYS[e.key]) : this.playEmote(EMOTE_KEYS[e.key]);
     });
-    window.addEventListener('keyup', (e) => this.keys.delete(e.code));
+    window.addEventListener('keyup', (e) => {
+      this.keys.delete(e.code);
+      if (e.code === 'KeyT' && this.aiming) this.endAim(true);
+    });
     window.addEventListener('blur', () => this.keys.clear());
 
     // mouse look: pointer lock when the browser allows it, plain drag when not
     let drag = null;
     c.addEventListener('pointerdown', (e) => {
       if (!this.active || e.pointerType === 'touch') return;
+      if (this.aiming && e.button === 2) { this.endAim(false); return; }      // right-click: never mind
       if (document.pointerLockElement !== c && c.requestPointerLock) {
         try {
           const p = c.requestPointerLock();
@@ -308,8 +512,9 @@ export class Walk {
       this.distance = THREE.MathUtils.clamp(this.distance * (1 + Math.sign(e.deltaY) * 0.12), 1.4, 9);
     }, { passive: false });
     document.addEventListener('pointerlockchange', () => {
-      if (this.active && document.pointerLockElement !== c) this.hooks.onPause && this.hooks.onPause();
+      if (this.active && document.pointerLockElement !== c) { this.endAim(false); this.hooks.onPause && this.hooks.onPause(); }
     });
+    c.addEventListener('contextmenu', (e) => { if (this.active) e.preventDefault(); });
   }
 
   look(dx, dy) {
@@ -338,6 +543,8 @@ export class Walk {
     this._camera(dt);
     this._lights(dt);
     this._lookAt(dt);
+    if (this.aiming) this._aimTeleport();
+    if (this.poofs.length) this._poofs(dt);
   }
 
   _input() {
@@ -484,6 +691,11 @@ export class Walk {
       cam.lookAt(v3.add(cam.position));
       return;
     }
+    // aiming a teleport swings the camera over the right shoulder, so the
+    // pad at the crosshair is never hidden behind the character
+    this._shoulder = (this._shoulder || 0) + ((this.aiming ? 0.85 : 0) - (this._shoulder || 0)) * (1 - Math.exp(-10 * dt));
+    head.addScaledVector(v3.set(-fwd.z, 0, fwd.x), this._shoulder);
+    head.y += this._shoulder * 0.35;
     // a spring arm behind the shoulder, pulled in when a wall is in the way
     const elev = THREE.MathUtils.clamp(-this.pitch + 0.18, -0.35, 1.25);
     const dir = v3.copy(fwd).multiplyScalar(-Math.cos(elev)).addScaledVector(up, Math.sin(elev)).normalize();
