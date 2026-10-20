@@ -24,7 +24,7 @@ PAGES = ["index.html", "404.html"] + [
     for d in ("story", "experience", "work", "aj-tools", "heron-ai",
               "about", "skills", "faq", "contact",
               "toolbox", os.path.join("toolbox", "crane-lift-calculator"),
-              os.path.join("toolbox", "ar-viewer"))
+              os.path.join("toolbox", "ar-viewer"), os.path.join("toolbox", "bim-viewer"))
 ]
 
 errors, warnings = [], []

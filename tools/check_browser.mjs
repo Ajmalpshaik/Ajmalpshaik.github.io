@@ -13,6 +13,7 @@
 import { chromium } from 'playwright';
 import { createServer } from 'http';
 import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, extname, join, normalize } from 'path';
 
@@ -34,6 +35,9 @@ const TYPES = {
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',
   '.gif': 'image/gif', '.ico': 'image/x-icon', '.woff': 'font/woff', '.woff2': 'font/woff2',
   '.xml': 'application/xml', '.txt': 'text/plain', '.webmanifest': 'application/manifest+json',
+  // GitHub Pages sends wasm as application/wasm; anything else and the browser
+  // refuses to stream-compile it and logs an error, which would fail the run
+  '.wasm': 'application/wasm', '.glb': 'model/gltf-binary',
 };
 
 const server = createServer(async (req, res) => {
@@ -68,8 +72,25 @@ const PAGES = [
   // which reads the file and never renders it - a page that threw on load or
   // scrolled sideways would have looked exactly like a passing one.
   'toolbox/index.html', 'toolbox/crane-lift-calculator/index.html',
-  'toolbox/ar-viewer/index.html',
+  'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
 ];
+
+// The viewers load three.js from jsDelivr. When node_modules has the same
+// release (npm i --no-save three@0.186.1), serve it from there instead, so the
+// checks run without a network. The import map's SHA-384 fingerprints still
+// apply, so a local copy that differs from the release fails just the same.
+const LOCAL_THREE = join(ROOT, 'node_modules', 'three');
+async function localThree(ctx) {
+  if (!existsSync(join(LOCAL_THREE, 'package.json'))) return;
+  const version = JSON.parse(await readFile(join(LOCAL_THREE, 'package.json'), 'utf8')).version;
+  await ctx.route(new RegExp(`^https://cdn\\.jsdelivr\\.net/npm/three@${version.replace(/\./g, '\\.')}/`), async (route) => {
+    const rel = route.request().url().split(`three@${version}/`)[1];
+    try {
+      const body = await readFile(join(LOCAL_THREE, normalize(rel)));
+      await route.fulfill({ status: 200, body, headers: { 'content-type': 'text/javascript', 'access-control-allow-origin': '*' } });
+    } catch { await route.continue(); }
+  });
+}
 const WIDTHS = [1440, 1280, 834, 390];
 
 const failures = [];
@@ -78,6 +99,7 @@ const browser = await chromium.launch();
 
 for (const page of PAGES) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  await localThree(ctx);
   const p = await ctx.newPage();
   p.on('pageerror', (e) => fail(`${page}: uncaught script error — ${e.message}`));
   p.on('console', (m) => { if (m.type() === 'error') fail(`${page}: console error — ${m.text()}`); });
@@ -281,6 +303,92 @@ for (const page of PAGES) {
       getComputedStyle(e.querySelector('.model3d-poster')).opacity !== '1' ||
       getComputedStyle(e.querySelector('.model3d-stage')).display !== 'none').length);
     if (unprinted) fail(`3D at ${w}px: ${unprinted} live model(s) would print as a blank canvas, not their still`);
+    await ctx.close();
+  }
+  await gpu.close();
+}
+
+// ---- the BIM viewer: opens its model, picks, walks, all without an error ---
+// Drawn by SwiftShader like the home page's models. The quality is set to Low
+// first: a software renderer cannot keep up with the High preset, and what is
+// under test here is that everything works, not how it looks.
+{
+  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  for (const [w, h] of [[1280, 860], [390, 844]]) {
+    const phone = w < 500;
+    const ctx = await gpu.newContext({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone });
+    await localThree(ctx);
+    await ctx.addInitScript(() => { try { localStorage.setItem('ajps-bimv', '{"quality":"low","picked":true}'); } catch { /* ignore */ } });
+    const p = await ctx.newPage();
+    const tag = `bim-viewer at ${w}px`;
+    p.on('pageerror', (e) => fail(`${tag}: uncaught script error — ${e.message}`));
+    p.on('console', (m) => {
+      if (m.type() === 'error' || (m.type() === 'warning' && m.text().includes('THREE'))) fail(`${tag}: console ${m.type()} — ${m.text()}`);
+    });
+    await p.goto(url('toolbox/bim-viewer/index.html'));
+    if (!(await p.evaluate(() => !!document.createElement('canvas').getContext('webgl2')))) {
+      console.log('note: no WebGL 2 in this Chromium, even in software; the BIM viewer was not checked');
+      await ctx.close();
+      break;
+    }
+    const ready = await p.waitForFunction(() => document.getElementById('bv').dataset.state === 'ready', null, { timeout: 60000 })
+      .then(() => true, () => false);
+    if (!ready) { fail(`${tag}: the sample model never finished opening (${await p.$eval('#bvLoadText', (e) => e.textContent)})`); await ctx.close(); continue; }
+    const elements = Number(await p.$eval('#bv', (e) => e.dataset.elements));
+    if (!(elements > 20)) fail(`${tag}: the sample opened with ${elements} elements, expected the whole villa`);
+
+    // clicking the building opens its properties
+    // style.css scrolls smoothly, so ask for an instant jump or the canvas is
+    // still on its way when its position is read
+    await p.$eval('#bv', (e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await p.waitForFunction(() => !document.getElementById('bv').viewer.bim.tween, null, { timeout: 15000 }).catch(() => {});
+    const box = await p.$eval('#bvCanvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    await p.mouse.click(box.x, box.y);
+    const props = await p.waitForFunction(() => !document.getElementById('bvProps').hidden &&
+      document.querySelectorAll('#bvPropBody dt').length > 3, null, { timeout: 15000 }).then(() => true, () => false);
+    if (!props) fail(`${tag}: clicking the model did not show its properties`);
+
+    // the walk view: the robot arrives and moves when told to
+    await p.click('#bvTabWalk');
+    const walking = await p.waitForFunction(() => {
+      const s = document.getElementById('bv');
+      return s.dataset.mode === 'walk' && s.dataset.robot === 'ready';
+    }, null, { timeout: 30000 }).then(() => true, () => false);
+    if (!walking) { fail(`${tag}: the walk view did not start`); await ctx.close(); continue; }
+    if (await p.isVisible('#bvPlay')) await p.click('#bvPlay');
+    // Software rendering draws about one frame a second and each frame moves
+    // the robot a capped step, so wait for the distance, not for a time.
+    const start = await p.evaluate(() => {
+      const r = document.getElementById('bv').viewer.walk.robot.position;
+      return window.__bvStart = [r.x, r.z];
+    });
+    const goneFar = () => p.waitForFunction(() => {
+      const r = document.getElementById('bv').viewer.walk.robot.position, s = window.__bvStart;
+      return Math.hypot(r.x - s[0], r.z - s[1]) > 0.3;
+    }, null, { timeout: 20000 }).then(() => true, () => false);
+    let moved;
+    if (phone) {
+      const stick = await p.$eval('#bvStick', (s) => { const r = s.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+      await p.mouse.move(stick.x, stick.y);
+      await p.mouse.down();
+      await p.mouse.move(stick.x, stick.y - 50, { steps: 4 });
+      moved = await goneFar();
+      await p.mouse.up();
+    } else {
+      await p.keyboard.down('KeyW');
+      moved = await goneFar();
+      await p.keyboard.up('KeyW');
+    }
+    if (!moved) {
+      const end = await p.evaluate(() => { const r = document.getElementById('bv').viewer.walk.robot.position; return [r.x, r.z]; });
+      fail(`${tag}: the robot moved ${Math.hypot(end[0] - start[0], end[1] - start[1]).toFixed(2)} m in 20 s of being told to walk`);
+    }
+
+    // a player gives the pointer back with Esc; the check does it directly.
+    // The pause card that comes up must leave the view tabs usable.
+    await p.evaluate(() => document.pointerLockElement && document.exitPointerLock());
+    await p.click('#bvTabBim', { timeout: 10000 }).catch(() => {});
+    if (await p.$eval('#bv', (e) => e.dataset.mode) !== 'bim') fail(`${tag}: could not get back to the BIM view`);
     await ctx.close();
   }
   await gpu.close();
