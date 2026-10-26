@@ -63,6 +63,10 @@ main [hidden]{display:none !important}
 .bv-ico:focus-visible,.bv-seg button:focus-visible,.bv-tools button:focus-visible{outline:2px solid var(--g-blue);outline-offset:1px}
 .bv-open input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .bv-open span{font-weight:600}
+/* the full screen button is also the way out, so it shows which one it is */
+#bvFull .ic-out,.bv[data-full="on"] #bvFull .ic-in{display:none}
+.bv[data-full="on"] #bvFull .ic-out{display:block}
+.bv[data-full="on"] #bvFull{background:rgba(255,255,255,.14)}
 
 /* panels */
 .bv-panel{position:absolute;z-index:4;border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
@@ -147,8 +151,14 @@ main [hidden]{display:none !important}
   background:rgba(8,30,44,.78);border:1px solid rgba(57,208,255,.55);color:#bfefff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .bv-aim.bad{background:rgba(44,10,10,.78);border-color:rgba(255,80,80,.6);color:#ffc4c4}
 .bv-keys{left:12px;bottom:12px;padding:9px 12px;border-radius:13px;color:var(--g-mute);font-size:12px;line-height:1.9;transition:opacity .6s}
-.bv-keys.dim{opacity:.0}
+/* it fades back, but never all the way out: H is how you learn H exists */
+.bv-keys.dim{opacity:.3}
+.bv-keys:hover{opacity:1}
 .bv-keys kbd{font-size:11px}
+/* H clears the HUD for a clean look at the model; the crosshair stays,
+   because aiming needs it, and the BIM view has no HUD to clear */
+.bv[data-hud="off"] .bv-hud>*:not(.bv-cross){display:none !important}
+.bv[data-mode="walk"][data-hud="off"] .bv-fps{display:none}
 .bv-emotes{right:12px;bottom:12px;display:flex;gap:3px;padding:5px;border-radius:14px;pointer-events:auto}
 .bv-emotes button{position:relative;width:40px;height:40px;border:0;border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;font-size:19px;line-height:1}
 .bv-emotes button:hover{background:rgba(255,138,43,.22)}
@@ -171,20 +181,65 @@ main [hidden]{display:none !important}
 .bv-chars button:hover{background:rgba(255,255,255,.1)}
 .bv-chars button[aria-checked="true"]{border-color:var(--g-orange);background:rgba(255,138,43,.16);box-shadow:0 0 0 1px var(--g-orange) inset}
 
-/* touch */
-.bv-touch{position:absolute;inset:0;z-index:4;pointer-events:none}
-.bv-stick{position:absolute;left:22px;bottom:26px;width:124px;height:124px;border-radius:50%;pointer-events:auto;touch-action:none;
-  background:radial-gradient(circle,rgba(255,255,255,.08),rgba(255,255,255,.02));border:2px solid rgba(255,255,255,.2)}
-.bv-stick i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;
-  background:rgba(255,255,255,.75);box-shadow:0 4px 14px rgba(0,0,0,.5)}
-.bv-tbtns{position:absolute;right:16px;bottom:72px;display:grid;grid-template-columns:repeat(2,64px);gap:9px;pointer-events:auto}
-.bv-tbtns button{height:52px;border-radius:16px;border:1px solid rgba(255,255,255,.18);background:rgba(13,17,25,.6);font-weight:700;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.bv-tbtns button[aria-pressed="true"]{background:rgba(255,138,43,.45)}
-.bv-tbtns .bv-tport{grid-column:span 2;border-color:rgba(57,208,255,.5);color:#bfefff}
-.bv-tbtns .bv-tport[aria-pressed="true"]{background:rgba(57,208,255,.35);color:#fff}
+/* ----------------------------------------------------------------- touch
+   Phone controls, the way a mobile game lays them out: the thumb stick at
+   the bottom left, a pad of round buttons at the bottom right, and the rest
+   of the screen free to drag on. The whole touch layout hangs off .is-touch,
+   not off a narrow window: a phone held sideways - which is how anyone
+   actually walks a model - is wider than a laptop window is tall. */
+.bv-touch{position:absolute;inset:0;z-index:5;pointer-events:none}
+.bv-safe-l{padding-left:env(safe-area-inset-left,0px)}
+
+/* the left of the view is the stick: it comes to the thumb, wherever it lands */
+.bv-move{position:absolute;left:0;bottom:0;width:46%;height:62%;pointer-events:auto;touch-action:none}
+.bv-stick{position:absolute;left:92px;bottom:86px;width:132px;height:132px;margin:-66px 0 0 -66px;border-radius:50%;
+  opacity:.55;transition:opacity .18s;touch-action:none;
+  background:radial-gradient(circle,rgba(10,14,22,.3),rgba(10,14,22,.12));border:2px solid rgba(255,255,255,.45);
+  box-shadow:0 2px 12px rgba(0,0,0,.45),inset 0 0 18px rgba(0,0,0,.3)}
+.bv-move.on .bv-stick{opacity:1;transition:none}
+.bv-stick i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;
+  background:rgba(255,255,255,.88);border:1px solid rgba(0,0,0,.18);box-shadow:0 4px 14px rgba(0,0,0,.55)}
+
+/* the right of the view is the button pad, under the other thumb */
+.bv-pad{
+  position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  display:grid;grid-template-columns:repeat(3,auto);gap:10px;align-items:end;justify-items:center;pointer-events:auto;
+}
+.bv-pb{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:60px;height:60px;padding:0;
+  border-radius:50%;border:1px solid rgba(255,255,255,.26);background:rgba(11,15,22,.68);color:var(--g-ink);cursor:pointer;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);touch-action:manipulation;
+  box-shadow:0 6px 18px -6px rgba(0,0,0,.8),0 0 0 1px rgba(0,0,0,.25);transition:background .12s,transform .12s;
+}
+.bv-pb svg{width:21px;height:21px}
+.bv-pb span{font-size:9px;font-weight:700;letter-spacing:.02em;color:#c6d0dd}
+.bv-pb:active{transform:scale(.93);background:rgba(255,255,255,.22)}
+.bv-pb[aria-pressed="true"],.bv-pb[aria-expanded="true"]{background:rgba(240,112,26,.85);border-color:#ff9a45}
+.bv-pb[aria-pressed="true"] span,.bv-pb[aria-expanded="true"] span{color:#fff}
+.bv-pb-port{border-color:rgba(57,208,255,.6);color:#bfefff}
+.bv-pb-port[aria-pressed="true"]{background:rgba(23,146,196,.9);border-color:#57d6ff;color:#fff}
+.bv-pb-jump{width:78px;height:78px;background:rgba(224,104,24,.82);border-color:#ff9a45;color:#fff}
+.bv-pb-jump svg{width:26px;height:26px}
+.bv-pb-jump span{font-size:10px;color:#fff}
+.bv-pb-jump:active{background:rgba(255,154,69,.95)}
+
+/* the HUD, rearranged for a thumb-held screen */
 .bv.is-touch .bv-keys{display:none}
-.bv.is-touch .bv-emotes{bottom:auto;top:110px;left:12px;right:auto;flex-direction:column}
+.bv.is-touch .bv-emotes{display:none;left:auto;right:calc(14px + env(safe-area-inset-right,0px));bottom:170px;top:auto;flex-direction:row}
+.bv.is-touch[data-emotes="on"] .bv-emotes{display:flex}
+.bv.is-touch .bv-go{display:none}                      /* they live in Settings on a phone */
+.bv.is-touch .bv-mini{top:58px;right:calc(12px + env(safe-area-inset-right,0px));width:118px;height:118px}
+.bv.is-touch .bv-level{top:58px;left:50%;transform:translateX(-50%);padding:5px 12px;font-size:12.5px}
+.bv.is-touch .bv-toast{bottom:auto;top:98px}
+.bv.is-touch .bv-fps{top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%)}
+/* Properties become a sheet down the left, where the pad of buttons is not,
+   and the stick steps aside while it is open: on a phone you are reading the
+   element, not walking, and Inspect puts it away again. */
+.bv.is-touch[data-mode="walk"] .bv-props{
+  top:58px;left:calc(12px + env(safe-area-inset-left,0px));right:auto;bottom:14px;transform:none;
+  width:min(340px,48%);height:auto;max-height:none;z-index:6;
+}
+.bv.is-touch[data-panel="on"] .bv-move{display:none}
 
 /* pause card */
 .bv-pause{position:absolute;inset:0;z-index:6;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at center,rgba(5,8,14,.35),rgba(5,8,14,.72))}
@@ -257,10 +312,31 @@ main [hidden]{display:none !important}
   .bv-level{top:62px;left:12px;transform:none}
   .bv-emotes button{width:36px;height:36px;font-size:17px}
   .bv[data-mode="walk"] .bv-props{bottom:auto;top:62px;max-height:50%}
-  .bv-tbtns{grid-template-columns:repeat(2,58px);bottom:30px}
-  .bv-tbtns button{height:48px}
-  .bv-stick{width:112px;height:112px;left:16px;bottom:20px}
   .bv[data-mode="bim"] .bv-tree:not([hidden]) ~ .bv-fps{left:12px}
+}
+/* a narrow screen - a phone held upright - has no room for three buttons
+   across next to the stick, so the pad stacks two wide instead */
+@media(max-width:560px){
+  .bv-pad{grid-template-columns:repeat(2,auto)}
+  .bv-move{width:42%}
+  .bv.is-touch .bv-emotes{bottom:auto;top:188px}
+  .bv.is-touch[data-mode="walk"] .bv-props{width:min(340px,calc(100% - 24px));bottom:auto;max-height:46%}
+  .bv.is-touch[data-panel="on"] .bv-move{display:block}
+}
+/* a short screen - a phone held sideways - gets smaller thumb controls so
+   the model still has room above them */
+@media(max-height:460px){
+  .bv-stick{left:80px;bottom:76px;width:112px;height:112px;margin:-56px 0 0 -56px}
+  .bv-stick i{width:48px;height:48px;margin:-24px 0 0 -24px}
+  .bv-pb{width:52px;height:52px;gap:1px}
+  .bv-pb svg{width:18px;height:18px}
+  .bv-pb span{font-size:8.5px}
+  .bv-pb-jump{width:66px;height:66px}
+  .bv-pb-jump svg{width:22px;height:22px}
+  .bv-pad{gap:8px}
+  .bv.is-touch .bv-mini{width:92px;height:92px}
+  .bv.is-touch .bv-emotes{bottom:148px}
+  .bv.is-touch .bv-emotes button{width:36px;height:36px;font-size:17px}
 }
 @media print{.bv{display:none !important}}
 .bv[data-mode="walk"] .bv-fps{top:auto;bottom:12px;left:50%;transform:translateX(-50%)}

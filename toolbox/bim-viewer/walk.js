@@ -54,9 +54,10 @@ export class Walk {
   constructor(world, canvas, hooks) {
     this.world = world;
     this.canvas = canvas;
-    this.hooks = hooks;               // { onPause, onLook, onLevel, onCamera, onMinimap, onInspect, onCycle, onAim }
+    this.hooks = hooks;               // { onPause, onLook, onLevel, onCamera, onMinimap, onInspect, onCycle, onAim, onHud }
     this.active = false;
     this.ready = false;
+    this.paused = false;              // the pause card is up: nothing moves
     this.model = null;
     this.octree = null;
     this.firstPerson = false;
@@ -170,7 +171,7 @@ export class Walk {
   }
 
   startAim() {
-    if (!this.active || !this.ready) return;
+    if (!this.active || !this.ready || this.paused) return;
     this.aiming = true;
     this.aim.valid = false;
     this._aimKey = '';
@@ -395,14 +396,28 @@ export class Walk {
     const key = model;
     if (this._spawnKey !== key) { this._spawnKey = key; this.spawnOutside(); }
     this.active = true;
+    this.paused = false;
     this.robot.visible = !this.firstPerson;
     this.marker.visible = true;
     this.velocity.set(0, 0, 0);
     this.lookId = null;
   }
 
+  // A real pause, like a game: the keys are let go of, the aim is dropped and
+  // the world stops stepping, so nothing moves on behind the card.
+  setPaused(on) {
+    this.paused = !!on;
+    if (!on) return;
+    this.keys.clear();
+    this.stick.set(0, 0);
+    this.run = false;
+    this.velocity.set(0, 0, 0);
+    this.endAim(false);
+  }
+
   exit() {
     this.active = false;
+    this.paused = false;
     this.keys.clear();
     this.stick.set(0, 0);
     this.endAim(false);
@@ -466,7 +481,7 @@ export class Walk {
     const owns = () => this.active && !typing() &&
       (document.pointerLockElement === c || c.closest('.bv').contains(document.activeElement) || document.fullscreenElement);
     window.addEventListener('keydown', (e) => {
-      if (!owns()) return;
+      if (!owns() || this.paused) return;      // Esc is the app's, and it is the only key a pause listens to
       const k = e.code;
       if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight'].includes(k)) e.preventDefault();
       if (e.repeat) return;
@@ -476,6 +491,7 @@ export class Walk {
       else if (k === 'KeyF') { this.flashlight = !this.flashlight; this.autoLight = false; }
       else if (k === 'KeyM') { this.minimap = !this.minimap; this.hooks.onMinimap && this.hooks.onMinimap(this.minimap); }
       else if (k === 'KeyE') this.hooks.onInspect && this.hooks.onInspect(this.lookId);
+      else if (k === 'KeyH') this.hooks.onHud && this.hooks.onHud();
       else if (k === 'KeyR') this.spawnOutside();
       else if (k === 'KeyQ') this.hooks.onCycle && this.hooks.onCycle();
       else if (k === 'KeyT') this.startAim();
@@ -490,7 +506,7 @@ export class Walk {
     // mouse look: pointer lock when the browser allows it, plain drag when not
     let drag = null;
     c.addEventListener('pointerdown', (e) => {
-      if (!this.active || e.pointerType === 'touch') return;
+      if (!this.active || this.paused || e.pointerType === 'touch') return;
       if (this.aiming && e.button === 2) { this.endAim(false); return; }      // right-click: never mind
       if (document.pointerLockElement !== c && c.requestPointerLock) {
         try {
@@ -502,12 +518,12 @@ export class Walk {
     });
     window.addEventListener('pointerup', () => { drag = null; });
     window.addEventListener('pointermove', (e) => {
-      if (!this.active || e.pointerType === 'touch') return;
+      if (!this.active || this.paused || e.pointerType === 'touch') return;
       if (document.pointerLockElement === c) this.look(e.movementX, e.movementY);
       else if (drag) { this.look(e.clientX - drag.x, e.clientY - drag.y); drag = { x: e.clientX, y: e.clientY }; }
     });
     c.addEventListener('wheel', (e) => {
-      if (!this.active || this.firstPerson) return;
+      if (!this.active || this.paused || this.firstPerson) return;
       e.preventDefault();
       this.distance = THREE.MathUtils.clamp(this.distance * (1 + Math.sign(e.deltaY) * 0.12), 1.4, 9);
     }, { passive: false });
@@ -536,6 +552,8 @@ export class Walk {
   // ---------------------------------------------------------- per frame
   update(dt) {
     if (!this.active || !this.ready) return;
+    // paused: the camera still eases into place, the world does not move
+    if (this.paused) { this._camera(Math.min(dt, 0.05)); return; }
     dt = Math.min(dt, 0.05);
     const steps = 4;
     for (let i = 0; i < steps; i++) this._step(dt / steps);

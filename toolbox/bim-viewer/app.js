@@ -30,9 +30,10 @@ export function start() {
     tools: $('bvTools'), measure: $('bvMeasure'), xray: $('bvXray'), hide: $('bvHide'), isolate: $('bvIsolate'), reset: $('bvReset'),
     cutOn: $('bvCutOn'), cut: $('bvCut'), secOn: $('bvSecOn'), sec: $('bvSec'),
     hud: $('bvHud'), level: $('bvLevel'), cross: $('bvCross'), look: $('bvLook'), keys: $('bvKeys'), emotes: $('bvEmotes'),
-    mini: $('bvMini'), goLevel: $('bvGoLevel'), who: $('bvChar'), chars: $('bvChars'), touch: $('bvTouch'), stick: $('bvStick'),
-    tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'),
-    pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'),
+    mini: $('bvMini'), goLevel: $('bvGoLevel'), sGo: $('sGoLevel'), who: $('bvChar'), chars: $('bvChars'),
+    touch: $('bvTouch'), move: $('bvMove'), stick: $('bvStick'), pad: $('bvPad'),
+    tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'), tEmote: $('bvTEmote'),
+    pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'), exitFull: $('bvExitFull'),
     settings: $('bvSettings'), setClose: $('bvSetClose'),
     loading: $('bvLoading'), loadText: $('bvLoadText'), loadBar: $('bvLoadBar'), drop: $('bvDrop'), fps: $('bvFps'), toast: $('bvToast'),
   };
@@ -46,9 +47,17 @@ export function start() {
     measured: (text) => toast(`Distance ${text}`),
   });
   const walk = new Walk(world, ui.canvas, {
-    onPause: () => { if (mode === 'walk' && !isTouch) showPause(true); },
+    // the mouse came back, by Esc or any other way: always offer the way out
+    onPause: () => { if (mode === 'walk') showPause(true); },
     onLook: (id) => showLook(id),
-    onInspect: (id) => { if (id != null) select(id); else hideProps(); },
+    // E opens an element, E again puts it away: with the pointer locked there
+    // is no cursor to click the panel's × with, so the key has to do both
+    onInspect: (id) => {
+      if (!ui.props.hidden && (id == null || id === (model && model.selected))) { hideProps(); return; }
+      if (id != null) select(id);
+      else toast('Look at an element, then press E.', 2000);
+    },
+    onHud: () => setHud(!hudOn),
     onLevel: (i) => { ui.level.querySelector('span').textContent = i >= 0 && model ? model.storeys[i].name : 'Outside'; },
     onCamera: (fp) => { settings.cam = fp ? 'first' : 'third'; save(); syncSettingsUI(); ui.cross.hidden = !fp; },
     onMinimap: (on) => { settings.minimap = on; save(); syncSettingsUI(); ui.stage.dataset.minimap = on ? 'on' : 'off'; },
@@ -229,10 +238,13 @@ export function start() {
       ui.cats.appendChild(li);
     }
 
-    ui.goLevel.textContent = '';
-    const out = new Option('Outside', 'out');
-    ui.goLevel.add(out);
-    model.storeys.forEach((s, i) => ui.goLevel.add(new Option(s.name, String(i))));
+    // one list in the walk HUD, the same list in Settings, where a phone
+    // reaches it without a dropdown sitting over the thumb controls
+    for (const sel of [ui.goLevel, ui.sGo]) {
+      sel.textContent = '';
+      sel.add(new Option('Outside', 'out'));
+      model.storeys.forEach((s, i) => sel.add(new Option(s.name, String(i))));
+    }
   }
 
   // ---------------------------------------------------------- selection
@@ -245,11 +257,16 @@ export function start() {
     ui.propTitle.textContent = el ? el.cat : 'Properties';
     ui.propBody.innerHTML = '<p class="bv-empty">Reading properties…</p>';
     worker.postMessage({ cmd: 'props', id });
+    refreshLook();
+    syncPanel();
   }
 
   function hideProps() {
     ui.props.hidden = true;
     if (model && model.selected != null) model.select(null);
+    refreshLook();
+    syncPanel();
+    if (mode === 'walk') ui.canvas.focus({ preventScroll: true });
   }
 
   function renderProps(id, p) {
@@ -310,9 +327,20 @@ export function start() {
     ui.aim.textContent = aim.valid ? `${go} · ${Math.round(aim.dist)} m` : 'Cannot land there';
   }
 
+  // the hint under the crosshair. It steps aside while the properties panel is
+  // open, so the same element is not named twice on top of itself.
+  function refreshLook() { if (mode === 'walk') showLook(walk.lookId); }
+
+  // a phone hides the thumb stick behind an open panel, so let go of it first
+  function syncPanel() {
+    const on = !ui.props.hidden;
+    ui.stage.dataset.panel = on ? 'on' : 'off';
+    if (on && isTouch) releaseStick();
+  }
   function showLook(id) {
-    if (id == null || !model || walk.aiming) { ui.look.hidden = true; return; }
+    if (id == null || !model || walk.aiming || !ui.props.hidden) { ui.look.hidden = true; return; }
     const el = model.elements.get(id);
+    if (!el) { ui.look.hidden = true; return; }
     ui.look.hidden = false;
     ui.look.innerHTML = '';
     const b = document.createElement('b');
@@ -362,8 +390,8 @@ export function start() {
   ui.stage.addEventListener('keydown', (e) => {
     if (mode !== 'bim' || /^(INPUT|SELECT)$/.test(e.target.tagName) && e.target.type !== 'checkbox' && e.target.type !== 'range') return;
     const k = e.key.toLowerCase();
-    if (k === 'escape') { if (bim.measuring) setMeasure(false); else select(null); ui.settings.hidden = true; ui.gear.setAttribute('aria-expanded', 'false'); }
-    else if (k === 'h') ui.hide.click();
+    if (k === 'escape') return;                 // Esc has one ladder of its own, further down
+    if (k === 'h') ui.hide.click();
     else if (k === 'i') ui.isolate.click();
     else if (k === 'u') ui.reset.click();
     else if (k === 'x') ui.xray.click();
@@ -400,14 +428,15 @@ export function start() {
       ui.hud.hidden = false;
       ui.touch.hidden = !isTouch;
       ui.cross.hidden = !walk.firstPerson;
-      ui.keys.classList.remove('dim');
-      clearTimeout(setMode.keysTimer);
-      setMode.keysTimer = setTimeout(() => ui.keys.classList.add('dim'), 9000);
+      nudgeKeys();
       showPause(!isTouch);
+      // a phone held upright has almost no room left once the thumbs are on it
+      if (isTouch && window.innerHeight > window.innerWidth) toast('Turn your phone sideways for more room.', 4000);
     } else {
       mode = 'bim';
       walk.exit();
       showPause(false);
+      showEmotes(false);
       ui.hud.hidden = true;
       ui.touch.hidden = true;
       ui.look.hidden = true;
@@ -430,20 +459,41 @@ export function start() {
   function showPause(on) {
     ui.pause.hidden = !on;
     ui.pauseNote.hidden = isTouch;
+    walk.setPaused(on);              // a pause card that really pauses
+    if (on) { ui.look.hidden = true; showEmotes(false); }
+    else refreshLook();
   }
+
+  // Chrome will not lock the mouse again for about a second after Esc let it
+  // go, so a click straight after Play can be refused. Dragging still looks.
+  function lockPointer() {
+    if (isTouch || !ui.canvas.requestPointerLock) return;
+    let p;
+    try { p = ui.canvas.requestPointerLock(); } catch { return; }
+    if (p && p.catch) p.catch(() => toast('Click the view to lock the mouse, or just drag to look.', 2800));
+  }
+
   ui.play.addEventListener('click', () => {
     showPause(false);
-    ui.canvas.focus();
-    if (!isTouch && ui.canvas.requestPointerLock) {
-      try { const p = ui.canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch { /* drag to look instead */ }
-    }
+    ui.canvas.focus({ preventScroll: true });
+    lockPointer();
   });
   ui.back.addEventListener('click', () => setMode('bim'));
-  ui.goLevel.addEventListener('change', () => {
-    if (ui.goLevel.value === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(ui.goLevel.value));
-    ui.canvas.focus();
-  });
-  ui.emotes.querySelectorAll('[data-emote]').forEach((b) => b.addEventListener('click', () => { emote(b.dataset.emote); ui.canvas.focus({ preventScroll: true }); }));
+  function goTo(v) {
+    if (!model) return;
+    if (v === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(v));
+    ui.goLevel.value = v;
+    ui.sGo.value = v;
+    ui.canvas.focus({ preventScroll: true });
+  }
+  ui.goLevel.addEventListener('change', () => goTo(ui.goLevel.value));
+  ui.sGo.addEventListener('change', () => goTo(ui.sGo.value));
+  ui.emotes.querySelectorAll('[data-emote]').forEach((b) => b.addEventListener('click', () => {
+    emote(b.dataset.emote);
+    buzz();
+    if (isTouch) showEmotes(false);             // pick one and the row goes away again
+    ui.canvas.focus({ preventScroll: true });
+  }));
 
   // ------------------------------------------------------- characters
   // the saved character first; if it cannot be fetched, the robot, which lives here
@@ -500,8 +550,25 @@ export function start() {
   useTouch(touchFirst);
   ui.stage.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !isTouch) useTouch(true); else if (e.pointerType === 'mouse' && isTouch && !touchFirst) useTouch(false); }, true);
 
+  // a short tap on the glass, the way a phone game answers a button
+  function buzz(ms = 12) {
+    if (!isTouch || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch { /* the browser or the user says no */ }
+  }
+
+  // The thumb stick comes to the thumb. Press anywhere in the left of the
+  // view and it appears under your finger, like a mobile game, instead of
+  // waiting in one corner for you to find it.
   let stickId = null;
   const knob = ui.stick.querySelector('i');
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
+  function placeStick(e) {
+    const z = ui.move.getBoundingClientRect();
+    const half = (ui.stick.offsetWidth || 132) / 2;
+    ui.stick.style.left = `${clamp(e.clientX - z.left, half, z.width - half)}px`;
+    ui.stick.style.top = `${clamp(e.clientY - z.top, half, z.height - half)}px`;
+    ui.stick.style.bottom = 'auto';
+  }
   const moveStick = (e) => {
     const r = ui.stick.getBoundingClientRect();
     const max = r.width / 2;
@@ -511,11 +578,33 @@ export function start() {
     knob.style.transform = `translate(${x}px, ${y}px)`;
     walk.stick.set(x / max, y / max);
   };
-  ui.stick.addEventListener('pointerdown', (e) => { stickId = e.pointerId; ui.stick.setPointerCapture(e.pointerId); moveStick(e); });
-  ui.stick.addEventListener('pointermove', (e) => { if (e.pointerId === stickId) moveStick(e); });
-  const endStick = (e) => { if (e.pointerId !== stickId) return; stickId = null; knob.style.transform = ''; walk.stick.set(0, 0); };
-  ui.stick.addEventListener('pointerup', endStick);
-  ui.stick.addEventListener('pointercancel', endStick);
+  ui.move.addEventListener('pointerdown', (e) => {
+    if (stickId !== null) return;                 // one thumb drives, the other is free to look
+    stickId = e.pointerId;
+    ui.move.setPointerCapture(e.pointerId);
+    ui.move.classList.add('on');
+    placeStick(e);
+    moveStick(e);
+  });
+  ui.move.addEventListener('pointermove', (e) => { if (e.pointerId === stickId) moveStick(e); });
+  function releaseStick() {
+    stickId = null;
+    ui.move.classList.remove('on');
+    knob.style.transform = '';
+    ui.stick.style.left = ui.stick.style.top = ui.stick.style.bottom = '';   // back to its resting place
+    walk.stick.set(0, 0);
+  }
+  const endStick = (e) => { if (e.pointerId === stickId) releaseStick(); };
+  ui.move.addEventListener('pointerup', endStick);
+  ui.move.addEventListener('pointercancel', endStick);
+
+  // the emote row lives behind one button, so it is not in the way all game
+  function showEmotes(on) {
+    ui.stage.dataset.emotes = on ? 'on' : 'off';
+    ui.tEmote.setAttribute('aria-expanded', String(on));
+  }
+  ui.tEmote.addEventListener('click', () => { showEmotes(ui.stage.dataset.emotes !== 'on'); buzz(); });
+  ui.pad.addEventListener('pointerdown', (e) => { if (e.target.closest('.bv-pb') !== ui.tEmote) buzz(); });
 
   // look by dragging anywhere else on the view
   const lookers = new Map();
@@ -534,7 +623,7 @@ export function start() {
   ui.tPort.addEventListener('click', () => { if (walk.aiming) walk.endAim(true); else walk.startAim(); });
   ui.tRun.addEventListener('click', () => { walk.run = !walk.run; ui.tRun.setAttribute('aria-pressed', walk.run); });
   ui.tCam.addEventListener('click', () => { walk.setFirstPerson(!walk.firstPerson); settings.cam = walk.firstPerson ? 'first' : 'third'; ui.cross.hidden = !walk.firstPerson; save(); syncSettingsUI(); });
-  ui.tLook.addEventListener('click', () => { if (walk.lookId != null) select(walk.lookId); else hideProps(); });
+  ui.tLook.addEventListener('click', () => walk.hooks.onInspect(walk.lookId));   // same toggle as E
 
   // ---------------------------------------------------------- panels
   ui.treeBtn.addEventListener('click', () => {
@@ -544,13 +633,19 @@ export function start() {
   });
   ui.treeClose.addEventListener('click', () => { ui.tree.hidden = true; ui.treeBtn.setAttribute('aria-expanded', 'false'); });
   if (ui.stage.clientWidth < 760) { ui.tree.hidden = true; ui.treeBtn.setAttribute('aria-expanded', 'false'); }
-  ui.propsClose.addEventListener('click', () => { hideProps(); if (mode === 'walk') ui.canvas.focus(); });
+  ui.propsClose.addEventListener('click', () => hideProps());
+  function closeSettings() { ui.settings.hidden = true; ui.gear.setAttribute('aria-expanded', 'false'); }
   ui.gear.addEventListener('click', () => {
-    ui.settings.hidden = !ui.settings.hidden;
-    ui.gear.setAttribute('aria-expanded', !ui.settings.hidden);
-    if (!ui.settings.hidden && mode === 'walk') showPause(false);
+    if (!ui.settings.hidden) { closeSettings(); return; }
+    ui.settings.hidden = false;
+    ui.gear.setAttribute('aria-expanded', 'true');
+    // settings need the mouse back, so the walk pauses behind them
+    if (mode === 'walk') {
+      if (document.pointerLockElement === ui.canvas) document.exitPointerLock();   // pauses through pointerlockchange
+      else showPause(true);
+    }
   });
-  ui.setClose.addEventListener('click', () => { ui.settings.hidden = true; ui.gear.setAttribute('aria-expanded', 'false'); });
+  ui.setClose.addEventListener('click', () => { closeSettings(); if (mode === 'walk') showPause(true); });
 
   // ----------------------------------------------------------- settings
   const S = {
@@ -633,15 +728,127 @@ export function start() {
     }, 'image/png');
   }
 
-  ui.full.addEventListener('click', () => {
+  // ------------------------------------------------------- full screen
+  // Two ways to fill the screen: the browser's own, and - where that is
+  // missing or refused (an iPhone, an iframe without permission, an old
+  // Safari) - the stage pinned over the page. Esc has to come back out of
+  // either one, so both go through the same three functions.
+  const realFull = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+  const isFull = () => !!realFull() || ui.stage.classList.contains('is-full');
+
+  function enterFull() {
     const el = ui.stage;
-    if (document.fullscreenElement) { document.exitFullscreen(); return; }
-    if (el.classList.contains('is-full')) { el.classList.remove('is-full'); document.body.style.overflow = ''; resize(); return; }
-    if (el.requestFullscreen) el.requestFullscreen().catch(() => pseudoFull());
-    else pseudoFull();
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (!req) { pseudoFull(); return; }
+    let p;
+    try { p = req.call(el); } catch { pseudoFull(); return; }
+    // the change event normally does this; syncing on the promise too means the
+    // button never reads "Full screen" while we are already in it
+    if (p && p.then) p.then(() => { syncFull(); turnSideways(); }, () => pseudoFull());
+    syncFull();
+  }
+  // full screen on a phone means playing: ask for sideways, the way a game
+  // does. Android allows it, iOS does not, and neither one is a problem.
+  function turnSideways() {
+    const o = screen.orientation;
+    if (!isTouch || mode !== 'walk' || !o || !o.lock) return;
+    try { const p = o.lock('landscape'); if (p && p.catch) p.catch(() => {}); } catch { /* not allowed here */ }
+  }
+  function turnBack() {
+    const o = screen.orientation;
+    if (!o || !o.unlock) return;
+    try { o.unlock(); } catch { /* nothing was locked */ }
+  }
+  function exitFull() {
+    if (realFull()) {
+      const off = document.exitFullscreen || document.webkitExitFullscreen;
+      try { const p = off && off.call(document); if (p && p.catch) p.catch(() => {}); } catch { /* already out */ }
+    }
+    turnBack();
+    dropPseudo();
+    syncFull();
+  }
+  function pseudoFull() { ui.stage.classList.add('is-full'); document.body.style.overflow = 'hidden'; syncFull(); }
+  function dropPseudo() {
+    if (!ui.stage.classList.contains('is-full')) return;
+    ui.stage.classList.remove('is-full');
+    document.body.style.overflow = '';
+  }
+
+  // the button is the way back out, so it has to look and read like one
+  function syncFull() {
+    const on = isFull();
+    ui.stage.dataset.full = on ? 'on' : 'off';
+    ui.full.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+    ui.full.setAttribute('aria-pressed', String(on));
+    ui.full.title = on ? 'Exit full screen (Esc)' : 'Full screen';
+    ui.exitFull.hidden = !on;
+    resize();
+  }
+
+  ui.full.addEventListener('click', () => { if (isFull()) exitFull(); else enterFull(); });
+  ui.exitFull.addEventListener('click', () => { exitFull(); ui.canvas.focus({ preventScroll: true }); });
+  for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) {
+    // the browser can drop full screen on its own: Esc, a tab switch, a prompt
+    document.addEventListener(ev, () => { if (!realFull()) dropPseudo(); syncFull(); setTimeout(resize, 50); });
+  }
+
+  // ----------------------------------------------------------- the HUD
+  let hudOn = true;
+  function setHud(on) {
+    hudOn = on;
+    ui.stage.dataset.hud = on ? 'on' : 'off';
+    if (on) nudgeKeys();
+    toast(on ? 'HUD back on' : 'HUD off · press H to bring it back', 2200);
+  }
+  // the key list fades back after a while, but never all the way out
+  let keysTimer = 0;
+  function nudgeKeys() {
+    ui.keys.classList.remove('dim');
+    clearTimeout(keysTimer);
+    keysTimer = setTimeout(() => ui.keys.classList.add('dim'), 9000);
+  }
+
+  // ------------------------------------------------------------- escape
+  // One ladder, so Esc always does the next sensible thing and never leaves
+  // anyone shut inside full screen: close what is open, pause, leave full
+  // screen, go back to the BIM view. Returns false when there is nothing
+  // left to step back out of.
+  function onEscape() {
+    if (mode === 'walk') {
+      if (walk.aiming) { walk.endAim(false); return true; }
+      if (!ui.settings.hidden) { closeSettings(); showPause(true); return true; }
+      if (!ui.props.hidden) { hideProps(); return true; }
+      // on whether the walk is running, not on whether the mouse is locked:
+      // Chrome takes Esc for the lock and never tells us, Firefox lets it
+      // through, and someone who is dragging to look has no lock at all
+      if (!walk.paused) {
+        showPause(true);
+        if (document.pointerLockElement === ui.canvas) document.exitPointerLock();
+        return true;
+      }
+      if (isFull()) { exitFull(); return true; }
+      setMode('bim');
+      return true;
+    }
+    if (!ui.settings.hidden) { closeSettings(); return true; }
+    if (bim.measuring) { setMeasure(false); return true; }
+    if (model && model.selected != null) { select(null); return true; }
+    if (!ui.props.hidden) { hideProps(); return true; }
+    if (isFull()) { exitFull(); return true; }
+    return false;
+  }
+
+  // on the window, because full screen and pointer lock both move focus about.
+  // Never preventDefault: the browser's own way out of full screen stays.
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' && e.key !== 'Esc') return;
+    const el = document.activeElement;
+    const typing = el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && el.type !== 'range' && el.type !== 'checkbox';
+    if (typing) return;
+    if (!isFull() && mode !== 'walk' && !ui.stage.contains(el) && document.pointerLockElement !== ui.canvas) return;
+    onEscape();
   });
-  function pseudoFull() { ui.stage.classList.add('is-full'); document.body.style.overflow = 'hidden'; resize(); }
-  document.addEventListener('fullscreenchange', () => setTimeout(resize, 50));
 
   let toastTimer = 0;
   function toast(text, ms = 3200) {
@@ -712,7 +919,11 @@ export function start() {
 
   // ---------------------------------------------------------- go
   // the browser checks drive the viewer through this; it is not an API
-  ui.stage.viewer = { world, bim, walk, get model() { return model; }, get mode() { return mode; } };
+  ui.stage.viewer = { world, bim, walk, isFull, onEscape, get model() { return model; }, get mode() { return mode; } };
+  syncFull();
+  ui.stage.dataset.hud = 'on';
+  showEmotes(false);
+  syncPanel();
   syncSettingsUI();
   applySettings();
   resize();
