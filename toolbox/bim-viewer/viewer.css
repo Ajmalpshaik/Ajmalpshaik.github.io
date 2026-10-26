@@ -314,6 +314,15 @@ main [hidden]{display:none !important}
   .bv[data-mode="walk"] .bv-props{bottom:auto;top:62px;max-height:50%}
   .bv[data-mode="bim"] .bv-tree:not([hidden]) ~ .bv-fps{left:12px}
 }
+/* a narrow screen - a phone held upright - has no room for three buttons
+   across next to the stick, so the pad stacks two wide instead */
+@media(max-width:560px){
+  .bv-pad{grid-template-columns:repeat(2,auto)}
+  .bv-move{width:42%}
+  .bv.is-touch .bv-emotes{bottom:auto;top:188px}
+  .bv.is-touch[data-mode="walk"] .bv-props{width:min(340px,calc(100% - 24px));bottom:auto;max-height:46%}
+  .bv.is-touch[data-panel="on"] .bv-move{display:block}
+}
 /* a short screen - a phone held sideways - gets smaller thumb controls so
    the model still has room above them */
 @media(max-height:460px){
