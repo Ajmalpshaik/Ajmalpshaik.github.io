@@ -30,8 +30,9 @@ export function start() {
     tools: $('bvTools'), measure: $('bvMeasure'), xray: $('bvXray'), hide: $('bvHide'), isolate: $('bvIsolate'), reset: $('bvReset'),
     cutOn: $('bvCutOn'), cut: $('bvCut'), secOn: $('bvSecOn'), sec: $('bvSec'),
     hud: $('bvHud'), level: $('bvLevel'), cross: $('bvCross'), look: $('bvLook'), keys: $('bvKeys'), emotes: $('bvEmotes'),
-    mini: $('bvMini'), goLevel: $('bvGoLevel'), who: $('bvChar'), chars: $('bvChars'), touch: $('bvTouch'), stick: $('bvStick'),
-    tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'),
+    mini: $('bvMini'), goLevel: $('bvGoLevel'), sGo: $('sGoLevel'), who: $('bvChar'), chars: $('bvChars'),
+    touch: $('bvTouch'), move: $('bvMove'), stick: $('bvStick'), pad: $('bvPad'),
+    tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'), tEmote: $('bvTEmote'),
     pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'), exitFull: $('bvExitFull'),
     settings: $('bvSettings'), setClose: $('bvSetClose'),
     loading: $('bvLoading'), loadText: $('bvLoadText'), loadBar: $('bvLoadBar'), drop: $('bvDrop'), fps: $('bvFps'), toast: $('bvToast'),
@@ -237,10 +238,13 @@ export function start() {
       ui.cats.appendChild(li);
     }
 
-    ui.goLevel.textContent = '';
-    const out = new Option('Outside', 'out');
-    ui.goLevel.add(out);
-    model.storeys.forEach((s, i) => ui.goLevel.add(new Option(s.name, String(i))));
+    // one list in the walk HUD, the same list in Settings, where a phone
+    // reaches it without a dropdown sitting over the thumb controls
+    for (const sel of [ui.goLevel, ui.sGo]) {
+      sel.textContent = '';
+      sel.add(new Option('Outside', 'out'));
+      model.storeys.forEach((s, i) => sel.add(new Option(s.name, String(i))));
+    }
   }
 
   // ---------------------------------------------------------- selection
@@ -254,12 +258,14 @@ export function start() {
     ui.propBody.innerHTML = '<p class="bv-empty">Reading properties…</p>';
     worker.postMessage({ cmd: 'props', id });
     refreshLook();
+    syncPanel();
   }
 
   function hideProps() {
     ui.props.hidden = true;
     if (model && model.selected != null) model.select(null);
     refreshLook();
+    syncPanel();
     if (mode === 'walk') ui.canvas.focus({ preventScroll: true });
   }
 
@@ -324,6 +330,13 @@ export function start() {
   // the hint under the crosshair. It steps aside while the properties panel is
   // open, so the same element is not named twice on top of itself.
   function refreshLook() { if (mode === 'walk') showLook(walk.lookId); }
+
+  // a phone hides the thumb stick behind an open panel, so let go of it first
+  function syncPanel() {
+    const on = !ui.props.hidden;
+    ui.stage.dataset.panel = on ? 'on' : 'off';
+    if (on && isTouch) releaseStick();
+  }
   function showLook(id) {
     if (id == null || !model || walk.aiming || !ui.props.hidden) { ui.look.hidden = true; return; }
     const el = model.elements.get(id);
@@ -417,10 +430,13 @@ export function start() {
       ui.cross.hidden = !walk.firstPerson;
       nudgeKeys();
       showPause(!isTouch);
+      // a phone held upright has almost no room left once the thumbs are on it
+      if (isTouch && window.innerHeight > window.innerWidth) toast('Turn your phone sideways for more room.', 4000);
     } else {
       mode = 'bim';
       walk.exit();
       showPause(false);
+      showEmotes(false);
       ui.hud.hidden = true;
       ui.touch.hidden = true;
       ui.look.hidden = true;
@@ -444,7 +460,7 @@ export function start() {
     ui.pause.hidden = !on;
     ui.pauseNote.hidden = isTouch;
     walk.setPaused(on);              // a pause card that really pauses
-    if (on) ui.look.hidden = true;
+    if (on) { ui.look.hidden = true; showEmotes(false); }
     else refreshLook();
   }
 
@@ -463,11 +479,21 @@ export function start() {
     lockPointer();
   });
   ui.back.addEventListener('click', () => setMode('bim'));
-  ui.goLevel.addEventListener('change', () => {
-    if (ui.goLevel.value === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(ui.goLevel.value));
-    ui.canvas.focus();
-  });
-  ui.emotes.querySelectorAll('[data-emote]').forEach((b) => b.addEventListener('click', () => { emote(b.dataset.emote); ui.canvas.focus({ preventScroll: true }); }));
+  function goTo(v) {
+    if (!model) return;
+    if (v === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(v));
+    ui.goLevel.value = v;
+    ui.sGo.value = v;
+    ui.canvas.focus({ preventScroll: true });
+  }
+  ui.goLevel.addEventListener('change', () => goTo(ui.goLevel.value));
+  ui.sGo.addEventListener('change', () => goTo(ui.sGo.value));
+  ui.emotes.querySelectorAll('[data-emote]').forEach((b) => b.addEventListener('click', () => {
+    emote(b.dataset.emote);
+    buzz();
+    if (isTouch) showEmotes(false);             // pick one and the row goes away again
+    ui.canvas.focus({ preventScroll: true });
+  }));
 
   // ------------------------------------------------------- characters
   // the saved character first; if it cannot be fetched, the robot, which lives here
@@ -524,8 +550,25 @@ export function start() {
   useTouch(touchFirst);
   ui.stage.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !isTouch) useTouch(true); else if (e.pointerType === 'mouse' && isTouch && !touchFirst) useTouch(false); }, true);
 
+  // a short tap on the glass, the way a phone game answers a button
+  function buzz(ms = 12) {
+    if (!isTouch || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch { /* the browser or the user says no */ }
+  }
+
+  // The thumb stick comes to the thumb. Press anywhere in the left of the
+  // view and it appears under your finger, like a mobile game, instead of
+  // waiting in one corner for you to find it.
   let stickId = null;
   const knob = ui.stick.querySelector('i');
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
+  function placeStick(e) {
+    const z = ui.move.getBoundingClientRect();
+    const half = (ui.stick.offsetWidth || 132) / 2;
+    ui.stick.style.left = `${clamp(e.clientX - z.left, half, z.width - half)}px`;
+    ui.stick.style.top = `${clamp(e.clientY - z.top, half, z.height - half)}px`;
+    ui.stick.style.bottom = 'auto';
+  }
   const moveStick = (e) => {
     const r = ui.stick.getBoundingClientRect();
     const max = r.width / 2;
@@ -535,11 +578,33 @@ export function start() {
     knob.style.transform = `translate(${x}px, ${y}px)`;
     walk.stick.set(x / max, y / max);
   };
-  ui.stick.addEventListener('pointerdown', (e) => { stickId = e.pointerId; ui.stick.setPointerCapture(e.pointerId); moveStick(e); });
-  ui.stick.addEventListener('pointermove', (e) => { if (e.pointerId === stickId) moveStick(e); });
-  const endStick = (e) => { if (e.pointerId !== stickId) return; stickId = null; knob.style.transform = ''; walk.stick.set(0, 0); };
-  ui.stick.addEventListener('pointerup', endStick);
-  ui.stick.addEventListener('pointercancel', endStick);
+  ui.move.addEventListener('pointerdown', (e) => {
+    if (stickId !== null) return;                 // one thumb drives, the other is free to look
+    stickId = e.pointerId;
+    ui.move.setPointerCapture(e.pointerId);
+    ui.move.classList.add('on');
+    placeStick(e);
+    moveStick(e);
+  });
+  ui.move.addEventListener('pointermove', (e) => { if (e.pointerId === stickId) moveStick(e); });
+  function releaseStick() {
+    stickId = null;
+    ui.move.classList.remove('on');
+    knob.style.transform = '';
+    ui.stick.style.left = ui.stick.style.top = ui.stick.style.bottom = '';   // back to its resting place
+    walk.stick.set(0, 0);
+  }
+  const endStick = (e) => { if (e.pointerId === stickId) releaseStick(); };
+  ui.move.addEventListener('pointerup', endStick);
+  ui.move.addEventListener('pointercancel', endStick);
+
+  // the emote row lives behind one button, so it is not in the way all game
+  function showEmotes(on) {
+    ui.stage.dataset.emotes = on ? 'on' : 'off';
+    ui.tEmote.setAttribute('aria-expanded', String(on));
+  }
+  ui.tEmote.addEventListener('click', () => { showEmotes(ui.stage.dataset.emotes !== 'on'); buzz(); });
+  ui.pad.addEventListener('pointerdown', (e) => { if (e.target.closest('.bv-pb') !== ui.tEmote) buzz(); });
 
   // look by dragging anywhere else on the view
   const lookers = new Map();
@@ -679,14 +744,27 @@ export function start() {
     try { p = req.call(el); } catch { pseudoFull(); return; }
     // the change event normally does this; syncing on the promise too means the
     // button never reads "Full screen" while we are already in it
-    if (p && p.then) p.then(syncFull, () => pseudoFull());
+    if (p && p.then) p.then(() => { syncFull(); turnSideways(); }, () => pseudoFull());
     syncFull();
+  }
+  // full screen on a phone means playing: ask for sideways, the way a game
+  // does. Android allows it, iOS does not, and neither one is a problem.
+  function turnSideways() {
+    const o = screen.orientation;
+    if (!isTouch || mode !== 'walk' || !o || !o.lock) return;
+    try { const p = o.lock('landscape'); if (p && p.catch) p.catch(() => {}); } catch { /* not allowed here */ }
+  }
+  function turnBack() {
+    const o = screen.orientation;
+    if (!o || !o.unlock) return;
+    try { o.unlock(); } catch { /* nothing was locked */ }
   }
   function exitFull() {
     if (realFull()) {
       const off = document.exitFullscreen || document.webkitExitFullscreen;
       try { const p = off && off.call(document); if (p && p.catch) p.catch(() => {}); } catch { /* already out */ }
     }
+    turnBack();
     dropPseudo();
     syncFull();
   }
@@ -844,6 +922,8 @@ export function start() {
   ui.stage.viewer = { world, bim, walk, isFull, onEscape, get model() { return model; }, get mode() { return mode; } };
   syncFull();
   ui.stage.dataset.hud = 'on';
+  showEmotes(false);
+  syncPanel();
   syncSettingsUI();
   applySettings();
   resize();
