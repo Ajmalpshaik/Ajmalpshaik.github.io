@@ -195,8 +195,9 @@
           <button type="button" class="bv-ico" id="bvGear" aria-label="Settings" title="Settings" aria-expanded="false" aria-controls="bvSettings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
           </button>
-          <button type="button" class="bv-ico" id="bvFull" aria-label="Full screen" title="Full screen">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+          <button type="button" class="bv-ico" id="bvFull" aria-label="Full screen" title="Full screen" aria-pressed="false">
+            <svg class="ic-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
+            <svg class="ic-out" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
           </button>
         </div>
       </div>
@@ -242,7 +243,7 @@
         <div class="bv-aim" id="bvAim" hidden></div>
         <div class="bv-keys" id="bvKeys">
           <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Shift</kbd> run &nbsp; <kbd>Space</kbd> jump &nbsp; hold <kbd>T</kbd> teleport</p>
-          <p><kbd>C</kbd> camera &nbsp; <kbd>Q</kbd> character &nbsp; <kbd>E</kbd> inspect &nbsp; <kbd>F</kbd> torch &nbsp; <kbd>M</kbd> map &nbsp; <kbd>R</kbd> restart &nbsp; <kbd>Esc</kbd> pause</p>
+          <p><kbd>C</kbd> camera &nbsp; <kbd>Q</kbd> character &nbsp; <kbd>E</kbd> inspect on/off &nbsp; <kbd>F</kbd> torch &nbsp; <kbd>M</kbd> map &nbsp; <kbd>H</kbd> hide this &nbsp; <kbd>R</kbd> restart &nbsp; <kbd>Esc</kbd> pause</p>
         </div>
         <div class="bv-emotes" id="bvEmotes" aria-label="Emotes">
           <button type="button" data-emote="Wave" title="Wave (1)">👋<span>1</span></button>
@@ -282,9 +283,10 @@
           </div>
           <div class="bv-cardbtns">
             <button type="button" class="bv-primary" id="bvPlay">Play</button>
+            <button type="button" class="bv-ghost" id="bvExitFull" hidden>Exit full screen</button>
             <button type="button" class="bv-ghost" id="bvBack">Back to BIM view</button>
           </div>
-          <p class="bv-small" id="bvPauseNote">Click Play, then move the mouse to look around. Press Esc to get the pointer back.</p>
+          <p class="bv-small" id="bvPauseNote">Click Play, then move the mouse to look around. <kbd>Esc</kbd> pauses, again leaves full screen, again goes back to the BIM view.</p>
         </div>
       </div>
 
@@ -344,7 +346,8 @@
       <div class="tool-note bvp-notes">
         <p><b>Controls</b></p>
         <p><b>BIM view.</b> Drag to turn, right-drag or middle-drag to pan, scroll to zoom at the cursor. Click an element for its properties, double-click to zoom to it. Keys: <kbd>H</kbd> hide, <kbd>I</kbd> isolate, <kbd>U</kbd> show all, <kbd>X</kbd> x-ray, <kbd>M</kbd> measure, <kbd>F</kbd> fit, <kbd>Esc</kbd> clear.</p>
-        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, hold <kbd>T</kbd> to aim a teleport and let go to land there, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>1</kbd>–<kbd>6</kbd> for emotes. On a phone, use the stick on the left and drag on the right to look; tap Teleport to aim and again to go.</p>
+        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, hold <kbd>T</kbd> to aim a teleport and let go to land there, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>E</kbd> to open an element's properties and <kbd>E</kbd> again to close them, <kbd>H</kbd> to clear the whole HUD, <kbd>1</kbd>–<kbd>6</kbd> for emotes. On a phone, use the stick on the left and drag on the right to look; tap Teleport to aim and again to go.</p>
+        <p><b>Full screen and Esc.</b> <kbd>Esc</kbd> always steps back out, one step at a time: it closes whatever is open, then pauses, then leaves full screen, then returns to the BIM view. The top-right button leaves full screen too, and says so while you are in it.</p>
       </div>
     </div>
 
