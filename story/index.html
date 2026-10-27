@@ -8,7 +8,8 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/story/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f7f9fc">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
 <meta property="og:title" content="The story — from repeated drafting to Revit automation | Ajmal P.S">
@@ -32,16 +33,12 @@
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="/assets/chrome.css">
 <script>
+/* The menus and the reveals are hidden only while a script is there to show
+   them again. If it never runs - blocked, offline, an old browser - drop the
+   class after 3s so nothing stays invisible. */
 (function(){
   var d = document.documentElement;
   d.classList.add("js");
-  var t = null;
-  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
-  if(t !== "dark" && t !== "light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  d.setAttribute("data-theme", t);
-  /* failsafe: if app.js never runs, drop .js so nothing stays hidden */
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
@@ -221,58 +218,44 @@
 
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
-        <span class="track"><span class="knob">
-          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-        </span></span>
-      </button>
     </div>
   </div>
 </nav>
 
 <main id="main">
-<section class="chapter first" data-track="01-problem">
+<header class="pagehead">
   <div class="wrap">
-      <div class="crumbs"><a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span> <span>The story</span></div>
-    <div class="ch-head">    <div class="ch-top">
-      <span class="ch-eyebrow reveal">The problem</span>
-    </div>
-    <h1 class="ch-title rvt">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>The story</span></nav>
+    <span class="kicker enter" style="--d:.02s">The problem</span>
+    <h1 class="display rvt enter" style="--d:.06s">
       <span class="ln"><i>Drafting is mostly</i></span>
       <span class="ln"><i>the same hour,</i></span>
-      <span class="ln"><i>repeated.</i></span>
+      <span class="ln"><i><span class="dim">repeated</span></i></span>
     </h1>
-    </div>
-    <div class="ch-body">
-    <p class="ch-lead reveal">Every MEP project runs on the same handful of actions done thousands of times. Tag a duct. Match the graphics. Fix a level. Renumber a run of sheets. None of it is difficult and none of it is where the value is — but it eats the day, and the coordination that actually decides whether a building works gets whatever hours are left.</p>
-    <p class="ch-lead reveal">I spent my first years in Doha doing exactly that, on villas and towers, in AutoCAD and then Revit. <strong>The work I was paid for was thinking. The work I actually did was typing.</strong></p>
+  </div>
+</header>
 
-    </div>
+<section class="sec" data-track="01-problem">
+  <div class="wrap">
+    <p class="lede reveal">Every MEP project runs on the same handful of actions done thousands of times. Tag a duct. Match the graphics. Fix a level. Renumber a run of sheets. None of it is difficult and none of it is where the value is &mdash; but it eats the day, and the coordination that actually decides whether a building works gets whatever hours are left.</p>
+    <p class="lede reveal" style="--d:.08s">I spent my first years in Doha doing exactly that, on villas and towers, in AutoCAD and then Revit.</p>
+    <p class="quote reveal" style="--d:.14s">The work I was paid for was thinking. The work I actually did was typing.</p>
   </div>
 </section>
-<section class="chapter sec-alt">
-  <div class="wrap">
-    <div class="ch-head">    <div class="ch-top">
-      <span class="ch-eyebrow reveal">The turn</span>
-    </div>
-    <h2 class="ch-title rvt">
-      <span class="ln"><i>So I stopped</i></span>
-      <span class="ln"><i>doing it by hand.</i></span>
-    </h2>
-    </div>
-    <div class="ch-body">
-    <p class="ch-lead reveal">Rather than work through the same task again, I started building something that would do it instead. Small routines at first, nothing sophisticated, each one taking a job off my hands that I was tired of repeating.</p>
-    <p class="ch-lead reveal"><strong>That is the turning point, and it is not really about code.</strong> It is the realisation that the repetitive half of the work can be described precisely enough to hand over &mdash; and that the half worth keeping is the judgement. Everything since has been the same idea applied to larger problems.</p>
 
-    <ol class="ladder reveal">
-      <li style="--rd:.04s"><b>AutoLISP</b><span>small routines inside AutoCAD</span></li>
-      <li style="--rd:.12s"><b>Dynamo</b><span>visual scripting against the Revit model</span></li>
-      <li style="--rd:.20s"><b>pyRevit and Python</b><span>proper tools, shared with the team</span></li>
-      <li style="--rd:.28s"><b>C# add-ins</b><span>installed, versioned and supported</span></li>
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">The turn</span>
+    <h2 class="head">So I stopped <span class="dim">doing it by hand</span></h2>
+    <p class="lede reveal">Rather than work through the same task again, I started building something that would do it instead. Small routines at first, nothing sophisticated, each one taking a job off my hands that I was tired of repeating.</p>
+    <p class="lede reveal" style="--d:.08s"><strong>That is the turning point, and it is not really about code.</strong> It is the realisation that the repetitive half of the work can be described precisely enough to hand over &mdash; and that the half worth keeping is the judgement. Everything since has been the same idea applied to larger problems.</p>
+    <ol class="ladder reveal" style="--d:.14s">
+      <li><b>AutoLISP</b><span>small routines inside AutoCAD</span></li>
+      <li><b>Dynamo</b><span>visual scripting against the Revit model</span></li>
+      <li><b>pyRevit and Python</b><span>proper tools, shared with the team</span></li>
+      <li><b>C# add-ins</b><span>installed, versioned and supported</span></li>
     </ol>
-    <p class="code-note reveal">Each step covered more ground than the one before it. Where that line ends up is the next chapter.</p>
-    </div>
+    <p class="sub reveal">Each step covered more ground than the one before it. Where that line ends up is the next chapter.</p>
   </div>
 </section>
 <!-- foot:start -->
@@ -282,14 +265,12 @@
       <a class="pcard prev" href="/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Home</b><span>Who, and the proof in one screen</span></a>
       <a class="pcard next" href="/experience/"><small>Next</small><b>Experience <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>Eleven years, and where</span></a>
     </nav>
-    <div class="ctaband reveal">
-      <div>
-        <h2>Looking for an MEP BIM Coordinator?</h2>
-        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
-      </div>
+    <div class="cta reveal">
+      <h2>Looking for an MEP BIM Coordinator?</h2>
+      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
       <div class="btnrow">
         <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>
+        <a class="tlink" href="/faq/">Read the FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></a>
       </div>
     </div>
   </div>

@@ -17,7 +17,6 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
   // Earlier cards shrink a little more, so the stack reads as a stack.
   const targetScale = 1 - (total - 1 - index) * 0.03
   const scale = useTransform(progress, [index / total, 1], [1, targetScale])
-  const [first, second] = project.images
   // Image heights and the number follow the viewport height as well as its
   // width, so a stuck card still fits on a short laptop screen.
 
@@ -25,7 +24,7 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
     <div className="sticky top-24 h-[85vh] md:top-32">
       <motion.article
         style={{ scale: still ? 1 : scale, top: `${index * 28}px` }}
-        className="project-card relative origin-top rounded-[40px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:rounded-[50px] sm:p-6 md:rounded-[60px] md:p-8"
+        className="project-card relative flex h-full origin-top flex-col rounded-[40px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:rounded-[50px] sm:p-6 md:rounded-[60px] md:p-8"
       >
         <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 px-2 sm:mb-6 sm:px-3 md:mb-8">
           <div className="flex min-w-0 items-end gap-4 sm:gap-6 md:gap-8">
@@ -48,44 +47,20 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
           <LiveProjectButton href={project.href} label="View Project" context={project.name} />
         </div>
 
-        <div className="flex gap-3 sm:gap-4">
-          <div className="flex w-[40%] flex-col gap-3 sm:gap-4">
-            <img
-              src={first.src}
-              alt={first.alt}
-              width={960}
-              height={540}
-              loading="lazy"
-              decoding="async"
-              className="w-full rounded-[40px] object-cover sm:rounded-[50px] md:rounded-[60px]"
-              style={{ height: 'clamp(130px, min(16vw, 20vh), 230px)' }}
-            />
-            <img
-              src={second.src}
-              alt={second.alt}
-              width={960}
-              height={720}
-              loading="lazy"
-              decoding="async"
-              className="w-full rounded-[40px] object-cover sm:rounded-[50px] md:rounded-[60px]"
-              style={{ height: 'clamp(160px, min(22vw, 30vh), 340px)' }}
-            />
-          </div>
-          {/* Absolutely placed so the model takes the height of the left
-              column instead of setting it from its own proportions. */}
-          <div className="relative w-[60%]">
-            <div
-              className={`model-panel model-${project.model.scene} absolute inset-0 overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px]`}
-            >
-              <ModelShot
-                src={project.model.poster}
-                alt={project.model.alt}
-                width={project.model.width}
-                height={project.model.height}
-                className="absolute inset-0 h-full w-full object-contain"
-              />
-            </div>
-          </div>
+        {/* The render fills the card now. It used to share the width with two
+            illustrations, which were the only drawn thing on the page.
+            The panel takes whatever height the card has left, so a stuck card
+            is full rather than two thirds full on a tall screen. */}
+        <div
+          className={`model-panel model-${project.model.scene} flex min-h-[180px] flex-1 items-center justify-center overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px]`}
+        >
+          <ModelShot
+            src={project.model.poster}
+            alt={project.model.alt}
+            width={project.model.width}
+            height={project.model.height}
+            className="h-full w-full object-contain p-3 sm:p-5 md:p-7"
+          />
         </div>
       </motion.article>
     </div>

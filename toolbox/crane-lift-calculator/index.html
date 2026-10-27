@@ -8,7 +8,8 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/crane-lift-calculator/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f7f9fc">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <meta property="og:title" content="Crane Lift Calculator — Sling, Wind, Ground Pressure">
 <meta property="og:description" content="Free crane lift calculator: sling tension on the BS 7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, boom length and headroom. Runs offline.">
 <meta property="og:url" content="https://ajmalps.com/toolbox/crane-lift-calculator/">
@@ -31,15 +32,12 @@
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="../../assets/toolbox.css">
 <script>
+/* The menus and the reveals are hidden only while a script is there to show
+   them again. If it never runs - blocked, offline, an old browser - drop the
+   class after 3s so nothing stays invisible. */
 (function(){
   var d = document.documentElement;
   d.classList.add("js");
-  var t = null;
-  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
-  if(t !== "dark" && t !== "light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  d.setAttribute("data-theme", t);
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
@@ -112,18 +110,12 @@
 
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
-        <span class="track"><span class="knob">
-          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-        </span></span>
-      </button>
     </div>
   </div>
 </nav>
 
 <main id="main">
-<section class="sec-tight" style="padding-top:calc(var(--nav-h) + 64px);padding-bottom:90px">
+<section class="sec-tool">
   <div class="wrap">
 
     <nav class="crumbs no-print" aria-label="Breadcrumb">
@@ -132,8 +124,8 @@
       <span>Crane Lift Calculator</span>
     </nav>
 
-    <p class="eyebrow">Free tool · runs in your browser</p>
-    <h1 class="tool-head" style="font-size:clamp(34px,5vw,54px);font-weight:700;letter-spacing:-.025em;line-height:1.08">Crane Lift Calculator</h1>
+    <p class="kicker">Free tool · runs in your browser</p>
+    <h1 class="display tool-display">Crane Lift Calculator</h1>
     <p class="print-only print-sub">Lift check sheet &middot; ajmalps.com/toolbox/crane-lift-calculator/</p>
     <p class="sub" style="max-width:660px">Sling tension, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom. Everything runs on your own device. Nothing is uploaded, nothing is stored, and it keeps working with no signal on site.</p>
 

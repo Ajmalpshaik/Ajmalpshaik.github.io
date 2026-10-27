@@ -1,16 +1,24 @@
-/* ajmalps.com - the shared stylesheet for every page but the home page.
-   The home page is built from landing/ and carries its own CSS; the two are
-   held to one system by docs/REDESIGN.md. Read that before changing a token:
-   the dark values here ARE the home page's colours, which is what makes the
-   step from the cover into the site seamless.
+/* ajmalps.com - the stylesheet for every page but the home page.
+   ==================================================================
+   One skin: the cover's. Black ground, Kanit at display sizes, hairlines
+   and space instead of cards. There is no light theme and no theme switch -
+   two skins is what made the site feel like two sites, and a visitor who
+   left the cover for any other page could see the seam.
 
-   Order: fonts, tokens, base, chrome (nav/footer), components, motion, print. */
+   The layout language is the cover's Services list, made general: a page is
+   a headline, a lead, and numbered rows separated by hairlines. Almost
+   everything on the site is a list of things with a name and a line about
+   it, so almost everything is .rows. There are no card borders, no glass,
+   no shadows and no gradients behind sections.
+
+   The bar lives in assets/chrome.css, which the cover loads too.
+   docs/REDESIGN.md is the plan. Read it before changing a token.
+   ================================================================== */
 
 /* ============ Display face ============
-   Kanit carries every heading, the same face the home page's cover is set in.
-   Two weights, Latin only, about 19 KB each, self-hosted - no third-party
-   request on any page. Body prose stays on the system face: it loads instantly
-   and it is the right thing for long text. */
+   Two weights, Latin only, ~19 KB each, self-hosted. 900 carries every
+   headline; 500 carries labels, names and the bar. Prose is the system face,
+   which loads instantly and is the right thing for long text. */
 @font-face{
   font-family:"Kanit";font-style:normal;font-weight:500;font-display:swap;
   src:url("/assets/fonts/kanit-500.woff2") format("woff2");
@@ -20,663 +28,444 @@
   src:url("/assets/fonts/kanit-900.woff2") format("woff2");
 }
 
-/* ============ Tokens ============ */
+/* ============ Tokens ============
+   Every text colour clears WCAG AA on both grounds. The tightest pair is
+   --faint on --bg-soft at 4.64:1. */
 :root{
-  /* Text. Every value here clears WCAG AA on both --bg and --bg-alt; the
-     previous --muted and --faint did not, which is why they moved. */
-  --ink:#1d1d1f;
-  --muted:#5c636b;
-  --faint:#696e74;
-  --bg:#ffffff;
-  --bg-alt:#f5f5f7;
-  --hairline:#d2d2d7;
-  /* #0071e3 is 4.31:1 on --bg-alt, under AA for text, so links and buttons use
-     this one and keep the lighter blue for hover only. */
-  --blue:#0066d6;
-  --blue-hover:#0071e3;
-  --cyan:#00c8ff;
-  --violet:#7c3aed;
+  --bg:#0c0c0c;          /* the ground, and the cover's */
+  --bg-soft:#111113;     /* a band, barely lighter - a change of air, not of colour */
+  --ink:#f2f6f9;         /* headlines, names            18.0:1 */
+  --body:#aab8c4;        /* prose                        9.7:1 */
+  --faint:#767f88;       /* labels, captions, meta       4.8:1 */
+  --line:#23262a;        /* hairlines */
+  --line-soft:#191b1e;
+  --accent:#4aa8ff;      /* links                        7.8:1 */
+  --accent-hi:#8cc6ff;
   --grad:linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%);
-  --radius:28px;
+
+  --display:"Kanit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --body-face:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
   --ease:cubic-bezier(.25,.1,.25,1);
   --ease-out:cubic-bezier(.16,1,.3,1);
   --nav-h:60px;
-  /* Type */
-  --display:"Kanit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  --body:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --card:#ffffff;
-  --link:#0066d6;
-  --hover-bg:rgba(0,0,0,.05);
-  --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
-  --nav-bg:rgba(245,247,251,.7);
-  --nav-border:rgba(0,0,0,.08);
-  /* Opaque. A menu is for reading, and a translucent one puts the page's own
-     headlines through the middle of its links - which is exactly what the
-     phone sheet did, because backdrop blur is not drawn in every browser or
-     every rendering mode, and a menu may not depend on it to be legible. */
-  --menu-bg:#f7f9fc;
-  /* Surfaces. A card is a plain surface with a hairline, not a pane of glass:
-     the blur and the two-sided neumorphic shadow it used to carry fought the
-     text on it and dated the page. One soft shadow, one hairline, nothing else. */
-  --glass:#ffffff;
-  --glass-strong:#ffffff;
-  --glass-border:#e4e6ea;
-  --glass-fb:#ffffff;
-  --neu-surface:#eef1f5;
-  --neu-out:0 1px 2px rgba(16,24,40,.04),0 10px 26px rgba(16,24,40,.06);
-  --neu-out-sm:0 1px 2px rgba(16,24,40,.05);
-  --neu-hover:0 2px 4px rgba(16,24,40,.05),0 18px 40px rgba(16,24,40,.10);
-  --neu-in:inset 0 1px 3px rgba(16,24,40,.09);
-  /* Ambient colour, kept to a hint behind the page header only. */
-  --b-cyan:rgba(0,200,255,.08);
-  --b-blue:rgba(37,99,235,.07);
-  --b-violet:rgba(124,58,237,.07);
-  color-scheme:light;
-}
-/* Dark is the home page. #0c0c0c is the cover's ground and these are its
-   neighbours, so a visitor in dark mode steps from / into any page without a
-   seam. Do not drift these toward blue-grey again - that was the old split. */
-:root[data-theme="dark"]{
-  --ink:#e8eef3;
-  --muted:#aab8c4;
-  --faint:#7d8a95;
-  --bg:#0c0c0c;
-  --bg-alt:#121316;
-  --hairline:#262a2e;
-  --blue:#0071e3;
-  --blue-hover:#2997ff;
-  --card:#15171a;
-  --link:#4aa8ff;
-  --hover-bg:rgba(255,255,255,.08);
-  --hero-bg:linear-gradient(180deg,#0c0c0c 0%,#101114 100%);
-  --nav-bg:rgba(12,12,12,.72);
-  --nav-border:rgba(255,255,255,.12);
-  --menu-bg:#111214;
-  --glass:#141518;
-  --glass-strong:#17181c;
-  --glass-border:#26282d;
-  --glass-fb:#141518;
-  --neu-surface:#17181c;
-  --neu-out:0 1px 2px rgba(0,0,0,.5),0 10px 26px rgba(0,0,0,.4);
-  --neu-out-sm:0 1px 2px rgba(0,0,0,.5);
-  --neu-hover:0 2px 4px rgba(0,0,0,.5),0 18px 40px rgba(0,0,0,.55);
-  --neu-in:inset 0 1px 3px rgba(0,0,0,.6);
-  --b-cyan:rgba(0,200,255,.07);
-  --b-blue:rgba(37,99,235,.08);
-  --b-violet:rgba(124,58,237,.07);
+  --gut:22px;
   color-scheme:dark;
-}
-/* smooth cross-fade while switching themes */
-html.theming *,html.theming *::before,html.theming *::after{
-  transition:background-color .35s var(--ease),background .35s var(--ease),color .35s var(--ease),
-  border-color .35s var(--ease),fill .35s var(--ease),stroke .35s var(--ease),
-  box-shadow .35s var(--ease),transform .35s var(--ease) !important;
-}
-/* Only the bar itself is still blurred - the cards are plain surfaces and the
-   menus are opaque - so this is all that needs a solid fallback. */
-@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  #nav{background:var(--bg-alt)}
 }
 
 /* ============ Base ============ */
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--nav-h) + 16px);
+  -webkit-text-size-adjust:100%;
+}
 body{
-  font-family:var(--body);
-  background:var(--bg);color:var(--ink);
-  line-height:1.5;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  font-family:var(--body-face);
+  background:var(--bg);color:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
   -webkit-tap-highlight-color:transparent;
 }
-::selection{background:rgba(0,113,227,.18)}
-a{color:var(--link);text-decoration:none}
+::selection{background:rgba(74,168,255,.25);color:#fff}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-hi)}
 img,svg{display:block;max-width:100%}
-.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
-/* A grid or a list that opens a section has no heading above it to sit
-   under, and its own top margin on top of the section's padding left a
-   screen and a half of nothing. */
+:where(a,button,summary):focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
 .wrap>:first-child{margin-top:0}
 
-:where(a,button):focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
-
-/* skip to content */
 .skip{
-  position:absolute;left:14px;top:-70px;z-index:200;
-  padding:12px 20px;border-radius:14px;
-  background:var(--link);color:#fff;font-weight:600;font-size:15px;
+  position:absolute;left:16px;top:-100px;z-index:200;
+  padding:12px 22px;border-radius:999px;
+  background:var(--ink);color:var(--bg);
+  font-family:var(--display);font-weight:500;font-size:14px;
+  text-transform:uppercase;letter-spacing:.06em;
   transition:top .2s var(--ease-out);
 }
-.skip:focus{top:14px}
+.skip:focus{top:16px}
 
-.grad-text{
-  background:var(--grad);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
+/* ============ Sections ============
+   One rhythm. A section is a lot of air, a headline and a list. */
+.sec{padding:clamp(72px,11vw,150px) 0}
+/* The page header already ends in a lot of air. A full section's worth under
+   it put most of a screen of nothing between the title and the first row. */
+.pagehead + .sec{padding-top:clamp(52px,6.5vw,92px)}
+.sec-soft{background:var(--bg-soft)}
+.sec-foot{padding:clamp(48px,7vw,86px) 0 clamp(64px,9vw,110px)}
+/* A tool page is an application, not a page to read: it opens the same way
+   but gets to its controls sooner, and its heading does not fill the screen. */
+.sec-tool{padding:calc(var(--nav-h) + clamp(40px,5vw,64px)) 0 clamp(56px,7vw,90px)}
+.tool-display{font-size:clamp(2.2rem,5.6vw,4.2rem)}
+.sec-tool .kicker{margin-bottom:16px}
+.rule{height:1px;background:var(--line);border:0}
+
+/* ============ Type ============ */
+h1,h2,h3,h4{font-family:var(--display);font-weight:500;color:var(--ink);letter-spacing:-.01em}
+
+/* The page's name. Uppercase, as big as the cover's, and the only thing on
+   the first screen that shouts. */
+.display{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(2.6rem,9.2vw,8.4rem);
+  line-height:.92;letter-spacing:-.025em;text-transform:uppercase;
+  color:var(--ink);text-wrap:balance;
 }
+.display .dim{color:#4a5157}
 
-/* ============ Typography ============
-   One scale, one display face. Kanit 900 on anything that acts as a title and
-   Kanit 500 on anything that labels, which is the home page's voice; body
-   prose stays on the system face.
-
-   Kanit sits lower and narrower than SF, so every size here is set against the
-   rendered result, not converted from the old numbers: the display sizes came
-   down slightly and the tracking opened up, because Kanit 900 at the old
-   -0.03em closed the counters on A, S and 8. Change a size and check it at
-   390px and 1440px before committing - the old values are in git. */
-h1,h2,h3,h4,
-.pagehead h1,h2.head,.ch-title,.contact h1,.contact h2,.nf h1,.hero h1,.hero .tagline,
-.ptile h3,.bcard h3,.pcard b,.ctaband h2,.bcard .big,
-.ladder b,.tl-item h3,.spec-row h3{
-  font-family:var(--display);
+/* A section's name. Same voice, one size down. */
+.head{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(1.9rem,5.2vw,4.1rem);
+  line-height:.98;letter-spacing:-.022em;text-transform:uppercase;
+  color:var(--ink);text-wrap:balance;
 }
-.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h3,
-.hero .kicker,.brand,.fbrand,.ladder b,.tl-stake{
-  font-family:var(--display);
-}
-/* Only two weights are hosted, 500 and 900, so every weight in between would be
-   rounded up to 900 by the browser's own matching. The weights are therefore
-   set in one place, at the very foot of this file, where they win over the
-   component rules below - see "Display weights" there. */
+.head .dim{color:#4a5157}
 
-/* section rhythm */
-section{padding:110px 0}
-@media(max-width:734px){section{padding:76px 0}}
-/* The page header already ends in 62px of air. A full 110px under it put most
-   of a screen of nothing between the title and the first thing to read. */
-.pagehead+section{padding-top:70px}
-@media(max-width:734px){.pagehead+section{padding-top:52px}}
-.sec-dark{background:#000;color:#f5f5f7}
-.sec-dark .muted,.sec-dark p.sub{color:#a1a1a6}
-.sec-alt{background:var(--bg-alt)}
-
-/* Ambient colour. It used to sit behind nearly every section; six washes down
-   one page is noise, not atmosphere. It now warms the page header and the one
-   black section, and the rest of the page is plain. */
-.hero,section{position:relative}
-.hero::before,section::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--blobs,none)}
-.hero>*,section>*{position:relative}
-.hero{--blobs:radial-gradient(620px 460px at 12% 16%,var(--b-cyan),transparent 65%),radial-gradient(680px 500px at 88% 28%,var(--b-violet),transparent 65%)}
-.sec-dark{--blobs:radial-gradient(760px 500px at 50% 0%,rgba(37,99,235,.14),transparent 65%)}
-
-/* headlines: apple two-tone */
-.eyebrow{
-  display:block;font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--link);margin-bottom:14px;
-}
-.sec-dark .eyebrow{color:#6ea8ff}
-h2.head{
-  font-size:clamp(34px,5vw,60px);font-weight:700;letter-spacing:-.022em;line-height:1.08;
-  max-width:900px;text-wrap:balance;
-}
-h2.head .dim{color:var(--faint)}
-.sec-dark h2.head .dim{color:#6e6e73}
-p.sub{
-  font-size:clamp(18px,2.2vw,21px);color:var(--muted);max-width:680px;margin-top:20px;
-}
-/* a second heading further down a section, under content rather than over it */
-h2.head.subhead{font-size:clamp(26px,3.4vw,38px);margin-top:72px}
-
-/* ============ Reveal motion (hidden state only when JS is running) ============ */
-html.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);transition-delay:var(--d,0s)}
-html.js .reveal.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  html.js .reveal{opacity:1;transform:none;transition:none}
-  .hero-enter{animation:none !important}
-  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+/* The label over a headline. */
+.kicker{
+  display:block;font-family:var(--display);font-weight:500;
+  font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:clamp(14px,1.6vw,22px);
 }
 
-/* ============ Nav ============
-   The bar lives in assets/chrome.css, which every page loads - the home page
-   included. See the note at the top of that file. */
-
-/* ============ Buttons ============ */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  min-height:48px;padding:12px 26px;border-radius:999px;
-  background:var(--blue);color:#fff;font-size:17px;font-weight:500;cursor:pointer;
-  /* Most .btn on the site are links, but a few are real <button>s - the print
-     button in the Toolbox, for one - and those were still wearing the
-     browser's own grey border and its default font. */
-  border:none;font-family:inherit;line-height:1.2;
-  transition:background .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);
-}
-.btn:hover{background:var(--blue-hover);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,113,227,.28)}
-.btn:active{transform:scale(.985)}
-/* a row of buttons, wherever one appears */
-.btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-/* the quiet button. It was a flat black wash, which all but vanished on the
-   dark theme; it now carries the theme's own hairline. */
-.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline)}
-.btn-ghost:hover{background:var(--hover-bg);box-shadow:inset 0 0 0 1px var(--muted)}
-.btn-light{background:#f5f5f7;color:#000}
-.btn-light:hover{background:#fff;box-shadow:0 8px 24px rgba(255,255,255,.15)}
-.btn-glass{background:rgba(255,255,255,.1);color:#f5f5f7;border:1px solid rgba(255,255,255,.22)}
-.btn-glass:hover{background:rgba(255,255,255,.16);box-shadow:none}
-.tlink{font-size:17px;font-weight:500;display:inline-flex;align-items:center;gap:5px;min-height:48px}
-.tlink:hover{text-decoration:underline}
-.tlink .chev{font-weight:400}
-
-/* ============ Hero ============ */
-.hero{
-  padding:calc(var(--nav-h) + 78px) 0 96px;text-align:center;
-  background:var(--hero-bg);
-}
-.hero .kicker{
-  display:block;font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
-}
-.hero h1{
-  font-size:clamp(54px,10vw,108px);font-weight:700;letter-spacing:-.03em;line-height:1.02;
-  margin:14px 0 10px;
-}
-.hero .tagline{
-  font-size:clamp(26px,4.4vw,50px);font-weight:700;letter-spacing:-.022em;line-height:1.12;
-  max-width:900px;margin:0 auto;text-wrap:balance;
-}
-.hero p.lead{
-  font-size:clamp(17px,2.3vw,21px);color:var(--muted);max-width:660px;margin:24px auto 0;
+/* The line under a headline. */
+.lede{
+  margin-top:clamp(20px,2.4vw,32px);max-width:52ch;
+  font-size:clamp(1.05rem,1.5vw,1.4rem);line-height:1.6;color:var(--body);
   text-wrap:pretty;
 }
-.hero .btnrow{gap:18px;justify-content:center;margin-top:34px}
-.hero-enter{animation:heroIn .9s var(--ease-out) backwards;animation-delay:var(--d,0s)}
-@keyframes heroIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.lede strong{color:var(--ink);font-weight:600}
+.lede + .lede{margin-top:1.1em}
+.sub{margin-top:18px;max-width:60ch;font-size:clamp(1rem,1.25vw,1.15rem);color:var(--body)}
 
-/* ============ Bento ============ */
-.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
-@media(max-width:900px){.bento{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.bento{grid-template-columns:1fr}}
-.bcard{
-  background:var(--glass);border-radius:var(--radius);padding:36px 34px;
-  border:1px solid var(--glass-border);
-  box-shadow:var(--neu-out);
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s var(--ease);
+.crumbs{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  font-family:var(--display);font-weight:500;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  margin-bottom:clamp(20px,2.6vw,34px);
 }
-.bcard:hover{transform:translateY(-4px);box-shadow:var(--neu-hover)}
-.bcard.span2{grid-column:span 2}
-@media(max-width:600px){.bcard.span2{grid-column:span 1}}
-.bcard h3{font-size:23px;font-weight:700;letter-spacing:-.015em;margin-bottom:10px}
-.bcard p{font-size:16.5px;color:var(--muted)}
-.bcard p strong{color:var(--ink);font-weight:600}
-.bcard .big{font-size:clamp(30px,3.4vw,40px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
-.bcard .cap{font-size:14px;color:var(--faint);margin-top:8px}
-.bicon{
-  width:46px;height:46px;border-radius:14px;margin-bottom:18px;
-  background:linear-gradient(135deg,rgba(0,200,255,.12),rgba(124,58,237,.12));
-  display:flex;align-items:center;justify-content:center;color:var(--link);
-  box-shadow:var(--neu-out-sm);
+.crumbs a{color:var(--faint)}
+.crumbs a:hover{color:var(--ink)}
+
+/* ============ Page header ============
+   Every page opens the same way, and takes up a screen doing it. */
+.pagehead{
+  padding:calc(var(--nav-h) + clamp(56px,9vw,120px)) 0 clamp(56px,8vw,110px);
+  border-bottom:1px solid var(--line);
 }
 
-/* ============ Projects ============ */
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
-@media(max-width:734px){.pgrid{grid-template-columns:1fr}}
-.ptile{
-  position:relative;background:#121316;border:1px solid rgba(255,255,255,.09);
-  border-radius:var(--radius);padding:38px 36px;overflow:hidden;
-  transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);
+/* ============ Rows ============
+   The list the whole site is built from: a number, a name, a line. It is the
+   cover's Services section, which is the one part of the old site that was
+   already simple and already loud. */
+.rows{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--line)}
+.row{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr);
+  gap:clamp(16px,3vw,56px);
+  padding:clamp(26px,3.4vw,46px) 0;
+  border-bottom:1px solid var(--line);
+  align-items:start;
 }
-.ptile:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.2);box-shadow:0 24px 60px rgba(0,0,0,.5)}
-.ptile.feature{grid-column:1/-1}
-.ptile::before{
-  content:"";position:absolute;inset:0;opacity:0;transition:opacity .45s var(--ease);
-  background:radial-gradient(80% 90% at 85% 0%,rgba(37,99,235,.14),transparent 60%);
-  pointer-events:none;
+.row-n{
+  display:flex;align-items:baseline;gap:clamp(14px,2.2vw,30px);min-width:0;
 }
-.ptile:hover::before{opacity:1}
-.ptype{font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6ea8ff}
-.ptile h3{font-size:clamp(24px,2.8vw,31px);font-weight:700;letter-spacing:-.018em;color:#f5f5f7;margin:10px 0 12px}
-.ptile p{font-size:16.5px;color:#a1a1a6;max-width:640px}
-.picon{
-  width:50px;height:50px;border-radius:14px;margin-bottom:22px;color:#6ea8ff;
-  background:rgba(110,168,255,.1);border:1px solid rgba(110,168,255,.18);
-  display:flex;align-items:center;justify-content:center;
+.row-n i{
+  font-style:normal;font-family:var(--display);font-weight:900;
+  font-size:clamp(2.1rem,5.4vw,4.6rem);line-height:.85;letter-spacing:-.04em;
+  color:#2b3036;flex:none;font-variant-numeric:tabular-nums;
+  transition:color .4s var(--ease);
+}
+.row:hover .row-n i{color:#3d444c}
+.row h3,.row-t{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(1.05rem,1.9vw,1.6rem);line-height:1.2;letter-spacing:-.01em;
+  text-transform:uppercase;color:var(--ink);
+}
+.row p{font-size:clamp(.95rem,1.15vw,1.08rem);line-height:1.62;color:var(--body);max-width:58ch}
+.row p + p{margin-top:.8em}
+.row p strong{color:var(--ink);font-weight:600}
+.row-meta{
+  display:block;margin-top:10px;
+  font-family:var(--display);font-weight:500;
+  font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+}
+@media(max-width:800px){
+  .row{grid-template-columns:1fr;gap:14px}
+  .row-n{gap:16px}
+}
+/* a row that is a link to somewhere */
+a.row{color:inherit;transition:background .3s var(--ease)}
+a.row:hover{background:rgba(255,255,255,.022)}
+a.row .row-t{transition:color .3s var(--ease)}
+a.row:hover .row-t{color:var(--accent-hi)}
+.row-go{
+  display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+  font-family:var(--display);font-weight:500;font-size:12px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+}
+.row-go .chev{transition:transform .3s var(--ease-out)}
+a.row:hover .row-go .chev{transform:translateX(5px)}
+
+/* ============ Facts ============
+   A plain two-column list, for the things a page simply has to state. */
+.facts{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--line)}
+.fact{
+  display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);
+  gap:8px clamp(20px,4vw,56px);
+  padding:clamp(18px,2.2vw,26px) 0;border-bottom:1px solid var(--line);
+}
+.fact dt,.fact h3{
+  font-family:var(--display);font-weight:500;font-size:13px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  padding-top:3px;
+}
+.fact dd,.fact p{font-size:clamp(.95rem,1.15vw,1.08rem);line-height:1.62;color:var(--body);max-width:62ch}
+.fact dd strong,.fact p strong{color:var(--ink);font-weight:600}
+@media(max-width:700px){.fact{grid-template-columns:1fr;gap:6px}}
+
+/* ============ Tags ============ */
+.tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:clamp(28px,3.4vw,44px)}
+.tags span{
+  font-family:var(--display);font-weight:500;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--body);border:1px solid var(--line);border-radius:999px;
+  padding:8px 16px;
 }
 
-/* ============ Skills (specs table) ============ */
-.specs{margin-top:56px;border-top:1px solid var(--hairline)}
-.spec-row{
-  display:grid;grid-template-columns:260px 1fr;gap:12px 44px;
-  padding:26px 0;border-bottom:1px solid var(--hairline);
+/* ============ Buttons ============ */
+.btnrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:clamp(28px,3.4vw,44px)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  min-height:50px;padding:13px 30px;border-radius:999px;border:none;
+  background:var(--ink);color:var(--bg);cursor:pointer;
+  font-family:var(--display);font-weight:500;font-size:14px;
+  letter-spacing:.1em;text-transform:uppercase;line-height:1.2;
+  transition:background .25s var(--ease),transform .2s var(--ease),color .25s var(--ease);
 }
-@media(max-width:734px){.spec-row{grid-template-columns:1fr;padding:22px 0}}
-.spec-row h3{font-size:17px;font-weight:600}
-.spec-row p{font-size:16.5px;color:var(--muted)}
-.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
-.chips span{
-  font-size:14px;color:var(--ink);background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:999px;padding:9px 18px;font-weight:500;
-  box-shadow:var(--neu-out-sm);
+.btn:hover{background:#fff;color:var(--bg);transform:translateY(-1px)}
+.btn:active{transform:scale(.99)}
+.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn-ghost:hover{background:rgba(255,255,255,.05);color:var(--ink);box-shadow:inset 0 0 0 1px #3a4047}
+.btn-accent{background:var(--grad);color:#fff}
+.btn-accent:hover{filter:brightness(1.12);color:#fff}
+.tlink{
+  display:inline-flex;align-items:center;gap:7px;min-height:50px;
+  font-family:var(--display);font-weight:500;font-size:13px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
 }
+.tlink:hover{color:var(--accent-hi)}
+.tlink .chev{transition:transform .3s var(--ease-out)}
+.tlink:hover .chev{transform:translateX(4px)}
+.ic-wa{color:#25D366}
+
+/* ============ Numbers band ============ */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,40px)}
+@media(max-width:760px){.nums{grid-template-columns:1fr 1fr;gap:34px 20px}}
+.nums b{
+  display:block;font-family:var(--display);font-weight:900;
+  font-size:clamp(2.4rem,5.4vw,4.4rem);line-height:.9;letter-spacing:-.035em;
+  color:var(--ink);font-variant-numeric:tabular-nums;
+}
+.nums span{
+  display:block;margin-top:12px;max-width:22ch;
+  font-size:.92rem;line-height:1.5;color:var(--faint);
+}
+.nums-note{margin-top:clamp(26px,3vw,40px);font-size:.85rem;color:var(--faint);max-width:70ch}
+
+/* ============ Quote ============ */
+.quote{
+  margin-top:clamp(40px,5vw,72px);padding-left:clamp(18px,2.4vw,32px);
+  border-left:2px solid transparent;border-image:var(--grad) 1;
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(1.2rem,2.6vw,2.1rem);line-height:1.3;letter-spacing:-.018em;
+  color:var(--ink);max-width:24ch;
+}
+
+/* ============ Timeline (story, experience) ============ */
+.tl{margin-top:clamp(40px,5vw,72px);border-top:1px solid var(--line)}
+.tl-item{
+  display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);
+  gap:12px clamp(20px,4vw,56px);
+  padding:clamp(28px,3.6vw,48px) 0;border-bottom:1px solid var(--line);
+}
+@media(max-width:800px){.tl-item{grid-template-columns:1fr;gap:10px}}
+.tl-yr{
+  font-family:var(--display);font-weight:500;font-size:13px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);padding-top:4px;
+}
+.tl-item h3{
+  font-size:clamp(1.1rem,2.1vw,1.75rem);line-height:1.2;letter-spacing:-.012em;
+  text-transform:uppercase;
+}
+.tl-org{margin-top:8px;font-size:.9rem;color:var(--faint)}
+.tl-item p{margin-top:16px;font-size:clamp(.95rem,1.15vw,1.08rem);line-height:1.62;max-width:60ch}
+.tl-stake{
+  display:inline-block;margin-top:18px;
+  font-family:var(--display);font-weight:500;font-size:11.5px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  border-top:1px solid var(--line);padding-top:12px;
+}
+
+/* ============ Ladder (story) ============ */
+.ladder{list-style:none;margin-top:clamp(32px,4vw,52px)}
+.ladder li{
+  display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);
+  gap:6px clamp(20px,4vw,48px);
+  padding:18px 0;border-top:1px solid var(--line);
+}
+@media(max-width:700px){.ladder li{grid-template-columns:1fr;gap:4px}}
+.ladder b{
+  font-family:var(--display);font-weight:500;font-size:1.05rem;
+  text-transform:uppercase;letter-spacing:.01em;color:var(--ink);
+}
+.ladder span{font-size:.95rem;color:var(--body)}
+
+/* ============ Pager ============ */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-block:1px solid var(--line)}
+@media(max-width:700px){.pager{grid-template-columns:1fr}}
+.pcard{
+  display:block;background:var(--bg);color:inherit;
+  padding:clamp(24px,3vw,38px) clamp(18px,2.4vw,32px);
+  transition:background .3s var(--ease);
+}
+.sec-soft .pcard{background:var(--bg-soft)}
+.pcard:hover{background:#141416}
+.pcard small{
+  display:block;font-family:var(--display);font-weight:500;font-size:11.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;
+}
+.pcard b{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(1.3rem,2.6vw,2.1rem);line-height:1;letter-spacing:-.02em;
+  text-transform:uppercase;color:var(--ink);
+}
+.pcard span{display:block;margin-top:10px;font-size:.92rem;color:var(--faint)}
+.pcard.next{text-align:right}
+.pcard.next b{justify-content:flex-end}
+.pcard .chev{color:var(--accent);transition:transform .3s var(--ease-out)}
+.pcard.next:hover .chev{transform:translateX(5px)}
+.pcard.prev:hover .chev{transform:translateX(-5px)}
+
+/* ============ Closing call to action ============ */
+.cta{margin-top:clamp(40px,5vw,72px)}
+.cta h2{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(1.7rem,4.4vw,3.4rem);line-height:1;letter-spacing:-.022em;
+  text-transform:uppercase;color:var(--ink);max-width:16ch;
+}
+.cta p{margin-top:16px;font-size:1.02rem;color:var(--body);max-width:46ch}
 
 /* ============ Contact ============ */
-.contact{text-align:center}
-.contact h1,.contact h2{
-  font-size:clamp(44px,7vw,84px);line-height:1.04;
+.contact-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(32px,4vw,52px)}
+.contact-note{margin-top:clamp(28px,3.4vw,44px);font-size:.9rem;color:var(--faint)}
+
+/* ============ 404 ============ */
+.nf{
+  min-height:78vh;display:flex;flex-direction:column;justify-content:center;
+  padding-top:var(--nav-h);
 }
-.contact .crumbs{justify-content:center}
-.sec-dark .crumbs,.sec-dark .crumbs a{color:#8a8a8f}
-.sec-dark .crumbs a:hover{color:#6ea8ff}
-.contact p.sub{margin:22px auto 0}
-.crow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:44px}
-/* #6e6e73 on the black section is 4.14:1, under AA for text this size. */
-.cnote{margin-top:34px;color:#a1a1a6;font-size:14px}
+.nf .display{font-size:clamp(5rem,22vw,16rem)}
+.nf-pager{grid-template-columns:repeat(3,1fr)}
+@media(max-width:800px){.nf-pager{grid-template-columns:1fr}}
 
 /* ============ Footer ============ */
-footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairline)}
-.foot{
-  max-width:1080px;margin:0 auto;padding:0 22px;
-  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-  font-size:12.5px;color:var(--faint);
+footer{border-top:1px solid var(--line);padding:clamp(48px,6vw,80px) 0 28px;background:var(--bg)}
+.fgrid{
+  max-width:1180px;margin:0 auto;padding:0 var(--gut);
+  display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:clamp(28px,3vw,40px);
 }
-.foot a{color:var(--muted)}
+@media(max-width:1000px){.fgrid{grid-template-columns:1fr 1fr 1fr}.fgrid>:first-child{grid-column:1/-1}}
+@media(max-width:640px){.fgrid{grid-template-columns:1fr 1fr}}
+.fgrid h3{
+  font-family:var(--display);font-weight:500;font-size:11.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:18px;
+}
+.fgrid ul{list-style:none;display:grid;gap:12px}
+.fgrid a{font-size:.95rem;color:var(--body)}
+.fgrid a:hover{color:var(--ink)}
+.fbrand{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  font-family:var(--display);font-weight:500;font-size:.95rem;
+  letter-spacing:.01em;text-transform:uppercase;color:var(--ink);
+}
+.fbrand svg{width:26px;height:26px}
+.fabout{font-size:.95rem;color:var(--body);max-width:34ch}
+.fcta{margin-top:22px;min-height:44px;padding:11px 24px;font-size:12.5px}
+.foot{
+  max-width:1180px;margin:clamp(40px,5vw,64px) auto 0;padding:24px var(--gut) 0;
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-size:.8rem;color:var(--faint);
+}
+.foot a{color:var(--faint)}
+.foot a:hover{color:var(--ink)}
 
-/* ============ Story / motion layer ============ */
-
-/* so the timeline stroke can be tweened rather than snapped */
-@property --draw{syntax:"<percentage>";inherits:false;initial-value:0%}
-
-/* reading progress */
+/* ============ Motion ============ */
 .progress{position:fixed;left:0;top:0;height:2px;width:100%;z-index:130;pointer-events:none}
 .progress i{display:block;height:100%;background:var(--grad);transform:scaleX(0);transform-origin:0 50%}
 
-/* line-masked text reveal (Apple-style) */
+/* Hidden only while a script is there to show it again. */
+html.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);transition-delay:var(--d,0s)}
+html.js .reveal.in{opacity:1;transform:none}
+
+/* a headline that rises line by line out of a clipping box */
 .rvt{display:block}
-.rvt .ln{display:block;overflow:hidden;padding-bottom:.22em;margin-bottom:-.22em}
-html.js .rvt .ln>i{display:block;font-style:inherit;transform:translateY(130%);opacity:0;
-  transition:transform .95s var(--ease-out),opacity .8s var(--ease-out);transition-delay:var(--ld,0s)}
+.rvt .ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+html.js .rvt .ln>i{
+  display:block;font-style:inherit;transform:translateY(120%);opacity:0;
+  transition:transform .9s var(--ease-out),opacity .7s var(--ease-out);transition-delay:var(--ld,0s);
+}
 html.js .rvt.in .ln>i{transform:none;opacity:1}
 
-
-/* ---- chapters ---- */
-.chapter{position:relative}
-.ch-top{display:flex;align-items:baseline;margin-bottom:18px}
-.ch-eyebrow{font-size:12px;font-weight:650;letter-spacing:.19em;text-transform:uppercase;color:var(--faint)}
-.ch-title{
-  font-size:clamp(30px,5.4vw,62px);line-height:1.06;letter-spacing:-.035em;font-weight:700;
-  max-width:17ch;
-}
-.ch-lead{
-  margin-top:26px;max-width:60ch;font-size:clamp(17px,2.1vw,21px);
-  line-height:1.62;color:var(--muted);
-}
-.ch-lead strong{color:var(--ink);font-weight:600}
-.ch-lead + .ch-lead{margin-top:18px}
-
-/* two-column chapters: the heading holds its place while the story scrolls past */
-@media(min-width:1000px){
-  .chapter .wrap{
-    display:grid;grid-template-columns:minmax(300px,440px) minmax(0,1fr);
-    column-gap:72px;align-items:start;
-  }
-  .ch-head{position:sticky;top:calc(var(--nav-h) + 56px)}
-  .ch-title{max-width:none}
-  .chapter:not(.chapter-wide) .ch-title{font-size:clamp(30px,4.4vw,52px)}
-  .ch-body{min-width:0}
-  .ch-body > :first-child{margin-top:0}
-  /* the timeline chapter runs full width under its heading */
-  .chapter-wide .wrap{display:block}
-  .chapter-wide .ch-head{position:static}
-  .chapter-wide .ch-title{max-width:17ch}
-}
-@media(min-width:1000px) and (prefers-reduced-motion:reduce){
-  .ch-head{position:static}
-}
-
-/* ---- ch01: the repetition stack ---- */
-
-/* ---- ch02: the tooling ladder ---- */
-.ladder{margin-top:52px;list-style:none;position:relative;padding-left:30px}
-.ladder li{position:relative;padding-bottom:26px}
-.ladder li:last-child{padding-bottom:0}
-/* each step draws its own connector, so the rail stops at the last dot */
-.ladder li::after{content:"";position:absolute;left:-26px;top:19px;bottom:-3px;width:2px;
-  border-radius:2px;background:var(--grad);opacity:.4}
-.ladder li:last-child::after{display:none}
-.ladder li::before{content:"";position:absolute;left:-30px;top:6px;width:10px;height:10px;
-  border-radius:50%;background:var(--bg);border:2px solid var(--hairline)}
-.ladder li:last-child::before{border-color:var(--link);box-shadow:0 0 0 4px rgba(0,113,227,.15)}
-.ladder b{display:block;font-size:17.5px;font-weight:650;letter-spacing:-.012em}
-.ladder span{display:block;margin-top:4px;font-size:15px;color:var(--muted)}
-html.js .ladder li{opacity:0;transform:translateY(14px);
-  transition:opacity .55s var(--ease-out),transform .55s var(--ease-out);transition-delay:var(--rd,0s)}
-html.js .ladder.in li{opacity:1;transform:none}
-.code-note{margin-top:22px;font-size:14px;color:var(--faint)}
-
-/* ---- ch03: story timeline ---- */
-.tl{position:relative;margin-top:64px;padding-left:34px}
-.tl::before{
-  content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;border-radius:2px;
-  background:var(--hairline);
-}
-.tl::after{
-  content:"";position:absolute;left:5px;top:6px;width:2px;border-radius:2px;
-  height:var(--draw,0%);background:var(--grad);
-}
-@media(max-width:734px){.tl{padding-left:26px}}
-.tl-item{position:relative;padding-bottom:62px}
-.tl-item:last-child{padding-bottom:0}
-.tl-item::before{
-  content:"";position:absolute;left:-34px;top:8px;width:12px;height:12px;border-radius:50%;
-  background:var(--bg);border:2px solid var(--hairline);transition:border-color .4s var(--ease),box-shadow .4s var(--ease);
-}
-@media(max-width:734px){.tl-item::before{left:-26px}}
-.tl-item.lit::before{border-color:var(--link);box-shadow:0 0 0 5px rgba(0,113,227,.15)}
-.tl-yr{font-size:13px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--link)}
-.tl-item h3{font-size:clamp(20px,2.6vw,27px);letter-spacing:-.022em;margin-top:9px;font-weight:650}
-.tl-org{margin-top:7px;font-size:14.5px;color:var(--faint)}
-.tl-item p{margin-top:15px;color:var(--muted);font-size:16.5px;line-height:1.6;max-width:62ch}
-/* wide screens: year sits in its own column so the row uses the full measure */
-@media(min-width:900px){
-  .tl-item{display:grid;grid-template-columns:190px minmax(0,1fr);column-gap:32px}
-  .tl-yr{grid-column:1;grid-row:1 / span 4;padding-top:7px}
-  .tl-item h3,.tl-org,.tl-item p,.tl-stake{grid-column:2}
-  .tl-stake{justify-self:start}
-  .tl-item h3{margin-top:0}
-}
-.tl-stake{
-  display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:7px 15px;
-  border-radius:100px;border:1px solid var(--hairline);background:var(--glass);
-  font-size:12.5px;font-weight:600;color:var(--muted);
-}
-.tl-stake::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--grad)}
-
-/* magnetic-ish button lift */
-.btn,.tlink{will-change:transform}
-
-/* card tilt/lift */
-html.js .bcard,html.js .ptile{transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out),border-color .4s var(--ease)}
-html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
-
-@media(prefers-reduced-motion:reduce){
-  html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
-  html.js .ladder li{opacity:1;transform:none;transition:none}
-  .progress{display:none}
-  .tl::after{display:none}
-  html.js .bcard:hover,html.js .ptile:hover{transform:none}
-}
-
-/* ============ Print ============ */
-@media print{
-  @page{margin:14mm}
-  html,body{background:#fff !important;color:#000 !important}
-  nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.bicon,.picon,.chev,
-  .progress,.pager{display:none !important}
-  /* gradient-filled text is transparent — force it back to ink for paper */
-  .grad-text{
-    -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
-  }
-  .ch-head{position:static !important}
-  .chapter .wrap{display:block !important}
-  .tl::after{display:none !important}
-  /* decorative gradient blobs and hover glows */
-  .hero::before,section::before,.ptile::before{display:none !important}
-  section,.hero{padding:16pt 0 !important;break-inside:avoid}
-  .hero,.sec-dark,.sec-alt,.bcard,.ptile,.chips span,.ctaband{
-    background:#fff !important;background-image:none !important;color:#000 !important;
-    box-shadow:none !important;border:1px solid #ccc !important;
-  }
-  .hero,.sec-dark,.sec-alt{border:0 !important}
-  .sec-dark *,.ptile *,.bcard *,.cap,.big,.dim,.eyebrow,.kicker{color:#000 !important}
-  .grad-text{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
-  .reveal,.hero-enter{opacity:1 !important;transform:none !important;filter:none !important}
-  h1{font-size:30pt !important}
-  h2,.head{font-size:17pt !important;break-after:avoid}
-  h3{font-size:11pt !important;break-after:avoid}
-  p,li,span{font-size:9.5pt !important;line-height:1.45 !important}
-  .spec-row,.bcard,.ptile,.tl-item{break-inside:avoid}
-  a{color:#000 !important;text-decoration:none}
-  .contact a[href^="mailto:"]::after,.contact a[href^="tel:"]::after{content:""}
-  footer{border-top:1px solid #ccc}
-}
-
-
-/* ==================================================================
-   Multi-page additions - page headers, pager, CTA band, footer, and
-   the cross-page view transition.
-   ================================================================== */
+.enter{animation:enter .85s var(--ease-out) both;animation-delay:var(--d,0s)}
+@keyframes enter{from{opacity:0;transform:translateY(20px)}}
 
 @view-transition{navigation:auto}
 @media(prefers-reduced-motion:no-preference){
-  ::view-transition-old(root){animation:vtOut .22s var(--ease) both}
-  ::view-transition-new(root){animation:vtIn .42s var(--ease-out) both}
+  ::view-transition-old(root){animation:vtOut .2s var(--ease) both}
+  ::view-transition-new(root){animation:vtIn .4s var(--ease-out) both}
 }
-@keyframes vtOut{to{opacity:0;transform:translateY(-8px)}}
-@keyframes vtIn{from{opacity:0;transform:translateY(14px)}}
+@keyframes vtOut{to{opacity:0}}
+@keyframes vtIn{from{opacity:0}}
 #nav{view-transition-name:site-nav}
 
-/* page header on inner pages */
-.pagehead{
-  position:relative;
-  padding:calc(var(--nav-h) + 74px) 0 62px;
-  background:var(--hero-bg);border-bottom:1px solid var(--hairline);
-  --blobs:radial-gradient(600px 440px at 8% 20%,var(--b-cyan),transparent 65%),radial-gradient(620px 460px at 92% 30%,var(--b-violet),transparent 65%);
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  html.js .reveal{opacity:1;transform:none;transition:none}
+  html.js .rvt .ln>i{transform:none;opacity:1;transition:none}
+  .enter{animation:none}
+  .progress{display:none}
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
 }
-.pagehead::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--blobs)}
-.pagehead>*{position:relative}
-.pagehead h1{
-  font-size:clamp(38px,6.2vw,74px);font-weight:700;letter-spacing:-.028em;line-height:1.05;
-  max-width:940px;text-wrap:balance;
+
+/* ============ Print ============
+   Paper is white and backgrounds do not print, so the whole thing flips. */
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff !important;color:#000 !important;color-scheme:light}
+  *,*::before,*::after{
+    background:transparent !important;box-shadow:none !important;
+    color:#000 !important;-webkit-text-fill-color:#000 !important;
+  }
+  nav,.skip,.progress,.pager,.btnrow,.contact-links,.chev{display:none !important}
+  .sec,.pagehead{padding:14pt 0 !important;break-inside:avoid}
+  .row,.fact,.tl-item,.ladder li{break-inside:avoid;padding:7pt 0 !important}
+  .row,.fact,.tl-item,.ladder li,.rows,.facts,.tl,footer,.pagehead{border-color:#ccc !important}
+  .display{font-size:26pt !important}
+  .head{font-size:15pt !important;break-after:avoid}
+  h3,.row-t{font-size:11pt !important;break-after:avoid}
+  p,li,span,dd{font-size:9.5pt !important;line-height:1.45 !important}
+  .reveal,.rvt .ln>i,.enter{opacity:1 !important;transform:none !important;animation:none !important}
+  a{text-decoration:none}
 }
-.pagehead h1 .dim{color:var(--faint)}
-.pagehead p.sub{max-width:700px}
-.crumbs{font-size:13px;color:var(--faint);margin-bottom:16px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.crumbs a{color:var(--muted)}
-.crumbs a:hover{color:var(--link)}
 
-/* a chapter that opens a page clears the fixed bar itself.
-   .chapter .wrap is a two-column grid, so the breadcrumb has to span it or it
-   takes the heading's cell and pushes the columns over. */
-.chapter.first{padding-top:calc(var(--nav-h) + 44px)}
-.chapter.first .crumbs{grid-column:1/-1;margin-bottom:34px}
-@media(max-width:734px){.chapter.first{padding-top:calc(var(--nav-h) + 30px)}}
-
-.sec-tight{padding-top:74px}
-@media(max-width:734px){.sec-tight{padding-top:56px}}
-/* The pager and the closing call to action are the foot of the page, not
-   another section of it, so they sit close under what they follow. */
-.sec-foot{padding:18px 0 96px}
-@media(max-width:734px){.sec-foot{padding:10px 0 64px}}
-.sec-foot .ctaband{margin-top:18px}
-
-/* CTA band at the foot of inner pages */
-.ctaband{
-  background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
-  box-shadow:var(--neu-out);padding:40px clamp(26px,4vw,48px);
-  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+/* Forced colours: let the OS palette through rather than fighting it. */
+@media(forced-colors:active){
+  .row-n i,.display .dim,.head .dim{color:CanvasText}
+  .quote{border-image:none;border-left-color:CanvasText}
 }
-.ctaband h2{font-size:clamp(24px,3.2vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
-.ctaband p{font-size:16px;color:var(--muted);margin-top:8px;max-width:520px}
-
-/* WhatsApp glyph keeps its own green on an otherwise neutral button */
-.ic-wa{color:#25D366}
-
-/* The hero clips its own overflow: the ambient wash behind it is absolutely
-   positioned and would widen the document without this. */
-.hero{overflow:hidden}
-
-/* previous / next - at the foot of every page on the tour, and on the 404.
-   Each card carries the page's name and the one line that says what is on it,
-   so the visitor knows what they are about to get, not just which direction. */
-.pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-@media(max-width:600px){.pager{grid-template-columns:1fr}}
-.pcard{
-  display:block;padding:24px 26px;border-radius:22px;color:inherit;
-  background:var(--glass);border:1px solid var(--glass-border);
-  box-shadow:var(--neu-out-sm);
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
-}
-.pcard:hover{transform:translateY(-3px);box-shadow:var(--neu-out)}
-.pcard small{display:block;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
-.pcard b{font-size:19px;font-weight:700;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:center;gap:8px}
-.pcard span{display:block;margin-top:6px;font-size:14px;color:var(--muted);line-height:1.4}
-.pcard.next{text-align:right}
-.pcard.next b{justify-content:flex-end}
-.pcard .chev{color:var(--link);transition:transform .3s var(--ease-out)}
-.pcard.next:hover .chev{transform:translateX(4px)}
-.pcard.prev:hover .chev{transform:translateX(-4px)}
-
-/* fuller footer */
-footer{padding:52px 0 26px}
-.fgrid{
-  max-width:1080px;margin:0 auto;padding:0 22px;
-  display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:34px;
-}
-@media(max-width:1000px){.fgrid{grid-template-columns:1fr 1fr 1fr;gap:30px}}
-@media(max-width:734px){.fgrid{grid-template-columns:1fr 1fr;gap:28px}}
-/* the brand column introduces the site, so it spans the row on narrow screens */
-@media(max-width:1000px){.fgrid>:first-child{grid-column:1/-1}}
-.fcta{margin-top:18px;min-height:42px;padding:9px 22px;font-size:15px}
-.fgrid h3{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
-.fgrid ul{list-style:none;display:grid;gap:10px}
-.fgrid a{font-size:15px;color:var(--muted)}
-.fgrid a:hover{color:var(--link)}
-.fbrand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:12px}
-.fbrand svg{width:26px;height:26px}
-.fabout{font-size:15px;color:var(--muted);max-width:330px}
-.foot{
-  max-width:1080px;margin:38px auto 0;padding:20px 22px 0;border-top:1px solid var(--hairline);
-  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-  font-size:12.5px;color:var(--faint);
-}
-.foot a{color:var(--muted)}
-
-/* The light that followed the cursor across every card is gone: it drew the
-   eye to the pointer rather than to the words, and it cost a paint on every
-   mouse move. A card lifts on hover and that is all. Nothing sets --mx/--my
-   any more either: the explore grid that read them went with it. */
-
-/* 404 */
-.nf{min-height:70vh;display:flex;align-items:center;text-align:center;padding-top:var(--nav-h)}
-.nf h1{font-size:clamp(64px,14vw,150px);font-weight:700;letter-spacing:-.04em;line-height:1}
-.nf p{font-size:19px;color:var(--muted);margin:14px auto 30px;max-width:520px}
-.nf .btnrow{justify-content:center}
-.nf-pager{grid-template-columns:repeat(3,1fr);max-width:860px;margin:52px auto 0;text-align:left}
-@media(max-width:734px){.nf-pager{grid-template-columns:1fr}}
-
-/* ==================================================================
-   Display weights
-   ------------------------------------------------------------------
-   Last block in the file on purpose. Two weights of Kanit are hosted - 500 and
-   900 - and the rules above still carry the old 600/650/700 numbers next to
-   their sizes. A browser matching 700 against 500 and 900 picks 900, so every
-   label would have come out as heavy as a title. This block is the one place
-   the heading weights are decided; the sizes stay with their components.
-   ================================================================== */
-
-/* titles */
-.pagehead h1,.hero h1,.hero .tagline,h2.head,.ch-title,.contact h1,.contact h2,.nf h1,
-.ptile h3,.bcard .big{font-weight:900}
-/* Kanit 900 is wider than SF at the same tracking, so the biggest sizes get a
-   little of it back rather than closing up the counters. */
-.pagehead h1,.hero h1,.nf h1,.contact h1,.contact h2{letter-spacing:-.025em}
-.ch-title{letter-spacing:-.028em}
-
-/* everything that titles a card, a row or a group */
-h1,h2,h3,h4,
-.bcard h3,.tl-item h3,.spec-row h3,.pcard b,.ctaband h2,
-.ladder b,.brand,.fbrand{font-weight:500}
-
-/* labels, all of them uppercase and tracked out */
-.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h3,
-.hero .kicker,.tl-stake{font-weight:500}

@@ -8,7 +8,8 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f7f9fc">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
 <meta property="og:title" content="Toolbox — Free MEP and BIM Tools">
@@ -33,15 +34,12 @@
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="../assets/toolbox.css">
 <script>
+/* The menus and the reveals are hidden only while a script is there to show
+   them again. If it never runs - blocked, offline, an old browser - drop the
+   class after 3s so nothing stays invisible. */
 (function(){
   var d = document.documentElement;
   d.classList.add("js");
-  var t = null;
-  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
-  if(t !== "dark" && t !== "light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  d.setAttribute("data-theme", t);
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
@@ -108,12 +106,6 @@
 
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
-        <span class="track"><span class="knob">
-          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-        </span></span>
-      </button>
     </div>
   </div>
 </nav>
@@ -121,63 +113,42 @@
 <main id="main">
 <header class="pagehead">
   <div class="wrap">
-    <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="/">Home</a> <span aria-hidden="true">›</span>
-      <span>Toolbox</span>
-    </nav>
-    <p class="eyebrow">Free · no sign-up · works offline</p>
-    <h1 class="hero-enter" style="--d:.05s">Toolbox. <span class="dim">Open one and use it.</span></h1>
-    <p class="sub hero-enter" style="--d:.16s">Small tools I built because I needed them on real projects, then cleaned up so anyone can use them. They run entirely on your own device. Nothing is uploaded, nothing is tracked, and they keep working when the site has no signal.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>Toolbox</span></nav>
+    <span class="kicker enter" style="--d:.02s">Free &middot; no sign-up &middot; works offline</span>
+    <h1 class="display enter" style="--d:.06s"><span class="dim">Open one</span> and use it</h1>
+    <p class="lede enter" style="--d:.18s">Small tools I built because I needed them on real projects, then cleaned up so anyone can use them. <strong>They run entirely on your own device.</strong> Nothing is uploaded, nothing is tracked, and they keep working when the site has no signal.</p>
   </div>
 </header>
-<section>
+
+<section class="sec">
   <div class="wrap">
-    <h2 class="head">Three tools, <span class="dim">and more coming.</span></h2>
-    <div class="tb-grid">
-
-      <a class="tb-card" href="/toolbox/crane-lift-calculator/">
-        <h3>Crane Lift Calculator</h3>
-        <p>Sling tension on the BS 7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom. With live diagrams and a printable record sheet.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">Lifting</span>
-          <span class="tb-tag">BS 7121</span>
-          <span class="tb-tag">Printable</span>
-        </div>
+    <div class="rows">
+      <a class="row reveal" href="/toolbox/crane-lift-calculator/">
+        <div class="row-n"><i>01</i><span class="row-t">Crane Lift Calculator</span></div>
+        <div><p>Sling tension on the BS&nbsp;7121 two-leg rule, ground bearing pressure and pad size, permissible wind speed, required boom length and headroom. With live diagrams and a printable record sheet.</p><span class="row-meta">Lifting &middot; BS 7121 &middot; printable</span><span class="row-go">Open <span class="chev" aria-hidden="true">&rsaquo;</span></span></div>
       </a>
-
-      <a class="tb-card" href="/toolbox/ar-viewer/">
-        <h3>AR Viewer</h3>
-        <p>Turn a Revit FBX export into a USDZ file and see the model at real size in AR on an iPhone or iPad. The conversion runs in your browser, so the model never leaves your device.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">Revit</span>
-          <span class="tb-tag">AR</span>
-          <span class="tb-tag">USDZ</span>
-        </div>
+      <a class="row reveal" style="--d:.06s" href="/toolbox/ar-viewer/">
+        <div class="row-n"><i>02</i><span class="row-t">AR Viewer</span></div>
+        <div><p>Turn a Revit FBX export into a USDZ file and see the model at real size in AR on an iPhone or iPad. The conversion runs in your browser, so the model never leaves your device.</p><span class="row-meta">Revit &middot; AR &middot; USDZ</span><span class="row-go">Open <span class="chev" aria-hidden="true">&rsaquo;</span></span></div>
       </a>
-
-      <a class="tb-card" href="/toolbox/bim-viewer/">
-        <h3>BIM Viewer</h3>
-        <p>Open a Revit IFC export and check properties, levels and categories, cut plans and sections, and measure. Then switch to the walk view and walk through the building as a robot, game style.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">IFC</span>
-          <span class="tb-tag">Revit</span>
-          <span class="tb-tag">Walkthrough</span>
-        </div>
+      <a class="row reveal" style="--d:.12s" href="/toolbox/bim-viewer/">
+        <div class="row-n"><i>03</i><span class="row-t">BIM Viewer</span></div>
+        <div><p>Open a Revit IFC export and check properties, levels and categories, cut plans and sections, and measure. Then switch to the walk view and walk through the building as a robot, game style.</p><span class="row-meta">IFC &middot; Revit &middot; walkthrough</span><span class="row-go">Open <span class="chev" aria-hidden="true">&rsaquo;</span></span></div>
       </a>
-      <div class="tb-card tb-soon">
-        <h3>More on the way</h3>
-        <p>Duct and pipe sizing with a velocity check, drainage fixture units to pipe size, an MEP unit converter, and an ISO 19650 file name builder. Each one gets published when I trust the numbers, not before.</p>
-        <div class="tb-tags">
-          <span class="tb-tag">In progress</span>
-        </div>
+      <div class="row reveal" style="--d:.18s">
+        <div class="row-n"><i>04</i><h3 class="row-t">More on the way</h3></div>
+        <div><p>Duct and pipe sizing with a velocity check, drainage fixture units to pipe size, an MEP unit converter, and an ISO&nbsp;19650 file name builder. Each one gets published when I trust the numbers, not before.</p><span class="row-meta">In progress</span></div>
       </div>
-
     </div>
+  </div>
+</section>
 
-    <p class="tool-note" style="margin-top:40px">
-      <b>How I treat these.</b> Every tool says which standard it follows and what it deliberately leaves out, on the tool's own page. None of them replace a competent person, a manufacturer's chart, or a signed calculation. If you find something wrong, <a href="/contact/">tell me</a> and I will fix it and say what changed. If there is a tool you want, ask, and it might be next.
-    </p>
-
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">How I treat these</span>
+    <h2 class="head">What each one <span class="dim">leaves out</span></h2>
+    <p class="lede">Every tool says which standard it follows and what it deliberately leaves out, on the tool&rsquo;s own page. <strong>None of them replace a competent person, a manufacturer&rsquo;s chart, or a signed calculation.</strong></p>
+    <p class="lede">If you find something wrong, <a href="/contact/">tell me</a> and I will fix it and say what changed. If there is a tool you want, ask, and it might be next.</p>
   </div>
 </section>
 <!-- foot:start -->
@@ -187,14 +158,12 @@
       <a class="pcard prev" href="/heron-ai/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Heron AI</b><span>An AI that works inside Revit</span></a>
       <a class="pcard next" href="/skills/"><small>Next</small><b>Skills <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>The full stack, named</span></a>
     </nav>
-    <div class="ctaband reveal">
-      <div>
-        <h2>Looking for an MEP BIM Coordinator?</h2>
-        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
-      </div>
+    <div class="cta reveal">
+      <h2>Looking for an MEP BIM Coordinator?</h2>
+      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
       <div class="btnrow">
         <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>
+        <a class="tlink" href="/faq/">Read the FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></a>
       </div>
     </div>
   </div>

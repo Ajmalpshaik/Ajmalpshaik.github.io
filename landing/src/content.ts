@@ -1,11 +1,13 @@
 // Every word and image on the home page, in one place.
 //
-// Images are plain files in /assets/home/img/ at the repo root, referenced by
-// path. Replacing one with a new file of the same name needs no rebuild.
+// The only pictures left on this page are the four model-*.webp renders, and
+// they are not drawings: `npm run posters` renders them from the 3D models in
+// src/three/, which are built in code out of MEP parts at real sizes.
 //
-// The hero and the tall picture on each project card are live 3D models
-// (src/three/). Their model-*.webp stills are rendered from the models by
-// `npm run posters`, so those four are made, not drawn: leave them be.
+// Twenty-two illustrations went with the redesign - a twelve-image scrolling
+// strip, four objects floating behind the About text, and two on each project
+// card. They were the main thing making the page look like a generated
+// template rather than like somebody's actual work.
 
 import type { SceneName } from './three/scenes'
 
@@ -61,25 +63,12 @@ export const hero = {
   } satisfies Model,
 }
 
-// Two rows, each repeated three times so the scroll never shows an edge.
-export const marqueeRows: string[][] = [
-  ['01', '02', '03', '04', '05', '06'].map((n) => `${IMG}marquee-${n}.webp`),
-  ['07', '08', '09', '10', '11', '12'].map((n) => `${IMG}marquee-${n}.webp`),
-]
-
 export const about = {
   heading: 'About me',
   text:
     'Since 2015 in Doha, I have taken HVAC, plumbing, drainage and firefighting models from concept to as-built, ' +
     'from villas and towers to fourteen schools, an airport and a live petrochemical plant. ' +
     'I also write the Revit tools my team runs on. Let’s build it right the first time!',
-  // Decorative, so they carry empty alt text.
-  images: {
-    topLeft: `${IMG}about-hardhat.webp`,
-    bottomLeft: `${IMG}about-valve.webp`,
-    topRight: `${IMG}about-duct.webp`,
-    bottomRight: `${IMG}about-cube.webp`,
-  },
 }
 
 export const services = [
@@ -115,7 +104,6 @@ export type Project = {
   category: string
   name: string
   href: string
-  images: [{ src: string; alt: string }, { src: string; alt: string }]
   model: Model
 }
 
@@ -125,10 +113,6 @@ export const projects: Project[] = [
     category: 'Selected work · Qatar',
     name: 'MEP BIM Coordination',
     href: '/work/',
-    images: [
-      { src: `${IMG}project-1-a.webp`, alt: 'Illustration: a petrochemical plant on the coast at dusk, its lights reflected in the sea' },
-      { src: `${IMG}project-1-b.webp`, alt: 'Illustration: an airport terminal at sunset, with a curved roof and tall glass walls' },
-    ],
     model: {
       scene: 'riser',
       poster: `${IMG}model-riser.webp`,
@@ -142,10 +126,6 @@ export const projects: Project[] = [
     category: 'Revit add-in · C#',
     name: 'AJ-Tools',
     href: '/aj-tools/',
-    images: [
-      { src: `${IMG}project-2-a.webp`, alt: 'Illustration: a glowing lightbulb with a skyscraper made of light inside it' },
-      { src: `${IMG}project-2-b.webp`, alt: 'Illustration: glossy 3D icons of a wrench, a ruler, a gear, a tag and a magic wand' },
-    ],
     model: {
       scene: 'void',
       poster: `${IMG}model-void.webp`,
@@ -159,10 +139,6 @@ export const projects: Project[] = [
     category: 'AI for BIM · in development',
     name: 'Heron AI',
     href: '/heron-ai/',
-    images: [
-      { src: `${IMG}project-3-a.webp`, alt: 'Illustration: a heron drawn in cyan light, standing in water before a city skyline at night' },
-      { src: `${IMG}project-3-b.webp`, alt: 'Illustration: a man in a VR headset reaching toward a holographic building' },
-    ],
     model: {
       scene: 'xray',
       poster: `${IMG}model-xray.webp`,
