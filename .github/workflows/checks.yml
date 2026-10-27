@@ -12,7 +12,12 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # The job itself takes about three minutes. The budget is for the Chromium
+    # download in the middle of it, which is usually quick and occasionally is
+    # not: on 2026-10-27 it ran past ten minutes and the job was cancelled with
+    # every check before it already green, which reads like a failure and is
+    # not one. Twenty is room for a slow mirror, not room for a hang.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
