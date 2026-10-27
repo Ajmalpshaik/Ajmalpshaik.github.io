@@ -31,7 +31,7 @@ export const navGroups = [
   {
     name: 'Tools',
     items: [
-      { href: '/aj-tools/', label: 'AJ-Tools', note: 'The Revit add-in a team runs on' },
+      { href: '/automation/', label: 'Automation', note: 'The Revit tools I build' },
       { href: '/heron-ai/', label: 'Heron AI', note: 'An AI that works inside Revit' },
       { href: '/toolbox/', label: 'Toolbox', note: 'Tools you can use in the browser' },
     ],
@@ -123,9 +123,9 @@ export const projects: Project[] = [
   },
   {
     num: '02',
-    category: 'Revit add-in · C#',
-    name: 'AJ-Tools',
-    href: '/aj-tools/',
+    category: 'Revit add-ins · C# and Python',
+    name: 'Revit Automation',
+    href: '/automation/',
     model: {
       scene: 'void',
       poster: `${IMG}model-void.webp`,
@@ -172,7 +172,7 @@ export const footer = {
     {
       name: 'Tools',
       links: [
-        { label: 'AJ-Tools', href: '/aj-tools/' },
+        { label: 'Automation', href: '/automation/' },
         { label: 'Heron AI', href: '/heron-ai/' },
         { label: 'Toolbox', href: '/toolbox/' },
       ],

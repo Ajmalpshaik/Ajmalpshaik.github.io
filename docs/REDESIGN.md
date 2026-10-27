@@ -111,7 +111,7 @@ Three menus and a button, the same on every page including the cover:
 
 ```
 [AJ AJMAL P.S]   EXPERIENCE ▾   TOOLS ▾   ABOUT ▾            [CONTACT]
-                 ├ Story        ├ AJ-Tools   ├ Skills
+                 ├ Story        ├ Automation ├ Skills
                  ├ Experience   ├ Heron AI   ├ About
                  └ Work         └ Toolbox    └ FAQ
 ```
@@ -137,7 +137,7 @@ as that decision, and **every page ends by handing over to the next one**.
 2. **Story** — how it started
 3. **Experience** — eleven years, and where
 4. **Work** — five projects, scope and role
-5. **AJ-Tools** — the Revit add-in a whole team runs
+5. **Automation** — the Revit add-ins and scripts a whole team runs
 6. **Heron AI** — where it is going
 7. **Toolbox** — tools you can use right now, in the browser
 8. **Skills** — the full stack, named
@@ -177,6 +177,8 @@ tools/sync_chrome.py  writes the nav, pager and footer into every page; --check
 tools/check_site.py   static checks
 tools/check_browser.mjs  the pages in a real browser, at four widths, including
                       the bar on both of its two implementations
+tools/update_heron.py writes the figures and the lists on /heron-ai/ straight
+                      from a Heron-AI checkout; --check fails when they drift
 docs/REDESIGN.md      this file
 ```
 
