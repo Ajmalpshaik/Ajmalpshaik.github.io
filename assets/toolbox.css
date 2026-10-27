@@ -1,5 +1,6 @@
 /* ajmalps.com - Toolbox. Shared by /toolbox/ and every tool page.
-   Built on the neumorphic tokens already in style.css, so light and dark both work. */
+   Built on the surface tokens in style.css, so light and dark both work and a
+   tool page looks like the rest of the site without repeating its rules. */
 
 /* ============ Toolbox landing ============ */
 .tb-grid{
@@ -8,17 +9,19 @@
 }
 .tb-card{
   display:flex;flex-direction:column;gap:10px;
-  background:var(--neu-surface);border-radius:20px;padding:26px 24px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:20px;padding:26px 24px;
   box-shadow:var(--neu-out);color:inherit;
   transition:box-shadow .3s var(--ease),transform .3s var(--ease);
 }
 a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
-.tb-card h3{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.tb-card h3{font-family:var(--display);font-size:19px;font-weight:500;letter-spacing:-.005em}
 .tb-card p{font-size:14.5px;color:var(--muted);line-height:1.55}
 .tb-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:10px}
 .tb-tag{
-  font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
-  color:var(--muted);background:var(--neu-surface);box-shadow:var(--neu-in);
+  font-family:var(--display);
+  font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);background:var(--neu-surface);border:1px solid var(--hairline);
   border-radius:20px;padding:5px 11px;
 }
 .tb-soon{opacity:.62}
@@ -27,8 +30,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 /* ============ Shared tool-page chrome ============ */
 .tool-head{margin-bottom:8px}
 .tool-note{
-  font-size:13px;line-height:1.6;color:var(--muted);
-  background:var(--neu-surface);box-shadow:var(--neu-in);
+  font-size:13.5px;line-height:1.65;color:var(--muted);
+  background:var(--neu-surface);border:1px solid var(--hairline);
   border-radius:14px;padding:16px 18px;margin-top:22px;
 }
 .tool-note b{color:var(--ink)}

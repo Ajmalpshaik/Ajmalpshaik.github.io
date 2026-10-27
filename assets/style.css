@@ -51,21 +51,22 @@
   --nav-bg:rgba(245,247,251,.7);
   --nav-border:rgba(0,0,0,.08);
   --menu-bg:rgba(245,247,251,.92);
-  /* glass */
-  --glass:rgba(255,255,255,.55);
-  --glass-strong:rgba(255,255,255,.68);
-  --glass-border:rgba(255,255,255,.7);
-  --glass-fb:#fbfcfe;
-  /* neumorphic */
-  --neu-surface:#eef1f7;
-  --neu-out:8px 8px 20px rgba(163,177,198,.4),-8px -8px 20px rgba(255,255,255,.9);
-  --neu-out-sm:4px 4px 10px rgba(163,177,198,.35),-4px -4px 10px rgba(255,255,255,.85);
-  --neu-hover:14px 14px 30px rgba(140,155,180,.42),-14px -14px 30px rgba(255,255,255,.95);
-  --neu-in:inset 3px 3px 8px rgba(163,177,198,.4),inset -3px -3px 8px rgba(255,255,255,.9);
-  /* ambient blobs */
-  --b-cyan:rgba(0,200,255,.15);
-  --b-blue:rgba(37,99,235,.12);
-  --b-violet:rgba(124,58,237,.12);
+  /* Surfaces. A card is a plain surface with a hairline, not a pane of glass:
+     the blur and the two-sided neumorphic shadow it used to carry fought the
+     text on it and dated the page. One soft shadow, one hairline, nothing else. */
+  --glass:#ffffff;
+  --glass-strong:#ffffff;
+  --glass-border:#e4e6ea;
+  --glass-fb:#ffffff;
+  --neu-surface:#eef1f5;
+  --neu-out:0 1px 2px rgba(16,24,40,.04),0 10px 26px rgba(16,24,40,.06);
+  --neu-out-sm:0 1px 2px rgba(16,24,40,.05);
+  --neu-hover:0 2px 4px rgba(16,24,40,.05),0 18px 40px rgba(16,24,40,.10);
+  --neu-in:inset 0 1px 3px rgba(16,24,40,.09);
+  /* Ambient colour, kept to a hint behind the page header only. */
+  --b-cyan:rgba(0,200,255,.08);
+  --b-blue:rgba(37,99,235,.07);
+  --b-violet:rgba(124,58,237,.07);
   color-scheme:light;
 }
 /* Dark is the home page. #0c0c0c is the cover's ground and these are its
@@ -87,18 +88,18 @@
   --nav-bg:rgba(12,12,12,.72);
   --nav-border:rgba(255,255,255,.12);
   --menu-bg:rgba(10,10,11,.96);
-  --glass:rgba(255,255,255,.055);
-  --glass-strong:rgba(255,255,255,.075);
-  --glass-border:rgba(255,255,255,.12);
-  --glass-fb:#15171a;
-  --neu-surface:#15171a;
-  --neu-out:8px 8px 20px rgba(0,0,0,.6),-8px -8px 20px rgba(255,255,255,.04);
-  --neu-out-sm:4px 4px 10px rgba(0,0,0,.55),-4px -4px 10px rgba(255,255,255,.04);
-  --neu-hover:14px 14px 30px rgba(0,0,0,.7),-14px -14px 30px rgba(255,255,255,.05);
-  --neu-in:inset 3px 3px 8px rgba(0,0,0,.6),inset -3px -3px 8px rgba(255,255,255,.05);
-  --b-cyan:rgba(0,200,255,.1);
-  --b-blue:rgba(37,99,235,.12);
-  --b-violet:rgba(124,58,237,.11);
+  --glass:#141518;
+  --glass-strong:#17181c;
+  --glass-border:#26282d;
+  --glass-fb:#141518;
+  --neu-surface:#17181c;
+  --neu-out:0 1px 2px rgba(0,0,0,.5),0 10px 26px rgba(0,0,0,.4);
+  --neu-out-sm:0 1px 2px rgba(0,0,0,.5);
+  --neu-hover:0 2px 4px rgba(0,0,0,.5),0 18px 40px rgba(0,0,0,.55);
+  --neu-in:inset 0 1px 3px rgba(0,0,0,.6);
+  --b-cyan:rgba(0,200,255,.07);
+  --b-blue:rgba(37,99,235,.08);
+  --b-violet:rgba(124,58,237,.07);
   color-scheme:dark;
 }
 /* smooth cross-fade while switching themes */
@@ -107,13 +108,11 @@ html.theming *,html.theming *::before,html.theming *::after{
   border-color .35s var(--ease),fill .35s var(--ease),stroke .35s var(--ease),
   box-shadow .35s var(--ease),transform .35s var(--ease) !important;
 }
-/* solid fallbacks where backdrop blur is unsupported */
+/* Only the bar and its menus are still blurred - the cards are plain surfaces
+   now - so this is all that needs a solid fallback. */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   #nav{background:var(--bg-alt)}
-  .navlinks.open{background:var(--menu-bg)}
-  .bcard,.ribbon,.chips span{background:var(--glass-fb)}
-  .ptile{background:#14161b}
-  .stat-b{background:#12151b}
+  .navlinks.open,.navmenu{background:var(--menu-bg)}
 }
 
 /* ============ Base ============ */
@@ -134,8 +133,7 @@ img,svg{display:block;max-width:100%}
 /* A grid or a list that opens a section has no heading above it to sit
    under, and its own top margin on top of the section's padding left a
    screen and a half of nothing. */
-.wrap>:first-child,.wrap-narrow>:first-child{margin-top:0}
-.wrap-narrow{max-width:820px;margin:0 auto;padding:0 22px}
+.wrap>:first-child{margin-top:0}
 
 :where(a,button):focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
 
@@ -165,13 +163,13 @@ img,svg{display:block;max-width:100%}
    -0.03em closed the counters on A, S and 8. Change a size and check it at
    390px and 1440px before committing - the old values are in git. */
 h1,h2,h3,h4,
-.pagehead h1,h2.head,.ch-title,.contact h2,.nf h1,.hero h1,.hero .tagline,
-.brain h3,.ptile h3,.bcard h3,.xcard h3,.pcard b,.ctaband h2,.bcard .big,
-.stat-b b,.brain-stat b,.pull,.ladder b,.tl-item h3,.spec-row h3{
+.pagehead h1,h2.head,.ch-title,.contact h1,.contact h2,.nf h1,.hero h1,.hero .tagline,
+.ptile h3,.bcard h3,.pcard b,.ctaband h2,.bcard .big,
+.pull,.ladder b,.tl-item h3,.spec-row h3{
   font-family:var(--display);
 }
-.eyebrow,.ch-eyebrow,.ptype,.rmeta,.rgl,.tl-yr,.xp-when,.pcard small,.fgrid h4,
-.hero .kicker,.brand,.fbrand,.ladder b,.xcard .go,.tl-stake{
+.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h4,
+.hero .kicker,.brand,.fbrand,.ladder b,.tl-stake{
   font-family:var(--display);
 }
 /* Only two weights are hosted, 500 and 900, so every weight in between would be
@@ -182,21 +180,22 @@ h1,h2,h3,h4,
 /* section rhythm */
 section{padding:110px 0}
 @media(max-width:734px){section{padding:76px 0}}
+/* The page header already ends in 62px of air. A full 110px under it put most
+   of a screen of nothing between the title and the first thing to read. */
+.pagehead+section{padding-top:70px}
+@media(max-width:734px){.pagehead+section{padding-top:52px}}
 .sec-dark{background:#000;color:#f5f5f7}
 .sec-dark .muted,.sec-dark p.sub{color:#a1a1a6}
 .sec-alt{background:var(--bg-alt)}
 
-/* ambient colour blobs behind the glass */
+/* Ambient colour. It used to sit behind nearly every section; six washes down
+   one page is noise, not atmosphere. It now warms the page header and the one
+   black section, and the rest of the page is plain. */
 .hero,section{position:relative}
 .hero::before,section::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--blobs,none)}
 .hero>*,section>*{position:relative}
 .hero{--blobs:radial-gradient(620px 460px at 12% 16%,var(--b-cyan),transparent 65%),radial-gradient(680px 500px at 88% 28%,var(--b-violet),transparent 65%)}
-#about{--blobs:radial-gradient(640px 480px at 86% 12%,var(--b-blue),transparent 65%),radial-gradient(520px 400px at 8% 78%,var(--b-cyan),transparent 62%)}
-#experience{--blobs:radial-gradient(560px 420px at 92% 24%,var(--b-cyan),transparent 65%)}
-#ajtools{--blobs:radial-gradient(660px 480px at 10% 18%,var(--b-cyan),transparent 65%),radial-gradient(600px 440px at 90% 72%,var(--b-violet),transparent 62%)}
-#skills{--blobs:radial-gradient(560px 420px at 88% 18%,var(--b-violet),transparent 65%)}
-.sec-dark{--blobs:radial-gradient(760px 500px at 50% 0%,rgba(37,99,235,.16),transparent 65%)}
-#contact{--blobs:radial-gradient(680px 460px at 50% 16%,rgba(124,58,237,.17),transparent 65%),radial-gradient(560px 420px at 16% 82%,rgba(0,200,255,.1),transparent 62%)}
+.sec-dark{--blobs:radial-gradient(760px 500px at 50% 0%,rgba(37,99,235,.14),transparent 65%)}
 
 /* headlines: apple two-tone */
 .eyebrow{
@@ -213,6 +212,8 @@ h2.head .dim{color:var(--faint)}
 p.sub{
   font-size:clamp(18px,2.2vw,21px);color:var(--muted);max-width:680px;margin-top:20px;
 }
+/* a second heading further down a section, under content rather than over it */
+h2.head.subhead{font-size:clamp(26px,3.4vw,38px);margin-top:72px}
 
 /* ============ Reveal motion (hidden state only when JS is running) ============ */
 html.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);transition-delay:var(--d,0s)}
@@ -404,8 +405,12 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
 }
 .btn:hover{background:var(--blue-hover);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,113,227,.28)}
 .btn:active{transform:scale(.985)}
-.btn-ghost{background:rgba(0,0,0,.05);color:var(--ink)}
-.btn-ghost:hover{background:rgba(0,0,0,.09);box-shadow:none}
+/* a row of buttons, wherever one appears */
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+/* the quiet button. It was a flat black wash, which all but vanished on the
+   dark theme; it now carries the theme's own hairline. */
+.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline)}
+.btn-ghost:hover{background:var(--hover-bg);box-shadow:inset 0 0 0 1px var(--muted)}
 .btn-light{background:#f5f5f7;color:#000}
 .btn-light:hover{background:#fff;box-shadow:0 8px 24px rgba(255,255,255,.15)}
 .btn-glass{background:rgba(255,255,255,.1);color:#f5f5f7;border:1px solid rgba(255,255,255,.22)}
@@ -434,29 +439,9 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
   font-size:clamp(17px,2.3vw,21px);color:var(--muted);max-width:660px;margin:24px auto 0;
   text-wrap:pretty;
 }
-.hero .btnrow{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:34px}
+.hero .btnrow{gap:18px;justify-content:center;margin-top:34px}
 .hero-enter{animation:heroIn .9s var(--ease-out) backwards;animation-delay:var(--d,0s)}
 @keyframes heroIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-
-/* ============ Stats band ============ */
-.stats-band{padding:100px 0}
-.stats-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:44px 28px;margin-top:64px;text-align:center;
-}
-@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;gap:52px 20px}}
-.stat-b{
-  background:rgba(255,255,255,.05);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:24px;padding:34px 18px;
-  box-shadow:0 20px 50px rgba(0,0,0,.35);
-}
-.stat-b b{
-  display:block;font-size:clamp(46px,6.6vw,84px);font-weight:700;letter-spacing:-.03em;line-height:1;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-  font-variant-numeric:tabular-nums;
-}
-.stat-b span{display:block;margin-top:12px;font-size:16px;color:#a1a1a6;line-height:1.4}
 
 /* ============ Bento ============ */
 .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
@@ -464,7 +449,6 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
 @media(max-width:600px){.bento{grid-template-columns:1fr}}
 .bcard{
   background:var(--glass);border-radius:var(--radius);padding:36px 34px;
-  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
   border:1px solid var(--glass-border);
   box-shadow:var(--neu-out);
   transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s var(--ease);
@@ -484,31 +468,11 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
   box-shadow:var(--neu-out-sm);
 }
 
-/* ============ Experience ============ */
-.xp{margin-top:64px;border-top:1px solid var(--hairline)}
-.xp-row{
-  display:grid;grid-template-columns:220px 1fr;gap:20px 44px;
-  padding:44px 0;border-bottom:1px solid var(--hairline);
-}
-@media(max-width:734px){.xp-row{grid-template-columns:1fr;padding:34px 0}}
-.xp-when{font-size:15px;font-weight:600;color:var(--link);letter-spacing:.02em;padding-top:4px}
-.xp-body h3{font-size:23px;font-weight:700;letter-spacing:-.015em}
-.xp-body .org{font-size:16px;color:var(--muted);margin:4px 0 16px}
-.xp-body ul{list-style:none}
-.xp-body li{
-  font-size:16.5px;color:var(--muted);padding-left:20px;position:relative;margin-bottom:9px;line-height:1.55;
-}
-.xp-body li::before{
-  content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;border-radius:50%;
-  background:linear-gradient(135deg,var(--cyan),var(--blue));
-}
-
 /* ============ Projects ============ */
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:56px}
 @media(max-width:734px){.pgrid{grid-template-columns:1fr}}
 .ptile{
-  position:relative;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  position:relative;background:#121316;border:1px solid rgba(255,255,255,.09);
   border-radius:var(--radius);padding:38px 36px;overflow:hidden;
   transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease);
 }
@@ -529,73 +493,6 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
   display:flex;align-items:center;justify-content:center;
 }
 
-/* ============ AJ-Tools ============ */
-.ribbon{
-  background:var(--glass-strong);border-radius:var(--radius);padding:26px;margin-top:56px;
-  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
-  border:1px solid var(--glass-border);
-  box-shadow:var(--neu-out);
-}
-.rtabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--hairline);padding-bottom:14px;margin-bottom:6px}
-.rtabs button{
-  font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
-  padding:8px 18px;border-radius:999px;border:1px solid transparent;
-  background:transparent;color:var(--muted);
-  transition:background .28s var(--ease),color .28s var(--ease),border-color .28s var(--ease);
-}
-.rtabs button:hover{color:var(--ink);background:var(--hover-bg)}
-.rtabs button[aria-selected="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
-.rpanel[hidden]{display:none}
-.rmeta{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
-  font-weight:600;padding:14px 0 4px}
-.rgrp{
-  display:grid;grid-template-columns:158px minmax(0,1fr);gap:20px;align-items:start;
-  padding:15px 0;border-top:1px solid var(--hairline);
-}
-.rgl{font-size:12.5px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--faint);padding-top:7px}
-.rchips{display:flex;flex-wrap:wrap;gap:8px}
-.rchips span{
-  background:var(--neu-surface);border-radius:11px;padding:8px 14px;
-  font-size:13px;color:var(--ink);font-weight:500;
-  box-shadow:var(--neu-out-sm);
-  transition:transform .28s var(--ease),box-shadow .28s var(--ease);
-}
-html.js .rchips span:hover{transform:translateY(-2px);box-shadow:var(--neu-out)}
-@media(max-width:734px){
-  .rgrp{grid-template-columns:1fr;gap:10px;padding:14px 0}
-  .rgl{padding-top:0}
-  .rchips span{font-size:12.5px;padding:7px 12px}
-}
-@media(prefers-reduced-motion:reduce){html.js .rchips span:hover{transform:none}}
-.brain{
-  background:#000;color:#f5f5f7;border-radius:var(--radius);
-  padding:clamp(36px,5vw,64px);margin-top:18px;position:relative;overflow:hidden;
-}
-.brain::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(70% 60% at 50% 0%,rgba(124,58,237,.18),transparent 65%);
-  pointer-events:none;
-}
-.brain>*{position:relative}
-.brain h3{font-size:clamp(28px,3.6vw,44px);font-weight:700;letter-spacing:-.02em}
-.brain p.sub{color:#a1a1a6;max-width:720px}
-.brain-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:44px 0}
-@media(max-width:734px){.brain-stats{grid-template-columns:1fr}}
-.brain-stat b{
-  display:block;font-size:clamp(40px,5vw,64px);font-weight:700;letter-spacing:-.03em;line-height:1;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-  font-variant-numeric:tabular-nums;
-}
-.brain-stat span{display:block;margin-top:10px;font-size:15px;color:#a1a1a6;line-height:1.45}
-.brain ul{list-style:none;max-width:760px}
-.brain li{font-size:16.5px;color:#a1a1a6;padding-left:24px;position:relative;margin-bottom:12px}
-.brain li::before{
-  content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:3px;
-  background:linear-gradient(135deg,var(--cyan),var(--violet));
-}
-.brain li strong{color:#f5f5f7;font-weight:600}
-
 /* ============ Skills (specs table) ============ */
 .specs{margin-top:56px;border-top:1px solid var(--hairline)}
 .spec-row{
@@ -608,16 +505,18 @@ html.js .rchips span:hover{transform:translateY(-2px);box-shadow:var(--neu-out)}
 .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}
 .chips span{
   font-size:14px;color:var(--ink);background:var(--glass);border:1px solid var(--glass-border);
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   border-radius:999px;padding:9px 18px;font-weight:500;
   box-shadow:var(--neu-out-sm);
 }
 
 /* ============ Contact ============ */
 .contact{text-align:center}
-.contact h2{
-  font-size:clamp(44px,7vw,84px);font-weight:700;letter-spacing:-.028em;line-height:1.04;
+.contact h1,.contact h2{
+  font-size:clamp(44px,7vw,84px);line-height:1.04;
 }
+.contact .crumbs{justify-content:center}
+.sec-dark .crumbs,.sec-dark .crumbs a{color:#8a8a8f}
+.sec-dark .crumbs a:hover{color:#6ea8ff}
 .contact p.sub{margin:22px auto 0}
 .crow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:44px}
 .cnote{margin-top:34px;color:#6e6e73;font-size:14px}
@@ -769,36 +668,30 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   @page{margin:14mm}
   html,body{background:#fff !important;color:#000 !important}
   nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.bicon,.picon,.chev,
-  .progress,.rtabs{display:none !important}
-  /* the ribbon now carries the real tool list, so print it — both tabs, compactly */
-  .rpanel[hidden]{display:block !important}
-  .rgrp{grid-template-columns:130px 1fr !important;padding:7px 0 !important;break-inside:avoid}
-  .rchips span{box-shadow:none !important;border:1px solid #ccc !important;padding:3px 8px !important;
-    font-size:8.5pt !important;border-radius:6px !important}
-  .rmeta{padding:10px 0 2px !important}
+  .progress,.pager{display:none !important}
   /* gradient-filled text is transparent — force it back to ink for paper */
-  .grad-text,.stat-b b,.brain-stat b,.pull{
+  .grad-text,.pull{
     -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
   }
   .ch-head{position:static !important}
   .chapter .wrap{display:block !important}
   .tl::after{display:none !important}
   /* decorative gradient blobs and hover glows */
-  .hero::before,section::before,.ptile::before,.brain::before{display:none !important}
+  .hero::before,section::before,.ptile::before{display:none !important}
   section,.hero{padding:16pt 0 !important;break-inside:avoid}
-  .hero,.sec-dark,.sec-alt,.brain,.stat-b,.bcard,.ptile,.chips span{
+  .hero,.sec-dark,.sec-alt,.bcard,.ptile,.chips span,.ctaband{
     background:#fff !important;background-image:none !important;color:#000 !important;
     box-shadow:none !important;border:1px solid #ccc !important;
   }
   .hero,.sec-dark,.sec-alt{border:0 !important}
-  .sec-dark *,.brain *,.ptile *,.stat-b *,.bcard *,.cap,.big,.dim,.eyebrow,.kicker{color:#000 !important}
+  .sec-dark *,.ptile *,.bcard *,.cap,.big,.dim,.eyebrow,.kicker{color:#000 !important}
   .grad-text{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
   .reveal,.hero-enter{opacity:1 !important;transform:none !important;filter:none !important}
   h1{font-size:30pt !important}
   h2,.head{font-size:17pt !important;break-after:avoid}
   h3{font-size:11pt !important;break-after:avoid}
   p,li,span{font-size:9.5pt !important;line-height:1.45 !important}
-  .xp-row,.spec-row,.bcard,.ptile{break-inside:avoid}
+  .spec-row,.bcard,.ptile,.tl-item{break-inside:avoid}
   a{color:#000 !important;text-decoration:none}
   .contact a[href^="mailto:"]::after,.contact a[href^="tel:"]::after{content:""}
   footer{border-top:1px solid #ccc}
@@ -853,40 +746,14 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 @media(max-width:734px){.sec-foot{padding:10px 0 64px}}
 .sec-foot .ctaband{margin-top:18px}
 
-/* explore grid on the home page */
-.xgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
-@media(max-width:1024px){.xgrid{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.xgrid{grid-template-columns:1fr}}
-.xcard{
-  position:relative;display:block;overflow:hidden;color:inherit;
-  background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
-  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
-  box-shadow:var(--neu-out);padding:30px 28px 28px;
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
-}
-.xcard::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
-  background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(0,113,227,.12),transparent 62%);
-  transition:opacity .4s var(--ease);
-}
-.xcard:hover{transform:translateY(-5px);box-shadow:var(--neu-hover)}
-.xcard:hover::after{opacity:1}
-.xcard h3{font-size:21px;font-weight:700;letter-spacing:-.015em;margin-bottom:8px;color:var(--ink)}
-.xcard p{font-size:15.5px;color:var(--muted)}
-.xcard .go{display:inline-flex;align-items:center;gap:5px;margin-top:18px;font-size:14.5px;font-weight:600;color:var(--link)}
-.xcard .go .chev{transition:transform .3s var(--ease-out)}
-.xcard:hover .go .chev{transform:translateX(4px)}
-
 /* CTA band at the foot of inner pages */
 .ctaband{
   background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);
-  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
   box-shadow:var(--neu-out);padding:40px clamp(26px,4vw,48px);
   display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
 }
 .ctaband h2{font-size:clamp(24px,3.2vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
 .ctaband p{font-size:16px;color:var(--muted);margin-top:8px;max-width:520px}
-.ctaband .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
 /* WhatsApp glyph keeps its own green on an otherwise neutral button */
 .ic-wa{color:#25D366}
@@ -929,13 +796,10 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
    Each card carries the page's name and the one line that says what is on it,
    so the visitor knows what they are about to get, not just which direction. */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-.pager-one{grid-template-columns:minmax(0,1fr);justify-items:end}
-.pager-one .pcard{max-width:420px;width:100%}
-@media(max-width:600px){.pager,.pager-one{grid-template-columns:1fr;justify-items:stretch}}
+@media(max-width:600px){.pager{grid-template-columns:1fr}}
 .pcard{
   display:block;padding:24px 26px;border-radius:22px;color:inherit;
   background:var(--glass);border:1px solid var(--glass-border);
-  -webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);
   box-shadow:var(--neu-out-sm);
   transition:transform .35s var(--ease),box-shadow .35s var(--ease);
 }
@@ -974,20 +838,18 @@ footer{padding:52px 0 26px}
 }
 .foot a{color:var(--muted)}
 
-/* light follows the cursor across cards */
-.bcard,.ptile{position:relative;overflow:hidden}
-.bcard::after,.ptile::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
-  background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(110,168,255,.14),transparent 62%);
-  transition:opacity .4s var(--ease);
-}
-.bcard:hover::after,.ptile:hover::after{opacity:1}
+/* The light that followed the cursor across every card is gone: it drew the
+   eye to the pointer rather than to the words, and it cost a paint on every
+   mouse move. A card lifts on hover and that is all. assets/app.js still sets
+   --mx/--my for the explore cards on the home page, which do use it. */
 
 /* 404 */
 .nf{min-height:70vh;display:flex;align-items:center;text-align:center;padding-top:var(--nav-h)}
 .nf h1{font-size:clamp(64px,14vw,150px);font-weight:700;letter-spacing:-.04em;line-height:1}
 .nf p{font-size:19px;color:var(--muted);margin:14px auto 30px;max-width:520px}
 .nf .btnrow{justify-content:center}
+.nf-pager{grid-template-columns:repeat(3,1fr);max-width:860px;margin:52px auto 0;text-align:left}
+@media(max-width:734px){.nf-pager{grid-template-columns:1fr}}
 
 /* ==================================================================
    Display weights
@@ -1000,19 +862,18 @@ footer{padding:52px 0 26px}
    ================================================================== */
 
 /* titles */
-.pagehead h1,.hero h1,.hero .tagline,h2.head,.ch-title,.contact h2,.nf h1,
-.brain h3,.ptile h3,
-.stat-b b,.brain-stat b,.bcard .big{font-weight:900}
+.pagehead h1,.hero h1,.hero .tagline,h2.head,.ch-title,.contact h1,.contact h2,.nf h1,
+.ptile h3,.bcard .big{font-weight:900}
 /* Kanit 900 is wider than SF at the same tracking, so the biggest sizes get a
    little of it back rather than closing up the counters. */
-.pagehead h1,.hero h1,.nf h1,.contact h2{letter-spacing:-.025em}
+.pagehead h1,.hero h1,.nf h1,.contact h1,.contact h2{letter-spacing:-.025em}
 .ch-title{letter-spacing:-.028em}
 
 /* everything that titles a card, a row or a group */
 h1,h2,h3,h4,
-.bcard h3,.xcard h3,.xp-body h3,.tl-item h3,.spec-row h3,.pcard b,.ctaband h2,
+.bcard h3,.tl-item h3,.spec-row h3,.pcard b,.ctaband h2,
 .ladder b,.pull,.brand,.fbrand{font-weight:500}
 
 /* labels, all of them uppercase and tracked out */
-.eyebrow,.ch-eyebrow,.ptype,.rmeta,.rgl,.tl-yr,.xp-when,.pcard small,.fgrid h4,
-.hero .kicker,.tl-stake,.xcard .go{font-weight:500}
+.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h4,
+.hero .kicker,.tl-stake{font-weight:500}

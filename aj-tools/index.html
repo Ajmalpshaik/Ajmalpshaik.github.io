@@ -195,39 +195,51 @@
 }
 </script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+/* Page-specific layout only. Everything shared - buttons, headings, the
+   reveal, the print sheet - comes from assets/style.css, and nothing here
+   redefines it: this block used to carry its own `*` reset, its own .btn and
+   its own .head, all of which quietly fought the stylesheet. */
 .lead{margin:22px auto 0;max-width:62ch;font-size:17.5px;color:var(--muted);line-height:1.62}
+
+/* at a glance */
 .nums{background:var(--bg-alt);padding:52px 0;border-bottom:1px solid var(--hairline)}
 .numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
 @media(max-width:734px){.numgrid{grid-template-columns:1fr 1fr;gap:34px 18px}}
-.numgrid b{display:block;font-size:clamp(34px,5vw,52px);font-weight:700;letter-spacing:-.03em;
+.numgrid b{display:block;font-family:var(--display);font-size:clamp(34px,5vw,52px);font-weight:900;
+  letter-spacing:-.025em;font-variant-numeric:tabular-nums;
   background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .numgrid span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
+
+/* the two ribbon tabs, and the panels under each */
 .tabsec{padding:78px 0 10px}
 .tabsec:first-of-type{padding-top:70px}
-.head{font-size:clamp(28px,4.6vw,46px);font-weight:700;letter-spacing:-.032em;line-height:1.08;
+.tabsec .head{font-size:clamp(28px,4.6vw,46px);letter-spacing:-.028em;line-height:1.08;
   padding:0 22px;max-width:1080px;margin:0 auto 10px}
-.head .dim{color:var(--faint);font-weight:600;font-size:.5em;letter-spacing:-.01em;display:block;margin-top:10px}
+.tabsec .head .dim{color:var(--faint);font-weight:500;font-size:.44em;letter-spacing:.01em;
+  display:block;margin-top:12px}
 .pgrp{max-width:1080px;margin:0 auto;padding:26px 22px 0}
-.pgrp h3{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+.pgrp h3{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);
   display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--hairline)}
-.pgrp h3 i{font-style:normal;font-size:11px;font-weight:600;color:var(--link);
+.pgrp h3 i{font-style:normal;font-size:11px;font-weight:500;color:var(--link);
   background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:2px 9px}
 .tlist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:2px 30px;margin-top:6px}
 @media(max-width:820px){.tlist{grid-template-columns:1fr}}
 .tlist li{padding:15px 0;border-bottom:1px solid var(--hairline)}
-.tlist b{display:block;font-size:16px;font-weight:650;letter-spacing:-.012em}
+.tlist b{display:block;font-family:var(--display);font-size:16px;font-weight:500;letter-spacing:-.008em}
 .tlist span{display:block;margin-top:5px;font-size:14.5px;color:var(--muted);line-height:1.55}
+
+/* releases */
 .rel{background:var(--bg-alt);margin-top:70px;padding:70px 0;border-top:1px solid var(--hairline)}
 .rlist{list-style:none;max-width:1080px;margin:26px auto 0;padding:0 22px}
 .rlist li{display:grid;grid-template-columns:96px 116px minmax(0,1fr);gap:18px;align-items:baseline;
   padding:15px 0;border-top:1px solid var(--hairline)}
 @media(max-width:734px){.rlist li{grid-template-columns:1fr;gap:4px}}
-.rlist b{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.rlist b{font-family:var(--display);font-size:15px;font-weight:500;letter-spacing:-.005em}
 .rlist time{font-size:13.5px;color:var(--faint);font-variant-numeric:tabular-nums}
 .rlist span{font-size:15px;color:var(--muted);line-height:1.55}
-.rlist em{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  color:var(--link);margin-right:8px}
+.rlist em{font-style:normal;font-family:var(--display);font-size:11.5px;font-weight:500;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--link);margin-right:8px}
 .rlist .q{color:var(--faint);font-style:italic}
 /* The newest ten sit open; the rest are one click away. <details> rather than
    a script, so it still opens with JavaScript off and find-in-page can reach
@@ -235,35 +247,25 @@
 .allrel{max-width:1080px;margin:0 auto;padding:0 22px}
 .allrel summary{list-style:none;cursor:pointer;padding:18px 0 6px;-webkit-tap-highlight-color:transparent}
 .allrel summary::-webkit-details-marker{display:none}
-.allrel summary b{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:650;
-  letter-spacing:-.01em;color:var(--link)}
+.allrel summary b{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:15.5px;
+  font-weight:500;letter-spacing:-.005em;color:var(--link)}
 .allrel summary b::after{content:"";flex:none;width:7px;height:7px;border-right:2px solid currentColor;
   border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .25s var(--ease-out)}
 .allrel[open] summary b::after{transform:rotate(-135deg)}
 .allrel summary span{display:block;margin-top:4px;font-size:13.5px;color:var(--faint)}
 .allrel summary:focus-visible{outline:2px solid var(--link);outline-offset:4px;border-radius:8px}
 .allrel .rlist{padding:0}
+
+/* closing */
 .cta{padding:78px 0;text-align:center}
-.cta h2{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.cta h2{font-size:clamp(30px,5vw,52px);font-weight:900;letter-spacing:-.025em;line-height:1.08}
 .cta p{margin:18px auto 0;max-width:56ch;color:var(--muted);font-size:17px}
-.btnrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
-.btn{background:var(--link);color:#fff;font-weight:600;font-size:16px;padding:14px 30px;border-radius:100px;
-  transition:transform .25s var(--ease-out),opacity .25s}
-.btn:hover{transform:translateY(-2px);opacity:.93}
-.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hairline)}
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  html.js .reveal{opacity:1;transform:none;transition:none}
-}
+.cta .btnrow{justify-content:center;margin-top:32px}
+
 @media print{
-  @page{margin:14mm}
-  nav,.skip,.btnrow,#themeSwitch{display:none !important}
-  html,body{background:#fff !important;color:#000 !important}
-  header.hero,.nums,.rel{background:#fff !important}
-  .grad-text,.numgrid b{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
-  .reveal{opacity:1 !important;transform:none !important}
+  .numgrid b{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
+  .nums,.rel{background:#fff !important}
   .pgrp,.tlist li,.rlist li{break-inside:avoid}
-  a{color:#000 !important}
 }
 </style>
 </head>

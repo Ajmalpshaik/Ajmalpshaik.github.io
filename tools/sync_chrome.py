@@ -164,14 +164,9 @@ def foot_html(current):
         f'      <a class="pcard next" href="{nxt[0]}"><small>{label}</small>'
         f'<b>{nxt[1]} {CHEV_R}</b><span>{nxt[2]}</span></a>'
     )
-    single = ' pager-one' if len(cards) == 1 else ''
-
-    return "\n".join([
-        '<section class="sec-foot">',
-        '  <div class="wrap">',
-        f'    <nav class="pager{single}" aria-label="More of the site">',
-        *cards,
-        '    </nav>',
+    # On /contact/ the whole page is the call to action; a band repeating it
+    # under the pager would be the third "get in touch" on one screen.
+    band = [] if current == "/contact/" else [
         '    <div class="ctaband reveal">',
         '      <div>',
         '        <h2>Looking for an MEP BIM Coordinator?</h2>',
@@ -182,6 +177,15 @@ def foot_html(current):
         '        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>',
         '      </div>',
         '    </div>',
+    ]
+
+    return "\n".join([
+        '<section class="sec-foot">',
+        '  <div class="wrap">',
+        '    <nav class="pager" aria-label="More of the site">',
+        *cards,
+        '    </nav>',
+        *band,
         '  </div>',
         '</section>',
     ])
