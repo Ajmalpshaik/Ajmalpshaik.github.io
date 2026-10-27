@@ -50,7 +50,11 @@
   --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
   --nav-bg:rgba(245,247,251,.7);
   --nav-border:rgba(0,0,0,.08);
-  --menu-bg:rgba(245,247,251,.92);
+  /* Opaque. A menu is for reading, and a translucent one puts the page's own
+     headlines through the middle of its links - which is exactly what the
+     phone sheet did, because backdrop blur is not drawn in every browser or
+     every rendering mode, and a menu may not depend on it to be legible. */
+  --menu-bg:#f7f9fc;
   /* Surfaces. A card is a plain surface with a hairline, not a pane of glass:
      the blur and the two-sided neumorphic shadow it used to carry fought the
      text on it and dated the page. One soft shadow, one hairline, nothing else. */
@@ -87,7 +91,7 @@
   --hero-bg:linear-gradient(180deg,#0c0c0c 0%,#101114 100%);
   --nav-bg:rgba(12,12,12,.72);
   --nav-border:rgba(255,255,255,.12);
-  --menu-bg:rgba(10,10,11,.96);
+  --menu-bg:#111214;
   --glass:#141518;
   --glass-strong:#17181c;
   --glass-border:#26282d;
@@ -108,11 +112,10 @@ html.theming *,html.theming *::before,html.theming *::after{
   border-color .35s var(--ease),fill .35s var(--ease),stroke .35s var(--ease),
   box-shadow .35s var(--ease),transform .35s var(--ease) !important;
 }
-/* Only the bar and its menus are still blurred - the cards are plain surfaces
-   now - so this is all that needs a solid fallback. */
+/* Only the bar itself is still blurred - the cards are plain surfaces and the
+   menus are opaque - so this is all that needs a solid fallback. */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   #nav{background:var(--bg-alt)}
-  .navlinks.open,.navmenu{background:var(--menu-bg)}
 }
 
 /* ============ Base ============ */

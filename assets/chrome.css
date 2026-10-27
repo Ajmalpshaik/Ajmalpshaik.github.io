@@ -82,8 +82,7 @@
 .navmenu{
   position:absolute;top:calc(100% + 9px);left:50%;transform:translate(-50%,0);
   min-width:272px;padding:8px;border-radius:20px;
-  background:var(--menu-bg,rgba(10,10,11,.96));border:1px solid var(--nav-border,rgba(255,255,255,.12));
-  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  background:var(--menu-bg,#111214);border:1px solid var(--nav-border,rgba(255,255,255,.12));
   box-shadow:0 22px 50px rgba(0,0,0,.22);
   display:grid;gap:2px;
 }
@@ -160,8 +159,7 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
     max-height:calc(100dvh - var(--nav-h,60px));overflow-y:auto;overscroll-behavior:contain;
     transform:none;
     display:block;padding:10px 22px 30px;
-    background:var(--menu-bg,rgba(10,10,11,.96));border-bottom:1px solid var(--nav-border,rgba(255,255,255,.12));
-    -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    background:var(--menu-bg,#111214);border-bottom:1px solid var(--nav-border,rgba(255,255,255,.12));
     box-shadow:0 18px 40px rgba(0,0,0,.18);
     opacity:0;transform:translateY(-8px);pointer-events:none;visibility:hidden;
     transition:opacity .3s var(--ease,cubic-bezier(.25,.1,.25,1)),transform .3s var(--ease,cubic-bezier(.25,.1,.25,1)),visibility .3s;
@@ -178,13 +176,17 @@ html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate
   html.js .navmenu,.navmenu{
     position:static;transform:none;opacity:1;visibility:visible;
     min-width:0;padding:0;border:none;background:none;box-shadow:none;
-    -webkit-backdrop-filter:none;backdrop-filter:none;
     transition:none;
   }
   .navmenu a{padding:13px 2px;border-radius:0;border-bottom:1px solid var(--nav-border,rgba(255,255,255,.12))}
   .navmenu a:last-child{border-bottom:none}
   .navmenu a:hover{background:none}
   .navmenu a b{font-size:17px}
+  /* The one-line description under each link doubles the height of the sheet
+     and pushes Contact off the bottom of a phone. The names carry themselves
+     at this size; the descriptions are for the desktop panels, where there is
+     room for them and no list to get through. */
+  .navmenu a span{display:none}
   .navmenu a[aria-current="page"]{background:none}
   .navcta{
     margin:22px 0 0;width:100%;justify-content:center;
