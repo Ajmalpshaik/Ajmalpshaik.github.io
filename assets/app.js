@@ -84,13 +84,38 @@
   var mqSheet = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
   var sheetMode = function(){ return !!(mqSheet && mqSheet.matches); };
 
+  /* Under 1000px every menu is simply open and the trigger is an inert heading
+     (chrome.css turns off its pointer events). Left as it is written, it would
+     still be a focusable <button aria-expanded="false"> - so a screen reader
+     announces three collapsed menus, tabs onto each, and pressing them does
+     nothing. Out of the reading order it goes; the <ul aria-label> under it
+     carries the group's name there. */
+  function syncTriggers(){
+    var sheet = sheetMode();
+    for(var i=0;i<groups.length;i++){
+      var t = groups[i].querySelector(".navtrig");
+      if(!t) continue;
+      if(sheet){
+        t.setAttribute("tabindex","-1");
+        t.setAttribute("aria-hidden","true");
+        t.removeAttribute("aria-expanded");
+        t.removeAttribute("aria-controls");
+      }else{
+        t.removeAttribute("tabindex");
+        t.removeAttribute("aria-hidden");
+        t.setAttribute("aria-controls", groups[i].querySelector(".navmenu").id);
+        t.setAttribute("aria-expanded", groups[i].classList.contains("open") ? "true" : "false");
+      }
+    }
+  }
+
   function closeMenus(except){
     for(var i=0;i<groups.length;i++){
       if(groups[i] === except) continue;
       groups[i].classList.remove("open");
       groups[i].removeAttribute("data-clicked");
       var t = groups[i].querySelector(".navtrig");
-      if(t) t.setAttribute("aria-expanded","false");
+      if(t && !sheetMode()) t.setAttribute("aria-expanded","false");
     }
   }
   function openGroup(g, byClick){
@@ -107,7 +132,7 @@
   function closeGroup(g){
     g.classList.remove("open");
     g.removeAttribute("data-clicked");
-    g.querySelector(".navtrig").setAttribute("aria-expanded","false");
+    if(!sheetMode()) g.querySelector(".navtrig").setAttribute("aria-expanded","false");
   }
 
   groups.forEach(function(g){
@@ -144,6 +169,9 @@
       } else if(e.key === "ArrowDown"){
         e.preventDefault();
         if(!g.classList.contains("open")) openGroup(g, true);
+        /* reading a layout property forces the style change above to land, so
+           the link is out of a hidden subtree before focus is asked for */
+        void g.querySelector(".navmenu").offsetWidth;
         (items[i + 1] || items[0]).focus();
       } else if(e.key === "ArrowUp"){
         e.preventDefault();
@@ -182,8 +210,9 @@
   });
   /* Leaving the sheet width with the sheet open would otherwise strand it. */
   if(mqSheet && mqSheet.addEventListener){
-    mqSheet.addEventListener("change", function(){ closeSheet(); closeMenus(null); });
+    mqSheet.addEventListener("change", function(){ closeSheet(); closeMenus(null); syncTriggers(); });
   }
+  syncTriggers();
 
   /* links from the old single-page version land on the right page now */
   var legacy = {
@@ -277,34 +306,6 @@
     }, {threshold:.2, rootMargin:"0px 0px -25% 0px"});
     tlItems.forEach(function(el){ dotIo.observe(el); });
   }
-
-  /* ribbon tabs — without JS both panels stay open and readable */
-  (function(){
-    var list = document.querySelector(".rtabs[role=tablist]");
-    if(!list) return;
-    var tabs = [].slice.call(list.querySelectorAll("[role=tab]"));
-    function select(tab, focus){
-      tabs.forEach(function(t){
-        var on = t === tab;
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
-        var panel = document.getElementById(t.getAttribute("aria-controls"));
-        if(panel) panel.hidden = !on;
-      });
-      if(focus) tab.focus();
-    }
-    tabs.forEach(function(t){ t.addEventListener("click", function(){ select(t, false); }); });
-    list.addEventListener("keydown", function(e){
-      var i = tabs.indexOf(document.activeElement);
-      if(i < 0) return;
-      var n = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1
-            : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : -1;
-      if(n < 0 && e.key !== "Home" && e.key !== "End") return;
-      e.preventDefault();
-      select(tabs[(n + tabs.length) % tabs.length], true);
-    });
-    select(tabs[0], false);   // JS is on, so collapse to a real tab view
-  })();
 
   /* ------------------------------------------------------------------
      Analytics — ON. Dashboard: https://ajmalps.goatcounter.com

@@ -74,7 +74,9 @@ main [hidden]{display:none !important}
 .bv-ph b{font-size:14px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bv-x{flex:0 0 28px;width:28px;height:28px;border:0;border-radius:8px;background:rgba(255,255,255,.06);cursor:pointer;font-size:18px;line-height:1}
 .bv-x:hover{background:rgba(255,255,255,.14)}
-.bv-panel h3{margin:14px 16px 6px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--g-mute)}
+/* h2, not h3: the page has one h1 and these are the level under it.
+   They look like small labels, which is a size, not an outline level. */
+.bv-panel h2{margin:14px 16px 6px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--g-mute)}
 .bv-meta{padding:10px 16px 0;color:var(--g-mute);font-size:12.5px}
 .bv-tree{top:64px;left:12px;bottom:76px;width:258px}
 .bv-tree .bv-list{overflow:auto}
@@ -244,7 +246,7 @@ main [hidden]{display:none !important}
 /* pause card */
 .bv-pause{position:absolute;inset:0;z-index:6;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at center,rgba(5,8,14,.35),rgba(5,8,14,.72))}
 .bv-card{max-width:420px;padding:24px 24px 20px;border-radius:20px;text-align:center}
-.bv-card h3{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:4px 0 8px}
+.bv-card h2{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:4px 0 8px}
 .bv-card p{color:var(--g-mute);line-height:1.55}
 .bv-kicker{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g-orange) !important}
 .bv-cardbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 10px}

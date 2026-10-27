@@ -71,22 +71,29 @@ SOCIAL = [
     ("mailto:ajmalnattika@gmail.com", "Email"),
 ]
 
-# Which page is which. Keys are repo-relative paths, values the site path.
-PAGE_URL = {
-    "404.html": None,
-    "story/index.html": "/story/",
-    "experience/index.html": "/experience/",
-    "work/index.html": "/work/",
-    "aj-tools/index.html": "/aj-tools/",
-    "heron-ai/index.html": "/heron-ai/",
-    "about/index.html": "/about/",
-    "skills/index.html": "/skills/",
-    "faq/index.html": "/faq/",
-    "contact/index.html": "/contact/",
-    "toolbox/index.html": "/toolbox/",
-    "toolbox/crane-lift-calculator/index.html": None,
-    "toolbox/ar-viewer/index.html": None,
-    "toolbox/bim-viewer/index.html": None,
+# Which page is which. Keys are repo-relative paths; the value is
+# (the bar link to mark as current, this page's own place on the tour).
+#
+# The two are not always the same. A tool page is not on the tour - a pager
+# reading "next: Skills" under a crane calculator would be nonsense - but it is
+# still inside the Toolbox, so the bar marks Toolbox while the page shows no
+# pager. Giving both jobs to one value is how those three pages lost their
+# current-page marking when this script took the nav over.
+PAGES = {
+    "404.html": (None, None),
+    "story/index.html": ("/story/", "/story/"),
+    "experience/index.html": ("/experience/", "/experience/"),
+    "work/index.html": ("/work/", "/work/"),
+    "aj-tools/index.html": ("/aj-tools/", "/aj-tools/"),
+    "heron-ai/index.html": ("/heron-ai/", "/heron-ai/"),
+    "about/index.html": ("/about/", "/about/"),
+    "skills/index.html": ("/skills/", "/skills/"),
+    "faq/index.html": ("/faq/", "/faq/"),
+    "contact/index.html": ("/contact/", "/contact/"),
+    "toolbox/index.html": ("/toolbox/", "/toolbox/"),
+    "toolbox/crane-lift-calculator/index.html": ("/toolbox/", None),
+    "toolbox/ar-viewer/index.html": ("/toolbox/", None),
+    "toolbox/bim-viewer/index.html": ("/toolbox/", None),
 }
 
 CHEV_L = '<span class="chev" aria-hidden="true">&lsaquo;</span>'
@@ -112,12 +119,16 @@ def nav_html(current):
             f'        <button type="button" class="navtrig" aria-expanded="false" aria-controls="{gid}">{name}'
             '<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" '
             'aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>',
-            f'        <div class="navmenu" id="{gid}">',
+            # A real list, named. Under 1000px the trigger above becomes an
+            # inert heading and assets/app.js takes it out of the reading
+            # order; this label is then the only thing naming the group, so it
+            # is not decoration.
+            f'        <ul class="navmenu" id="{gid}" aria-label="{name}">',
         ]
         for href, label, note in items:
             mark = ' aria-current="page"' if href == current else ''
-            out.append(f'          <a href="{href}"{mark}><b>{label}</b><span>{note}</span></a>')
-        out += ['        </div>', '      </div>']
+            out.append(f'          <li><a href="{href}"{mark}><b>{label}</b><span>{note}</span></a></li>')
+        out += ['        </ul>', '      </div>']
     mark = ' aria-current="page"' if CTA[0] == current else ''
     out += [
         f'      <a class="navcta" href="{CTA[0]}"{mark}>{CTA[1]}</a>',
@@ -195,13 +206,13 @@ def footer_html():
     cols = []
     for name, items in GROUPS:
         lis = "\n".join(f'        <li><a href="{h}">{label}</a></li>' for h, label, _ in items)
-        cols.append(f'    <div>\n      <h4>{name}</h4>\n      <ul>\n{lis}\n      </ul>\n    </div>')
+        cols.append(f'    <div>\n      <h3>{name}</h3>\n      <ul>\n{lis}\n      </ul>\n    </div>')
     socials = "\n".join(
         '        <li><a href="%s"%s>%s</a></li>'
         % (h, ' rel="me"' if h.startswith("https") else "", label)
         for h, label in SOCIAL
     )
-    cols.append(f'    <div>\n      <h4>Elsewhere</h4>\n      <ul>\n{socials}\n      </ul>\n    </div>')
+    cols.append(f'    <div>\n      <h3>Elsewhere</h3>\n      <ul>\n{socials}\n      </ul>\n    </div>')
     return "\n".join([
         '<footer>',
         '  <div class="fgrid">',
@@ -229,20 +240,20 @@ FOOT_RE = re.compile(r"<!-- foot:start -->.*?<!-- foot:end -->", re.S)
 
 
 def rewrite(page, src):
-    url = PAGE_URL[page]
+    current, tour = PAGES[page]
     problems = []
 
     if not NAV_RE.search(src):
         problems.append(f"{page}: no <nav id=\"nav\"> to replace")
     else:
-        src = NAV_RE.sub(lambda _: nav_html(url), src, count=1)
+        src = NAV_RE.sub(lambda _: nav_html(current), src, count=1)
 
     if not FOOTER_RE.search(src):
         problems.append(f"{page}: no <footer> to replace")
     else:
         src = FOOTER_RE.sub(lambda _: footer_html(), src, count=1)
 
-    foot = foot_html(url)
+    foot = foot_html(tour)
     if foot is not None:
         block = f"<!-- foot:start -->\n{foot}\n<!-- foot:end -->"
         if FOOT_RE.search(src):
@@ -251,6 +262,10 @@ def rewrite(page, src):
             src = src.replace("</main>", block + "\n</main>", 1)
         else:
             problems.append(f"{page}: nowhere to put the pager (no </main>)")
+    elif FOOT_RE.search(src):
+        # A page taken off the tour keeps its pager otherwise, pointing at
+        # neighbours it no longer has, and --check stays green about it.
+        src = FOOT_RE.sub("", src, count=1).replace("\n\n</main>", "\n</main>")
 
     return src, problems
 
@@ -258,7 +273,7 @@ def rewrite(page, src):
 def main():
     check = "--check" in sys.argv
     stale, problems = [], []
-    for page in PAGE_URL:
+    for page in PAGES:
         path = os.path.join(ROOT, page)
         if not os.path.exists(path):
             problems.append(f"missing page: {page}")

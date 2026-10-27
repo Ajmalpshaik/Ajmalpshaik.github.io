@@ -31,9 +31,9 @@ dark theme of every other page.**
 - The home page stays the **cover**: dark only, full-bleed, cinematic. A cover
   does not need a theme switch.
 - Every content page keeps the light/dark toggle, following the operating
-  system until the visitor says otherwise — but its **dark theme is retuned to
-  be the home page exactly** (`#0C0C0C` ground, `#D7E2EA` secondary text). A
-  visitor in dark mode now never sees a seam.
+  system until the visitor says otherwise — but its **dark theme is retuned
+  around the home page's ground** (`#0c0c0c`, and its neighbours). A visitor in
+  dark mode never sees a seam at the edge of the cover.
 - **Kanit** carries every heading on every page, so the voice of the home page
   is the voice of the site. Body prose stays on the system face: it is faster,
   and it is what long text should be set in.
@@ -51,11 +51,11 @@ dark theme of every other page.**
 
 | Role | Face | Size | Notes |
 |---|---|---|---|
-| Cover heading | Kanit 900 | `12–15vw` | uppercase, tracking tight |
-| Page title (`h1`) | Kanit 900 | `clamp(40px, 7vw, 76px)` | sentence case, `-0.03em` |
-| Section head (`h2.head`) | Kanit 900 | `clamp(32px, 5vw, 58px)` | sentence case |
+| Cover heading | Kanit 900 | `12.1–15.1vw` | uppercase, tracking tight |
+| Page title (`h1`) | Kanit 900 | `clamp(38px, 6.2vw, 74px)` | sentence case, `-0.025em` |
+| Section head (`h2.head`) | Kanit 900 | `clamp(34px, 5vw, 60px)` | sentence case |
 | Card head (`h3`) | Kanit 500 | `21–23px` | |
-| Eyebrow | Kanit 500 | `13px` | uppercase, `0.14em` |
+| Eyebrow | Kanit 500 | `14px` | uppercase, `0.12em` |
 | Body | system sans | `16.5–21px` | line-height 1.55 |
 
 Two weights are self-hosted for the content pages — `assets/fonts/kanit-500.woff2`
@@ -70,9 +70,15 @@ One token set, two themes. The dark values are the home page's.
 |---|---|---|
 | `--bg` | `#ffffff` | `#0c0c0c` |
 | `--bg-alt` | `#f5f5f7` | `#121316` |
-| `--ink` | `#1d1d1f` | `#eef4f8` |
-| `--muted` | `#6e6e73` | `#d7e2ea` |
-| `--link` | `#0071e3` | `#2997ff` |
+| `--ink` | `#1d1d1f` | `#e8eef3` |
+| `--muted` | `#5c636b` | `#aab8c4` |
+| `--faint` | `#696e74` | `#7d8a95` |
+| `--link` | `#0066d6` | `#4aa8ff` |
+
+Three of the light values moved in this redesign because the old ones did not
+clear AA: `--faint` was `#86868b`, 3.62:1 on white, and `--link` was `#0071e3`,
+4.31:1 on `--bg-alt`. The tightest pair now is `--faint` on `--bg-alt` at
+4.72:1.
 
 The cyan → blue → violet gradient stays as the accent on numbers and icons.
 Nothing else is coloured.
@@ -111,11 +117,15 @@ re-measure.
                  └ Work         └ Toolbox    └ FAQ
 ```
 
-- Each menu is a `<button aria-expanded>` with a `<ul>`; Escape closes,
-  `↑ ↓` moves inside it, Tab leaves it, and the trigger of the section you are
-  in is marked `aria-current`.
-- Under 1100px the three menus become one full-height sheet with the groups as
-  headings — no nesting to open, every page one tap away.
+- Each menu is a `<button aria-expanded>` and a `<ul aria-label="…">`: Escape
+  closes and gives the trigger its focus back, `↑ ↓` move inside it, Tab out of
+  the last link closes it behind you, hover opens it and a click closes only
+  what a click opened. The page you are on is marked `aria-current`, and its
+  group's trigger carries `data-current`.
+- Under 1000px the three menus become one sheet with the groups as headings —
+  no nesting to open, every page one tap away, and all ten links on one
+  phone screen. The trigger is inert there, so it leaves the reading order and
+  the list's `aria-label` carries the group's name instead.
 - With JavaScript off the menus are plain always-open lists. Nothing is hidden
   behind a script.
 

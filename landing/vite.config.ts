@@ -48,8 +48,8 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets/home',
     emptyOutDir: true,
-    // The 3D chunk is mostly three.js, about 150 KB gzipped. It is fetched only
-    // when a model is about to be seen, never for the first paint.
-    chunkSizeWarningLimit: 700,
+    // The page is React, Framer Motion and its own code - nothing near the
+    // 500 KB default. three.js used to be here and is not any more: the models
+    // render their pictures at build time now (see README).
   },
 })

@@ -168,10 +168,10 @@ img,svg{display:block;max-width:100%}
 h1,h2,h3,h4,
 .pagehead h1,h2.head,.ch-title,.contact h1,.contact h2,.nf h1,.hero h1,.hero .tagline,
 .ptile h3,.bcard h3,.pcard b,.ctaband h2,.bcard .big,
-.pull,.ladder b,.tl-item h3,.spec-row h3{
+.ladder b,.tl-item h3,.spec-row h3{
   font-family:var(--display);
 }
-.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h4,
+.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h3,
 .hero .kicker,.brand,.fbrand,.ladder b,.tl-stake{
   font-family:var(--display);
 }
@@ -237,6 +237,10 @@ html.js .reveal.in{opacity:1;transform:none}
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   min-height:48px;padding:12px 26px;border-radius:999px;
   background:var(--blue);color:#fff;font-size:17px;font-weight:500;cursor:pointer;
+  /* Most .btn on the site are links, but a few are real <button>s - the print
+     button in the Toolbox, for one - and those were still wearing the
+     browser's own grey border and its default font. */
+  border:none;font-family:inherit;line-height:1.2;
   transition:background .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);
 }
 .btn:hover{background:var(--blue-hover);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,113,227,.28)}
@@ -355,7 +359,8 @@ html.js .reveal.in{opacity:1;transform:none}
 .sec-dark .crumbs a:hover{color:#6ea8ff}
 .contact p.sub{margin:22px auto 0}
 .crow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:44px}
-.cnote{margin-top:34px;color:#6e6e73;font-size:14px}
+/* #6e6e73 on the black section is 4.14:1, under AA for text this size. */
+.cnote{margin-top:34px;color:#a1a1a6;font-size:14px}
 
 /* ============ Footer ============ */
 footer{background:var(--bg-alt);padding:26px 0;border-top:1px solid var(--hairline)}
@@ -416,14 +421,6 @@ html.js .rvt.in .ln>i{transform:none;opacity:1}
 }
 @media(min-width:1000px) and (prefers-reduced-motion:reduce){
   .ch-head{position:static}
-}
-
-/* pull quote */
-.pull{
-  margin:56px 0 0;padding-left:26px;border-left:3px solid transparent;
-  border-image:var(--grad) 1;
-  font-size:clamp(21px,3vw,31px);line-height:1.32;letter-spacing:-.022em;font-weight:600;
-  max-width:22ch;
 }
 
 /* ---- ch01: the repetition stack ---- */
@@ -506,7 +503,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
   nav,.skip,#themeSwitch,#menuBtn,.btnrow,.crow,.bicon,.picon,.chev,
   .progress,.pager{display:none !important}
   /* gradient-filled text is transparent — force it back to ink for paper */
-  .grad-text,.pull{
+  .grad-text{
     -webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important;
   }
   .ch-head{position:static !important}
@@ -630,7 +627,7 @@ footer{padding:52px 0 26px}
 /* the brand column introduces the site, so it spans the row on narrow screens */
 @media(max-width:1000px){.fgrid>:first-child{grid-column:1/-1}}
 .fcta{margin-top:18px;min-height:42px;padding:9px 22px;font-size:15px}
-.fgrid h4{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.fgrid h3{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
 .fgrid ul{list-style:none;display:grid;gap:10px}
 .fgrid a{font-size:15px;color:var(--muted)}
 .fgrid a:hover{color:var(--link)}
@@ -646,8 +643,8 @@ footer{padding:52px 0 26px}
 
 /* The light that followed the cursor across every card is gone: it drew the
    eye to the pointer rather than to the words, and it cost a paint on every
-   mouse move. A card lifts on hover and that is all. assets/app.js still sets
-   --mx/--my for the explore cards on the home page, which do use it. */
+   mouse move. A card lifts on hover and that is all. Nothing sets --mx/--my
+   any more either: the explore grid that read them went with it. */
 
 /* 404 */
 .nf{min-height:70vh;display:flex;align-items:center;text-align:center;padding-top:var(--nav-h)}
@@ -678,8 +675,8 @@ footer{padding:52px 0 26px}
 /* everything that titles a card, a row or a group */
 h1,h2,h3,h4,
 .bcard h3,.tl-item h3,.spec-row h3,.pcard b,.ctaband h2,
-.ladder b,.pull,.brand,.fbrand{font-weight:500}
+.ladder b,.brand,.fbrand{font-weight:500}
 
 /* labels, all of them uppercase and tracked out */
-.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h4,
+.eyebrow,.ch-eyebrow,.ptype,.tl-yr,.pcard small,.fgrid h3,
 .hero .kicker,.tl-stake{font-weight:500}

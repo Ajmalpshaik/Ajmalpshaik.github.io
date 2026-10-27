@@ -8,7 +8,7 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/bim-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta name="theme-color" id="metaTheme" content="#f7f9fc">
 <meta property="og:title" content="BIM Viewer — open IFC in your browser and walk inside it">
 <meta property="og:description" content="Free IFC viewer for Revit models. See properties, cut sections and measure, then walk inside the building as a robot, game style. Your file never leaves your device.">
 <meta property="og:url" content="https://ajmalps.com/toolbox/bim-viewer/">
@@ -125,27 +125,27 @@
     <div class="navlinks" id="navLinks">
       <div class="navgroup">
         <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-experience">Experience<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="navmenu" id="nm-experience">
-          <a href="/story/"><b>Story</b><span>How it started</span></a>
-          <a href="/experience/"><b>Experience</b><span>Eleven years, and where</span></a>
-          <a href="/work/"><b>Selected work</b><span>Five projects in Qatar</span></a>
-        </div>
+        <ul class="navmenu" id="nm-experience" aria-label="Experience">
+          <li><a href="/story/"><b>Story</b><span>How it started</span></a></li>
+          <li><a href="/experience/"><b>Experience</b><span>Eleven years, and where</span></a></li>
+          <li><a href="/work/"><b>Selected work</b><span>Five projects in Qatar</span></a></li>
+        </ul>
       </div>
-      <div class="navgroup">
+      <div class="navgroup" data-current>
         <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-tools">Tools<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="navmenu" id="nm-tools">
-          <a href="/aj-tools/"><b>AJ-Tools</b><span>The Revit add-in a team runs on</span></a>
-          <a href="/heron-ai/"><b>Heron AI</b><span>An AI that works inside Revit</span></a>
-          <a href="/toolbox/"><b>Toolbox</b><span>Tools you can use in the browser</span></a>
-        </div>
+        <ul class="navmenu" id="nm-tools" aria-label="Tools">
+          <li><a href="/aj-tools/"><b>AJ-Tools</b><span>The Revit add-in a team runs on</span></a></li>
+          <li><a href="/heron-ai/"><b>Heron AI</b><span>An AI that works inside Revit</span></a></li>
+          <li><a href="/toolbox/" aria-current="page"><b>Toolbox</b><span>Tools you can use in the browser</span></a></li>
+        </ul>
       </div>
       <div class="navgroup">
         <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-about">About<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="navmenu" id="nm-about">
-          <a href="/skills/"><b>Skills</b><span>The full stack, named</span></a>
-          <a href="/about/"><b>About</b><span>Visa, notice, languages</span></a>
-          <a href="/faq/"><b>FAQ</b><span>The questions before a call</span></a>
-        </div>
+        <ul class="navmenu" id="nm-about" aria-label="About">
+          <li><a href="/skills/"><b>Skills</b><span>The full stack, named</span></a></li>
+          <li><a href="/about/"><b>About</b><span>Visa, notice, languages</span></a></li>
+          <li><a href="/faq/"><b>FAQ</b><span>The questions before a call</span></a></li>
+        </ul>
       </div>
       <a class="navcta" href="/contact/">Contact</a>
     </div>
@@ -220,9 +220,9 @@
       <aside class="bv-panel bv-tree" id="bvTree" aria-label="Model tree">
         <div class="bv-ph"><b id="bvName">Model</b><button type="button" class="bv-x" id="bvTreeClose" aria-label="Close the model tree">×</button></div>
         <p class="bv-meta" id="bvMeta"></p>
-        <h3>Levels</h3>
+        <h2>Levels</h2>
         <ul class="bv-list" id="bvLevels"></ul>
-        <h3>Categories</h3>
+        <h2>Categories</h2>
         <ul class="bv-list" id="bvCats"></ul>
       </aside>
 
@@ -306,7 +306,7 @@
       <div class="bv-pause" id="bvPause" hidden>
         <div class="bv-card">
           <p class="bv-kicker">Walk view</p>
-          <h3>Walk through the model</h3>
+          <h2>Walk through the model</h2>
           <p>Steer your character through the building. Doors let you through, walls do not. Look at any element and press <kbd>E</kbd> to see what it is.</p>
           <div class="bv-chars" id="bvChars" role="radiogroup" aria-label="Character">
             <button type="button" role="radio" data-char="robot" aria-checked="true"><b aria-hidden="true">🤖</b><span>Robot</span></button>
@@ -325,7 +325,7 @@
       <div class="bv-panel bv-settings" id="bvSettings" hidden>
         <div class="bv-ph"><b>Settings</b><button type="button" class="bv-x" id="bvSetClose" aria-label="Close settings">×</button></div>
         <div class="bv-sbody">
-          <h3>Graphics</h3>
+          <h2>Graphics</h2>
           <label class="bv-row">Quality
             <select id="sQuality"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option></select>
           </label>
@@ -339,7 +339,7 @@
           </label>
           <label class="bv-row bv-col"><span>Time of day <output id="sTimeOut"></output></span><input type="range" id="sTime" min="0" max="24" step="0.25"></label>
           <p class="bv-small">Ambient occlusion and bloom need High or Ultra quality.</p>
-          <h3>Walk view</h3>
+          <h2>Walk view</h2>
           <label class="bv-row">Character
             <select id="sChar"><option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option></select>
           </label>
@@ -355,7 +355,7 @@
           <label class="bv-row bv-tog"><input type="checkbox" id="sInvert"><span>Invert look up and down</span></label>
           <label class="bv-row bv-tog"><input type="checkbox" id="sMini"><span>Minimap</span></label>
           <label class="bv-row bv-tog"><input type="checkbox" id="sTorch"><span>Torch on after dark</span></label>
-          <h3>Display</h3>
+          <h2>Display</h2>
           <label class="bv-row bv-tog"><input type="checkbox" id="sFps"><span>Show frame rate</span></label>
           <button type="button" class="bv-ghost bv-wide" id="sReset">Reset settings</button>
         </div>
@@ -408,7 +408,7 @@
       <a class="btn btn-ghost fcta" href="/contact/">Contact</a>
     </div>
     <div>
-      <h4>Experience</h4>
+      <h3>Experience</h3>
       <ul>
         <li><a href="/story/">Story</a></li>
         <li><a href="/experience/">Experience</a></li>
@@ -416,7 +416,7 @@
       </ul>
     </div>
     <div>
-      <h4>Tools</h4>
+      <h3>Tools</h3>
       <ul>
         <li><a href="/aj-tools/">AJ-Tools</a></li>
         <li><a href="/heron-ai/">Heron AI</a></li>
@@ -424,7 +424,7 @@
       </ul>
     </div>
     <div>
-      <h4>About</h4>
+      <h3>About</h3>
       <ul>
         <li><a href="/skills/">Skills</a></li>
         <li><a href="/about/">About</a></li>
@@ -432,7 +432,7 @@
       </ul>
     </div>
     <div>
-      <h4>Elsewhere</h4>
+      <h3>Elsewhere</h3>
       <ul>
         <li><a href="https://www.linkedin.com/in/ajmalps/" rel="me">LinkedIn</a></li>
         <li><a href="https://github.com/Ajmalpshaik" rel="me">GitHub</a></li>

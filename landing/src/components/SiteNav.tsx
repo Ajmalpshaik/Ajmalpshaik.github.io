@@ -17,6 +17,9 @@ const SHEET = '(max-width: 1000px)'
 export default function SiteNav() {
   const [open, setOpen] = useState<string | null>(null)
   const [sheet, setSheet] = useState(false)
+  // Whether the bar is in sheet mode, as state rather than only as the ref
+  // below: the trigger's attributes depend on it, so a render has to follow.
+  const [narrow, setNarrow] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const bar = useRef<HTMLElement>(null)
   const isSheet = useRef(false)
@@ -32,6 +35,7 @@ export default function SiteNav() {
     const mq = window.matchMedia(SHEET)
     const sync = () => {
       isSheet.current = mq.matches
+      setNarrow(mq.matches)
       setOpen(null)
       setSheet(false)
     }
@@ -44,7 +48,11 @@ export default function SiteNav() {
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
 
   // Escape closes whatever is open; a click outside does the same.
@@ -108,7 +116,11 @@ export default function SiteNav() {
                 }}
                 onPointerLeave={(e) => {
                   if (e.pointerType === 'touch' || isSheet.current) return
+                  const group_ = e.currentTarget
                   leave.current = window.setTimeout(() => {
+                    // Not while the keyboard is inside it: closing would hide
+                    // the focused link and drop focus back to <body>.
+                    if (group_.contains(document.activeElement)) return
                     byClick.current = false
                     setOpen((o) => (o === group.name ? null : o))
                   }, 140)
@@ -128,18 +140,34 @@ export default function SiteNav() {
                     e.preventDefault()
                     byClick.current = true
                     setOpen(group.name)
-                    ;(items[i + 1] ?? items[0])?.focus()
+                    // The panel is still visibility:hidden on this tick, and a
+                    // hidden link cannot take focus - so wait for the paint.
+                    const next = items[i + 1] ?? items[0]
+                    if (isOpen) next?.focus()
+                    else requestAnimationFrame(() => next?.focus())
                   } else if (e.key === 'ArrowUp') {
                     e.preventDefault()
                     ;(i > 0 ? items[i - 1] : items[items.length - 1])?.focus()
                   }
                 }}
+                onBlur={(e) => {
+                  if (isSheet.current) return
+                  const group_ = e.currentTarget
+                  // Tab out of the last link and the panel closes behind you,
+                  // rather than hanging over the page until Escape.
+                  window.setTimeout(() => {
+                    if (!group_.contains(document.activeElement)) {
+                      setOpen((o) => (o === group.name ? null : o))
+                    }
+                  }, 0)
+                }}
               >
                 <button
                   type="button"
                   className="navtrig"
-                  aria-expanded={isOpen}
-                  aria-controls={id}
+                  {...(sheet || narrow
+                    ? { tabIndex: -1, 'aria-hidden': true }
+                    : { 'aria-expanded': isOpen, 'aria-controls': id })}
                   onClick={(e) => {
                     e.stopPropagation()
                     if (isSheet.current) return
@@ -164,14 +192,16 @@ export default function SiteNav() {
                     <path d="m6 9 6 6 6-6" />
                   </svg>
                 </button>
-                <div className="navmenu" id={id}>
+                <ul className="navmenu" id={id} aria-label={group.name}>
                   {group.items.map((item) => (
-                    <a key={item.href} href={item.href}>
-                      <b>{item.label}</b>
-                      <span>{item.note}</span>
-                    </a>
+                    <li key={item.href}>
+                      <a href={item.href}>
+                        <b>{item.label}</b>
+                        <span>{item.note}</span>
+                      </a>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             )
           })}

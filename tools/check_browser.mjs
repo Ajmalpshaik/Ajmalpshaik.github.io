@@ -240,6 +240,37 @@ for (const page of PAGES) {
         if (!(await settle(id, false))) fail(`${where}: Escape does not close the "${name}" menu`);
       }
 
+      // ---- the keyboard, which is the whole reason these are buttons ----
+      {
+        const trigger = triggers[0];
+        const id = await trigger.getAttribute('aria-controls');
+        await trigger.focus();
+        await p.keyboard.press('ArrowDown');
+        await settle(id, true);
+        const landed = await p.evaluate((sel) => {
+          const first = document.querySelector(`#${sel} a`);
+          return document.activeElement === first;
+        }, id);
+        // One press, not two: the panel opens and the caret is on its first
+        // link. On the cover this took two, because the focus call ran while
+        // the panel was still visibility:hidden.
+        if (!landed) fail(`${where}: ArrowDown on a closed menu does not reach its first link`);
+
+        // Tab off the end and the panel closes behind you, rather than
+        // hanging over the page until Escape.
+        for (let i = 0; i < 3; i++) await p.keyboard.press('Tab');
+        if (!(await settle(id, false))) fail(`${where}: tabbing out of a menu leaves it open`);
+      }
+
+      // ---- the sheet's headings are inert, so they may not claim to be menus ----
+      await p.setViewportSize({ width: 390, height: 844 });
+      await p.waitForTimeout(400);
+      const claims = await p.$$eval('#nav .navtrig', (ts) =>
+        ts.filter((t) => t.hasAttribute('aria-expanded') || t.tabIndex >= 0).length);
+      if (claims) fail(`${where}: ${claims} inert menu heading(s) still read as a menu button at 390px`);
+      await p.setViewportSize({ width: 1280, height: 900 });
+      await p.waitForTimeout(400);
+
       // every page the bar promises must be in it, and must be a real page
       const hrefs = await p.$$eval('#nav .navmenu a', (as) => as.map((a) => new URL(a.href).pathname));
       for (const want of EXPECTED) {
