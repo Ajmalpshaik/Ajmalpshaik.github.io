@@ -207,9 +207,12 @@
 .nums{background:var(--bg-alt);padding:52px 0 44px;border-bottom:1px solid var(--hairline)}
 .numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
 @media(max-width:734px){.numgrid{grid-template-columns:1fr 1fr;gap:34px 18px}}
+/* Solid, not the gradient: across a one-character number a gradient samples a
+   sliver of its ramp, so "395" came out cyan and "0" solid violet, side by
+   side on the same row. The gradient stays on the wordmarks, which are wide
+   enough to show it. */
 .numgrid b{display:block;font-family:var(--display);font-size:clamp(34px,5vw,52px);font-weight:900;
-  letter-spacing:-.025em;font-variant-numeric:tabular-nums;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  letter-spacing:-.025em;font-variant-numeric:tabular-nums;color:var(--link)}
 .numgrid span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
 .numnote{margin:30px auto 0;max-width:70ch;text-align:center;font-size:13.5px;color:var(--faint);line-height:1.6}
 .tabsec{padding:78px 0 10px}
@@ -264,7 +267,6 @@
    assets/style.css; this block only adds what is particular to this page. */
 .cta .btnrow{justify-content:center;margin-top:32px}
 @media print{
-  .numgrid b{-webkit-text-fill-color:#000 !important;color:#000 !important;background:none !important}
   .nums,.say,.note{background:#fff !important}
   .pgrp,.tlist li,.ladder li{break-inside:avoid}
   /* a closed <details> prints nothing of its contents and cannot be forced

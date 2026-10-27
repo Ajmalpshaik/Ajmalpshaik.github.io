@@ -488,7 +488,7 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
-  const invisible = await p.$$eval('.grad-text, .ch-idx, .numgrid b, .hero-heading',
+  const invisible = await p.$$eval('.grad-text, .ch-idx, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;
       return f === 'rgba(0, 0, 0, 0)' || f === 'transparent';
