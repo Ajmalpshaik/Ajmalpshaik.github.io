@@ -1,14 +1,39 @@
-/* ajmalps.com - shared stylesheet. Built from the published design. */
+/* ajmalps.com - the shared stylesheet for every page but the home page.
+   The home page is built from landing/ and carries its own CSS; the two are
+   held to one system by docs/REDESIGN.md. Read that before changing a token:
+   the dark values here ARE the home page's colours, which is what makes the
+   step from the cover into the site seamless.
+
+   Order: fonts, tokens, base, chrome (nav/footer), components, motion, print. */
+
+/* ============ Display face ============
+   Kanit carries every heading, the same face the home page's cover is set in.
+   Two weights, Latin only, about 19 KB each, self-hosted - no third-party
+   request on any page. Body prose stays on the system face: it loads instantly
+   and it is the right thing for long text. */
+@font-face{
+  font-family:"Kanit";font-style:normal;font-weight:500;font-display:swap;
+  src:url("/assets/fonts/kanit-500.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Kanit";font-style:normal;font-weight:900;font-display:swap;
+  src:url("/assets/fonts/kanit-900.woff2") format("woff2");
+}
+
 /* ============ Tokens ============ */
 :root{
+  /* Text. Every value here clears WCAG AA on both --bg and --bg-alt; the
+     previous --muted and --faint did not, which is why they moved. */
   --ink:#1d1d1f;
-  --muted:#6e6e73;
-  --faint:#86868b;
+  --muted:#5c636b;
+  --faint:#696e74;
   --bg:#ffffff;
   --bg-alt:#f5f5f7;
   --hairline:#d2d2d7;
-  --blue:#0071e3;
-  --blue-hover:#0077ed;
+  /* #0071e3 is 4.31:1 on --bg-alt, under AA for text, so links and buttons use
+     this one and keep the lighter blue for hover only. */
+  --blue:#0066d6;
+  --blue-hover:#0071e3;
   --cyan:#00c8ff;
   --violet:#7c3aed;
   --grad:linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%);
@@ -16,8 +41,11 @@
   --ease:cubic-bezier(.25,.1,.25,1);
   --ease-out:cubic-bezier(.16,1,.3,1);
   --nav-h:60px;
+  /* Type */
+  --display:"Kanit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --card:#ffffff;
-  --link:#0071e3;
+  --link:#0066d6;
   --hover-bg:rgba(0,0,0,.05);
   --hero-bg:linear-gradient(180deg,#f7f9fc 0%,#eff2f8 100%);
   --nav-bg:rgba(245,247,251,.7);
@@ -40,25 +68,30 @@
   --b-violet:rgba(124,58,237,.12);
   color-scheme:light;
 }
+/* Dark is the home page. #0c0c0c is the cover's ground and these are its
+   neighbours, so a visitor in dark mode steps from / into any page without a
+   seam. Do not drift these toward blue-grey again - that was the old split. */
 :root[data-theme="dark"]{
-  --ink:#f5f5f7;
-  --muted:#a1a1a6;
-  --faint:#86868b;
-  --bg:#0c0e13;
-  --bg-alt:#12141b;
-  --hairline:#2b2f38;
-  --card:#1d1d1f;
-  --link:#2997ff;
+  --ink:#e8eef3;
+  --muted:#aab8c4;
+  --faint:#7d8a95;
+  --bg:#0c0c0c;
+  --bg-alt:#121316;
+  --hairline:#262a2e;
+  --blue:#0071e3;
+  --blue-hover:#2997ff;
+  --card:#15171a;
+  --link:#4aa8ff;
   --hover-bg:rgba(255,255,255,.08);
-  --hero-bg:linear-gradient(180deg,#0c0e13 0%,#0e1118 100%);
-  --nav-bg:rgba(16,18,24,.7);
+  --hero-bg:linear-gradient(180deg,#0c0c0c 0%,#101114 100%);
+  --nav-bg:rgba(12,12,12,.72);
   --nav-border:rgba(255,255,255,.12);
-  --menu-bg:rgba(16,18,24,.94);
+  --menu-bg:rgba(10,10,11,.96);
   --glass:rgba(255,255,255,.055);
   --glass-strong:rgba(255,255,255,.075);
   --glass-border:rgba(255,255,255,.12);
-  --glass-fb:#191c23;
-  --neu-surface:#171a21;
+  --glass-fb:#15171a;
+  --neu-surface:#15171a;
   --neu-out:8px 8px 20px rgba(0,0,0,.6),-8px -8px 20px rgba(255,255,255,.04);
   --neu-out-sm:4px 4px 10px rgba(0,0,0,.55),-4px -4px 10px rgba(255,255,255,.04);
   --neu-hover:14px 14px 30px rgba(0,0,0,.7),-14px -14px 30px rgba(255,255,255,.05);
@@ -87,7 +120,7 @@ html.theming *,html.theming *::before,html.theming *::after{
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-family:var(--body);
   background:var(--bg);color:var(--ink);
   line-height:1.5;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
@@ -98,6 +131,10 @@ body{
 a{color:var(--link);text-decoration:none}
 img,svg{display:block;max-width:100%}
 .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+/* A grid or a list that opens a section has no heading above it to sit
+   under, and its own top margin on top of the section's padding left a
+   screen and a half of nothing. */
+.wrap>:first-child,.wrap-narrow>:first-child{margin-top:0}
 .wrap-narrow{max-width:820px;margin:0 auto;padding:0 22px}
 
 :where(a,button):focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px}
@@ -116,6 +153,31 @@ img,svg{display:block;max-width:100%}
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
 }
+
+/* ============ Typography ============
+   One scale, one display face. Kanit 900 on anything that acts as a title and
+   Kanit 500 on anything that labels, which is the home page's voice; body
+   prose stays on the system face.
+
+   Kanit sits lower and narrower than SF, so every size here is set against the
+   rendered result, not converted from the old numbers: the display sizes came
+   down slightly and the tracking opened up, because Kanit 900 at the old
+   -0.03em closed the counters on A, S and 8. Change a size and check it at
+   390px and 1440px before committing - the old values are in git. */
+h1,h2,h3,h4,
+.pagehead h1,h2.head,.ch-title,.contact h2,.nf h1,.hero h1,.hero .tagline,
+.brain h3,.ptile h3,.bcard h3,.xcard h3,.pcard b,.ctaband h2,.bcard .big,
+.stat-b b,.brain-stat b,.pull,.ladder b,.tl-item h3,.spec-row h3{
+  font-family:var(--display);
+}
+.eyebrow,.ch-eyebrow,.ptype,.rmeta,.rgl,.tl-yr,.xp-when,.pcard small,.fgrid h4,
+.hero .kicker,.brand,.fbrand,.ladder b,.xcard .go,.tl-stake{
+  font-family:var(--display);
+}
+/* Only two weights are hosted, 500 and 900, so every weight in between would be
+   rounded up to 900 by the browser's own matching. The weights are therefore
+   set in one place, at the very foot of this file, where they win over the
+   component rules below - see "Display weights" there. */
 
 /* section rhythm */
 section{padding:110px 0}
@@ -162,7 +224,15 @@ html.js .reveal.in{opacity:1;transform:none}
   *{transition-duration:.01ms !important;animation-duration:.01ms !important}
 }
 
-/* ============ Nav ============ */
+/* ============ Nav ============
+   Three menus and a button, not nine flat tabs. The tabs were measured to the
+   pixel against the 1080px bar and a tenth label would have broken the row;
+   this fits at any width and takes another page without a re-measure.
+
+   Shape: brand left, the menus centred on the viewport, the Contact button and
+   the theme switch right. The menus are centred absolutely rather than laid out
+   between the brand and the switch, so their position does not move when the
+   brand or the switch changes width. */
 #nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   height:var(--nav-h);
@@ -171,58 +241,74 @@ html.js .reveal.in{opacity:1;transform:none}
   border-bottom:1px solid transparent;
   transition:border-color .3s var(--ease),box-shadow .3s var(--ease),background .3s var(--ease);
 }
-#nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,0,0,.04)}
-.navin{max-width:1080px;height:100%;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:8px}
-.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
-.brand svg{width:26px;height:26px}
-/* the centred capsule */
-.navcenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#nav.scrolled{border-bottom-color:var(--nav-border);box-shadow:0 1px 14px rgba(0,0,0,.06)}
+.navin{
+  max-width:1180px;height:100%;margin:0 auto;padding:0 22px;
+  display:flex;align-items:center;gap:10px;position:relative;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-size:16px;color:var(--ink);letter-spacing:-.005em;
+}
+.brand svg{width:26px;height:26px;flex:none}
+
+/* ---- the centred menu row ---- */
 .navlinks{
-  position:relative;display:flex;align-items:center;gap:2px;
-  padding:4px;border-radius:999px;
-  background:var(--glass);border:1px solid var(--glass-border);
-  -webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);
-  box-shadow:var(--neu-out-sm);
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:2px;
 }
-.navlinks a{
-  position:relative;z-index:1;display:inline-flex;align-items:center;
-  color:var(--muted);font-size:13.5px;font-weight:500;padding:8px 15px;border-radius:999px;
-  white-space:nowrap;
-  transition:color .25s var(--ease);
+.navgroup{position:relative}
+.navtrig,.navcta{
+  font-family:var(--body);font-size:14px;font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  padding:8px 15px;border-radius:999px;border:1px solid transparent;
+  background:none;color:var(--muted);cursor:pointer;
+  transition:color .25s var(--ease),background .25s var(--ease);
 }
-.navlinks a:hover{color:var(--ink)}
-/* the tab you are on: a solid pill that glides to the new tab on every page load.
-   The name sits on the ::before - the black lozenge on its own - and NOT on the
-   <a>. Naming the <a> takes its label along for the ride, and the browser
-   cross-fades the old label into the new one while the pill moves, so a smeared
-   "AJ-Tools"/"Toolbox" double image drags across the bar and covers the tabs it
-   passes. With only the lozenge named, the labels stay where they are and just
-   change colour under it. Do not put the name back on the <a>.
-   Tried and rejected: z-index:-1 on ::view-transition-group(navpill) to keep the
-   labels on top - the bar's own background is painted in the site-nav snapshot,
-   so the lozenge vanishes behind it for the whole flight. */
-.navlinks a[aria-current="page"]{color:var(--bg);font-weight:600}
-.navlinks a[aria-current="page"]::before{
-  content:"";position:absolute;inset:0;z-index:-1;border-radius:999px;
-  background:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.18);
-  view-transition-name:navpill;
+.navtrig:hover,.navtrig[aria-expanded="true"]{color:var(--ink);background:var(--hover-bg)}
+.navtrig .caret{width:11px;height:11px;flex:none;transition:transform .3s var(--ease-out)}
+.navtrig[aria-expanded="true"] .caret{transform:rotate(180deg)}
+/* the section you are in, marked without moving anything */
+.navgroup[data-current] .navtrig{color:var(--ink)}
+.navgroup[data-current] .navtrig::after{
+  content:"";position:absolute;left:50%;bottom:-1px;width:16px;height:2px;border-radius:2px;
+  transform:translateX(-50%);background:var(--grad);
 }
-@media(prefers-reduced-motion:reduce){
-  .navlinks a[aria-current="page"]::before{view-transition-name:none}
+.navcta{
+  margin-left:8px;background:var(--blue);color:#fff;
+  transition:background .25s var(--ease),transform .2s var(--ease);
 }
-/* hover ghost that slides between tabs */
-.navpill{
-  position:absolute;top:4px;left:0;height:calc(100% - 8px);width:0;
-  border-radius:999px;background:var(--hover-bg);
-  opacity:0;pointer-events:none;z-index:0;transform:translateX(0);
-  transition:transform .42s var(--ease-out),width .42s var(--ease-out),opacity .25s var(--ease);
+.navcta:hover{background:var(--blue-hover);color:#fff}
+.navcta[aria-current="page"]{background:var(--ink);color:var(--bg)}
+
+/* ---- the panel under a menu ---- */
+.navmenu{
+  position:absolute;top:calc(100% + 9px);left:50%;transform:translate(-50%,0);
+  min-width:272px;padding:8px;border-radius:20px;
+  background:var(--menu-bg);border:1px solid var(--nav-border);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:0 22px 50px rgba(0,0,0,.22);
+  display:grid;gap:2px;
 }
-.navlinks.armed .navpill{opacity:1}
-@media(prefers-reduced-motion:reduce){.navpill{transition:opacity .01ms}}
-/* right cluster - the theme switch is the last thing in the corner */
-.navend{display:flex;align-items:center;gap:6px;margin-left:auto}
-.navlinks a.cta{color:#fff;background:var(--blue);font-weight:500;margin-left:6px}
-.navlinks a.cta:hover{background:var(--blue-hover)}
+/* Closed only once the script is running. With no JavaScript every menu simply
+   stays open under its heading - nothing on this site hides behind a script. */
+html.js .navmenu{
+  opacity:0;visibility:hidden;transform:translate(-50%,-7px);
+  transition:opacity .22s var(--ease),transform .28s var(--ease-out),visibility .22s;
+}
+html.js .navgroup.open .navmenu{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.navmenu a{
+  display:grid;gap:2px;padding:10px 13px;border-radius:13px;color:var(--ink);
+  transition:background .2s var(--ease);
+}
+.navmenu a:hover{background:var(--hover-bg)}
+.navmenu a b{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:-.005em}
+.navmenu a span{font-size:13px;color:var(--faint);line-height:1.35}
+.navmenu a[aria-current="page"]{background:var(--hover-bg)}
+.navmenu a[aria-current="page"] b{color:var(--link)}
+
+/* ---- right cluster ---- */
+.navend{display:flex;align-items:center;gap:4px;margin-left:auto}
 #menuBtn{
   display:none;width:42px;height:42px;border:none;background:none;cursor:pointer;
   align-items:center;justify-content:center;border-radius:12px;
@@ -245,9 +331,13 @@ html.js .reveal.in{opacity:1;transform:none}
 #themeSwitch .track{
   position:relative;display:block;width:54px;height:30px;border-radius:999px;
   background:var(--neu-surface);
+  /* the inner shadow alone vanished against a white bar, so it carries a
+     hairline of its own and reads as a control at any zoom */
+  border:1px solid var(--hairline);
   box-shadow:var(--neu-in);
-  transition:background .35s var(--ease),box-shadow .35s var(--ease);
+  transition:background .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease);
 }
+:root[data-theme="dark"] #themeSwitch .track{border-color:rgba(255,255,255,.14)}
 :root[data-theme="dark"] #themeSwitch .track{background:rgba(0,113,227,.35)}
 #themeSwitch .knob{
   position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
@@ -261,40 +351,48 @@ html.js .reveal.in{opacity:1;transform:none}
 #themeSwitch .ic-moon{color:#0071e3;opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-sun{opacity:0}
 :root[data-theme="dark"] #themeSwitch .ic-moon{opacity:1}
-/* 1100, not 1024: the capsule is centred on the viewport while the brand and the
-   theme switch sit inside the 1080px .navin, so the clearance on the brand side
-   stops shrinking above 1080px and is the same at every wider screen.
-   Measured at 1280px: nine tabs at 15px side padding = 702px capsule, 66px clear.
-   Re-measure when a tab is added OR renamed - this is 23px wider than the same
-   nine tabs measured before, purely because "Heron AI" is a longer label than the
-   tab it replaced. The padding was briefly 12px to fit a tenth tab; that tab is
-   gone, so it is back to 15px. */
-@media(max-width:1100px){
-  /* menu button first, theme switch stays last in the corner */
-  #menuBtn{display:flex}
-  .navcenter{position:static;transform:none}
+
+/* ---- under 1000px: one sheet, every page one tap away ----
+   The menus do not become sub-menus to open. The three triggers turn into plain
+   headings and their links are simply listed, so no page on the site is more
+   than one tap from the sheet. */
+@media(max-width:1000px){
+  #menuBtn{display:flex;order:-1}
   .navlinks{
-    position:fixed;top:var(--nav-h);left:0;right:0;z-index:99;
-    flex-direction:column;align-items:stretch;gap:0;padding:12px 22px 24px;border-radius:0;
-    background:var(--menu-bg);border:none;
-    border-bottom:1px solid var(--nav-border);
+    position:fixed;top:var(--nav-h);left:0;right:0;
+    max-height:calc(100dvh - var(--nav-h));overflow-y:auto;overscroll-behavior:contain;
+    transform:none;
+    display:block;padding:10px 22px 30px;
+    background:var(--menu-bg);border-bottom:1px solid var(--nav-border);
     -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
-    box-shadow:0 18px 40px rgba(0,0,0,.14);
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
     opacity:0;transform:translateY(-8px);pointer-events:none;visibility:hidden;
-    transition:opacity .35s var(--ease),transform .35s var(--ease);
+    transition:opacity .3s var(--ease),transform .3s var(--ease),visibility .3s;
   }
   .navlinks.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
-  .navlinks a{font-size:17px;padding:15px 6px;border-radius:0;border-bottom:1px solid var(--nav-border)}
-  .navlinks a:last-child{border-bottom:none}
-  .navlinks a:hover{background:none}
-  .navlinks a[aria-current="page"]{color:var(--link);font-weight:600}
-  /* in the drop-down menu the marker is a small blue bar, and the menu is shut
-     on load - nothing should fly anywhere, so the name comes off here */
-  .navlinks a[aria-current="page"]::before{
-    inset:auto auto auto -8px;top:50%;width:3px;height:22px;transform:translateY(-50%);
-    border-radius:2px;background:var(--link);box-shadow:none;view-transition-name:none;
+  .navgroup{position:static;padding-top:16px}
+  .navtrig{
+    pointer-events:none;width:100%;padding:0 2px 8px;border-radius:0;
+    font-family:var(--display);font-size:12.5px;font-weight:500;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--faint);background:none;
   }
-  .navpill{display:none}
+  .navtrig .caret{display:none}
+  .navgroup[data-current] .navtrig::after{display:none}
+  html.js .navmenu,.navmenu{
+    position:static;transform:none;opacity:1;visibility:visible;
+    min-width:0;padding:0;border:none;background:none;box-shadow:none;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+    transition:none;
+  }
+  .navmenu a{padding:13px 2px;border-radius:0;border-bottom:1px solid var(--nav-border)}
+  .navmenu a:last-child{border-bottom:none}
+  .navmenu a:hover{background:none}
+  .navmenu a b{font-size:17px}
+  .navmenu a[aria-current="page"]{background:none}
+  .navcta{
+    margin:22px 0 0;width:100%;justify-content:center;
+    min-height:48px;font-size:16px;
+  }
 }
 
 /* ============ Buttons ============ */
@@ -749,6 +847,11 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 
 .sec-tight{padding-top:74px}
 @media(max-width:734px){.sec-tight{padding-top:56px}}
+/* The pager and the closing call to action are the foot of the page, not
+   another section of it, so they sit close under what they follow. */
+.sec-foot{padding:18px 0 96px}
+@media(max-width:734px){.sec-foot{padding:10px 0 64px}}
+.sec-foot .ctaband{margin-top:18px}
 
 /* explore grid on the home page */
 .xgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
@@ -822,9 +925,13 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
    substitution, so the flock has to remove itself */
 @media(forced-colors:active){#vanta-hero{display:none}}
 
-/* previous / next - kept for the 404 shortcuts */
+/* previous / next - at the foot of every page on the tour, and on the 404.
+   Each card carries the page's name and the one line that says what is on it,
+   so the visitor knows what they are about to get, not just which direction. */
 .pager{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
-@media(max-width:600px){.pager{grid-template-columns:1fr}}
+.pager-one{grid-template-columns:minmax(0,1fr);justify-items:end}
+.pager-one .pcard{max-width:420px;width:100%}
+@media(max-width:600px){.pager,.pager-one{grid-template-columns:1fr;justify-items:stretch}}
 .pcard{
   display:block;padding:24px 26px;border-radius:22px;color:inherit;
   background:var(--glass);border:1px solid var(--glass-border);
@@ -835,6 +942,7 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 .pcard:hover{transform:translateY(-3px);box-shadow:var(--neu-out)}
 .pcard small{display:block;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
 .pcard b{font-size:19px;font-weight:700;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:center;gap:8px}
+.pcard span{display:block;margin-top:6px;font-size:14px;color:var(--muted);line-height:1.4}
 .pcard.next{text-align:right}
 .pcard.next b{justify-content:flex-end}
 .pcard .chev{color:var(--link);transition:transform .3s var(--ease-out)}
@@ -845,9 +953,13 @@ html.js .bcard:hover,html.js .ptile:hover{transform:translateY(-6px)}
 footer{padding:52px 0 26px}
 .fgrid{
   max-width:1080px;margin:0 auto;padding:0 22px;
-  display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px;
+  display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:34px;
 }
+@media(max-width:1000px){.fgrid{grid-template-columns:1fr 1fr 1fr;gap:30px}}
 @media(max-width:734px){.fgrid{grid-template-columns:1fr 1fr;gap:28px}}
+/* the brand column introduces the site, so it spans the row on narrow screens */
+@media(max-width:1000px){.fgrid>:first-child{grid-column:1/-1}}
+.fcta{margin-top:18px;min-height:42px;padding:9px 22px;font-size:15px}
 .fgrid h4{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
 .fgrid ul{list-style:none;display:grid;gap:10px}
 .fgrid a{font-size:15px;color:var(--muted)}
@@ -876,3 +988,31 @@ footer{padding:52px 0 26px}
 .nf h1{font-size:clamp(64px,14vw,150px);font-weight:700;letter-spacing:-.04em;line-height:1}
 .nf p{font-size:19px;color:var(--muted);margin:14px auto 30px;max-width:520px}
 .nf .btnrow{justify-content:center}
+
+/* ==================================================================
+   Display weights
+   ------------------------------------------------------------------
+   Last block in the file on purpose. Two weights of Kanit are hosted - 500 and
+   900 - and the rules above still carry the old 600/650/700 numbers next to
+   their sizes. A browser matching 700 against 500 and 900 picks 900, so every
+   label would have come out as heavy as a title. This block is the one place
+   the heading weights are decided; the sizes stay with their components.
+   ================================================================== */
+
+/* titles */
+.pagehead h1,.hero h1,.hero .tagline,h2.head,.ch-title,.contact h2,.nf h1,
+.brain h3,.ptile h3,
+.stat-b b,.brain-stat b,.bcard .big{font-weight:900}
+/* Kanit 900 is wider than SF at the same tracking, so the biggest sizes get a
+   little of it back rather than closing up the counters. */
+.pagehead h1,.hero h1,.nf h1,.contact h2{letter-spacing:-.025em}
+.ch-title{letter-spacing:-.028em}
+
+/* everything that titles a card, a row or a group */
+h1,h2,h3,h4,
+.bcard h3,.xcard h3,.xp-body h3,.tl-item h3,.spec-row h3,.pcard b,.ctaband h2,
+.ladder b,.pull,.brand,.fbrand{font-weight:500}
+
+/* labels, all of them uppercase and tracked out */
+.eyebrow,.ch-eyebrow,.ptype,.rmeta,.rgl,.tl-yr,.xp-when,.pcard small,.fgrid h4,
+.hero .kicker,.tl-stake,.xcard .go{font-weight:500}

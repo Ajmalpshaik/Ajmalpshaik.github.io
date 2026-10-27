@@ -33,7 +33,7 @@
     root.setAttribute("data-theme", t);
     sw.setAttribute("aria-checked", t === "dark" ? "true" : "false");
     sw.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
+    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0c0c" : "#f7f9fc");
     if(window.__ajBirds) window.__ajBirds.retint();
   }
   applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
@@ -72,39 +72,112 @@
   window.addEventListener("resize", onScroll, {passive:true});
   paint();
 
-  /* mobile menu */
+  /* ---- navigation: the sheet, and the three menus ----
+     Desktop: each trigger is a disclosure button. Hover or click opens it,
+     Escape closes it and puts focus back on the trigger, the arrow keys walk
+     the links. Only one is open at a time.
+     Under 1000px the triggers are inert headings (CSS) and the whole thing is
+     one sheet behind the menu button - so the code below only has to leave the
+     menus alone at that width. */
   var menuBtn = document.getElementById("menuBtn");
   var links = document.getElementById("navLinks");
-  function closeMenu(){ links.classList.remove("open"); menuBtn.setAttribute("aria-expanded","false"); menuBtn.setAttribute("aria-label","Open menu"); }
-  menuBtn.addEventListener("click", function(){
-    var open = links.classList.toggle("open");
-    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  });
-  links.addEventListener("click", function(e){ if(e.target.tagName === "A") closeMenu(); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
+  var groups = links ? [].slice.call(links.querySelectorAll(".navgroup")) : [];
+  var mqSheet = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
+  var sheetMode = function(){ return !!(mqSheet && mqSheet.matches); };
 
-  /* macOS-style pill that glides between the centred tabs */
-  var pill = links ? links.querySelector(".navpill") : null;
-  var mqDesktop = window.matchMedia ? window.matchMedia("(min-width: 1025px)") : null;
-  if(pill && links){
-    links.addEventListener("pointerover", function(e){
-      var a = e.target.closest ? e.target.closest("a") : null;
-      if(!a || !links.contains(a)) return;
-      if(mqDesktop && !mqDesktop.matches) return;
-      pill.style.width = a.offsetWidth + "px";
-      pill.style.transform = "translateX(" + a.offsetLeft + "px)";
-      links.classList.add("armed");
-    });
-    links.addEventListener("pointerleave", function(){ links.classList.remove("armed"); });
-    window.addEventListener("resize", function(){ links.classList.remove("armed"); }, {passive:true});
+  function closeMenus(except){
+    for(var i=0;i<groups.length;i++){
+      if(groups[i] === except) continue;
+      groups[i].classList.remove("open");
+      var t = groups[i].querySelector(".navtrig");
+      if(t) t.setAttribute("aria-expanded","false");
+    }
   }
-  /* close the mobile menu when tapping outside it */
-  document.addEventListener("click", function(e){
-    if(!links || !links.classList.contains("open")) return;
-    if(e.target.closest("#navLinks") || e.target.closest("#menuBtn")) return;
-    closeMenu();
+  function openGroup(g){
+    if(sheetMode()) return;
+    closeMenus(g);
+    g.classList.add("open");
+    g.querySelector(".navtrig").setAttribute("aria-expanded","true");
+  }
+  function closeGroup(g){
+    g.classList.remove("open");
+    g.querySelector(".navtrig").setAttribute("aria-expanded","false");
+  }
+
+  groups.forEach(function(g){
+    var trig = g.querySelector(".navtrig");
+    var items = [].slice.call(g.querySelectorAll(".navmenu a"));
+    if(!trig) return;
+
+    trig.addEventListener("click", function(){
+      if(sheetMode()) return;
+      if(g.classList.contains("open")) closeGroup(g); else openGroup(g);
+    });
+    /* Pointer opens it too, which is what a pointer expects of a menu bar.
+       A short delay on leaving means crossing the gap down to the panel does
+       not shut it. */
+    var leaveTimer = null;
+    g.addEventListener("pointerenter", function(e){
+      if(e.pointerType === "touch") return;
+      clearTimeout(leaveTimer);
+      openGroup(g);
+    });
+    g.addEventListener("pointerleave", function(e){
+      if(e.pointerType === "touch") return;
+      leaveTimer = setTimeout(function(){
+        if(!g.contains(document.activeElement)) closeGroup(g);
+      }, 140);
+    });
+
+    g.addEventListener("keydown", function(e){
+      if(sheetMode()) return;
+      var i = items.indexOf(document.activeElement);
+      if(e.key === "Escape"){
+        if(!g.classList.contains("open")) return;
+        closeGroup(g); trig.focus(); e.stopPropagation();
+      } else if(e.key === "ArrowDown"){
+        e.preventDefault();
+        if(!g.classList.contains("open")) openGroup(g);
+        (items[i + 1] || items[0]).focus();
+      } else if(e.key === "ArrowUp"){
+        e.preventDefault();
+        (i > 0 ? items[i - 1] : items[items.length - 1]).focus();
+      }
+    });
+    /* Tabbing out of the last link closes it behind you. */
+    g.addEventListener("focusout", function(){
+      setTimeout(function(){
+        if(!sheetMode() && !g.contains(document.activeElement)) closeGroup(g);
+      }, 0);
+    });
   });
+
+  function closeSheet(){
+    if(!links || !menuBtn) return;
+    links.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded","false");
+    menuBtn.setAttribute("aria-label","Open menu");
+  }
+  if(menuBtn && links){
+    menuBtn.addEventListener("click", function(){
+      var open = links.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    });
+    links.addEventListener("click", function(e){ if(e.target.closest("a")) closeSheet(); });
+  }
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Escape") return;
+    closeSheet(); closeMenus(null);
+  });
+  document.addEventListener("click", function(e){
+    if(e.target.closest("#nav")) return;
+    closeSheet(); closeMenus(null);
+  });
+  /* Leaving the sheet width with the sheet open would otherwise strand it. */
+  if(mqSheet && mqSheet.addEventListener){
+    mqSheet.addEventListener("change", function(){ closeSheet(); closeMenus(null); });
+  }
 
   /* links from the old single-page version land on the right page now */
   var legacy = {

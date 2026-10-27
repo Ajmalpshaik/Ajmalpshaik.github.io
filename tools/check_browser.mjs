@@ -95,7 +95,13 @@ const WIDTHS = [1440, 1280, 834, 390];
 
 const failures = [];
 const fail = (m) => failures.push(m);
-const browser = await chromium.launch();
+// CHROMIUM_PATH lets a machine that already has a Chromium point at it
+// instead of downloading a second copy. CI leaves it unset and uses the
+// browser `npx playwright install` put in place.
+const launch = (opts = {}) => chromium.launch(
+  process.env.CHROMIUM_PATH ? { ...opts, executablePath: process.env.CHROMIUM_PATH } : opts,
+);
+const browser = await launch();
 
 for (const page of PAGES) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -263,7 +269,7 @@ for (const page of PAGES) {
 // what a visitor with a real GPU gets: every model must replace its still,
 // with no script error and no warning from three.js on the way.
 {
-  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const gpu = await launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   for (const [w, h] of [[1440, 900], [390, 844]]) {
     const ctx = await gpu.newContext({ viewport: { width: w, height: h } });
     await ctx.addInitScript(() => {
@@ -313,7 +319,7 @@ for (const page of PAGES) {
 // first: a software renderer cannot keep up with the High preset, and what is
 // under test here is that everything works, not how it looks.
 {
-  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const gpu = await launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   for (const [w, h] of [[1280, 860], [390, 844]]) {
     const phone = w < 500;
     const ctx = await gpu.newContext({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone });
