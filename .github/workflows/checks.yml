@@ -19,6 +19,13 @@ jobs:
       - name: Static checks
         run: python3 tools/check_site.py
 
+      # The nav, the pager and the footer are written into fourteen
+      # hand-written pages by one script. A link added to thirteen of them and
+      # forgotten on the fourteenth is invisible until somebody lands on the
+      # fourteenth, so the build fails instead.
+      - name: Chrome is in sync on every page
+        run: python3 tools/sync_chrome.py --check
+
       # The visible years compute themselves in app.js; these are the ones a
       # crawler reads without running any JavaScript, so they live in the file
       # and can go stale. Fails the build rather than waiting to be noticed.
