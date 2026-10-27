@@ -21,7 +21,7 @@ from collections import Counter
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES = ["index.html", "404.html"] + [
     os.path.join(d, "index.html")
-    for d in ("story", "experience", "work", "aj-tools", "heron-ai",
+    for d in ("story", "experience", "work", "automation", "heron-ai",
               "about", "skills", "faq", "contact",
               "toolbox", os.path.join("toolbox", "crane-lift-calculator"),
               os.path.join("toolbox", "ar-viewer"), os.path.join("toolbox", "bim-viewer"))
@@ -191,41 +191,18 @@ if "<main" not in src:
 
 
 # ------------------------------------------------------ stated counts are true
-# /aj-tools/ says "46 tools across 17 panels", and each tab says its own split.
-# Those are three numbers that can only go stale, and the page lists every tool
-# right under them, so they are counted rather than trusted. (This replaces the
-# same check on the old .ribbon markup, which no page has carried since the
-# tool list moved onto its own page - it had been passing on nothing.)
-aj = read(os.path.join("aj-tools", "index.html"))
-sum_panels = sum_tools = 0
-for part in re.split(r'(?=<section class="tabsec">)', aj)[1:]:
-    name = re.search(r'<h2 class="head reveal">(.*?)\s*<span class="dim">(\d+) tools '
-                     r'&middot; (\d+) panels</span>', part, re.S)
-    if not name:
-        err("a tabsec on aj-tools/index.html has no '<n> tools &middot; <n> panels' label")
-        continue
-    tab, said_tools, said_panels = name.group(1).strip(), int(name.group(2)), int(name.group(3))
-    panels = part.count('<div class="pgrp')
-    tools = sum(t.count("<li>") for t in re.findall(r'<ul class="tlist">(.*?)</ul>', part, re.S))
-    if panels != said_panels:
-        err(f"aj-tools {tab}: label says {said_panels} panels, the page lists {panels}")
-    if tools != said_tools:
-        err(f"aj-tools {tab}: label says {said_tools} tools, the page lists {tools}")
-    # each panel heading carries its own count too
-    for heading, said in re.findall(r"<h3>([^<]+)<i>(\d+)</i></h3>", part):
-        after = part.split(f"<h3>{heading}<i>{said}</i></h3>", 1)[1]
-        listed = after.split("</ul>", 1)[0].count("<li>")
-        if listed != int(said):
-            err(f"aj-tools {tab} / {heading.strip()}: says {said}, lists {listed}")
-    sum_panels += panels
-    sum_tools += tools
-
-total = re.search(r"<strong>(\d+) tools across (\d+) panels</strong>", aj)
-if not total:
-    err("aj-tools/index.html no longer states its total")
-elif sum_tools and (int(total.group(1)) != sum_tools or int(total.group(2)) != sum_panels):
-    err(f"aj-tools intro says {total.group(1)} tools / {total.group(2)} panels, "
-        f"the tabs add up to {sum_tools} / {sum_panels}")
+# /heron-ai/ states its figures - fragments, how many are proved, agents,
+# tools, skills - and then lists every one of them. None of that is typed:
+# tools/update_heron.py writes it from the Heron-AI repository, and the
+# markers below are what it writes between. If they are missing, the page has
+# been hand-edited where it should not have been and the next run will fail.
+heron = read(os.path.join("heron-ai", "index.html"))
+for marker in ("numbers", "skills", "skills-heading", "fragments",
+               "fragments-heading", "tools", "tools-heading", "tools-note",
+               "skills-count", "proven-count"):
+    if f"<!-- heron:{marker} -->" not in heron or f"<!-- /heron:{marker} -->" not in heron:
+        err(f"heron-ai/index.html has lost its <!-- heron:{marker} --> markers; "
+            f"tools/update_heron.py can no longer write that part of the page")
 
 
 # --------------------------------------------------- duplicated body sentences

@@ -64,7 +64,7 @@ const url = (p) => `${ORIGIN}/${p}`;
 const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
-  'aj-tools/index.html', 'heron-ai/index.html',
+  'automation/index.html', 'heron-ai/index.html',
   'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
   // Added 2026-09-20. These two shipped on 2026-08-12 and were never in this
@@ -196,7 +196,7 @@ for (const page of PAGES) {
 {
   const EXPECTED = [
     '/story/', '/experience/', '/work/',
-    '/aj-tools/', '/heron-ai/', '/toolbox/',
+    '/automation/', '/heron-ai/', '/toolbox/',
     '/skills/', '/about/', '/faq/',
   ];
 
@@ -483,7 +483,7 @@ for (const page of PAGES) {
 
 // ---- no JavaScript: every page must still read -----------------------------
 // Checked per page now that the site is split up. A word count is no longer a
-// useful floor - contact and 404 are short on purpose, aj-tools runs to 7k - so
+// useful floor - contact and 404 are short on purpose, automation runs long - so
 // the floor only catches a page that renders empty. The assertion that carries
 // the weight is that nothing stays invisible without JS.
 {

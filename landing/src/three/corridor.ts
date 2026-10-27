@@ -1,5 +1,5 @@
-// A corridor ceiling void, coordinated and then annotated the way AJ-Tools
-// does it: every service tagged with a right-angle leader, a chained
+// A corridor ceiling void, coordinated and then annotated the way the
+// drafting tools do it: every service tagged with a right-angle leader, a chained
 // dimension across the section, and flow arrows along the ducts.
 //
 // Section across the corridor (z), heights above floor level (y):

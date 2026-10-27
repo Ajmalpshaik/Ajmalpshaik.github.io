@@ -301,7 +301,7 @@
       <div class="navgroup" data-current>
         <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-tools">Tools<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <ul class="navmenu" id="nm-tools" aria-label="Tools">
-          <li><a href="/aj-tools/"><b>AJ-Tools</b><span>The Revit add-in a team runs on</span></a></li>
+          <li><a href="/automation/"><b>Automation</b><span>The Revit tools I build</span></a></li>
           <li><a href="/heron-ai/" aria-current="page"><b>Heron AI</b><span>An AI that works inside Revit</span></a></li>
           <li><a href="/toolbox/"><b>Toolbox</b><span>Tools you can use in the browser</span></a></li>
         </ul>
@@ -339,13 +339,15 @@
 
 <section class="sec sec-soft" aria-label="At a glance">
   <div class="wrap">
+<!-- heron:numbers -->
     <div class="nums reveal">
-      <div><b>395</b><span>fragments in the library</span></div>
-      <div><b>250</b><span>agents behind them</span></div>
-      <div><b>8</b><span>Revit versions, one codebase</span></div>
-      <div><b>0</b><span>network connections from inside Revit</span></div>
+      <div><b>605</b><span>fragments in the library</span></div>
+      <div><b>534</b><span>of them proved against a real model</span></div>
+      <div><b>252</b><span>agents behind them</span></div>
+      <div><b>51</b><span>tools the chat can call</span></div>
     </div>
-    <p class="numnote">Counted on 20 September 2026 &mdash; 329 of those fragments carry a recorded proof against a named real model, and 66 are still draft. These numbers move as the work moves.</p>
+    <p class="numnote">Counted on 27 October 2026, straight from the repository rather than typed here &mdash; 71 fragments are still draft, meaning they have never met a real model. These numbers move as the work moves.</p>
+<!-- /heron:numbers -->
   </div>
 </section>
 
@@ -368,144 +370,224 @@
 </section>
 
 <section class="tabsec">
-  <h2 class="head reveal">What you can ask for <span class="dim">10 skills &middot; 7 areas of Revit</span></h2>
+  <h2 class="head reveal">What you can ask for <span class="dim"><!-- heron:skills-heading -->35 skills &middot; 11 areas of Revit<!-- /heron:skills-heading --></span></h2>
 
+<!-- heron:skills -->
   <div class="pgrp reveal">
-    <h3>Reporting <i>2</i></h3>
+    <h3>Families <i>14</i></h3>
     <ul class="tlist">
-      <li><b>How many of these are there</b><span>A bare count question answered with a bare number. <em>&ldquo;how many ducts are there&rdquo; &middot; &ldquo;how many sprinklers on level 2&rdquo;</em></span></li>
-      <li><b>What sizes are these</b><span>A schedule-style table of sizes and quantities &mdash; the shape a modeller reads without translating. <em>&ldquo;duct schedule by size&rdquo;</em></span></li>
+      <li><b>Build a detail item, a line-based detail or an annotation symbol family</b><span>Builds a 2D family drawn in one view. <em>&ldquo;make a detail item family&rdquo; &middot; &ldquo;build a line based detail component for insulation&rdquo;</em></span></li>
+      <li><b>Build a duct or pipe fitting family that routing preferences can use</b><span>Builds a duct or pipe fitting family. <em>&ldquo;make a pipe elbow fitting family&rdquo; &middot; &ldquo;build a duct fitting family with a lookup table&rdquo;</em></span></li>
+      <li><b>Build a lighting fixture family with its light source and its power connector</b><span>Builds a lighting fixture. <em>&ldquo;make a lighting fixture family&rdquo; &middot; &ldquo;build a downlight family with a light source&rdquo;</em></span></li>
+      <li><b>Build a line-based family whose length is set by two clicks</b><span>Builds a line-based family - placed with two clicks, its length set by them: a lintel, a skirting, a kerb, a cable ladder run, a pipe rack, a row of brackets along a wall. <em>&ldquo;make a line based family&rdquo; &middot; &ldquo;build a line based lintel family&rdquo;</em></span></li>
+      <li><b>Build a new family - parametric from sizes, a sketch or a picture, or fixed-size and detailed</b><span>Builds a component family in the Family Editor from an empty template. <em>&ldquo;build a new parametric family&rdquo; &middot; &ldquo;make an air terminal family with a duct connector&rdquo;</em></span></li>
+      <li><b>Build a parametric door or window family in the wall that hosts it</b><span>Builds a door or a window. <em>&ldquo;make a door family&rdquo; &middot; &ldquo;build a parametric window family&rdquo;</em></span></li>
+      <li><b>Build a parametric profile family, and use it in a sweep</b><span>Builds a profile family. <em>&ldquo;make a profile family&rdquo; &middot; &ldquo;build a parametric handrail profile family&rdquo;</em></span></li>
+      <li><b>Build a parametric structural framing or structural column family</b><span>Builds a structural framing family - a beam or a brace of any section - or a structural column, from the framing or column template the modeller opened. <em>&ldquo;make a structural beam family with a custom section&rdquo; &middot; &ldquo;build a steel column family&rdquo;</em></span></li>
+      <li><b>Build a pattern-based curtain panel that fits every cell of a divided surface</b><span>Builds a pattern-based panel - the family that fills each cell of a divided surface on a mass and bends to fit it: a glass panel, a solid cladding panel, a panel with a thickness. <em>&ldquo;make a curtain panel pattern based family&rdquo; &middot; &ldquo;build a pattern based panel for a divided surface&rdquo;</em></span></li>
+      <li><b>Build a tag family - a pipe, duct or equipment tag - with its labels, box and label type, then load it</b><span>Builds a tag family. <em>&ldquo;build a pipe tag family&rdquo; &middot; &ldquo;make a tag family for pipes showing system diameter and bottom elevation&rdquo;</em></span></li>
+      <li><b>Build a wall-, ceiling-, floor-, roof- or face-based family</b><span>Builds a hosted family. <em>&ldquo;make a wall based family&rdquo; &middot; &ldquo;build a ceiling based light fitting family&rdquo;</em></span></li>
+      <li><b>Build an adaptive component placed by clicking its numbered points</b><span>Builds an adaptive component. <em>&ldquo;make an adaptive component family&rdquo; &middot; &ldquo;build a two point adaptive family&rdquo;</em></span></li>
+      <li><b>Delete by id the solids and voids just modelled</b><span>Takes one or more forms out of the family open in the Family Editor - a void no longer wanted, an extrusion built in the wrong place - by the ids the form tools gave back. <em>&ldquo;delete this void by its id&rdquo; &middot; &ldquo;remove the solid with this id&rdquo;</em></span></li>
+      <li><b>Replace in-place or loadable families with a loadable one, whatever their hosting, carrying their data across</b><span>Swaps families in a project for one loadable family. <em>&ldquo;replace the in-place family with the loadable one&rdquo; &middot; &ldquo;replace the in-place equipment with the loadable family&rdquo;</em></span></li>
     </ul>
   </div>
 
   <div class="pgrp reveal">
-    <h3>Quality checking <i>1</i></h3>
+    <h3>Elements <i>3</i></h3>
     <ul class="tlist">
-      <li><b>Which of these is missing something</b><span>A QA sweep for parameters that are attached but empty &mdash; the check a model gets before it is issued. <em>&ldquo;what is missing before I issue this&rdquo;</em></span></li>
+      <li><b>Build a building's shell from a plan</b><span>Builds the shell of a building from a plan the modeller gives, or from a picture once every size is agreed. <em>&ldquo;build the building from this plan&rdquo; &middot; &ldquo;draw the walls of the building on this level&rdquo;</em></span></li>
+      <li><b>Build a curtain wall with its grid and mullions</b><span>Builds a curtain wall and gives it the grid and the mullions the modeller asks for, and reads back off the wall that they are there. <em>&ldquo;build a curtain wall with a 1500 grid and 50 by 150 mullions&rdquo; &middot; &ldquo;set the curtain wall grid and the mullions&rdquo;</em></span></li>
+      <li><b>Reinforce concrete columns, beams, footings, slabs and walls</b><span>Puts real Revit rebar into concrete members from the values in a structural spec - "4 T16 main bars and T8 links at 150 in these columns, 40 cover" - and reads every bar back off the model. <em>&ldquo;put 4 T16 main bars and T8 links at 150 in these columns, 40 cover&rdquo; &middot; &ldquo;reinforce these beams&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>HVAC <i>3</i></h3>
+    <ul class="tlist">
+      <li><b>Duct a unit to its diffusers</b><span>Connects each fan coil unit to the supply diffusers of the room in front of it with rigid ductwork. <em>&ldquo;connect the diffusers to the units&rdquo; &middot; &ldquo;duct the diffusers to the fan coil unit&rdquo;</em></span></li>
+      <li><b>How many air terminals, and where</b><span>Works out how many air terminals a room needs and places them on a sensible grid. <em>&ldquo;how many diffusers for this room&rdquo; &middot; &ldquo;lay out the air terminals&rdquo;</em></span></li>
+      <li><b>Work out the airflow for this room</b><span>Works out every Space's heating and cooling load and supply airflow from the model itself, shows it for review, and on the modeller's word writes the loads and airflows into the Spaces and their diffusers. <em>&ldquo;work out the airflow for this room&rdquo; &middot; &ldquo;calculate the air for these spaces&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>MEP <i>3</i></h3>
+    <ul class="tlist">
+      <li><b>Is this still connected</b><span>Checks ductwork or pipework already built is still joined end to end, and reports where it is not. <em>&ldquo;is the ductwork still connected&rdquo; &middot; &ldquo;check the connections&rdquo;</em></span></li>
+      <li><b>Take a pipe or duct round a clash</b><span>Finds where a pipe or duct hits a beam, a duct or anything handed in, takes that stretch of the run over or under it with a leg at each end, fits the four elbows, and proves the run is joined end to end again. <em>&ldquo;take this pipe over the beam it clashes with&rdquo; &middot; &ldquo;reroute the duct under the beam and fit it&rdquo;</em></span></li>
+      <li><b>What connects to what</b><span>Walks a real system from one element outward and reports what it actually reaches - for when the naming and the tags disagree with the pipework. <em>&ldquo;what is this connected to&rdquo; &middot; &ldquo;trace the system from here&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Views <i>3</i></h3>
+    <ul class="tlist">
+      <li><b>Do the grayout</b><span>Greys the architectural background and brings the services forward on one view. <em>&ldquo;do the grayout&rdquo; &middot; &ldquo;do the grayout for MEP&rdquo;</em></span></li>
+      <li><b>Make a view look good - camera, materials, light, render settings, preview and the render</b><span>What a visualisation artist does to make a Revit view look good, in the order it is done, each step naming the Heron capability that does it, why it is done, and what to look for in the picture afterwards. <em>&ldquo;make this view look good&rdquo; &middot; &ldquo;visualise this view&rdquo;</em></span></li>
+      <li><b>The builders work layout</b><span>Sets up the plans and sections a builders work layout is drawn on: the model greyed back and the services hidden, the openings brought forward by view filters, one view template for the plans and one for the sections, the openings in the house family at their depth, dimensioned and tagged. <em>&ldquo;do the builders work for the layout&rdquo; &middot; &ldquo;make the builders work layout&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Firefighting <i>2</i></h3>
+    <ul class="tlist">
+      <li><b>Pipe the sprinklers to the main</b><span>Connects each sprinkler head to the branch main above it with rigid pipe. <em>&ldquo;connect the sprinklers to the main&rdquo; &middot; &ldquo;pipe the sprinkler heads to the branch line&rdquo;</em></span></li>
+      <li><b>Sprinkler heads and spacing</b><span>Lays out sprinkler heads to a stated hazard class and spacing, and reports what a beam or column does to the coverage.</span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>QA <i>2</i></h3>
+    <ul class="tlist">
+      <li><b>Check the model before it goes out as IFC</b><span>A sweep of the live model for the things that go wrong in an IFC file and cannot be seen in Revit: an element filed under the wrong storey, one filed under none, an element that arrives as an anonymous proxy or not at all, two objects with one identity, and MEP pieces that leave their system behind. <em>&ldquo;check the model before I export IFC&rdquo; &middot; &ldquo;is anything going to be lost in the IFC&rdquo;</em></span></li>
+      <li><b>Which of these is missing something</b><span>A QA sweep: which elements have a parameter attached but empty. <em>&ldquo;which ducts have no system name&rdquo; &middot; &ldquo;find the blank parameters&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Reporting <i>2</i></h3>
+    <ul class="tlist">
+      <li><b>How many of these are there</b><span>Answers a bare count question with a bare number. <em>&ldquo;how many ducts are there&rdquo; &middot; &ldquo;count the air terminals&rdquo;</em></span></li>
+      <li><b>What sizes are these</b><span>A schedule-style table of sizes and quantities - the shape of answer a modeller reads without translating. <em>&ldquo;what sizes are the ducts&rdquo; &middot; &ldquo;give me a breakdown of the pipe sizes&rdquo;</em></span></li>
+    </ul>
+  </div>
+
+  <div class="pgrp reveal">
+    <h3>Annotation <i>1</i></h3>
+    <ul class="tlist">
+      <li><b>Update general notes and keep their numbering</b><span>Changes the wording of the general notes on a view or a legend and keeps their 1-2-3 numbering, bullets and indents. <em>&ldquo;update the general notes and keep their numbering&rdquo; &middot; &ldquo;update the general notes in the legend and keep the numbering&rdquo;</em></span></li>
     </ul>
   </div>
 
   <div class="pgrp reveal">
     <h3>Selection <i>1</i></h3>
     <ul class="tlist">
-      <li><b>Show me these on screen</b><span>Puts what was found into the current selection, so it can be seen rather than described. <em>&ldquo;select all the ducts&rdquo; &middot; &ldquo;select the 300x300 dampers&rdquo;</em></span></li>
+      <li><b>Show me these on screen</b><span>Puts what was found into the current selection, so it can be seen rather than described. <em>&ldquo;select all the ducts&rdquo; &middot; &ldquo;highlight them&rdquo;</em></span></li>
     </ul>
   </div>
 
   <div class="pgrp reveal">
-    <h3>MEP <i>2</i></h3>
+    <h3>Sheets <i>1</i></h3>
     <ul class="tlist">
-      <li><b>Is this still connected</b><span>Checks ductwork or pipework already built is still joined end to end, and reports where it is not. <em>&ldquo;did anything come apart&rdquo;</em></span></li>
-      <li><b>What connects to what</b><span>Walks a real system outward and reports what it actually reaches &mdash; for when the naming and the tags disagree with the pipework. <em>&ldquo;which unit feeds this&rdquo;</em></span></li>
+      <li><b>Make a drawing set - plans, elevations, schedules and sheets</b><span>Turns a modelled building into a set of drawings: a floor plan for every level, its elevations and its schedules, each on a sheet in the title block the modeller names, with the rooms and doors tagged, the plans dimensioned and one look applied to every plan. <em>&ldquo;make the drawing set for this building&rdquo; &middot; &ldquo;create sheets with the floor plans and elevations at 1:50&rdquo;</em></span></li>
     </ul>
   </div>
+<!-- /heron:skills -->
 
   <div class="pgrp reveal">
-    <h3>Views <i>1</i></h3>
-    <ul class="tlist">
-      <li><b>Do the grayout</b><span>Greys the architectural background, brings the services forward, leaves insulation as a quiet wrapper and switches rebar off. Ajmal&rsquo;s own standard &mdash; and done by category rather than element by element, so a wall drawn tomorrow still obeys it.</span></li>
-    </ul>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>HVAC <i>2</i></h3>
-    <ul class="tlist">
-      <li><b>Work out the airflow for this room</b><span>Calculates a Space&rsquo;s required airflow and writes it back. Every number is a per-request input, never a remembered default. <em>&ldquo;how much air does this room need&rdquo;</em></span></li>
-      <li><b>How many air terminals, and where</b><span>Works out how many terminals a room needs and places them on a sensible grid. <em>&ldquo;how many at 3&nbsp;m coverage and where&rdquo;</em></span></li>
-    </ul>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>Firefighting <i>1</i></h3>
-    <ul class="tlist">
-      <li><b>Sprinkler heads and spacing</b><span>Lays out heads to a stated hazard class and spacing, and reports what a beam or column does to the coverage.</span></li>
-    </ul>
     <div class="note">
       <b>Why &ldquo;how many sprinklers&rdquo; is not on that list</b>
       <p>It used to be, until September 2026. A question about <em>how many</em> must never quietly become an instruction to <em>place</em> &mdash; so the counting question went back to the counting skill, where it belongs, and the layout skill now runs only when a layout is actually what was asked for.</p>
     </div>
   </div>
+
 </section>
 
 <section class="tabsec sec-soft">
-  <h2 class="head reveal">What is actually there <span class="dim">one ribbon tab &middot; 34 commands</span></h2>
+  <h2 class="head reveal">What is actually there <span class="dim"><!-- heron:tools-heading -->51 tools &middot; 45 of them can only look<!-- /heron:tools-heading --></span></h2>
 
   <div class="pgrp reveal">
-    <h3>The Heron AI tab <i>3 buttons</i></h3>
+    <h3>The Heron tab <i>5 buttons</i></h3>
+    <p>Everything a person presses. Two of them answer a question a picture answers faster than a menu; three are the permissions, and each one is a padlock you can see across the room.</p>
     <ul class="tlist">
-      <li><b>Heron</b><span>Connect or disconnect this Revit session. Click again to reverse it. The picture is the state &mdash; lit when connected, dark when not &mdash; so &ldquo;am I connected?&rdquo; is answered without clicking anything. <em>Bridge panel</em></span></li>
-      <li><b>Bridge Status</b><span>Whether the bridge is running, and on which pipe. The detail you only want when something looks wrong, so it sits under the arrow instead of taking a button of its own. <em>Bridge panel</em></span></li>
-      <li><b>Changes</b><span>Whether Heron may change this model. Closed padlock: it can read and nothing else. Open padlock: it may change it. Turning it on asks first; turning it off never does. <em>Bridge panel</em></span></li>
+      <li><b>Heron</b><span>Connect or disconnect this Revit session. Click again to reverse it. The picture is the state &mdash; lit when connected, dark when not &mdash; so &ldquo;am I connected?&rdquo; is answered without clicking anything.</span></li>
+      <li><b>Bridge Status</b><span>Whether the bridge is running, and on which pipe. The detail you only want when something looks wrong, so it sits under the arrow instead of taking a button of its own.</span></li>
+      <li><b>Changes</b><span>Whether Heron may change this model at all. Closed padlock: it can read and nothing else. Open padlock: it may change it. Turning it on asks first; turning it off never does.</span></li>
+      <li><b>Admin</b><span>Whether Heron may change how the project itself is set up &mdash; project parameters, templates, the things a model is built on rather than the things in it. Off unless you say otherwise.</span></li>
+      <li><b>Publish</b><span>Whether Heron may send anything out of the model &mdash; export, print, save, sync with central. Separate from Changes on purpose: reading and writing a model is not the same act as putting a copy of it somewhere.</span></li>
     </ul>
     <div class="note">
-      <b>Three buttons, and that is the whole ribbon</b>
-      <p><a href="/aj-tools/">AJ-Tools</a> puts 46 commands on the ribbon because each one is a button you press. Heron is the other way round &mdash; you say what you want, so there is nothing to press. The only things that earn a button are the two questions a picture answers faster than a menu: <em>am I connected</em>, and <em>can this thing change my model</em>.</p>
-      <p>It is also what keeps the part inside Revit down to 39&nbsp;KB. Everything below this list runs in the chat and on your own PC, on the far side of the bridge &mdash; not inside Revit.</p>
+      <b>Five buttons, and that is the whole ribbon</b>
+      <p>A Revit add-in usually puts a button on the ribbon for every job it does, because pressing the button is how you ask. Heron is the other way round &mdash; you say what you want, so there is nothing to press. The only things that earn a button are the two questions a picture answers faster than a menu, <em>am I connected</em> and <em>can this thing change my model</em>, and the two further padlocks under it.</p>
+      <p>Everything in the list below runs in the chat and on your own PC, on the far side of the bridge &mdash; not inside Revit.</p>
     </div>
   </div>
 
+<!-- heron:tools -->
   <div class="pgrp reveal">
-    <h3>Reading the model <i>17</i></h3>
+    <h3>Only looks <i>45</i></h3>
+    <p>Reads the model and answers. Changes nothing, ever.</p>
     <ul class="tlist">
-      <li><b>Views</b><span>The views, what governs each of them, and what the active view is showing through. <em>revit_views</em></span></li>
-      <li><b>Sheets</b><span>The sheets &mdash; numbering, titleblocks and revisions. <em>revit_sheets</em></span></li>
-      <li><b>Rooms and spaces</b><span>Rooms, MEP spaces and areas, and the two states that cost real time. <em>revit_rooms</em></span></li>
-      <li><b>Systems</b><span>The duct and pipe systems &mdash; and the MEP elements connected to nothing. <em>revit_systems</em></span></li>
-      <li><b>Linked models</b><span>What is linked, whether each one is loaded, and how many elements each holds. <em>revit_links</em></span></li>
-      <li><b>Phases</b><span>Phases and design options, with how many elements sit in each. <em>revit_phases</em></span></li>
-      <li><b>Worksets</b><span>The worksets, what is on each, and a sampled reading of who owns what. <em>revit_worksets</em></span></li>
-      <li><b>Levels and grids</b><span>The levels and grids, and what sits on each level. <em>revit_levels</em></span></li>
-      <li><b>Families</b><span>Families and types, and how many of each are actually placed. <em>revit_families</em></span></li>
-      <li><b>Schedules</b><span>The schedules, and what governs each of them. <em>revit_schedules</em></span></li>
-      <li><b>Parameters</b><span>Which parameters are filled in across a whole category, or what one element holds. <em>revit_parameters</em></span></li>
-      <li><b>Groups</b><span>Which elements sit inside a group, and how many other placements an edit would travel into. <em>revit_groups</em></span></li>
-      <li><b>Annotation</b><span>Dimensions, tags, text and keynotes &mdash; and finding the ones that lie. <em>revit_annotation</em></span></li>
-      <li><b>Imports</b><span>What has been brought in from outside, with linked and imported told apart. <em>revit_imports</em></span></li>
-      <li><b>Export check</b><span>Whether an export would be worth sending &mdash; without exporting anything. <em>revit_export_check</em></span></li>
-      <li><b>Pick the session</b><span>Which connected Revit this chat should work with, when more than one is open. <em>revit_use_session</em></span></li>
-      <li><b>Follow the front model</b><span>Move this chat onto whichever model is now in front in Revit. <em>revit_use_this_model</em></span></li>
+      <li><b>heron_capabilities</b><span>List what Heron knows how to do - the jobs it can be asked for, what each one needs, and which of those needs nothing provides yet.</span></li>
+      <li><b>heron_check</b><span>Check a drafted standards answer against the clauses it cites.</span></li>
+      <li><b>heron_companion</b><span>Open the Heron Companion - a page in the user's browser, beside Revit, that shows which model and view are in front and what is selected, live.</span></li>
+      <li><b>heron_compatibility</b><span>Which Revit versions Heron's tools actually work on, and how well checked.</span></li>
+      <li><b>heron_context</b><span>Show what an agent would be given for a request - and what it may not carry.</span></li>
+      <li><b>heron_diagnose</b><span>Check everything about Heron at once and say what is wrong.</span></li>
+      <li><b>heron_earlier_answers</b><span>Answers Heron kept, before D-113, under an id that every project made from the same Revit template shares (fragment-issues 5b-324).</span></li>
+      <li><b>heron_fire</b><span>Fire protection design calculations.</span></li>
+      <li><b>heron_gaps</b><span>What Heron has been asked to do lately, what failed, and what is slow.</span></li>
+      <li><b>heron_hvac</b><span>HVAC design calculations - loads, supply airflow, ashrae 62.1 outdoor air, psychrometrics, ducts, fans, diffusers, chilled water, unit conversion.</span></li>
+      <li><b>heron_lookup</b><span>Which capability serves a request in the user's own words.</span></li>
+      <li><b>heron_method</b><span>The whole method for a job of several steps.</span></li>
+      <li><b>heron_research</b><span>Say what Heron does not know about a question, and what an outside answer must carry.</span></li>
+      <li><b>heron_research_check</b><span>Check the citations in an answer that came from outside Heron.</span></li>
+      <li><b>heron_resolve</b><span>Ask who can do one named capability - and what to type to run it.</span></li>
+      <li><b>heron_run_record</b><span>Read back what a change did in full - every element id it added, modified or deleted, and every value it left - a page at a time.</span></li>
+      <li><b>heron_standards</b><span>Ask each knowledge scope on its own, and say where their answers disagree.</span></li>
+      <li><b>heron_version</b><span>Report Heron's version, the protocol it speaks, and the version of each connected Revit add-in — and whether all three agree.</span></li>
+      <li><b>revit_annotation</b><span>List the dimensions, tags, text and keynotes in the open Revit model, and find the ones that lie.</span></li>
+      <li><b>revit_building_loads</b><span>Calculate the heating and cooling load of every MEP Space in the open model (docs/44).</span></li>
+      <li><b>revit_edit_table</b><span>Open an editable table of elements and their parameters in the Heron Companion page.</span></li>
+      <li><b>revit_export_check</b><span>Say whether an export of the open Revit model would be worth sending - without exporting anything.</span></li>
+      <li><b>revit_families</b><span>List the families and types in the open Revit model, and how many of each are actually placed.</span></li>
+      <li><b>revit_groups</b><span>List the groups and assemblies in the open Revit model, or - with a category - show which of those elements sit inside one and how many other placements an edit would reach.</span></li>
+      <li><b>revit_health</b><span>Check whether Revit is reachable and what model is open.</span></li>
+      <li><b>revit_imports</b><span>List what has been brought into the open Revit model from outside, with linked and imported told apart.</span></li>
+      <li><b>revit_levels</b><span>List the levels and grids in the open Revit model, and what sits on each level.</span></li>
+      <li><b>revit_links</b><span>List the linked models in the open Revit model — what is linked, whether each one is loaded, and how many elements each holds.</span></li>
+      <li><b>revit_offer_settings</b><span>Put a settings capability's current values on the Heron Companion page as an editable table.</span></li>
+      <li><b>revit_parameters</b><span>Read the parameters of every element of one category in the open Revit model.</span></li>
+      <li><b>revit_phases</b><span>List the phases and design options in the open Revit model, with how many elements sit in each.</span></li>
+      <li><b>revit_preview_move</b><span>Show what moving elements up or down would do, without changing anything.</span></li>
+      <li><b>revit_read</b><span>Answer a question about the open Revit model with one of Heron's capabilities that reads.</span></li>
+      <li><b>revit_release</b><span>Say this chat is done with a model, so another chat can use it now.</span></li>
+      <li><b>revit_rooms</b><span>List the rooms, MEP spaces and areas in the open Revit model, and the two states that cost real time.</span></li>
+      <li><b>revit_schedules</b><span>List the schedules in the open Revit model and what governs each of them.</span></li>
+      <li><b>revit_sheets</b><span>List the sheets in the open Revit model - numbering, titleblocks and revisions.</span></li>
+      <li><b>revit_sprinkler_hydraulics</b><span>Run the hydraulic calculation of one sprinkler system in the open model (docs/46).</span></li>
+      <li><b>revit_sprinkler_layout</b><span>Lay sprinklers out in the selected Spaces or Rooms of any shape (docs/47).</span></li>
+      <li><b>revit_systems</b><span>List the duct and pipe systems in the open Revit model.</span></li>
+      <li><b>revit_use_session</b><span>Choose which connected Revit this chat should work with, when more than one is open.</span></li>
+      <li><b>revit_use_this_model</b><span>Move this chat onto whichever model is now in front in Revit.</span></li>
+      <li><b>revit_view_image</b><span>Take a picture of a Revit view and look at it - to check what you just did, instead of trusting a count.</span></li>
+      <li><b>revit_views</b><span>List the views in the open Revit model, what governs each of them, and what the active view is showing through.</span></li>
+      <li><b>revit_worksets</b><span>List the worksets in the open Revit model, what is on each, and a sampled reading of who owns what.</span></li>
     </ul>
   </div>
 
   <div class="pgrp reveal">
-    <h3>Reaching into the model <i>4</i></h3>
+    <h3>Does something you see <i>4</i></h3>
+    <p>Acts on the session - a selection, a view - and leaves no mark on the model itself.</p>
     <ul class="tlist">
-      <li><b>Select by category</b><span>Select every element of one or more categories, so you can see them highlighted on screen. <em>revit_select_by_category &middot; execute</em></span></li>
-      <li><b>Preview a move</b><span>Show what moving elements up or down <em>would</em> do, without changing anything. <em>revit_preview_move &middot; analyse</em></span></li>
-      <li><b>Apply the move</b><span>Carry out the move you have just approved, after seeing the preview. <em>revit_apply_move &middot; modify</em></span></li>
-      <li><b>Run a change</b><span>Change the open model and keep the change &mdash; the one command that carries a fragment into Revit and leaves it there. <em>revit_change &middot; modify</em></span></li>
-    </ul>
-    <p>These four are the only ones on this page that do anything to a model, and only the last two can leave a mark. Of all 34 commands, <strong>30 can only look</strong> &mdash; and the two that change something are still behind the padlock on the ribbon.</p>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>Heron&rsquo;s own knowledge <i>9</i></h3>
-    <ul class="tlist">
-      <li><b>What it can do</b><span>The jobs Heron can be asked for, what each one needs, and which of those needs nothing provides yet. <em>heron_capabilities</em></span></li>
-      <li><b>Work out what you meant</b><span>Which capability serves a request written in your own words. <em>heron_lookup</em></span></li>
-      <li><b>Who can do this</b><span>Ask who provides one named capability. <em>heron_resolve</em></span></li>
-      <li><b>Standards</b><span>Ask each knowledge scope on its own, and say where their answers disagree. <em>heron_standards</em></span></li>
-      <li><b>Check an answer</b><span>Check a drafted standards answer against the clauses it cites. Flags, never rewrites. <em>heron_check</em></span></li>
-      <li><b>What it does not know</b><span>Say what Heron does <em>not</em> know about a question, and what an outside answer would have to carry. <em>heron_research</em></span></li>
-      <li><b>Check an outside answer</b><span>Check the citations in an answer that came from elsewhere. Never the facts. <em>heron_research_check</em></span></li>
-      <li><b>Context</b><span>What an agent would be given for a request &mdash; and what it may not carry. <em>heron_context</em></span></li>
-      <li><b>Gaps</b><span>What Heron has been asked to do lately, what failed, and what is slow. <em>heron_gaps</em></span></li>
+      <li><b>revit_isolate_temporary</b><span>Isolate elements in the active Revit view, temporarily - Revit's own Temporary Hide/Isolate - so the user sees only those.</span></li>
+      <li><b>revit_reset_temporary</b><span>End the Temporary Hide/Isolate in the active Revit view - Revit's own Reset Temporary Hide/Isolate - so the view shows what its own settings show again.</span></li>
+      <li><b>revit_select_by_category</b><span>Select every element of one or more categories in the open Revit model, so the user can see them highlighted on screen.</span></li>
+      <li><b>revit_show</b><span>Show the user something in Revit.</span></li>
     </ul>
   </div>
 
   <div class="pgrp reveal">
-    <h3>Health and setup <i>4</i></h3>
+    <h3>Can change the model <i>2</i></h3>
+    <p>Behind the padlock on the ribbon. Nothing here runs unless Changes is switched on.</p>
     <ul class="tlist">
-      <li><b>Is Revit there</b><span>Whether Revit is reachable, and what model is open. <em>revit_health</em></span></li>
-      <li><b>Version</b><span>Heron&rsquo;s version, the protocol it speaks, and the version of each connected add-in &mdash; and whether all three agree. <em>heron_version</em></span></li>
-      <li><b>Revit compatibility</b><span>Which Revit versions Heron&rsquo;s tools actually work on, and how well checked. <em>heron_compatibility</em></span></li>
-      <li><b>Diagnose</b><span>Check everything about Heron at once, and say what is wrong. <em>heron_diagnose</em></span></li>
+      <li><b>revit_apply_move</b><span>Apply the move the user has just approved, after seeing revit_preview_move.</span></li>
+      <li><b>revit_change</b><span>Change the open Revit model, and keep the change - duplicate a type, rename, change an element's type, set a parameter.</span></li>
     </ul>
+  </div>
+<!-- /heron:tools -->
+
+  <div class="pgrp reveal">
+    <div class="note">
+      <b>What the chat can and cannot do</b>
+      <p><!-- heron:tools-note -->Of the 51 tools the chat can call, 45 can only read and answer. 2 can change the model, and not one of them runs unless the padlock on the ribbon is open.<!-- /heron:tools-note --></p>
+    </div>
   </div>
 </section>
 
 <section class="tabsec">
-  <h2 class="head reveal">The library behind it <span class="dim">395 fragments &middot; 19 areas of Revit</span></h2>
+  <h2 class="head reveal">The library behind it <span class="dim"><!-- heron:fragments-heading -->605 fragments &middot; 19 areas of Revit<!-- /heron:fragments-heading --></span></h2>
 
   <div class="pgrp reveal">
     <h3>How the pieces fit <i>3 words</i></h3>
@@ -515,88 +597,90 @@
   <div class="pgrp reveal">
     <h3>Every area covered <i>395</i></h3>
     <p>Click an area to open its full list. A name shown faded is still draft &mdash; it has not met a real model yet.</p>
+<!-- heron:fragments -->
     <ul class="tlist doms">
       <li><details>
-        <summary><b>Views <em>&middot; 76</em></b><span>add schedule fields, add spot elevations, apply view filter&hellip; <em>&middot; 68 proven, 8 still draft</em></span></summary>
-        <div class="frags"><i>add schedule fields</i><i>add spot elevations</i><i>apply view filter</i><i>apply view template</i><i>assign scope box to view</i><i>audit view filters</i><i>close view tabs</i><i>color by parameter</i><i>copy view filters</i><i>create 3D view</i><i class="d">create assembly views</i><i>create callout</i><i>create drafting view</i><i>create filled region</i><i>create legend view</i><i>create plan view</i><i>create room elevations</i><i>create section view</i><i class="d">create view filter</i><i>create view filters by value</i><i>create view template from view</i><i class="d">create workset 3D views</i><i>diagnose visibility</i><i>dimension family instances</i><i>dimension MEP runs</i><i>duplicate view</i><i>duplicate view template</i><i>duplicate views</i><i>find dates in views</i><i>find overlapping tags</i><i>find schedules</i><i>find unplaced views</i><i>find untagged elements</i><i>find views</i><i>hide elements</i><i>highlight vs rest</i><i>isolate elements</i><i>open view</i><i>override graphics in view</i><i>place view on sheet</i><i>read graphic overrides</i><i class="d">refresh view</i><i>remove tags</i><i>remove view filter</i><i>remove view template</i><i class="d">repoint view reference</i><i>report category overrides</i><i>report category visibility</i><i>report filterable parameters</i><i>report view filters</i><i>report view references</i><i>report view template control</i><i>reset graphic overrides</i><i>reset view graphics</i><i>set category graphics</i><i>set category visibility</i><i>set crop box settings</i><i>set link graphics</i><i class="d">set section mark visibility</i><i>set view crop</i><i class="d">set view crop to shape</i><i>set view phase</i><i>set view properties</i><i>set view range</i><i>set view scale</i><i>set view section box</i><i>set view template control</i><i>set view underlay</i><i>set view workset visibility</i><i class="d">show analysis heatmap</i><i>show elements</i><i>tag elements</i><i>tag elements in view</i><i>test view filter match</i><i>transfer view filters between documents</i><i>transfer views between documents</i></div>
+        <summary><b>Views <em>&middot; 106</em></b><span>add schedule fields, add spot elevations, apply color fill scheme&hellip; <em>&middot; 97 proven, 9 still draft</em></span></summary>
+        <div class="frags"><i>add schedule fields</i><i>add spot elevations</i><i>apply color fill scheme</i><i>apply view filter</i><i>apply view template</i><i>apply visual preset</i><i>assign scope box to view</i><i>audit view filters</i><i>close view tabs</i><i>color by parameter</i><i>compare view templates</i><i class="d">copy graphic display options</i><i>copy view filters</i><i>create 3D view</i><i>create area plan</i><i class="d">create assembly views</i><i>create callout</i><i>create drafting view</i><i>create fill pattern</i><i>create filled region</i><i>create legend view</i><i>create line pattern</i><i>create line style</i><i>create plan view</i><i>create room elevations</i><i>create section view</i><i>create view filter</i><i>create view filters by rule</i><i>create view filters by value</i><i>create view template from view</i><i>create wall elevation</i><i class="d">create workset 3D views</i><i>diagnose visibility</i><i>dimension element faces</i><i>dimension family instances</i><i>dimension MEP runs</i><i>duplicate view</i><i>duplicate view template</i><i>duplicate views</i><i>find dates in views</i><i>find overlapping tags</i><i>find schedules</i><i>find unplaced views</i><i>find untagged elements</i><i>find views</i><i>frame elements in camera</i><i>hide elements</i><i>highlight vs rest</i><i>isolate elements</i><i>move view cut plane</i><i>open render dialog</i><i>open view</i><i>override graphics in view</i><i>place view on sheet</i><i>read graphic overrides</i><i>read rendered images</i><i>read view scale</i><i class="d">refit room elevations</i><i class="d">refresh view</i><i>remove tags</i><i>remove view filter</i><i>remove view template</i><i class="d">repoint view reference</i><i class="d">report browser organization</i><i>report category overrides</i><i>report category visibility</i><i>report color fill scheme</i><i>report filterable parameters</i><i class="d">report linked view usage</i><i>report render settings</i><i>report view cut planes</i><i>report view filters</i><i>report view references</i><i>report view settings</i><i>report view template control</i><i>report visual preset</i><i>reset graphic overrides</i><i>reset view graphics</i><i>set category graphics</i><i>set category solid fill</i><i>set category visibility</i><i>set crop box settings</i><i>set graphic display options</i><i>set link graphics</i><i>set render settings</i><i>set section mark visibility</i><i>set sun settings</i><i>set view camera</i><i>set view crop</i><i>set view crop to shape</i><i>set view filter categories</i><i>set view phase</i><i>set view properties</i><i>set view range</i><i>set view scale</i><i>set view section box</i><i>set view template control</i><i>set view underlay</i><i>set view workset visibility</i><i class="d">show analysis heatmap</i><i>show elements</i><i>tag elements</i><i>tag elements in view</i><i>test view filter match</i><i>transfer view filters between documents</i><i>transfer views between documents</i></div>
       </details></li>
       <li><details>
-        <summary><b>MEP <em>&middot; 49</em></b><span>align MEP elevation, auto size MEP, auto size pipe&hellip; <em>&middot; 41 proven, 8 still draft</em></span></summary>
-        <div class="frags"><i>align MEP elevation</i><i>auto size MEP</i><i class="d">auto size pipe</i><i>cap open pipe ends</i><i>check equipment connectors</i><i>check fixture connectivity</i><i>check flow direction</i><i class="d">connect air terminals</i><i>connect open ends</i><i>copy routing preferences</i><i>create duct</i><i class="d">create electrical circuit</i><i>create electrical run</i><i>create flex duct</i><i>create HVAC zone</i><i>create MEP system type</i><i>create pipe</i><i>create pipe segment</i><i>disconnect connectors</i><i>find dead ends</i><i>find system islands</i><i class="d">measure available fall</i><i>measure fitting area</i><i>measure MEP slope</i><i>measure MEP velocity</i><i>measure run quantities</i><i class="d">place accessory on run</i><i>place MEP fitting</i><i>read MEP system</i><i>read space loads</i><i>report connector loads</i><i>report connectors</i><i>report duct weight</i><i>report MEP pressure drop</i><i>report pipe schedules</i><i>report pipe segments</i><i>report routing preferences</i><i>report space airflow</i><i>select by connection status</i><i class="d">select by electrical circuit</i><i>select by insulation</i><i>select by MEP system</i><i>set MEP insulation</i><i class="d">set MEP justification</i><i>set MEP size</i><i>set MEP slope</i><i>set routing preference</i><i>split MEP run</i><i class="d">trace connectivity</i></div>
+        <summary><b>Elements <em>&middot; 90</em></b><span>attach walls, change element type, convert CAD to DirectShape&hellip; <em>&middot; 79 proven, 11 still draft</em></span></summary>
+        <div class="frags"><i class="d">attach walls</i><i>change element type</i><i class="d">convert CAD to DirectShape</i><i>cope framing</i><i>copy elements between documents</i><i>create assembly</i><i>create beam system</i><i>create ceiling</i><i>create edge sweeps</i><i>create floor</i><i>create from room boundaries</i><i>create grids</i><i>create line</i><i>create mass floors</i><i>create material</i><i>create opening</i><i>create parts</i><i>create railing</i><i>create rebar bar type</i><i>create rebar cover type</i><i>create rebar hook type</i><i>create roof</i><i>create stairs</i><i>create starter materials</i><i>create wall</i><i>delete elements</i><i>disallow join</i><i class="d">divide parts</i><i>duplicate type</i><i>edit railing</i><i>extract CAD curves</i><i>filter elements by category</i><i>filter elements by ID</i><i>filter elements by type</i><i>filter elements in room</i><i class="d">flip elements</i><i>group by assembly</i><i>group elements</i><i>join geometry</i><i>list materials</i><i>list rebar types</i><i>match element type</i><i class="d">merge parts</i><i>move elements to point</i><i>offset part faces</i><i>paint faces</i><i>place area reinforcement</i><i>place beam rebar</i><i class="d">place column rebar</i><i class="d">place fabric reinforcement</i><i>place family instances</i><i>place family on face</i><i>place footing rebar</i><i>place hosted family</i><i>place line based family</i><i>place model groups</i><i>place path reinforcement</i><i>place structural family</i><i>place wall sweeps</i><i>read element ownership</i><i>remap line styles</i><i>rename family</i><i>replace material</i><i class="d">report analytical model</i><i>report host rebar</i><i>report joined elements</i><i>rotate elements about axis</i><i>set compound layer width</i><i>set curtain wall grid</i><i>set curtain wall mullions</i><i>set element level</i><i>set element material</i><i>set element workset</i><i>set material appearance</i><i>set material colour</i><i>set material properties</i><i>set parts excluded</i><i>set pin state</i><i class="d">set railing type</i><i>set rebar cover</i><i>set rebar view state</i><i>set reference plane length</i><i>set wall constraints</i><i>slope roof edges</i><i class="d">switch join order</i><i>transfer line styles between documents</i><i>transfer materials between documents</i><i>transfer object styles between documents</i><i>ungroup elements</i><i class="d">unjoin geometry</i></div>
       </details></li>
       <li><details>
-        <summary><b>Elements <em>&middot; 48</em></b><span>change element type, convert CAD to DirectShape, create ceiling&hellip; <em>&middot; 38 proven, 10 still draft</em></span></summary>
-        <div class="frags"><i>change element type</i><i class="d">convert CAD to DirectShape</i><i>create ceiling</i><i>create floor</i><i>create from room boundaries</i><i>create grids</i><i>create line</i><i>create material</i><i class="d">create opening</i><i class="d">create roof</i><i>create wall</i><i>delete elements</i><i>disallow join</i><i>duplicate type</i><i class="d">extract CAD curves</i><i>filter elements by category</i><i>filter elements by ID</i><i>filter elements by type</i><i>filter elements in room</i><i>flip elements</i><i>group by assembly</i><i>group elements</i><i>join geometry</i><i>match element type</i><i>move elements to point</i><i>place family instances</i><i class="d">place family on face</i><i class="d">place hosted family</i><i class="d">place line based family</i><i class="d">place structural family</i><i>read element ownership</i><i>remap line styles</i><i>rename family</i><i>replace material</i><i>report joined elements</i><i>rotate elements about axis</i><i>set compound layer width</i><i>set element level</i><i>set element workset</i><i>set material colour</i><i>set pin state</i><i>set wall constraints</i><i class="d">switch join order</i><i>transfer line styles between documents</i><i>transfer materials between documents</i><i>transfer object styles between documents</i><i>ungroup elements</i><i class="d">unjoin geometry</i></div>
+        <summary><b>Families <em>&middot; 65</em></b><span>add family connector, add family flip control, add family model text&hellip; <em>&middot; 61 proven, 4 still draft</em></span></summary>
+        <div class="frags"><i>add family connector</i><i>add family flip control</i><i>add family model text</i><i>add family parameters</i><i>add family shared parameters</i><i class="d">add family type parameter</i><i>array family forms</i><i class="d">check family size tables</i><i>combine family forms</i><i>copy labels from family</i><i>create conceptual form</i><i>create family blend</i><i>create family extrusion</i><i>create family forms</i><i>create family freeform solid</i><i>create family host opening</i><i>create family revolution</i><i>create family sweep</i><i>create family swept blend</i><i>create reference planes</i><i>delete family parameters</i><i>divide family surface</i><i>draw family detail lines</i><i>draw family filled region</i><i>draw family point curves</i><i>draw family symbolic lines</i><i>extrude between planes</i><i>extrude polygon between planes</i><i>find library families</i><i>flex family</i><i>label family dimension</i><i>label family radius</i><i>link family form parameter</i><i>link family parameter</i><i>link nested type parameter</i><i>load family</i><i>lock form to planes</i><i>lock nested family to planes</i><i>open family for editing</i><i>place adaptive points</i><i>place nested family</i><i>remove family connector</i><i class="d">report family connectors</i><i>report family forms</i><i>report family labels</i><i>report family parameters</i><i>report family size table</i><i>report family tables in project</i><i>report family template</i><i>report family type catalog</i><i>report nested families</i><i>set family category</i><i>set family connector roles</i><i>set family form material</i><i>set family form subcategory</i><i>set family form visibility</i><i>set family formula</i><i>set family label layout</i><i class="d">set family light source</i><i>set family plane reference</i><i>set family preview view</i><i>set family settings</i><i>set family sweep profile</i><i>set family type values</i><i>write family size table</i></div>
       </details></li>
       <li><details>
-        <summary><b>Selection <em>&middot; 33</em></b><span>create selection filter, read selection, select by categories&hellip; <em>&middot; 28 proven, 5 still draft</em></span></summary>
-        <div class="frags"><i>create selection filter</i><i>read selection</i><i>select by categories</i><i>select by category name</i><i>select by connector size</i><i>select by design option</i><i>select by family</i><i class="d">select by host</i><i>select by level</i><i>select by material</i><i>select by numeric parameter</i><i>select by parameter value</i><i>select by phase</i><i>select by pin state</i><i>select by workset</i><i>select from link</i><i>select from saved set</i><i class="d">select group members</i><i>select hidden in view</i><i>select in region</i><i class="d">select openings</i><i>select scope boxes</i><i class="d">select subcomponents</i><i class="d">select touching</i><i>select types</i><i>select unenclosed rooms</i><i>select view templates</i><i>select visible in view</i><i>select with warnings</i><i>select without level</i><i>set selection</i><i>update saved set</i><i>zoom to elements</i></div>
+        <summary><b>MEP <em>&middot; 63</em></b><span>align MEP elevation, auto size MEP, auto size pipe&hellip; <em>&middot; 56 proven, 7 still draft</em></span></summary>
+        <div class="frags"><i>align MEP elevation</i><i>auto size MEP</i><i>auto size pipe</i><i>cap open pipe ends</i><i>check equipment connectors</i><i>check fixture connectivity</i><i>check flow direction</i><i>connect air terminals</i><i>connect open ends</i><i>copy routing preferences</i><i>create duct</i><i class="d">create duct runs</i><i>create electrical circuit</i><i>create electrical run</i><i class="d">create fixture branches</i><i>create flex duct</i><i>create flex pipe</i><i>create HVAC zone</i><i>create MEP system</i><i>create MEP system type</i><i>create panel schedules</i><i>create pipe</i><i>create pipe segment</i><i>create wires</i><i>disconnect connectors</i><i>find dead ends</i><i>find system islands</i><i>fit MEP joints</i><i class="d">measure available fall</i><i>measure fitting area</i><i>measure MEP slope</i><i>measure MEP velocity</i><i>measure run quantities</i><i>offset MEP section</i><i class="d">place accessory on run</i><i>place MEP fitting</i><i>read MEP system</i><i>read space loads</i><i>report connector loads</i><i>report connectors</i><i>report duct weight</i><i>report MEP pressure drop</i><i>report panel circuits</i><i>report pipe schedules</i><i>report pipe segments</i><i>report routing preferences</i><i>report space airflow</i><i>report space envelope</i><i>report sprinkler layout spaces</i><i class="d">report sprinkler network</i><i>select by connection status</i><i>select by electrical circuit</i><i>select by insulation</i><i>select by MEP system</i><i>set air terminal flow</i><i>set MEP insulation</i><i class="d">set MEP justification</i><i>set MEP size</i><i>set MEP slope</i><i>set MEP system type</i><i>set routing preference</i><i>split MEP run</i><i class="d">trace connectivity</i></div>
       </details></li>
       <li><details>
-        <summary><b>Geometry <em>&middot; 29</em></b><span>align elements, array elements, array elements radial&hellip; <em>&middot; 24 proven, 5 still draft</em></span></summary>
-        <div class="frags"><i>align elements</i><i>array elements</i><i>array elements radial</i><i>check obstructions</i><i>copy elements</i><i>distribute along run</i><i>fillet lines</i><i class="d">find nearest elements</i><i>measure ceiling height</i><i class="d">measure distance</i><i>measure perimeter</i><i>measure room dimensions</i><i>mirror elements</i><i>move elements</i><i>move to ray hit</i><i>offset elements</i><i>plan connection order</i><i>probe around elements</i><i class="d">read ceiling grid</i><i>read room geometry</i><i>read scope box extent</i><i class="d">report areas</i><i>report bounding box</i><i>report centroid</i><i class="d">report door room links</i><i>report location</i><i>rotate elements</i><i>snap to grid</i><i>trim extend elements</i></div>
+        <summary><b>Document <em>&middot; 40</em></b><span>acquire coordinates, activate document, copy from link&hellip; <em>&middot; 29 proven, 11 still draft</em></span></summary>
+        <div class="frags"><i>acquire coordinates</i><i>activate document</i><i class="d">copy from link</i><i>create family document</i><i>create levels</i><i>create project document</i><i>create workset</i><i class="d">export model to NWC</i><i>extract dates from text</i><i>import CAD</i><i class="d">link files</i><i>list categories</i><i>list linked models</i><i>list worksets</i><i>read model file info</i><i>reload links</i><i>rename workset</i><i>report addin data</i><i>report coverage</i><i>report design options</i><i>report external references</i><i>report geometry complexity</i><i class="d">report level elevations</i><i>report material takeoff</i><i class="d">report material textures</i><i class="d">report open documents</i><i>report phases</i><i>report project information</i><i class="d">report project units</i><i>save document</i><i class="d">set design option</i><i>set link path type</i><i>set link room bounding</i><i>set project location</i><i>set project units</i><i class="d">set worksharing ownership</i><i class="d">switch active project</i><i class="d">sync with central</i><i>unload links</i><i>upgrade family files</i></div>
       </details></li>
       <li><details>
-        <summary><b>Document <em>&middot; 28</em></b><span>activate document, copy from link, create family document&hellip; <em>&middot; 19 proven, 9 still draft</em></span></summary>
-        <div class="frags"><i>activate document</i><i class="d">copy from link</i><i class="d">create family document</i><i>create levels</i><i>create workset</i><i class="d">export model to NWC</i><i>extract dates from text</i><i class="d">list categories</i><i>list linked models</i><i>list worksets</i><i>read model file info</i><i>reload links</i><i>rename workset</i><i>report addin data</i><i>report coverage</i><i>report design options</i><i>report external references</i><i>report geometry complexity</i><i>report level elevations</i><i>report material takeoff</i><i class="d">report open documents</i><i>report phases</i><i class="d">save document</i><i class="d">set design option</i><i class="d">switch active project</i><i class="d">sync with central</i><i>unload links</i><i>upgrade family files</i></div>
+        <summary><b>Selection <em>&middot; 39</em></b><span>create selection filter, find purgeable elements, find unused images&hellip; <em>&middot; 35 proven, 4 still draft</em></span></summary>
+        <div class="frags"><i>create selection filter</i><i>find purgeable elements</i><i class="d">find unused images</i><i>order elements by position</i><i>read selection</i><i class="d">select by categories</i><i>select by category name</i><i>select by connector size</i><i>select by design option</i><i>select by family</i><i>select by host</i><i>select by level</i><i>select by material</i><i>select by numeric parameter</i><i class="d">select by parameter value</i><i>select by phase</i><i>select by pin state</i><i>select by workset</i><i>select dimensions by value</i><i>select family forms</i><i>select from link</i><i>select from saved set</i><i>select group members</i><i>select hidden in view</i><i>select in region</i><i class="d">select openings</i><i>select scope boxes</i><i>select subcomponents</i><i>select touching</i><i>select types</i><i>select unenclosed rooms</i><i>select view templates</i><i>select visible in view</i><i>select with warnings</i><i>select without level</i><i>set selection</i><i>update saved set</i><i>zoom to elements</i><i>zoom to linked elements</i></div>
       </details></li>
       <li><details>
-        <summary><b>QA <em>&middot; 24</em></b><span>audit MEP openings, check category mismatch, check ceiling coordination&hellip; <em>&middot; 19 proven, 5 still draft</em></span></summary>
-        <div class="frags"><i>audit MEP openings</i><i>check category mismatch</i><i>check ceiling coordination</i><i>check equipment clearance</i><i>check family standards</i><i>check insulation clearance</i><i>check minimum clearance</i><i class="d">check model standards</i><i>check sleeve size</i><i>check surface fit</i><i>check valve accessibility</i><i>check vertical clearance</i><i>compare elements</i><i>compare models</i><i class="d">describe blank parameters</i><i class="d">find clashes</i><i>find unused definitions</i><i>find unused group types</i><i class="d">find unused materials</i><i>propose MEP openings</i><i>report constraints</i><i>report element dependencies</i><i>report element ownership</i><i class="d">report findings</i></div>
+        <summary><b>Geometry <em>&middot; 37</em></b><span>add toposolid subdivision, align elements, array elements&hellip; <em>&middot; 32 proven, 5 still draft</em></span></summary>
+        <div class="frags"><i class="d">add toposolid subdivision</i><i>align elements</i><i>array elements</i><i>array elements radial</i><i>check obstructions</i><i>copy elements</i><i>create toposolid</i><i>distribute along run</i><i>edit slab shape</i><i class="d">edit toposolid</i><i>fillet lines</i><i>find nearest elements</i><i>measure ceiling height</i><i class="d">measure distance</i><i>measure perimeter</i><i>measure room dimensions</i><i>mirror elements</i><i>move elements</i><i>move to ray hit</i><i>offset elements</i><i class="d">place adaptive components</i><i>plan connection order</i><i>probe around elements</i><i>read ceiling grid</i><i>read room geometry</i><i>read scope box extent</i><i>report areas</i><i>report bounding box</i><i>report centroid</i><i class="d">report divided surfaces</i><i>report door room links</i><i>report element geometry</i><i>report location</i><i>rotate elements</i><i>snap to grid</i><i>straighten off axis lines</i><i>trim extend elements</i></div>
       </details></li>
       <li><details>
-        <summary><b>Sheets <em>&middot; 19</em></b><span>add revision cloud, align viewports across sheets, create revision&hellip; <em>&middot; all proven</em></span></summary>
-        <div class="frags"><i>add revision cloud</i><i>align viewports across sheets</i><i>create revision</i><i>create sheet</i><i>create sheet list</i><i>create sheets</i><i>delete revision</i><i>duplicate sheets</i><i>edit revision</i><i>export sheets to PDF</i><i>find sheets</i><i>list revisions</i><i>list sheets</i><i>manage sheet sets</i><i>place views on sheet</i><i>report sheet title blocks</i><i>set print settings</i><i>set sheet revisions</i><i>set sheet title block</i></div>
+        <summary><b>Sheets <em>&middot; 33</em></b><span>add revision cloud, align viewports across sheets, center viewports on sheets&hellip; <em>&middot; 32 proven, 1 still draft</em></span></summary>
+        <div class="frags"><i>add revision cloud</i><i>align viewports across sheets</i><i>center viewports on sheets</i><i>create revision</i><i>create revision numbering sequence</i><i>create revisions from sheet dates</i><i>create sheet</i><i>create sheet list</i><i>create sheets</i><i>delete revision</i><i class="d">delete revision numbering sequence</i><i>duplicate sheets</i><i>edit revision</i><i>edit revision numbering sequence</i><i>export sheets to PDF</i><i>find sheets</i><i>find sheets by revision or number</i><i>list dates on sheets</i><i>list revisions</i><i>list sheet sets</i><i>list sheets</i><i>list views on sheet</i><i>manage sheet sets</i><i>merge revision</i><i>place views on sheet</i><i>reorder revision</i><i>report sheet title blocks</i><i>report viewport types</i><i>set print settings</i><i>set revision settings</i><i>set sheet revisions</i><i>set sheet title block</i><i>set viewport title line</i></div>
       </details></li>
       <li><details>
-        <summary><b>Parameters <em>&middot; 17</em></b><span>add project parameter, assign location data, copy parameter value&hellip; <em>&middot; 13 proven, 4 still draft</em></span></summary>
-        <div class="frags"><i class="d">add project parameter</i><i>assign location data</i><i>copy parameter value</i><i class="d">create global parameter</i><i>edit parameter text</i><i>edit text values</i><i>export parameters to CSV</i><i>import parameter values</i><i>read element parameters</i><i>remove parameter value</i><i>rename elements</i><i>renumber sequential</i><i>report global parameters</i><i>report parameter inventory</i><i class="d">set global parameter</i><i class="d">transfer project parameters between documents</i><i>write element parameters</i></div>
+        <summary><b>QA <em>&middot; 27</em></b><span>audit MEP openings, check category mismatch, check ceiling coordination&hellip; <em>&middot; 22 proven, 5 still draft</em></span></summary>
+        <div class="frags"><i>audit MEP openings</i><i>check category mismatch</i><i>check ceiling coordination</i><i>check equipment clearance</i><i>check family standards</i><i>check insulation clearance</i><i>check link coordinates</i><i>check minimum clearance</i><i>check model standards</i><i>check sleeve size</i><i class="d">check structural supports</i><i>check surface fit</i><i class="d">check valve accessibility</i><i>check vertical clearance</i><i>compare elements</i><i>compare models</i><i class="d">describe blank parameters</i><i>find clashes</i><i>find unused definitions</i><i>find unused group types</i><i class="d">find unused materials</i><i>propose MEP openings</i><i>report constraints</i><i>report element dependencies</i><i>report element ownership</i><i class="d">report findings</i><i>report mirrored instances</i></div>
       </details></li>
       <li><details>
-        <summary><b>Annotation <em>&middot; 16</em></b><span>arrange tags, arrange tags to view edges, center room tags&hellip; <em>&middot; 10 proven, 6 still draft</em></span></summary>
-        <div class="frags"><i>arrange tags</i><i>arrange tags to view edges</i><i class="d">center room tags</i><i class="d">create angular dimension</i><i>create dimension</i><i class="d">create linear dimension</i><i class="d">create radial dimension</i><i>create text note</i><i>dimension grids and levels</i><i>dimension rooms</i><i>dimension wall openings</i><i>force tag leader lshape</i><i class="d">move annotation</i><i class="d">place flow arrows</i><i>report tags and targets</i><i>stack tags</i></div>
+        <summary><b>Annotation <em>&middot; 24</em></b><span>arrange tags, arrange tags to view edges, center room tags&hellip; <em>&middot; 21 proven, 3 still draft</em></span></summary>
+        <div class="frags"><i>arrange tags</i><i>arrange tags to view edges</i><i>center room tags</i><i>copy tags to replacements</i><i>create angular dimension</i><i>create dimension</i><i>create linear dimension</i><i class="d">create radial dimension</i><i>create text note</i><i>dimension grids and levels</i><i>dimension rooms</i><i>dimension wall openings</i><i>force tag leader lshape</i><i>move annotation</i><i>offset tags from host</i><i>place detail components</i><i class="d">place flow arrows</i><i class="d">report keynotes</i><i>report spot dimensions</i><i>report tags and targets</i><i>report text types</i><i>set text type</i><i>stack tags</i><i>tag rooms</i></div>
       </details></li>
       <li><details>
-        <summary><b>Reporting <em>&middot; 13</em></b><span>count by spatial container, count elements, describe elements&hellip; <em>&middot; all proven</em></span></summary>
-        <div class="frags"><i>count by spatial container</i><i>count elements</i><i>describe elements</i><i>find views showing element</i><i>group and count</i><i>measure element lengths</i><i>measure element volume</i><i>read element level</i><i>read element material</i><i>read element phase</i><i>report compound structure</i><i>report curtain elements</i><i>sum by group</i></div>
+        <summary><b>Parameters <em>&middot; 21</em></b><span>add project parameter, assign location data, copy parameter value&hellip; <em>&middot; 14 proven, 7 still draft</em></span></summary>
+        <div class="frags"><i class="d">add project parameter</i><i>assign location data</i><i>copy parameter value</i><i class="d">create global parameter</i><i>edit parameter text</i><i>edit text values</i><i>export parameters to CSV</i><i>import parameter values</i><i class="d">read element parameters</i><i>read element table</i><i>remove parameter value</i><i>rename elements</i><i>renumber sequential</i><i class="d">report embodied carbon</i><i>report global parameters</i><i>report parameter inventory</i><i class="d">report shared parameter file</i><i class="d">set global parameter</i><i>set parameter values by ID</i><i class="d">transfer project parameters between documents</i><i>write element parameters</i></div>
       </details></li>
       <li><details>
-        <summary><b>Schedules <em>&middot; 11</em></b><span>add schedule combined field, create key schedule, create schedule&hellip; <em>&middot; 10 proven, 1 still draft</em></span></summary>
-        <div class="frags"><i>add schedule combined field</i><i>create key schedule</i><i>create schedule</i><i class="d">export schedule to CSV</i><i>place schedule on sheet</i><i>read schedule contents</i><i>remove schedule fields</i><i>report schedule definition</i><i>set schedule appearance</i><i>set schedule filters</i><i>set schedule sort group</i></div>
+        <summary><b>Reporting <em>&middot; 14</em></b><span>count by spatial container, count elements, describe elements&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>count by spatial container</i><i>count elements</i><i>describe elements</i><i>find views showing element</i><i>group and count</i><i>measure element lengths</i><i>measure element volume</i><i>read element level</i><i>read element material</i><i>read element phase</i><i>report compound structure</i><i>report curtain elements</i><i>report curtain wall type</i><i>sum by group</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Schedules <em>&middot; 12</em></b><span>add schedule combined field, create key schedule, create schedule&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>add schedule combined field</i><i>create key schedule</i><i>create schedule</i><i>export schedule to CSV</i><i>place schedule on sheet</i><i>read schedule contents</i><i>remove schedule fields</i><i>report schedule definition</i><i>set schedule appearance</i><i>set schedule field totals</i><i>set schedule filters</i><i>set schedule sort group</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Rooms <em>&middot; 10</em></b><span>create area boundary lines, create room separation lines, place areas&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>create area boundary lines</i><i>create room separation lines</i><i>place areas</i><i>place room at point</i><i>place rooms</i><i>report area volume computations</i><i>report room space data</i><i>set area volume computations</i><i>set room limits</i><i>sync spaces with linked rooms</i></div>
+      </details></li>
+      <li><details>
+        <summary><b>Datums <em>&middot; 8</em></b><span>add datum leaders, create grid, create radial grids&hellip; <em>&middot; all proven</em></span></summary>
+        <div class="frags"><i>add datum leaders</i><i>create grid</i><i>create radial grids</i><i>list grids</i><i>maximize datum extents</i><i>reset datum extents</i><i>set datum bubbles</i><i>set datum extent type</i></div>
       </details></li>
       <li><details>
         <summary><b>Quality <em>&middot; 8</em></b><span>check room MEP completeness, find degenerate lines, find duplicate elements&hellip; <em>&middot; 7 proven, 1 still draft</em></span></summary>
         <div class="frags"><i>check room MEP completeness</i><i>find degenerate lines</i><i>find duplicate elements</i><i>find duplicate values</i><i>find overlapping lines</i><i class="d">find unused families</i><i>find views without template</i><i>read model warnings</i></div>
       </details></li>
       <li><details>
-        <summary><b>Families <em>&middot; 7</em></b><span>load family, open family for editing, report family parameters&hellip; <em>&middot; all proven</em></span></summary>
-        <div class="frags"><i>load family</i><i>open family for editing</i><i>report family parameters</i><i>report family size table</i><i>report family tables in project</i><i>report nested families</i><i>write family size table</i></div>
-      </details></li>
-      <li><details>
-        <summary><b>Datums <em>&middot; 6</em></b><span>create grid, list grids, maximize datum extents&hellip; <em>&middot; all proven</em></span></summary>
-        <div class="frags"><i>create grid</i><i>list grids</i><i>maximize datum extents</i><i>reset datum extents</i><i>set datum bubbles</i><i>set datum extent type</i></div>
-      </details></li>
-      <li><details>
         <summary><b>Export <em>&middot; 5</em></b><span>export families, export model to IFC, export view image&hellip; <em>&middot; 2 proven, 3 still draft</em></span></summary>
-        <div class="frags"><i class="d">export families</i><i class="d">export model to IFC</i><i>export view image</i><i class="d">export views to DWG</i><i>export views to fbx</i></div>
-      </details></li>
-      <li><details>
-        <summary><b>Rooms <em>&middot; 3</em></b><span>place room at point, place rooms, report room space data&hellip; <em>&middot; 2 proven, 1 still draft</em></span></summary>
-        <div class="frags"><i>place room at point</i><i class="d">place rooms</i><i>report room space data</i></div>
+        <div class="frags"><i class="d">export families</i><i class="d">export model to IFC</i><i>export view image</i><i class="d">export views to DWG</i><i>export views to FBX</i></div>
       </details></li>
       <li><details>
         <summary><b>Levels <em>&middot; 2</em></b><span>create level, list levels&hellip; <em>&middot; all proven</em></span></summary>
         <div class="frags"><i>create level</i><i>list levels</i></div>
       </details></li>
       <li><details>
-        <summary><b>Phases <em>&middot; 1</em></b><span>set element phase&hellip; <em>&middot; proven</em></span></summary>
+        <summary><b>Phases <em>&middot; 1</em></b><span>set element phase&hellip; <em>&middot; all proven</em></span></summary>
         <div class="frags"><i>set element phase</i></div>
       </details></li>
     </ul>
+<!-- /heron:fragments -->
   </div>
 
   <div class="pgrp reveal">
-    <h3>What &ldquo;proven&rdquo; means here <i>329 of 395</i></h3>
+    <h3>What &ldquo;proven&rdquo; means here <i><!-- heron:proven-count -->534 of 605<!-- /heron:proven-count --></i></h3>
     <p>A compile is not a proof. A passing test is not a proof. A proof is a recorded run against a <strong>named real model</strong>, with a negative case and a fingerprint that goes stale the moment the code changes underneath it. 329 fragments have one. 66 do not, and stay marked draft until they do &mdash; including every fragment re-authored from Ajmal&rsquo;s earlier libraries, which arrives here unproven no matter how well it worked where it came from.</p>
   </div>
 </section>
@@ -607,7 +691,7 @@
   <div class="pgrp reveal">
     <h3>The four parts <i>4</i></h3>
     <ul class="tlist">
-      <li><b>Heron Revit</b><span>The add-in, the ribbon, and everything that touches the Revit API. C#, running inside Revit itself. Three files, 39&nbsp;KB in total.</span></li>
+      <li><b>Heron Revit</b><span>The add-in, the ribbon, and everything that touches the Revit API. C#, running inside Revit itself &mdash; and deliberately the smallest of the four parts, because it is the only one that can bring Revit down with it.</span></li>
       <li><b>Heron MCP</b><span>The controlled bridge between the AI layer and Revit. A named pipe on the same machine &mdash; never a network socket.</span></li>
       <li><b>Heron Brain</b><span>Skills, fragments, retrieval, memory and knowledge. Python, on your own PC.</span></li>
       <li><b>Heron Platform</b><span>Install, update, packages, registry, security. The layer underneath the other three.</span></li>
@@ -661,7 +745,7 @@
   <div class="pgrp reveal">
     <h3>Where your data goes <i>3</i></h3>
     <ul class="tlist">
-      <li><b>The part inside Revit opens no connections</b><span>39&nbsp;KB of code, no sockets, listening on no ports. An IT department can be told, accurately, that the thing installed into Revit talks only to another process on the same machine.</span></li>
+      <li><b>The part inside Revit opens no connections</b><span>No sockets, listening on no ports. It speaks over a named pipe to another process on the same machine, and that is the only way out of it. An IT department can be told that accurately, and check it.</span></li>
       <li><b>Models never leave your machine</b><span>Revit and family files are refused by file extension before they are even opened. Documents can be indexed; models and families go nowhere.</span></li>
       <li><b>It will not invent a standard</b><span>Any claim about ISO&nbsp;19650, QCS, Ashghal or a company standard has to cite an indexed source document. No source, no claim &mdash; an uncited standards answer is treated as a bug, not as a low-confidence answer.</span></li>
     </ul>
@@ -672,31 +756,34 @@
   <h2 class="head reveal">Where it actually stands <span class="dim">version 0.1.0 &middot; not released</span></h2>
 
   <div class="pgrp reveal">
-    <h3>Phase by phase <i>honestly</i></h3>
-    <ol class="ladder">
-      <li style="--rd:.04s"><b>Phase 0 &mdash; the bridge. Proven.</b><span>All five steps proven in real Revit 2020 and 2024: 5,844 elements read from a live 2024 model and 3,167 from 2020, and &ldquo;select all ducts&rdquo; found four and highlighted them on screen in both. Everything in this phase is read-only &mdash; none of it can change a model.</span></li>
-      <li style="--rd:.10s"><b>Phase 1 &mdash; the first write. Built, and unproven.</b><span>Built and compiled on all eight Revit releases with zero warnings. It has never loaded into Revit and has never moved anything. Writing stays switched off until it has.</span></li>
-      <li style="--rd:.16s"><b>Phase 2 &mdash; fragments and knowledge. Built, partly proven.</b><span>The fragment store, one knowledge store per project, exact-word and meaning-based search fused together, the capability registry, and ten skills. 329 of the 395 fragments now carry a proof. All ten skills are still draft.</span></li>
-      <li style="--rd:.22s"><b>Phases 3 to 7 &mdash; planned.</b><span>The wider BIM surface, learning and trust, code generation, the platform, and scale. Written down, not started.</span></li>
-    </ol>
-    <div class="note">
-      <b>Please do not install this yet</b>
-      <p>The repository is public only so the work is open. It is still not finished. I will announce it on LinkedIn and here on this site when it is ready to install. Until then, feel free to read and follow along.</p>
-      <p><strong>Programmers and AI engineers &mdash; your thoughts are very welcome.</strong> Please read the code and share your suggestions, ideas or corrections through an <a href="https://github.com/Ajmalpshaik/Heron-AI/issues" rel="noopener">Issue</a> or a <a href="https://github.com/Ajmalpshaik/Heron-AI/discussions" rel="noopener">Discussion</a>. That help is what I am asking for now, not installs.</p>
-    </div>
+    <h3>What has been proved, and on which Revit <i>honestly</i></h3>
+    <p>Every row here is a thing somebody watched happen in front of a real Revit, on a named date. Nothing on this page is called proven because it compiled.</p>
+    <ul class="tlist">
+      <li><b>The bridge</b><span>Proven in Revit 2020 and 2024. One button connects; the thread hop counted 5,844 elements in a live 2024 model and 3,167 in 2020; &ldquo;select all ducts&rdquo; found four and highlighted them in both. With two Revits open it refused to guess, and stopped when the chosen one closed.</span></li>
+      <li><b>The first write</b><span>Measured on one release. On 17 October 2026, three ducts in a copy of Autodesk&rsquo;s MEP sample moved +200.0000&nbsp;mm each in Revit 2024, read back two ways; a pinned duct beside them did not move; and one Ctrl+Z put them back. A forced failure mid-move and the other rails are still owed.</span></li>
+      <li><b>Keep or Discard, and the safety rails</b><span>Run in Revit 2024 and 2027 on 18 October 2026, on the owner&rsquo;s laptop, with Keep, Discard, Esc and Undo pressed by hand. The faults it found were logged, not hidden.</span></li>
+      <li><b>A fragment cannot end Revit</b><span>Proved in front of Revit on 16 September 2026. A runaway recursion comes back as a finding, with Revit still running.</span></li>
+      <li><b>The fragment library</b><span>Mostly proven, the rest draft. A draft is not &ldquo;unwritten&rdquo; &mdash; it is <em>not proven as it stands</em>: either new, or sent back when its code changed. The split is counted straight from the repository at the top of this page.</span></li>
+      <li><b>The skills</b><span>All <!-- heron:skills-count -->35<!-- /heron:skills-count --> are still draft. A skill is what you can ask for in your own words; none of them has yet been proved end to end against a real model.</span></li>
+    </ul>
   </div>
 
   <div class="pgrp reveal">
-    <h3>The facts <i>7</i></h3>
+    <h3>How it is put together <i>the short answer</i></h3>
     <ul class="tlist">
-      <li><b>Version</b><span>0.1.0. No tagged release yet.</span></li>
-      <li><b>Licence</b><span>Apache 2.0. Free and open source, and free on the Autodesk App Store later.</span></li>
-      <li><b>Revit support</b><span>2020 to 2027 &mdash; one codebase, eight builds. A release the table does not list is an error rather than a guess.</span></li>
-      <li><b>Where it runs</b><span>As a Claude Code plugin: skills, subagents, an MCP server and the Revit add-in.</span></li>
-      <li><b>Proving model</b><span>Snowdon Towers sample HVAC &mdash; 9,638 placed elements, 1,053 ducts, workshared, Revit 2024.</span></li>
-      <li><b>Relationship to AJ-Tools</b><span>Separate, and <a href="/aj-tools/">AJ-Tools</a> continues. Heron takes the thinking from the earlier work and re-authors it &mdash; studied and rewritten, never copied across.</span></li>
-      <li><b>Beyond Revit</b><span>Revit first, not Revit forever. The core carries no Revit reference at all, and that is checked automatically.</span></li>
+      <li><b>Host</b><span>A Claude Code plugin &mdash; skills, subagents, the MCP server and the Revit add-in.</span></li>
+      <li><b>Revit support</b><span>2020 to the latest release, and every future one. Declared support and tested releases are two different lists, and heron_compatibility tells them apart rather than blurring them.</span></li>
+      <li><b>Languages</b><span>C# for everything that touches Revit. Python for the brain and the MCP side.</span></li>
+      <li><b>Transport</b><span>Named pipes. The add-in is the server, and it is local-only by construction &mdash; not by configuration.</span></li>
+      <li><b>Revit threading</b><span>One ExternalEvent, one request queue, one handler. The rule the Revit API actually imposes, obeyed in one place.</span></li>
+      <li><b>Generated code</b><span>C# compiled at run time inside Revit&rsquo;s process. No fragment is production-compiled yet, so today every one &mdash; proven included &mdash; is compiled when it runs.</span></li>
+      <li><b>Licence and distribution</b><span>Apache 2.0, free and open source on public GitHub.</span></li>
     </ul>
+    <div class="note">
+      <b>Please do not install this yet</b>
+      <p>The repository is public only so the work is open. It is still not finished. I will announce it on LinkedIn and here on this site when it is ready to install. Until then, feel free to read and follow along.</p>
+      <p>Programmers and AI engineers &mdash; your thoughts are very welcome. Please read the code and share your suggestions, ideas or corrections through an Issue or a Discussion. That help is what I am asking for now, not installs.</p>
+    </div>
   </div>
 </section>
 
@@ -716,7 +803,7 @@
 <section class="sec-foot">
   <div class="wrap">
     <nav class="pager" aria-label="More of the site">
-      <a class="pcard prev" href="/aj-tools/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> AJ-Tools</b><span>The Revit add-in a team runs on</span></a>
+      <a class="pcard prev" href="/automation/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Automation</b><span>The Revit tools I build</span></a>
       <a class="pcard next" href="/toolbox/"><small>Next</small><b>Toolbox <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>Tools you can use in the browser</span></a>
     </nav>
     <div class="cta reveal">
@@ -750,7 +837,7 @@
     <div>
       <h3>Tools</h3>
       <ul>
-        <li><a href="/aj-tools/">AJ-Tools</a></li>
+        <li><a href="/automation/">Automation</a></li>
         <li><a href="/heron-ai/">Heron AI</a></li>
         <li><a href="/toolbox/">Toolbox</a></li>
       </ul>
