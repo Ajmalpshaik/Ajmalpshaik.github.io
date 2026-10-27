@@ -135,18 +135,10 @@ def nav_html(current):
         '    </div>',
         '',
         '    <div class="navend">',
+        # The theme switch is gone with the light theme: the site has one skin
+        # now, the cover's, and two was what made it read as two sites.
         '      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">'
         '<span></span></button>',
-        '      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">',
-        '        <span class="track"><span class="knob">',
-        '          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" '
-        'stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/>'
-        '<path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9'
-        'M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>',
-        '          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" '
-        'aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>',
-        '        </span></span>',
-        '      </button>',
         '    </div>',
         '  </div>',
         '</nav>',
@@ -178,14 +170,13 @@ def foot_html(current):
     # On /contact/ the whole page is the call to action; a band repeating it
     # under the pager would be the third "get in touch" on one screen.
     band = [] if current == "/contact/" else [
-        '    <div class="ctaband reveal">',
-        '      <div>',
-        '        <h2>Looking for an MEP BIM Coordinator?</h2>',
-        '        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>',
-        '      </div>',
+        '    <div class="cta reveal">',
+        '      <h2>Looking for an MEP BIM Coordinator?</h2>',
+        '      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>',
         '      <div class="btnrow">',
         '        <a class="btn" href="/contact/">Get in touch</a>',
-        '        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>',
+        '        <a class="tlink" href="/faq/">Read the FAQ '
+        '<span class="chev" aria-hidden="true">&rsaquo;</span></a>',
         '      </div>',
         '    </div>',
     ]

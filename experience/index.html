@@ -8,7 +8,8 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/experience/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f7f9fc">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
 <meta property="og:title" content="Experience — MEP BIM Coordinator &amp; BIM Modeller in Qatar | Ajmal P.S">
@@ -32,16 +33,12 @@
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="/assets/chrome.css">
 <script>
+/* The menus and the reveals are hidden only while a script is there to show
+   them again. If it never runs - blocked, offline, an old browser - drop the
+   class after 3s so nothing stays invisible. */
 (function(){
   var d = document.documentElement;
   d.classList.add("js");
-  var t = null;
-  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
-  if(t !== "dark" && t !== "light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  d.setAttribute("data-theme", t);
-  /* failsafe: if app.js never runs, drop .js so nothing stays hidden */
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
@@ -261,56 +258,55 @@
 
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
-        <span class="track"><span class="knob">
-          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-        </span></span>
-      </button>
     </div>
   </div>
 </nav>
 
 <main id="main">
-<section class="chapter first chapter-wide" data-track="03-experience">
+<header class="pagehead">
   <div class="wrap">
-      <div class="crumbs"><a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span> <span>Experience</span></div>
-    <div class="ch-head">    <div class="ch-top">
-      <span class="ch-eyebrow reveal"><span data-yrs-word>Eleven</span> years</span>
-    </div>
-    <h1 class="ch-title rvt">
-      <span class="ln"><i>Every project</i></span>
-      <span class="ln"><i>raised the cost</i></span>
-      <span class="ln"><i>of being wrong.</i></span>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>Experience</span></nav>
+    <span class="kicker enter" style="--d:.02s"><span data-yrs-word>Eleven</span> years</span>
+    <h1 class="display rvt enter" style="--d:.06s">
+      <span class="ln"><i>Every project raised</i></span>
+      <span class="ln"><i>the cost of <span class="dim">being wrong</span></i></span>
     </h1>
-    </div>
-    <div class="ch-body">
-    <p class="ch-lead reveal">A mistake in a villa is an afternoon. A mistake in an operating plant is a shutdown. The work did not just get bigger — it got less forgiving, and that is what pushed the tooling forward.</p>
+    <p class="lede enter" style="--d:.2s">A mistake in a villa is an afternoon. A mistake in an operating plant is a shutdown. <strong>The work did not just get bigger &mdash; it got less forgiving</strong>, and that is what pushed the tooling forward.</p>
+  </div>
+</header>
 
-    <h2 class="head subhead">Three stops, <span class="dim">in order.</span></h2>
+<section class="sec" data-track="03-experience">
+  <div class="wrap">
+    <span class="kicker">Three stops</span>
+    <h2 class="head">In order, <span class="dim">and what each cost</span></h2>
     <div class="tl" id="tl">
       <div class="tl-item reveal">
         <div class="tl-yr">May 2015 &ndash; Jun 2024</div>
-        <h3>BIM Modeller / MEP Draftsman</h3>
-        <div class="tl-org">Powermech &middot; Stream &middot; Roots Energy &middot; Mekdam &middot; TEM-AC &middot; Doha</div>
-        <p>Villas, towers, malls, hotels, offices and airport renovation works. Shop, coordination, builder's work and as-built drawings, through consultant approval. Supervised drafting teams and coordinated daily with other disciplines. This is where the AutoLISP routines and Dynamo scripts started.</p>
-        <span class="tl-stake">Learning exactly where models break</span>
+        <div>
+          <h3>BIM Modeller / MEP Draftsman</h3>
+          <p class="tl-org">Powermech &middot; Stream &middot; Roots Energy &middot; Mekdam &middot; TEM-AC &middot; Doha</p>
+          <p>Villas, towers, malls, hotels, offices and airport renovation works. Shop, coordination, builder&rsquo;s work and as-built drawings, through consultant approval. Supervised drafting teams and coordinated daily with other disciplines. This is where the AutoLISP routines and Dynamo scripts started.</p>
+          <p class="tl-stake">At stake: learning exactly where models break</p>
+        </div>
       </div>
-      <div class="tl-item reveal">
+      <div class="tl-item reveal" style="--d:.08s">
         <div class="tl-yr">Jun 2024 &ndash; Apr 2025</div>
-        <h3>BIM Modeller &middot; Arab Engineering Bureau</h3>
-        <div class="tl-org">Qatar Private Schools Programme, PPP Package 2 &middot; consultant side</div>
-        <p>Revit MEP models for HVAC, plumbing, firefighting and drainage across fourteen school buildings, federated on Autodesk Construction Cloud with clash detection in Navisworks. Coordination drawings, schedules and quantity take-offs produced straight from the model.</p>
-        <span class="tl-stake">Get the standard right once, or fix it fourteen times</span>
+        <div>
+          <h3>BIM Modeller &middot; Arab Engineering Bureau</h3>
+          <p class="tl-org">Qatar Private Schools Programme, PPP Package 2 &middot; consultant side</p>
+          <p>Revit MEP models for HVAC, plumbing, firefighting and drainage across fourteen school buildings, federated on Autodesk Construction Cloud with clash detection in Navisworks. Coordination drawings, schedules and quantity take-offs produced straight from the model.</p>
+          <p class="tl-stake">At stake: get the standard right once, or fix it fourteen times</p>
+        </div>
       </div>
-      <div class="tl-item reveal">
+      <div class="tl-item reveal" style="--d:.16s">
         <div class="tl-yr">Apr 2025 &ndash; Present</div>
-        <h3>BIM Specialist &amp; MEP BIM Coordinator &middot; Trags</h3>
-        <div class="tl-org">Polyethylene Plant, Ras Laffan &middot; contractor side</div>
-        <p>Lead HVAC BIM modelling and coordination on an operating production plant, in Revit with BIM 360. Navisworks clash detection driven to closure with MEP, structural and civil teams, and LOD and project BIM standards enforced across the federated model at every milestone. The custom Revit tools I rolled out to the drafting team cut project timelines by an estimated 20%.</p>
-        <span class="tl-stake">Shutdown risk, not rework risk</span>
+        <div>
+          <h3>BIM Specialist &amp; MEP BIM Coordinator &middot; Trags</h3>
+          <p class="tl-org">Polyethylene Plant, Ras Laffan &middot; contractor side</p>
+          <p>Lead HVAC BIM modelling and coordination on an operating production plant, in Revit with BIM 360. Navisworks clash detection driven to closure with MEP, structural and civil teams, and LOD and project BIM standards enforced across the federated model at every milestone. The custom Revit tools I rolled out to the drafting team cut project timelines by an estimated 20%.</p>
+          <p class="tl-stake">At stake: shutdown risk, not rework risk</p>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </section>
@@ -321,14 +317,12 @@
       <a class="pcard prev" href="/story/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Story</b><span>How it started</span></a>
       <a class="pcard next" href="/work/"><small>Next</small><b>Selected work <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>Five projects in Qatar</span></a>
     </nav>
-    <div class="ctaband reveal">
-      <div>
-        <h2>Looking for an MEP BIM Coordinator?</h2>
-        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
-      </div>
+    <div class="cta reveal">
+      <h2>Looking for an MEP BIM Coordinator?</h2>
+      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
       <div class="btnrow">
         <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>
+        <a class="tlink" href="/faq/">Read the FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></a>
       </div>
     </div>
   </div>

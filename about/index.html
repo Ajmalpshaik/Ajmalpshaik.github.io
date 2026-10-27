@@ -8,7 +8,8 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/about/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f7f9fc">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
 <meta property="og:title" content="About Ajmal P.S — MEP BIM Coordinator in Doha, Qatar">
@@ -32,16 +33,12 @@
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="/assets/chrome.css">
 <script>
+/* The menus and the reveals are hidden only while a script is there to show
+   them again. If it never runs - blocked, offline, an old browser - drop the
+   class after 3s so nothing stays invisible. */
 (function(){
   var d = document.documentElement;
   d.classList.add("js");
-  var t = null;
-  try{ t = localStorage.getItem("ajps-theme"); }catch(e){}
-  if(t !== "dark" && t !== "light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  d.setAttribute("data-theme", t);
-  /* failsafe: if app.js never runs, drop .js so nothing stays hidden */
   setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
 })();
 </script>
@@ -221,12 +218,6 @@
 
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-      <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
-        <span class="track"><span class="knob">
-          <svg class="ic-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 1.8v2.6M12 19.6v2.6M1.8 12h2.6M19.6 12h2.6M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
-          <svg class="ic-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.7 8.7 0 0 1 9.5 3 8.8 8.8 0 1 0 21 14.5Z"/></svg>
-        </span></span>
-      </button>
     </div>
   </div>
 </nav>
@@ -234,60 +225,66 @@
 <main id="main">
 <header class="pagehead">
   <div class="wrap">
-      <div class="crumbs"><a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span> <span>About</span></div>
-    <h1 class="hero-enter" style="--d:.05s">The practical part. <span class="dim">Concept to as&#8209;built.</span></h1>
-    <p class="sub hero-enter" style="--d:.16s">Where I am, what I hold, and what I actually do day to day.</p>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>About</span></nav>
+    <span class="kicker enter" style="--d:.02s">About</span>
+    <h1 class="display enter" style="--d:.06s">The practical <span class="dim">part</span></h1>
+    <p class="lede enter" style="--d:.18s">Where I am, what I hold, and what I actually do day to day. <strong>Doha, Qatar. Transferable QID with NOC. Able to join within days.</strong></p>
   </div>
 </header>
-<section class="sec-alt">
+
+<section class="sec">
   <div class="wrap">
-    <span class="eyebrow">What I do</span>
+    <span class="kicker">What I do</span>
     <h2 class="head">The model is the job. <span class="dim">So are the tools that build it.</span></h2>
-    <div class="bento">
-      <article class="bcard span2 reveal">
-        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
-        <h3>Concept to as-built</h3>
-        <p>I take MEP models from concept through construction documentation to as-built &mdash; villas and residential towers, malls, hotels, schools, mixed-use developments, an operating airport terminal and a petrochemical plant. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
-      </article>
-      <article class="bcard reveal" style="--d:.08s">
-        <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
-        <h3>Automation built in</h3>
-        <p><strong>I write the software, not just the model:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools &mdash; the team&rsquo;s time goes to coordination.</p>
-      </article>
-      <article class="bcard reveal" style="--d:.05s">
-        <p class="big"><span data-yrs>11</span> years</p>
-        <p class="cap">in Doha since May 2015 &mdash; and every year of it in MEP</p>
-      </article>
-      <article class="bcard reveal" style="--d:.12s">
-        <p class="big">2 sides</p>
-        <p class="cap">consultant (AEB) and contractor (Trags, TEM&#8209;AC&hellip;) &mdash; I speak both languages</p>
-      </article>
-      <article class="bcard reveal" style="--d:.19s">
-        <p class="big">5 languages</p>
-        <p class="cap">English &middot; Malayalam &middot; Tamil &middot; Hindi &middot; basic Arabic</p>
-      </article>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">Concept to as-built</h3></div>
+        <div>
+          <p>I take MEP models from concept through construction documentation to as-built &mdash; villas and residential towers, malls, hotels, schools, mixed-use developments, an operating airport terminal and a petrochemical plant.</p>
+          <p>Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
+        </div>
+      </div>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">Automation built in</h3></div>
+        <div>
+          <p><strong>I write the software, not just the model.</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session.</p>
+          <p>Repetitive drafting goes to the tools. The team&rsquo;s time goes to coordination.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-<section>
+
+<section class="sec sec-soft">
   <div class="wrap">
-    <span class="eyebrow">The practical facts</span>
-    <h2 class="head">Everything asked <span class="dim">before the first call.</span></h2>
-    <p class="sub">No reading between lines. If something here is not what you need, the FAQ or an email will settle it faster than a CV will.</p>
-    <div class="specs reveal">
-      <div class="spec-row"><h3>Based in</h3><p>Doha, Qatar &middot; GMT+3 &middot; on site, not remote, for modelling and coordination.</p></div>
-      <div class="spec-row"><h3>Status</h3><p>Transferable QID with NOC. There is no new visa to arrange and no sponsorship to wait on.</p></div>
-      <div class="spec-row"><h3>Notice</h3><p>Able to join within days.</p></div>
-      <div class="spec-row"><h3>Now</h3><p>BIM Specialist and MEP BIM Coordinator at Trags, on the Polyethylene Plant at Ras Laffan &mdash; an operating production plant, contractor side.</p></div>
-      <div class="spec-row"><h3>Experience</h3><p><span data-yrs>11</span> years since May 2015, on both sides of the table: consultant at Arab Engineering Bureau, contractor at Trags and before that at TEM&#8209;AC, Mekdam, Roots Energy, Stream and Powermech.</p></div>
-      <div class="spec-row"><h3>Sectors</h3><p>Villas, residential towers, malls, hotels, offices, fourteen school buildings, an operating airport terminal, and a petrochemical plant.</p></div>
-      <div class="spec-row"><h3>Disciplines</h3><p>HVAC, chilled water, plumbing, drainage and firefighting &mdash; modelled, coordinated and drawn.</p></div>
-      <div class="spec-row"><h3>Software</h3><p>Revit, Navisworks, BIM&nbsp;360 and Autodesk Construction Cloud, AutoCAD, Dynamo.</p></div>
-      <div class="spec-row"><h3>Code</h3><p>C# and the Revit API, pyRevit, Python, AutoLISP &mdash; shipped with an installer and documentation, not as loose scripts.</p></div>
-      <div class="spec-row"><h3>Standards</h3><p>ISO&nbsp;19650 naming, BEP and LOD matrices, worksets, shared parameters, and the model audits that keep a project to them between milestones.</p></div>
-      <div class="spec-row"><h3>Languages</h3><p>English, Malayalam, Tamil and Hindi. Arabic is conversational, not a working language.</p></div>
-      <div class="spec-row"><h3>Open to</h3><p>BIM Coordinator, BIM Modeller and MEP BIM Specialist roles with consultants and contractors anywhere in Qatar &mdash; and to automation scopes, which I also take remotely.</p></div>
+    <div class="nums reveal">
+      <div><b><span data-yrs>11</span></b><span>years in MEP, all of them in Doha</span></div>
+      <div><b>2</b><span>sides of the table &mdash; consultant and contractor</span></div>
+      <div><b>5</b><span>languages, four of them working ones</span></div>
+      <div><b>0</b><span>days&rsquo; notice to arrange &mdash; the visa is already here</span></div>
     </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <span class="kicker">The practical facts</span>
+    <h2 class="head">Everything asked <span class="dim">before the first call</span></h2>
+    <p class="sub">No reading between lines. If something here is not what you need, an email will settle it faster than a CV will.</p>
+    <dl class="facts reveal">
+      <div class="fact"><dt>Based in</dt><dd>Doha, Qatar &middot; GMT+3. On site, not remote, for modelling and coordination.</dd></div>
+      <div class="fact"><dt>Status</dt><dd><strong>Transferable QID with NOC.</strong> There is no new visa to arrange and no sponsorship to wait on.</dd></div>
+      <div class="fact"><dt>Notice</dt><dd>Able to join within days.</dd></div>
+      <div class="fact"><dt>Now</dt><dd>BIM Specialist and MEP BIM Coordinator at Trags, on the Polyethylene Plant at Ras Laffan &mdash; an operating production plant, contractor side.</dd></div>
+      <div class="fact"><dt>Experience</dt><dd><span data-yrs>11</span> years since May 2015, on both sides of the table: consultant at Arab Engineering Bureau, contractor at Trags and before that at TEM&#8209;AC, Mekdam, Roots Energy, Stream and Powermech.</dd></div>
+      <div class="fact"><dt>Sectors</dt><dd>Villas, residential towers, malls, hotels, offices, fourteen school buildings, an operating airport terminal, and a petrochemical plant.</dd></div>
+      <div class="fact"><dt>Disciplines</dt><dd>HVAC, chilled water, plumbing, drainage and firefighting &mdash; modelled, coordinated and drawn.</dd></div>
+      <div class="fact"><dt>Software</dt><dd>Revit, Navisworks, BIM&nbsp;360 and Autodesk Construction Cloud, AutoCAD, Dynamo.</dd></div>
+      <div class="fact"><dt>Code</dt><dd>C# and the Revit API, pyRevit, Python, AutoLISP &mdash; shipped with an installer and documentation, not as loose scripts.</dd></div>
+      <div class="fact"><dt>Standards</dt><dd>ISO&nbsp;19650 naming, BEP and LOD matrices, worksets, shared parameters, and the model audits that keep a project to them between milestones.</dd></div>
+      <div class="fact"><dt>Languages</dt><dd>English, Malayalam, Tamil and Hindi. Arabic is conversational, not a working language.</dd></div>
+      <div class="fact"><dt>Open to</dt><dd>BIM Coordinator, BIM Modeller and MEP BIM Specialist roles with consultants and contractors anywhere in Qatar &mdash; and to automation scopes, which I also take remotely.</dd></div>
+    </dl>
   </div>
 </section>
 <!-- foot:start -->
@@ -297,14 +294,12 @@
       <a class="pcard prev" href="/skills/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Skills</b><span>The full stack, named</span></a>
       <a class="pcard next" href="/faq/"><small>Next</small><b>FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>The questions before a call</span></a>
     </nav>
-    <div class="ctaband reveal">
-      <div>
-        <h2>Looking for an MEP BIM Coordinator?</h2>
-        <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
-      </div>
+    <div class="cta reveal">
+      <h2>Looking for an MEP BIM Coordinator?</h2>
+      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
       <div class="btnrow">
         <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/faq/">Read the FAQ <span class="chev">&rsaquo;</span></a>
+        <a class="tlink" href="/faq/">Read the FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></a>
       </div>
     </div>
   </div>

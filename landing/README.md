@@ -11,11 +11,17 @@ build.
 | Fade-in, magnet, scroll-lit text, buttons | `src/components/` |
 | The bar, shared with every other page | `src/components/SiteNav.tsx` + `/assets/chrome.css` |
 | The models the pictures are rendered from | `src/three/` (build-time only) |
-| The images | `/assets/home/img/` at the repo root |
-| A ready prompt for every image slot | `IMAGE-PROMPTS.md` |
+| The model renders | `/assets/home/img/model-*.webp` at the repo root |
 
-Images are plain files referenced by path, so replacing one with a new file of
-the same name needs no rebuild. Everything else does.
+The four renders are plain files referenced by path, so replacing one with a
+new file of the same name needs no rebuild. Everything else does.
+
+The page used to carry twenty-two generated illustrations as well - a
+twelve-image scrolling strip, four objects floating behind the About text, and
+two on each project card - and `IMAGE-PROMPTS.md` held the prompt for each.
+They were the main thing making the page look like a template rather than like
+somebody's actual work, so they are gone and so is that file. The renders stay:
+they are made from the models in `src/three/`, not drawn.
 
 ## Build
 

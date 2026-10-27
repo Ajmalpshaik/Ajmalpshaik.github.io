@@ -1,139 +1,137 @@
-# ajmalps.com — the redesign
+# ajmalps.com — the design
 
 What the site is for, the one system it is built from, and the order the pages
 are meant to be read in. Read this before changing any page: the rules here are
-what keep fourteen hand-written HTML files looking like one site.
+what keep fifteen hand-written HTML files and one React page looking like one
+site.
 
-## 1. The problem this redesign solves
+## 1. The problem this solves
 
-The site was two sites wearing one domain.
+The site was two sites wearing one domain, and it took two passes to fix.
 
-| | Home page | Every other page |
-|---|---|---|
-| Built from | `landing/` (React, Vite, Tailwind), output committed | hand-written HTML + `assets/style.css` |
-| Palette | dark only, `#0C0C0C` on `#D7E2EA` | light by default, dark on a toggle |
-| Display face | Kanit 900, uppercase, huge | system sans, 700 |
-| Top nav | 4 items, all anchors on the page, no brand | 9 flat tabs in a capsule, brand, theme switch |
-| Footer | wide, every page listed | three columns |
+**First pass** — the home page was a dark cinematic cover built from
+`landing/`: Kanit 900, `#0C0C0C`, four anchor links and no brand mark. Every
+other page was a light Apple-style layout in the system face with nine flat
+tabs in a capsule. Leaving the cover for `/contact/` landed you somewhere that
+did not look like the same site. That pass unified the type, the navigation and
+the tokens, and gave every page the same bar.
 
-A visitor leaving the home page for `/contact/` left a cinematic dark cover and
-landed on a white page in a different typeface with a different navigation. Both
-halves were well made. Together they read as two unrelated sites, which costs
-exactly the thing a portfolio is for: being believed.
+**Second pass** — it was still two sites, because the inner pages still kept a
+light theme and still read as documents: cards, panels, shadows, boxes. And the
+cover was carrying twenty-two generated illustrations, which made the one page
+people see first look like a template rather than like somebody's actual work.
 
-The redesign keeps both halves' strengths and makes them one system.
+So: **one skin, one layout language, and no decoration that is not the work.**
 
 ## 2. The decision
 
-**One system, dark-first, Kanit on the headings, the home page's skin as the
-dark theme of every other page.**
+**Dark, everywhere. Big type. Numbered rows. Nothing else.**
 
-- The home page stays the **cover**: dark only, full-bleed, cinematic. A cover
-  does not need a theme switch.
-- Every content page keeps the light/dark toggle, following the operating
-  system until the visitor says otherwise — but its **dark theme is retuned
-  around the home page's ground** (`#0c0c0c`, and its neighbours). A visitor in
-  dark mode never sees a seam at the edge of the cover.
-- **Kanit** carries every heading on every page, so the voice of the home page
-  is the voice of the site. Body prose stays on the system face: it is faster,
-  and it is what long text should be set in.
-- Nav and footer are **structurally identical everywhere**: brand, three
-  grouped menus, a Contact button, and (off the cover) the theme switch. The
-  bar is written **once**, in `assets/chrome.css`, and every page loads that
-  file — the cover included, although the cover has a stylesheet of its own.
-- **Nothing moves that does not have to.** The live 3D models on the cover and
-  the flock of birds on `/heron-ai/` are gone; what is left is the pictures
-  those models render to, which is what the page always showed first anyway.
+- **There is no light theme and no theme switch.** Two skins is what made the
+  site read as two sites. The one skin is the cover's.
+- **Every page is laid out the same way**: a page header that is mostly a huge
+  headline, then sections that are a kicker, a headline and a list of numbered
+  rows separated by hairlines. That layout is the cover's Services section,
+  which was already the simplest and loudest thing on the old site.
+- **Kanit 900** carries every headline, uppercase, at display sizes. Kanit 500
+  carries labels, names and the bar. Body prose stays on the system face: it
+  loads instantly and it is the right thing for long text.
+- **No cards, no glass, no shadows, no gradients behind sections.** A hairline
+  and space do the same job and never fight the text.
+- **The only pictures on the site are the four model renders** and the tools in
+  `/toolbox/`. The renders are made, not drawn: `npm run posters` renders them
+  from 3D models built in code out of MEP parts at real sizes.
 
-## 3. The design system
+## 3. The system
 
 ### Type
 
-| Role | Face | Size | Notes |
-|---|---|---|---|
-| Cover heading | Kanit 900 | `12.1–15.1vw` | uppercase, tracking tight |
-| Page title (`h1`) | Kanit 900 | `clamp(38px, 6.2vw, 74px)` | sentence case, `-0.025em` |
-| Section head (`h2.head`) | Kanit 900 | `clamp(34px, 5vw, 60px)` | sentence case |
-| Card head (`h3`) | Kanit 500 | `21–23px` | |
-| Eyebrow | Kanit 500 | `14px` | uppercase, `0.12em` |
-| Body | system sans | `16.5–21px` | line-height 1.55 |
+| Role | Face | Size |
+|---|---|---|
+| Cover heading | Kanit 900 | `12.1–15.1vw` |
+| Page title (`.display`) | Kanit 900 | `clamp(2.6rem, 9.2vw, 8.4rem)` |
+| Section head (`.head`) | Kanit 900 | `clamp(1.9rem, 5.2vw, 4.1rem)` |
+| Row number (`.row-n i`) | Kanit 900 | `clamp(2.1rem, 5.4vw, 4.6rem)` |
+| Row name (`.row-t`) | Kanit 500 | `clamp(1.05rem, 1.9vw, 1.6rem)` |
+| Kicker | Kanit 500 | `12.5px`, `0.2em`, uppercase |
+| Lead (`.lede`) | system | `clamp(1.05rem, 1.5vw, 1.4rem)` |
+| Body | system | `~1rem`, line-height 1.6 |
 
-Two weights are self-hosted for the content pages — `assets/fonts/kanit-500.woff2`
-and `kanit-900.woff2`, Latin only, about 19 KB each. `font-display: swap`, and
-the system face is the fallback, so nothing is invisible while they load.
+Everything in Kanit is uppercase. Two weights are self-hosted, Latin only,
+about 19 KB each, preloaded — no page makes a third-party request for a font.
 
 ### Colour
 
-One token set, two themes. The dark values are the home page's.
+One set. Every text colour clears WCAG AA on both grounds; the tightest pair is
+`--faint` on `--bg-soft` at 4.64:1.
 
-| Token | Light | Dark |
+| Token | Value | On `--bg` |
 |---|---|---|
-| `--bg` | `#ffffff` | `#0c0c0c` |
-| `--bg-alt` | `#f5f5f7` | `#121316` |
-| `--ink` | `#1d1d1f` | `#e8eef3` |
-| `--muted` | `#5c636b` | `#aab8c4` |
-| `--faint` | `#696e74` | `#7d8a95` |
-| `--link` | `#0066d6` | `#4aa8ff` |
+| `--bg` | `#0c0c0c` | — |
+| `--bg-soft` | `#111113` | — |
+| `--ink` | `#f2f6f9` | 18.0:1 |
+| `--body` | `#aab8c4` | 9.7:1 |
+| `--faint` | `#767f88` | 4.8:1 |
+| `--line` | `#23262a` | — |
+| `--accent` | `#4aa8ff` | 7.8:1 |
 
-Three of the light values moved in this redesign because the old ones did not
-clear AA: `--faint` was `#86868b`, 3.62:1 on white, and `--link` was `#0071e3`,
-4.31:1 on `--bg-alt`. The tightest pair now is `--faint` on `--bg-alt` at
-4.72:1.
+The cyan → blue → violet gradient is the one accent, and it is used in four
+places only: the bar's current-section mark, the reading-progress bar, the rule
+beside a pull quote, and the cover's Contact button. Not on numbers — across a
+one-character number a gradient samples a sliver of its ramp, so "395" comes
+out cyan and "0" solid violet side by side.
 
-The cyan → blue → violet gradient stays as the accent on numbers and icons.
-Nothing else is coloured.
+### Components
+
+That is the whole list. If something new is needed, it is probably `.rows`.
+
+```
+.wrap .sec .sec-soft .sec-foot .sec-tool   layout
+.display .head .kicker .lede .sub .crumbs  type
+.rows .row .row-n .row-t .row-meta .row-go a list of things
+.facts .fact                               a list of plain statements
+.nums                                      a band of figures
+.tags                                      a row of names
+.tl .tl-item                               a timeline
+.ladder                                    an ordered progression
+.quote                                     a pull quote
+.btn .btn-ghost .btn-accent .tlink .btnrow buttons
+.pager .pcard .cta                         the foot of a page
+```
 
 ### Rhythm
 
-`section { padding: 110px 0 }`, 76px under 734px. Content tops out at 1080px,
-prose at 820px. Radii: 28px cards, 999px pills. One easing pair
-(`--ease`, `--ease-out`) for everything.
-
-### What came out, and why
-
-| Removed | Weight | Why |
-|---|---|---|
-| The cover's live three.js models | ~150 KB gzipped, a WebGL context each | They looked very nearly the same as the `model-*.webp` pictures that stand in for them, which are rendered from the same models at the same angle. The models and `npm run posters` are still here; only the viewer stopped shipping. |
-| The flock behind the `/heron-ai/` hero | 650 KB in the repo, fetched on demand | Decoration on a page that reads better without it. |
-| Backdrop blur and two-sided shadows on cards | — | They fought the text on them and cost a paint on scroll. Blur is left on the bar, where it belongs. |
-| Five of the six ambient colour washes | — | Six washes down one page is noise, not atmosphere. |
-| The light that followed the cursor across cards | a paint per mouse move | It drew the eye to the pointer, not to the words. |
-| 133 lines of CSS for blocks no page uses | — | The stats band, the ribbon, the Heron panel, the explore grid. |
-
-Everything in `/toolbox/` stays. The BIM Viewer and the AR Viewer are not
-decoration — they are the work.
+`.sec` is `clamp(72px, 11vw, 150px)` top and bottom; the first section after a
+page header is tighter, because the header already ends in a lot of air.
+Content tops out at 1180px, prose at ~52ch. One easing pair for everything.
 
 ## 4. Navigation
 
-Nine flat tabs was a wall, and it was already measured to the pixel against the
-1080px bar — adding one more label would have broken it. It is now three menus
-and a button, which fits at any width and will take another page without a
-re-measure.
+Three menus and a button, the same on every page including the cover:
 
 ```
-[AJ Ajmal P.S]   Experience ▾   Tools ▾   About ▾        [Contact]  [☀/☾]
+[AJ AJMAL P.S]   EXPERIENCE ▾   TOOLS ▾   ABOUT ▾            [CONTACT]
                  ├ Story        ├ AJ-Tools   ├ Skills
                  ├ Experience   ├ Heron AI   ├ About
                  └ Work         └ Toolbox    └ FAQ
 ```
 
-- Each menu is a `<button aria-expanded>` and a `<ul aria-label="…">`: Escape
-  closes and gives the trigger its focus back, `↑ ↓` move inside it, Tab out of
-  the last link closes it behind you, hover opens it and a click closes only
-  what a click opened. The page you are on is marked `aria-current`, and its
-  group's trigger carries `data-current`.
-- Under 1000px the three menus become one sheet with the groups as headings —
-  no nesting to open, every page one tap away, and all ten links on one
-  phone screen. The trigger is inert there, so it leaves the reading order and
-  the list's `aria-label` carries the group's name instead.
-- With JavaScript off the menus are plain always-open lists. Nothing is hidden
-  behind a script.
+- Each menu is a `<button aria-expanded>` and a `<ul aria-label="…">`. Hover or
+  click opens it; a click closes only what a click opened. Escape closes and
+  returns focus; `↑ ↓` walk the links; Tab out closes it behind you.
+- Under 1000px the three become one sheet with the groups as headings — every
+  page one tap away, all ten links on one phone screen. The trigger is inert
+  there, so it leaves the reading order and the list's label names the group.
+- With JavaScript off every menu is simply open. Nothing hides behind a script.
+- The bar is written **once**, in `assets/chrome.css`, which every page loads —
+  the cover included, although the cover has a stylesheet of its own. The cover
+  has no tokens, so each token there carries a fallback equal to the value
+  `style.css` defines.
 
 ## 5. The tour
 
 A portfolio is read by someone deciding whether to call. The pages are ordered
-as that decision, and **every page ends by handing over to the next one** — so
-there is no dead end and no page where the only move is the back button.
+as that decision, and **every page ends by handing over to the next one**.
 
 1. **Home** — who, and the proof in one screen
 2. **Story** — how it started
@@ -143,44 +141,42 @@ there is no dead end and no page where the only move is the back button.
 6. **Heron AI** — where it is going
 7. **Toolbox** — tools you can use right now, in the browser
 8. **Skills** — the full stack, named
-9. **About** — the practical facts: visa, notice, languages
-10. **FAQ** — the questions a hiring manager asks before writing
+9. **About** — visa, notice, languages
+10. **FAQ** — the questions before a call
 11. **Contact** — act
 
-The pager at the foot of each page carries the previous and next titles, not
-just arrows, so the visitor always knows what they are about to get. `/`
-offers "Start here →" into step 2 for anyone who wants the whole thing in
-order.
+The pager carries the previous and next titles and what is on them, so the
+visitor always knows what they are about to get.
 
-## 6. Accessibility and performance, non-negotiable
+## 6. Non-negotiable
 
-- Every interactive thing reachable and visible on the keyboard; `:focus-visible`
-  rings on both themes.
-- Body text at or above 4.5:1 on both themes; large headings at or above 3:1.
-- `prefers-reduced-motion` turns off every entrance, the marquee and the
-  parallax. Nothing is only conveyed by motion.
-- No layout shift: every image carries `width`/`height`, fonts swap on a
-  matched fallback metric.
+- Every interactive thing reachable and visible on the keyboard.
+- Body text at or above 4.5:1, large headings at or above 3:1.
+- `prefers-reduced-motion` turns off every entrance. Nothing is conveyed by
+  motion alone.
+- Every image carries `width`/`height`. No layout shift.
 - No render-blocking third-party anything. The only outside request is the
-  analytics counter, and it is `async`, cookie-less and skipped for Do Not
-  Track.
+  analytics counter: `async`, cookie-less, skipped for Do Not Track.
 - Every page readable with JavaScript off.
+- Every page readable on paper — the print sheet flips the whole thing to ink
+  on white.
 
 ## 7. Where things live
 
 ```
-assets/chrome.css     the bar, and nothing else. EVERY page loads it, the cover
-                      included; its token fallbacks are style.css's dark theme
-assets/style.css      the whole content-page system — tokens first, then components
+assets/chrome.css     the bar, and nothing else. EVERY page loads it, the
+                      cover included; its fallbacks are style.css's values
+assets/style.css      the whole content-page system — tokens, then components
 assets/fonts/         Kanit 500 and 900, Latin, self-hosted
-assets/app.js         nav, menus, theme, reveals, analytics
+assets/app.js         menus, reveals, the year, analytics
+assets/toolbox.css    the tool pages' own controls
 landing/src/          the home page's source. Edit this, never ../index.html
-landing/src/three/    the models. Build-time only now: `npm run posters`
-                      renders them to assets/home/img/model-*.webp
-tools/sync_chrome.py  writes the nav and footer into every page; --check in CI
+landing/src/three/    the models. Build-time only: `npm run posters` renders
+                      them to assets/home/img/model-*.webp
+tools/sync_chrome.py  writes the nav, pager and footer into every page; --check
 tools/check_site.py   static checks
-tools/check_browser.mjs  the pages in a real browser, at four widths - including
-                      the bar, on both of its two implementations
+tools/check_browser.mjs  the pages in a real browser, at four widths, including
+                      the bar on both of its two implementations
 docs/REDESIGN.md      this file
 ```
 

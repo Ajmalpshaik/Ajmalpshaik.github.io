@@ -24,34 +24,13 @@
     for(i = 0; i < els.length; i++){ els[i].setAttribute("data-count", String(y)); els[i].textContent = String(y); }
   })();
 
-  /* theme switch */
   var root = document.documentElement;
   root.setAttribute("data-ready","1");   /* tells the head failsafe we are alive */
-  var sw = document.getElementById("themeSwitch");
-  var metaTheme = document.getElementById("metaTheme");
-  function applyTheme(t){
-    root.setAttribute("data-theme", t);
-    sw.setAttribute("aria-checked", t === "dark" ? "true" : "false");
-    sw.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0c0c" : "#f7f9fc");
-  }
-  applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
-  sw.addEventListener("click", function(){
-    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    root.classList.add("theming");
-    applyTheme(next);
-    try{ localStorage.setItem("ajps-theme", next); }catch(e){}
-    setTimeout(function(){ root.classList.remove("theming"); }, 420);
-  });
-  if(window.matchMedia){
-    var mqDark = window.matchMedia("(prefers-color-scheme: dark)");
-    var onOsTheme = function(e){
-      var saved = null;
-      try{ saved = localStorage.getItem("ajps-theme"); }catch(err){}
-      if(saved !== "dark" && saved !== "light"){ applyTheme(e.matches ? "dark" : "light"); }
-    };
-    if(mqDark.addEventListener){ mqDark.addEventListener("change", onOsTheme); }
-  }
+
+  /* There is no theme switch any more. The site has one skin, the cover's,
+     and the stylesheet is written for it - two skins is what made the site
+     read as two sites. assets/style.css sets color-scheme: dark so form
+     controls and scrollbars follow. */
 
   /* nav shadow + reading progress */
   var nav = document.getElementById("nav");

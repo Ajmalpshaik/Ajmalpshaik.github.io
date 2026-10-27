@@ -103,11 +103,12 @@ if faq_nodes:
         (q.get("name", ""), q.get("acceptedAnswer", {}).get("text", ""))
         for q in faq_nodes[0].get("mainEntity", [])
     ]
-    section = re.search(r'<section id="faq".*?</section>', faq_src, re.S)
+    section = re.search(r'<section[^>]*\bid="faq"[^>]*>.*?</section>', faq_src, re.S)
     if not section:
         err("FAQPage schema exists but no #faq section is on the page")
     else:
-        visible = re.findall(r"<h3>(.*?)</h3>\s*<p>(.*?)</p>", section.group(0), re.S)
+        # One row per question: the heading, then the answer in the next cell.
+        visible = re.findall(r"<h3[^>]*>(.*?)</h3>.*?<p>(.*?)</p>", section.group(0), re.S)
         if len(visible) != len(schema_qa):
             err(f"FAQ count mismatch: {len(schema_qa)} in schema, {len(visible)} on page")
         for (sq, sa), (vq, va) in zip(schema_qa, visible):

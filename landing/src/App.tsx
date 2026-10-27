@@ -5,7 +5,6 @@ import SiteNav from './components/SiteNav'
 import AboutSection from './sections/AboutSection'
 import Footer from './sections/Footer'
 import HeroSection from './sections/HeroSection'
-import MarqueeSection from './sections/MarqueeSection'
 import ProjectsSection from './sections/ProjectsSection'
 import ServicesSection from './sections/ServicesSection'
 
@@ -31,7 +30,6 @@ export default function App() {
 
         <main id="main" tabIndex={-1} className="outline-none">
           <HeroSection />
-          <MarqueeSection />
           <AboutSection />
           <ServicesSection />
           <ProjectsSection />
