@@ -14,12 +14,37 @@ const IMG = '/assets/home/img/'
 /** A 3D model and its still; the still's size is what scripts/posters.mjs renders. */
 export type Model = { scene: SceneName; poster: string; alt: string; width: number; height: number }
 
-export const nav = [
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '/contact/' },
+// The bar. These three groups and the button are the same ones
+// tools/sync_chrome.py writes into every other page - if one changes, change
+// the other, or the cover and the site stop agreeing about what is on it.
+export const navGroups = [
+  {
+    name: 'Experience',
+    items: [
+      { href: '/story/', label: 'Story', note: 'How it started' },
+      { href: '/experience/', label: 'Experience', note: 'Eleven years, and where' },
+      { href: '/work/', label: 'Selected work', note: 'Five projects in Qatar' },
+    ],
+  },
+  {
+    name: 'Tools',
+    items: [
+      { href: '/aj-tools/', label: 'AJ-Tools', note: 'The Revit add-in a team runs on' },
+      { href: '/heron-ai/', label: 'Heron AI', note: 'An AI that works inside Revit' },
+      { href: '/toolbox/', label: 'Toolbox', note: 'Tools you can use in the browser' },
+    ],
+  },
+  {
+    name: 'About',
+    items: [
+      { href: '/skills/', label: 'Skills', note: 'The full stack, named' },
+      { href: '/about/', label: 'About', note: 'Visa, notice, languages' },
+      { href: '/faq/', label: 'FAQ', note: 'The questions before a call' },
+    ],
+  },
 ]
+
+export const navCta = { href: '/contact/', label: 'Contact' }
 
 export const contactHref = '/contact/'
 
@@ -157,17 +182,34 @@ export const footer = {
     { label: 'GitHub', href: 'https://github.com/Ajmalpshaik' },
     { label: 'WhatsApp', href: 'https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com' },
   ],
-  pages: [
-    { label: 'Story', href: '/story/' },
-    { label: 'Experience', href: '/experience/' },
-    { label: 'Work', href: '/work/' },
-    { label: 'AJ-Tools', href: '/aj-tools/' },
-    { label: 'Heron AI', href: '/heron-ai/' },
-    { label: 'Toolbox', href: '/toolbox/' },
-    { label: 'Skills', href: '/skills/' },
-    { label: 'About', href: '/about/' },
-    { label: 'FAQ', href: '/faq/' },
-    { label: 'Contact', href: '/contact/' },
+  // Grouped the way the bar groups them, and the way the footer on every
+  // other page does, so the site reads the same from either end.
+  columns: [
+    {
+      name: 'Experience',
+      links: [
+        { label: 'Story', href: '/story/' },
+        { label: 'Experience', href: '/experience/' },
+        { label: 'Selected work', href: '/work/' },
+      ],
+    },
+    {
+      name: 'Tools',
+      links: [
+        { label: 'AJ-Tools', href: '/aj-tools/' },
+        { label: 'Heron AI', href: '/heron-ai/' },
+        { label: 'Toolbox', href: '/toolbox/' },
+      ],
+    },
+    {
+      name: 'About',
+      links: [
+        { label: 'Skills', href: '/skills/' },
+        { label: 'About', href: '/about/' },
+        { label: 'FAQ', href: '/faq/' },
+        { label: 'Contact', href: '/contact/' },
+      ],
+    },
   ],
   // The page is rendered to static HTML at build time, so it cannot read the
   // clock there without the output changing with the date. This is what the

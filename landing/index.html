@@ -28,7 +28,13 @@
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/favicon.svg">
+<!-- The bar, written once for the whole site. See assets/chrome.css. -->
+<link rel="stylesheet" href="/assets/chrome.css">
 <script>
+/* The bar's menus are closed only when a script is there to open them again -
+   the same bargain every other page makes. With no JavaScript they render as
+   plain open lists, so nothing on this site hides behind a script. */
+document.documentElement.classList.add("js");
 /* Failsafe: every section fades in once the script runs. If it never runs
    (blocked, offline, an old browser), show everything after 4s instead of
    leaving a blank dark page. */

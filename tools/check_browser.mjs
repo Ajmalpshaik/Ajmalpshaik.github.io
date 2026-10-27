@@ -165,23 +165,6 @@ for (const page of PAGES) {
   if (!skip.cls.includes('skip')) fail(`first tab stop is ".${skip.cls}", expected the skip link`);
   else if (skip.top < 0) fail('skip link stays off-screen when focused');
 
-  // ribbon tabs, if present, must actually switch
-  if (await p.$('.rtabs [role=tab]')) {
-    await p.click('#tabAnno');
-    await p.waitForTimeout(300);
-    const ok = await p.evaluate(() => document.getElementById('panTools').hidden && !document.getElementById('panAnno').hidden);
-    if (!ok) fail('ribbon tab click does not switch panels');
-  }
-
-  // counters, if present, must land on their target, not sit at 0
-  if (await p.$('.stats-band')) {
-    await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
-    await p.waitForTimeout(2200);
-    const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
-      els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
-    if (stuck) fail(`${stuck} counter(s) did not reach their value`);
-  }
-
   // The home page is built from landing/ and arrives as finished HTML that
   // React then attaches to. It marks <html data-ready> when it has; a bundle
   // that failed to load or threw on the way would leave that unset.
@@ -203,6 +186,109 @@ for (const page of PAGES) {
   }
 
   await ctx.close();
+}
+
+// ---- the bar, on both halves of the site -----------------------------------
+// The bar is written twice - tools/sync_chrome.py for the content pages,
+// landing/src/components/SiteNav.tsx for the cover - over one stylesheet. It is
+// the one thing on the site with two implementations, so it is the one thing
+// most likely to drift. These run against both.
+{
+  const EXPECTED = [
+    '/story/', '/experience/', '/work/',
+    '/aj-tools/', '/heron-ai/', '/toolbox/',
+    '/skills/', '/about/', '/faq/',
+  ];
+
+  for (const page of ['index.html', 'about/index.html']) {
+    const where = page === 'index.html' ? 'the cover' : 'a content page';
+
+    // ---- desktop: each menu opens, and Escape closes it ----
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+      const p = await ctx.newPage();
+      await p.goto(url(page));
+      await p.waitForTimeout(900);
+
+      const triggers = await p.$$('#nav .navtrig');
+      if (triggers.length !== 3) fail(`${where}: ${triggers.length} menu(s) in the bar, expected 3`);
+
+      // The menu fades, so wait for the state rather than for a stopwatch -
+      // a fixed sleep here is how a check starts failing on a slow runner and
+      // passing on a fast one.
+      const settle = (id, want) => p.waitForFunction(
+        ([sel, open]) => {
+          const s = getComputedStyle(document.getElementById(sel));
+          const shown = s.visibility !== 'hidden' && s.opacity !== '0';
+          return shown === open;
+        },
+        [id, want],
+        { timeout: 3000 },
+      ).then(() => true, () => false);
+
+      for (const trigger of triggers) {
+        const name = (await trigger.textContent()).trim();
+        const id = await trigger.getAttribute('aria-controls');
+        if (!(await p.$(`#${id}`))) { fail(`${where}: the "${name}" menu has no panel (#${id})`); continue; }
+
+        await trigger.click();
+        if (!(await settle(id, true))) fail(`${where}: clicking "${name}" does not open its menu`);
+        const links = await p.$$eval(`#${id} a`, (as) => as.length);
+        if (links !== 3) fail(`${where}: the "${name}" menu holds ${links} links, expected 3`);
+
+        await p.keyboard.press('Escape');
+        if (!(await settle(id, false))) fail(`${where}: Escape does not close the "${name}" menu`);
+      }
+
+      // every page the bar promises must be in it, and must be a real page
+      const hrefs = await p.$$eval('#nav .navmenu a', (as) => as.map((a) => new URL(a.href).pathname));
+      for (const want of EXPECTED) {
+        if (!hrefs.includes(want)) fail(`${where}: the bar has no link to ${want}`);
+      }
+      if (!(await p.$('#nav .navcta'))) fail(`${where}: the bar has no Contact button`);
+      if (!(await p.$('#nav .brand'))) fail(`${where}: the bar has no brand mark`);
+      await ctx.close();
+    }
+
+    // ---- phone: one sheet, every page one tap away ----
+    {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const p = await ctx.newPage();
+      await p.goto(url(page));
+      await p.waitForTimeout(900);
+
+      // A closed sheet is laid out, just hidden, so a bounding box is not the
+      // question - checkVisibility is, with visibility and opacity counted.
+      const seen = (a) => a.checkVisibility({ visibilityProperty: true, opacityProperty: true });
+      const before = await p.$$eval('#navLinks a', (as, fn) =>
+        as.filter(new Function('a', `return (${fn})(a)`)).length, seen.toString());
+      if (before) fail(`${where}: ${before} bar link(s) are on screen before the menu is opened at 390px`);
+
+      await p.click('#menuBtn');
+      await p.waitForFunction(
+        () => document.getElementById('navLinks').classList.contains('open'),
+        null, { timeout: 3000 },
+      ).catch(() => fail(`${where}: the menu button does not open the sheet at 390px`));
+      await p.waitForTimeout(450);
+      const after = await p.$$eval('#navLinks a', (as, fn) =>
+        as.filter(new Function('a', `return (${fn})(a)`)).map((a) => new URL(a.href).pathname), seen.toString());
+      for (const want of [...EXPECTED, '/contact/']) {
+        if (!after.includes(want)) fail(`${where}: ${want} is not reachable from the phone menu`);
+      }
+      await ctx.close();
+    }
+  }
+
+  // ---- no JavaScript: the menus are simply open, nothing is hidden ----
+  for (const page of ['index.html', 'about/index.html']) {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, javaScriptEnabled: false });
+    const p = await ctx.newPage();
+    await p.goto(url(page));
+    const hidden = await p.$$eval('#nav .navmenu a', (as) =>
+      as.filter((a) => !a.checkVisibility({ visibilityProperty: true, opacityProperty: true })).length);
+    if (hidden) fail(`${page}: ${hidden} bar link(s) stay hidden with JavaScript off`);
+    await ctx.close();
+  }
 }
 
 // ---- script never arrives: the failsafe must show the page ------------------

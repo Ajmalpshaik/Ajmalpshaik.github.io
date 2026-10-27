@@ -13,11 +13,11 @@ const enter = (delay: number, y: number, opacity = 0) =>
 
 export default function HeroSection() {
   return (
-    // Top padding is the height of the nav, which sits over this section from
-    // the page <header>: 24px + 20px line below md, 32px + 28px line from md.
+    // Top padding clears the fixed bar - 60px of it, plus a little air so the
+    // name is not touching it.
     <section
       aria-label="Introduction"
-      className="hero-screen relative flex flex-col pt-11 md:pt-[60px]"
+      className="hero-screen relative flex flex-col pt-[68px] md:pt-[82px]"
       style={{ overflowX: 'clip' }}
     >
       {/* Sized so "Hi, i'm Ajmal" fills the width in the same proportion the

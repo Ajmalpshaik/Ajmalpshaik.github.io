@@ -89,18 +89,25 @@
     for(var i=0;i<groups.length;i++){
       if(groups[i] === except) continue;
       groups[i].classList.remove("open");
+      groups[i].removeAttribute("data-clicked");
       var t = groups[i].querySelector(".navtrig");
       if(t) t.setAttribute("aria-expanded","false");
     }
   }
-  function openGroup(g){
+  function openGroup(g, byClick){
     if(sheetMode()) return;
     closeMenus(g);
     g.classList.add("open");
+    /* Remembers how it was opened. Hovering a trigger opens its menu, so
+       without this the click that follows the hover - the ordinary way a
+       person uses a menu bar - would read as "already open" and shut it
+       again in their face. A click closes only what a click opened. */
+    if(byClick) g.setAttribute("data-clicked","");
     g.querySelector(".navtrig").setAttribute("aria-expanded","true");
   }
   function closeGroup(g){
     g.classList.remove("open");
+    g.removeAttribute("data-clicked");
     g.querySelector(".navtrig").setAttribute("aria-expanded","false");
   }
 
@@ -111,7 +118,7 @@
 
     trig.addEventListener("click", function(){
       if(sheetMode()) return;
-      if(g.classList.contains("open")) closeGroup(g); else openGroup(g);
+      if(g.hasAttribute("data-clicked")) closeGroup(g); else openGroup(g, true);
     });
     /* Pointer opens it too, which is what a pointer expects of a menu bar.
        A short delay on leaving means crossing the gap down to the panel does
@@ -137,7 +144,7 @@
         closeGroup(g); trig.focus(); e.stopPropagation();
       } else if(e.key === "ArrowDown"){
         e.preventDefault();
-        if(!g.classList.contains("open")) openGroup(g);
+        if(!g.classList.contains("open")) openGroup(g, true);
         (items[i + 1] || items[0]).focus();
       } else if(e.key === "ArrowUp"){
         e.preventDefault();

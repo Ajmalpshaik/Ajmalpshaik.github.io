@@ -47,6 +47,12 @@
     background: #0c0c0c;
   }
 
+  /* The bar is fixed and 60px tall (assets/chrome.css). Anchored jumps have to
+     clear it, the way they do on every other page. */
+  html {
+    scroll-padding-top: 72px;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
@@ -82,12 +88,15 @@
     min-height: 560px;
   }
 
+  /* The one gradient the site uses, the same one that fills the numbers and
+     the rules on every other page. It used to be magenta to orange, which
+     belonged to nothing else here. */
   .contact-btn {
-    background: linear-gradient(123deg, #18011f 7%, #b600a8 37%, #7621b0 72%, #be4c00 100%);
+    background: linear-gradient(96deg, #00c8ff 0%, #2563eb 48%, #7c3aed 100%);
     box-shadow:
-      0px 4px 4px rgba(181, 1, 167, 0.25),
-      4px 4px 12px #7721b1 inset;
-    outline: 2px solid #fff;
+      0 4px 14px rgba(37, 99, 235, 0.35),
+      0 2px 10px rgba(124, 58, 237, 0.3) inset;
+    outline: 1px solid rgba(255, 255, 255, 0.55);
     outline-offset: -3px;
   }
   .contact-btn:focus-visible {
