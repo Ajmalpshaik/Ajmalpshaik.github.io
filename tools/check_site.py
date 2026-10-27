@@ -118,10 +118,19 @@ if faq_nodes:
 
 
 # ------------------------------------------------------------ internal anchors
-ids = set(re.findall(r'\bid="([^"]+)"', src))
-for href in re.findall(r'href="#([^"]+)"', src):
-    if href and href not in ids:
-        err(f"anchor #{href} points at nothing")
+# Every page, not only the home page: a link to a section that was renamed
+# scrolls nowhere and says nothing about it. A link to "/#name" is checked
+# against the home page, which is where it lands.
+home_ids = set(re.findall(r'\bid="([^"]+)"', src))
+for page in PAGES:
+    page_src = read(page)
+    ids = set(re.findall(r'\bid="([^"]+)"', page_src))
+    for href in re.findall(r'href="#([^"]+)"', page_src):
+        if href and href not in ids:
+            err(f"{page}: anchor #{href} points at nothing on this page")
+    for href in re.findall(r'href="/#([^"]+)"', page_src):
+        if href and href not in home_ids:
+            err(f"{page}: link to /#{href} points at nothing on the home page")
 
 
 # ------------------------------------------------ referenced files are present
