@@ -38,7 +38,12 @@ dark theme of every other page.**
   is the voice of the site. Body prose stays on the system face: it is faster,
   and it is what long text should be set in.
 - Nav and footer are **structurally identical everywhere**: brand, three
-  grouped menus, a Contact button, and (off the cover) the theme switch.
+  grouped menus, a Contact button, and (off the cover) the theme switch. The
+  bar is written **once**, in `assets/chrome.css`, and every page loads that
+  file — the cover included, although the cover has a stylesheet of its own.
+- **Nothing moves that does not have to.** The live 3D models on the cover and
+  the flock of birds on `/heron-ai/` are gone; what is left is the pictures
+  those models render to, which is what the page always showed first anyway.
 
 ## 3. The design system
 
@@ -77,6 +82,20 @@ Nothing else is coloured.
 `section { padding: 110px 0 }`, 76px under 734px. Content tops out at 1080px,
 prose at 820px. Radii: 28px cards, 999px pills. One easing pair
 (`--ease`, `--ease-out`) for everything.
+
+### What came out, and why
+
+| Removed | Weight | Why |
+|---|---|---|
+| The cover's live three.js models | ~150 KB gzipped, a WebGL context each | They looked very nearly the same as the `model-*.webp` pictures that stand in for them, which are rendered from the same models at the same angle. The models and `npm run posters` are still here; only the viewer stopped shipping. |
+| The flock behind the `/heron-ai/` hero | 650 KB in the repo, fetched on demand | Decoration on a page that reads better without it. |
+| Backdrop blur and two-sided shadows on cards | — | They fought the text on them and cost a paint on scroll. Blur is left on the bar, where it belongs. |
+| Five of the six ambient colour washes | — | Six washes down one page is noise, not atmosphere. |
+| The light that followed the cursor across cards | a paint per mouse move | It drew the eye to the pointer, not to the words. |
+| 133 lines of CSS for blocks no page uses | — | The stats band, the ribbon, the Heron panel, the explore grid. |
+
+Everything in `/toolbox/` stays. The BIM Viewer and the AR Viewer are not
+decoration — they are the work.
 
 ## 4. Navigation
 
@@ -140,13 +159,18 @@ order.
 ## 7. Where things live
 
 ```
+assets/chrome.css     the bar, and nothing else. EVERY page loads it, the cover
+                      included; its token fallbacks are style.css's dark theme
 assets/style.css      the whole content-page system — tokens first, then components
 assets/fonts/         Kanit 500 and 900, Latin, self-hosted
 assets/app.js         nav, menus, theme, reveals, analytics
 landing/src/          the home page's source. Edit this, never ../index.html
+landing/src/three/    the models. Build-time only now: `npm run posters`
+                      renders them to assets/home/img/model-*.webp
 tools/sync_chrome.py  writes the nav and footer into every page; --check in CI
 tools/check_site.py   static checks
-tools/check_browser.mjs  the pages in a real browser, at four widths
+tools/check_browser.mjs  the pages in a real browser, at four widths - including
+                      the bar, on both of its two implementations
 docs/REDESIGN.md      this file
 ```
 

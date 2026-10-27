@@ -28,7 +28,12 @@
 #nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   height:var(--nav-h,60px);
-  background:var(--nav-bg,rgba(12,12,12,.72));
+  /* The fallback is darker than the dark theme's own --nav-bg: on a content
+     page the bar only ever floats over content of its own theme, but on the
+     cover it crosses the white Services section, where 72% read as a muddy
+     grey slab. At 92% it is near-black over white and indistinguishable from
+     the ground over the dark sections. */
+  background:var(--nav-bg,rgba(12,12,12,.92));
   -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   border-bottom:1px solid transparent;
   transition:border-color .3s var(--ease,cubic-bezier(.25,.1,.25,1)),box-shadow .3s var(--ease,cubic-bezier(.25,.1,.25,1)),background .3s var(--ease,cubic-bezier(.25,.1,.25,1));

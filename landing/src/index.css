@@ -121,23 +121,6 @@
     }
   }
 
-  /* A 3D model over its still. The model fades in over the still, which is
-     then hidden; both are the same picture, so nothing seems to change. */
-  .model3d {
-    position: relative;
-  }
-  .model3d-stage {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .model3d[data-live] .model3d-stage {
-    opacity: 1;
-  }
-  .model3d[data-live] .model3d-poster {
-    opacity: 0;
-    transition: opacity 0s linear 0.5s;
-  }
-
   /* The tower rises out of the bottom of the first screen. */
   .hero-model {
     -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 97%);
@@ -224,13 +207,8 @@
   }
   .marquee,
   .about-deco,
-  .model3d-stage,
   .skip {
     display: none !important;
-  }
-  .model3d-poster {
-    opacity: 1 !important;
-    transition: none !important;
   }
   .hero-model {
     -webkit-mask-image: none;

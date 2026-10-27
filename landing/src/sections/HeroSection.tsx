@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import ContactButton from '../components/ContactButton'
 import Magnet from '../components/Magnet'
-import Model3D from '../components/Model3D'
+import ModelShot from '../components/ModelShot'
 import { hero } from '../content'
 
 // The first screen comes in with a CSS animation (.enter in index.css), not
@@ -53,19 +53,15 @@ export default function HeroSection() {
             activeTransition="transform 0.3s ease-out"
             inactiveTransition="transform 0.6s ease-in-out"
           >
-            {/* The still is the largest thing on the first screen; the model
-                takes its place once the page has loaded. */}
-            <Model3D
-              scene={hero.model.scene}
-              poster={hero.model.poster}
+            {/* The largest thing on the first screen, so it is fetched at
+                high priority and nothing waits on a script to see it. */}
+            <ModelShot
+              src={hero.model.poster}
               alt={hero.model.alt}
               width={hero.model.width}
               height={hero.model.height}
-              mode="follow"
-              eager
               priority
-              className="hero-model"
-              posterClassName="block h-auto w-full"
+              className="hero-model block h-auto w-full"
             />
           </Magnet>
         </div>

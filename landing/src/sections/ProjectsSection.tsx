@@ -2,7 +2,7 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 import { useRef } from 'react'
 import FadeIn from '../components/FadeIn'
 import LiveProjectButton from '../components/LiveProjectButton'
-import Model3D from '../components/Model3D'
+import ModelShot from '../components/ModelShot'
 import { projects, type Project } from '../content'
 
 type CardProps = {
@@ -74,16 +74,17 @@ function ProjectCard({ project, index, total, progress, still }: CardProps) {
           {/* Absolutely placed so the model takes the height of the left
               column instead of setting it from its own proportions. */}
           <div className="relative w-[60%]">
-            <Model3D
-              scene={project.model.scene}
-              poster={project.model.poster}
-              alt={project.model.alt}
-              width={project.model.width}
-              height={project.model.height}
-              mode="drag"
+            <div
               className={`model-panel model-${project.model.scene} absolute inset-0 overflow-hidden rounded-[40px] sm:rounded-[50px] md:rounded-[60px]`}
-              posterClassName="absolute inset-0 h-full w-full object-contain"
-            />
+            >
+              <ModelShot
+                src={project.model.poster}
+                alt={project.model.alt}
+                width={project.model.width}
+                height={project.model.height}
+                className="absolute inset-0 h-full w-full object-contain"
+              />
+            </div>
           </div>
         </div>
       </motion.article>

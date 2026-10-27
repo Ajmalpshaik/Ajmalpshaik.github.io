@@ -3,18 +3,14 @@
 Served from this repo, so no page depends on someone else's CDN for its code.
 One exception: `/toolbox/ar-viewer/` and `/toolbox/bim-viewer/` load three.js
 0.186.1 from jsDelivr, pinned to that exact version, with a SHA-384 fingerprint
-for every file in the page's import map. They need a current three.js;
-`three.min.js` here stays at r134 because Vanta needs it. The BIM Viewer's map
-is written by `tools/pin_three.mjs`, which follows the imports so no file is
-left without a fingerprint.
+for every file in the page's import map. The BIM Viewer's map is written by `tools/pin_three.mjs`, which follows the
+imports so no file is left without a fingerprint.
 
 | File | Version | License |
 |---|---|---|
 | `gsap.min.js` | 3.15.0 | GSAP Standard "no charge" license — https://gsap.com/standard-license |
 | `ScrollTrigger.min.js` | 3.15.0 | GSAP Standard "no charge" license |
 | `lenis.min.js` | 1.3.26 | MIT (see `LENIS-LICENSE`) |
-| `three.min.js` | r134 | MIT — https://github.com/mrdoob/three.js |
-| `vanta.birds.min.js` | 0.5.24 | MIT (see `VANTA-LICENSE`) |
 | `web-ifc/web-ifc-api.js`, `web-ifc/web-ifc.wasm` | 0.0.78 | MPL-2.0 (see `web-ifc/LICENSE.md`) — https://github.com/ThatOpen/engine_web-ifc |
 
 To update: `npm i gsap lenis` and copy the `dist` files here.
@@ -32,11 +28,9 @@ are not stored here: `toolbox/bim-viewer/walk.js` fetches three.js's own copy
 from jsDelivr, pinned to r186 with a SHA-384 fingerprint. The robot,
 `toolbox/bim-viewer/robot.glb`, is RobotExpressive from the same examples, CC0.
 
-`three.min.js` and `vanta.birds.min.js` power the flock behind the hero on
-`/heron-ai/` (the home page had it too, until it moved to `landing/`). They are
-**not** in any `<script>` tag: three.js alone is 600 kB, so `assets/app.js`
-fetches both only when the effect will really be drawn — a page with a
-`#vanta-hero`, no reduced-motion preference, no Save-Data, WebGL present.
-Every other page, and every visitor who cannot or does not want to see it,
-downloads neither file. r134 is the version Vanta targets; newer three.js releases move
-APIs that Vanta still calls.
+Removed on 2026-10-27: `three.min.js` (r134) and `vanta.birds.min.js`, which
+drew a flock of birds behind the hero on `/heron-ai/`. three.js alone is 600 kB
+and the two were fetched only when the effect would really be drawn, but it was
+decoration on a page that reads better without it, and 650 kB is a lot of
+repository for a background. Both are in the history if the flock is ever
+wanted back.
