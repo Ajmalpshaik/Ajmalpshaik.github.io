@@ -1,7 +1,7 @@
 import { MotionConfig } from 'framer-motion'
-import { useEffect, type CSSProperties } from 'react'
+import { useEffect } from 'react'
 import { startAnalytics } from './analytics'
-import { nav } from './content'
+import SiteNav from './components/SiteNav'
 import AboutSection from './sections/AboutSection'
 import Footer from './sections/Footer'
 import HeroSection from './sections/HeroSection'
@@ -23,24 +23,11 @@ export default function App() {
           Skip to content
         </a>
 
-        <header className="absolute inset-x-0 top-0 z-30">
-          {/* Comes in with the first paint, like the hero (see .enter). */}
-          <nav
-            aria-label="Main"
-            className="enter flex items-center justify-between px-6 pt-6 md:px-10 md:pt-8"
-            style={{ '--enter-y': '-20px' } as CSSProperties}
-          >
-            {nav.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium uppercase leading-5 tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70 md:text-lg md:leading-7 lg:text-[1.4rem]"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </header>
+        {/* The same bar every other page carries - see components/SiteNav.tsx.
+            The four anchors it replaces pointed only at this page's own
+            sections, so the cover was the one page on the site with no way to
+            reach the rest of it except by scrolling to the footer. */}
+        <SiteNav />
 
         <main id="main" tabIndex={-1} className="outline-none">
           <HeroSection />

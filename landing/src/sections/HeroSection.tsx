@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import ContactButton from '../components/ContactButton'
 import Magnet from '../components/Magnet'
-import Model3D from '../components/Model3D'
+import ModelShot from '../components/ModelShot'
 import { hero } from '../content'
 
 // The first screen comes in with a CSS animation (.enter in index.css), not
@@ -13,11 +13,11 @@ const enter = (delay: number, y: number, opacity = 0) =>
 
 export default function HeroSection() {
   return (
-    // Top padding is the height of the nav, which sits over this section from
-    // the page <header>: 24px + 20px line below md, 32px + 28px line from md.
+    // Top padding clears the fixed bar - 60px of it, plus a little air so the
+    // name is not touching it.
     <section
       aria-label="Introduction"
-      className="hero-screen relative flex flex-col pt-11 md:pt-[60px]"
+      className="hero-screen relative flex flex-col pt-[68px] md:pt-[82px]"
       style={{ overflowX: 'clip' }}
     >
       {/* Sized so "Hi, i'm Ajmal" fills the width in the same proportion the
@@ -53,19 +53,15 @@ export default function HeroSection() {
             activeTransition="transform 0.3s ease-out"
             inactiveTransition="transform 0.6s ease-in-out"
           >
-            {/* The still is the largest thing on the first screen; the model
-                takes its place once the page has loaded. */}
-            <Model3D
-              scene={hero.model.scene}
-              poster={hero.model.poster}
+            {/* The largest thing on the first screen, so it is fetched at
+                high priority and nothing waits on a script to see it. */}
+            <ModelShot
+              src={hero.model.poster}
               alt={hero.model.alt}
               width={hero.model.width}
               height={hero.model.height}
-              mode="follow"
-              eager
               priority
-              className="hero-model"
-              posterClassName="block h-auto w-full"
+              className="hero-model block h-auto w-full"
             />
           </Magnet>
         </div>

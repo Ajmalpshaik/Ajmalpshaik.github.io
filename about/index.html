@@ -8,7 +8,7 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/about/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" id="metaTheme" content="#f2f4f8">
+<meta name="theme-color" id="metaTheme" content="#f7f9fc">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
 <meta property="og:title" content="About Ajmal P.S — MEP BIM Coordinator in Doha, Qatar">
@@ -27,7 +27,10 @@
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" href="../favicon.svg">
+<link rel="preload" href="/assets/fonts/kanit-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/kanit-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="/assets/chrome.css">
 <script>
 (function(){
   var d = document.documentElement;
@@ -186,24 +189,36 @@
 
 <nav id="nav" aria-label="Main">
   <div class="navin">
-    <a class="brand" href="/" aria-label="Ajmal P.S — home">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg>
-      Ajmal P.S
-    </a>
-    <div class="navcenter">
-      <div class="navlinks" id="navLinks">
-        <span class="navpill" aria-hidden="true"></span>
-        <a href="/story/">Story</a>
-        <a href="/experience/">Experience</a>
-        <a href="/work/">Work</a>
-        <a href="/aj-tools/">AJ-Tools</a>
-        <a href="/heron-ai/">Heron AI</a>
-        <a href="/toolbox/">Toolbox</a>
-        <a href="/skills/">Skills</a>
-        <a href="/about/" aria-current="page">About</a>
-        <a href="/contact/">Contact</a>
+    <a class="brand" href="/" aria-label="Ajmal P.S &mdash; home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Kanit,-apple-system,Segoe UI,Arial,sans-serif" font-size="25" font-weight="500" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</a>
+
+    <div class="navlinks" id="navLinks">
+      <div class="navgroup">
+        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-experience">Experience<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <ul class="navmenu" id="nm-experience" aria-label="Experience">
+          <li><a href="/story/"><b>Story</b><span>How it started</span></a></li>
+          <li><a href="/experience/"><b>Experience</b><span>Eleven years, and where</span></a></li>
+          <li><a href="/work/"><b>Selected work</b><span>Five projects in Qatar</span></a></li>
+        </ul>
       </div>
+      <div class="navgroup">
+        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-tools">Tools<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <ul class="navmenu" id="nm-tools" aria-label="Tools">
+          <li><a href="/aj-tools/"><b>AJ-Tools</b><span>The Revit add-in a team runs on</span></a></li>
+          <li><a href="/heron-ai/"><b>Heron AI</b><span>An AI that works inside Revit</span></a></li>
+          <li><a href="/toolbox/"><b>Toolbox</b><span>Tools you can use in the browser</span></a></li>
+        </ul>
+      </div>
+      <div class="navgroup" data-current>
+        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-about">About<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <ul class="navmenu" id="nm-about" aria-label="About">
+          <li><a href="/skills/"><b>Skills</b><span>The full stack, named</span></a></li>
+          <li><a href="/about/" aria-current="page"><b>About</b><span>Visa, notice, languages</span></a></li>
+          <li><a href="/faq/"><b>FAQ</b><span>The questions before a call</span></a></li>
+        </ul>
+      </div>
+      <a class="navcta" href="/contact/">Contact</a>
     </div>
+
     <div class="navend">
       <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
       <button id="themeSwitch" role="switch" aria-checked="false" aria-label="Switch to dark mode">
@@ -226,20 +241,22 @@
 </header>
 <section class="sec-alt">
   <div class="wrap">
-            <div class="bento">
+    <span class="eyebrow">What I do</span>
+    <h2 class="head">The model is the job. <span class="dim">So are the tools that build it.</span></h2>
+    <div class="bento">
       <article class="bcard span2 reveal">
         <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l5 3V8l5 3V8l6 4v8H4Z"/><path d="M8 20v-3M13 20v-3M18 20v-3"/></svg></div>
-        <h3>The model is the job</h3>
-        <p>I take MEP models from concept through construction documentation to as-built — villas and residential towers, malls, hotels, schools, mixed-use developments, an operating airport terminal and a petrochemical plant. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
+        <h3>Concept to as-built</h3>
+        <p>I take MEP models from concept through construction documentation to as-built &mdash; villas and residential towers, malls, hotels, schools, mixed-use developments, an operating airport terminal and a petrochemical plant. Day to day that means Revit modelling, Navisworks clash detection, federated model reviews, and holding each submission to the standard the BEP actually asked for.</p>
       </article>
       <article class="bcard reveal" style="--d:.08s">
         <div class="bicon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M18.4 5.6l-2.2 2.2M7.8 16.2l-2.2 2.2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
         <h3>Automation built in</h3>
-        <p><strong>I write the software, not just the model:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools — the team's time goes to coordination.</p>
+        <p><strong>I write the software, not just the model:</strong> Revit add-ins in C# and pyRevit, Dynamo scripts, AutoLISP routines, and an AI agent wired into a live Revit session. Repetitive drafting goes to the tools &mdash; the team&rsquo;s time goes to coordination.</p>
       </article>
       <article class="bcard reveal" style="--d:.05s">
-        <p class="big">Doha,<br>Qatar</p>
-        <p class="cap">QID with NOC &middot; available immediately</p>
+        <p class="big"><span data-yrs>11</span> years</p>
+        <p class="cap">in Doha since May 2015 &mdash; and every year of it in MEP</p>
       </article>
       <article class="bcard reveal" style="--d:.12s">
         <p class="big">2 sides</p>
@@ -252,8 +269,34 @@
     </div>
   </div>
 </section>
-<section class="sec-tight">
+<section>
   <div class="wrap">
+    <span class="eyebrow">The practical facts</span>
+    <h2 class="head">Everything asked <span class="dim">before the first call.</span></h2>
+    <p class="sub">No reading between lines. If something here is not what you need, the FAQ or an email will settle it faster than a CV will.</p>
+    <div class="specs reveal">
+      <div class="spec-row"><h3>Based in</h3><p>Doha, Qatar &middot; GMT+3 &middot; on site, not remote, for modelling and coordination.</p></div>
+      <div class="spec-row"><h3>Status</h3><p>Transferable QID with NOC. There is no new visa to arrange and no sponsorship to wait on.</p></div>
+      <div class="spec-row"><h3>Notice</h3><p>Able to join within days.</p></div>
+      <div class="spec-row"><h3>Now</h3><p>BIM Specialist and MEP BIM Coordinator at Trags, on the Polyethylene Plant at Ras Laffan &mdash; an operating production plant, contractor side.</p></div>
+      <div class="spec-row"><h3>Experience</h3><p><span data-yrs>11</span> years since May 2015, on both sides of the table: consultant at Arab Engineering Bureau, contractor at Trags and before that at TEM&#8209;AC, Mekdam, Roots Energy, Stream and Powermech.</p></div>
+      <div class="spec-row"><h3>Sectors</h3><p>Villas, residential towers, malls, hotels, offices, fourteen school buildings, an operating airport terminal, and a petrochemical plant.</p></div>
+      <div class="spec-row"><h3>Disciplines</h3><p>HVAC, chilled water, plumbing, drainage and firefighting &mdash; modelled, coordinated and drawn.</p></div>
+      <div class="spec-row"><h3>Software</h3><p>Revit, Navisworks, BIM&nbsp;360 and Autodesk Construction Cloud, AutoCAD, Dynamo.</p></div>
+      <div class="spec-row"><h3>Code</h3><p>C# and the Revit API, pyRevit, Python, AutoLISP &mdash; shipped with an installer and documentation, not as loose scripts.</p></div>
+      <div class="spec-row"><h3>Standards</h3><p>ISO&nbsp;19650 naming, BEP and LOD matrices, worksets, shared parameters, and the model audits that keep a project to them between milestones.</p></div>
+      <div class="spec-row"><h3>Languages</h3><p>English, Malayalam, Tamil and Hindi. Arabic is conversational, not a working language.</p></div>
+      <div class="spec-row"><h3>Open to</h3><p>BIM Coordinator, BIM Modeller and MEP BIM Specialist roles with consultants and contractors anywhere in Qatar &mdash; and to automation scopes, which I also take remotely.</p></div>
+    </div>
+  </div>
+</section>
+<!-- foot:start -->
+<section class="sec-foot">
+  <div class="wrap">
+    <nav class="pager" aria-label="More of the site">
+      <a class="pcard prev" href="/skills/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Skills</b><span>The full stack, named</span></a>
+      <a class="pcard next" href="/faq/"><small>Next</small><b>FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>The questions before a call</span></a>
+    </nav>
     <div class="ctaband reveal">
       <div>
         <h2>Looking for an MEP BIM Coordinator?</h2>
@@ -266,32 +309,47 @@
     </div>
   </div>
 </section>
+<!-- foot:end -->
 </main>
 
 <footer>
   <div class="fgrid">
     <div>
-      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="#0071e3" stroke-width="4"/><text x="32" y="42" font-family="-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" fill="#0071e3" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
+      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Kanit,-apple-system,Segoe UI,Arial,sans-serif" font-size="25" font-weight="500" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
       <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the Revit tools my team runs on.</p>
+      <a class="btn btn-ghost fcta" href="/contact/">Contact</a>
     </div>
     <div>
-      <h4>The story</h4>
+      <h3>Experience</h3>
       <ul>
-        <li><a href="/story/">How it started</a></li>
+        <li><a href="/story/">Story</a></li>
         <li><a href="/experience/">Experience</a></li>
         <li><a href="/work/">Selected work</a></li>
-        <li><a href="/about/">About</a></li>
       </ul>
     </div>
     <div>
-      <h4>What I build</h4>
+      <h3>Tools</h3>
       <ul>
         <li><a href="/aj-tools/">AJ-Tools</a></li>
         <li><a href="/heron-ai/">Heron AI</a></li>
         <li><a href="/toolbox/">Toolbox</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>About</h3>
+      <ul>
         <li><a href="/skills/">Skills</a></li>
+        <li><a href="/about/">About</a></li>
         <li><a href="/faq/">FAQ</a></li>
-        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Elsewhere</h3>
+      <ul>
+        <li><a href="https://www.linkedin.com/in/ajmalps/" rel="me">LinkedIn</a></li>
+        <li><a href="https://github.com/Ajmalpshaik" rel="me">GitHub</a></li>
+        <li><a href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" rel="me">WhatsApp</a></li>
+        <li><a href="mailto:ajmalnattika@gmail.com">Email</a></li>
       </ul>
     </div>
   </div>

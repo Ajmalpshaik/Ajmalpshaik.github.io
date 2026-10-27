@@ -118,10 +118,19 @@ if faq_nodes:
 
 
 # ------------------------------------------------------------ internal anchors
-ids = set(re.findall(r'\bid="([^"]+)"', src))
-for href in re.findall(r'href="#([^"]+)"', src):
-    if href and href not in ids:
-        err(f"anchor #{href} points at nothing")
+# Every page, not only the home page: a link to a section that was renamed
+# scrolls nowhere and says nothing about it. A link to "/#name" is checked
+# against the home page, which is where it lands.
+home_ids = set(re.findall(r'\bid="([^"]+)"', src))
+for page in PAGES:
+    page_src = read(page)
+    ids = set(re.findall(r'\bid="([^"]+)"', page_src))
+    for href in re.findall(r'href="#([^"]+)"', page_src):
+        if href and href not in ids:
+            err(f"{page}: anchor #{href} points at nothing on this page")
+    for href in re.findall(r'href="/#([^"]+)"', page_src):
+        if href and href not in home_ids:
+            err(f"{page}: link to /#{href} points at nothing on the home page")
 
 
 # ------------------------------------------------ referenced files are present
@@ -141,11 +150,12 @@ for page in PAGES:
         if not os.path.exists(target):
             err(f"{page} references a file that is not in the repo: {ref}")
 
-# The hero flock loads these from JS (assets/app.js builds the path from the
-# data-vendor attribute), so the src/href scan above cannot see them. Without
-# this, deleting either file leaves the static check green.
+# Files nothing links to with src or href, so the scan above cannot see them:
+# the display face is asked for by assets/style.css, and the rest are read by
+# crawlers rather than by the pages. Without this, deleting one of them leaves
+# the static check green.
 for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
-              "vendor/three.min.js", "vendor/vanta.birds.min.js"):
+              "assets/fonts/kanit-500.woff2", "assets/fonts/kanit-900.woff2"):
     if not os.path.exists(os.path.join(ROOT, asset)):
         err(f"missing expected file: {asset}")
 
@@ -180,30 +190,41 @@ if "<main" not in src:
 
 
 # ------------------------------------------------------ stated counts are true
-ribbon = re.search(r'<div class="ribbon reveal">.*?\n    </div>', src, re.S)
-if ribbon:
-    sum_panels = sum_tools = 0
-    # split on the panel boundary rather than matching across it, so the last
-    # group in each panel is counted too
-    for part in re.split(r'(?=<div class="rpanel")', ribbon.group(0)):
-        pid = re.search(r'id="(pan\w+)"', part)
-        meta = re.search(r'<p class="rmeta">(\d+) panels &middot; (\d+) tools</p>', part)
-        if not pid or not meta:
-            continue
-        groups = part.count('class="rgrp"')
-        chips = sum(c.count("<span>") for c in re.findall(r'<div class="rchips">(.*?)</div>', part, re.S))
-        if int(meta.group(1)) != groups:
-            err(f"{pid.group(1)}: label says {meta.group(1)} panels, page has {groups}")
-        if int(meta.group(2)) != chips:
-            err(f"{pid.group(1)}: label says {meta.group(2)} tools, page has {chips}")
-        sum_panels += groups
-        sum_tools += chips
+# /aj-tools/ says "46 tools across 17 panels", and each tab says its own split.
+# Those are three numbers that can only go stale, and the page lists every tool
+# right under them, so they are counted rather than trusted. (This replaces the
+# same check on the old .ribbon markup, which no page has carried since the
+# tool list moved onto its own page - it had been passing on nothing.)
+aj = read(os.path.join("aj-tools", "index.html"))
+sum_panels = sum_tools = 0
+for part in re.split(r'(?=<section class="tabsec">)', aj)[1:]:
+    name = re.search(r'<h2 class="head reveal">(.*?)\s*<span class="dim">(\d+) tools '
+                     r'&middot; (\d+) panels</span>', part, re.S)
+    if not name:
+        err("a tabsec on aj-tools/index.html has no '<n> tools &middot; <n> panels' label")
+        continue
+    tab, said_tools, said_panels = name.group(1).strip(), int(name.group(2)), int(name.group(3))
+    panels = part.count('<div class="pgrp')
+    tools = sum(t.count("<li>") for t in re.findall(r'<ul class="tlist">(.*?)</ul>', part, re.S))
+    if panels != said_panels:
+        err(f"aj-tools {tab}: label says {said_panels} panels, the page lists {panels}")
+    if tools != said_tools:
+        err(f"aj-tools {tab}: label says {said_tools} tools, the page lists {tools}")
+    # each panel heading carries its own count too
+    for heading, said in re.findall(r"<h3>([^<]+)<i>(\d+)</i></h3>", part):
+        after = part.split(f"<h3>{heading}<i>{said}</i></h3>", 1)[1]
+        listed = after.split("</ul>", 1)[0].count("<li>")
+        if listed != int(said):
+            err(f"aj-tools {tab} / {heading.strip()}: says {said}, lists {listed}")
+    sum_panels += panels
+    sum_tools += tools
 
-    total = re.search(r"<strong>(\d+) tools across (\d+) panels</strong>", src)
-    if total and sum_tools:
-        if int(total.group(1)) != sum_tools or int(total.group(2)) != sum_panels:
-            err(f"intro says {total.group(1)} tools / {total.group(2)} panels, "
-                f"the tabs add up to {sum_tools} / {sum_panels}")
+total = re.search(r"<strong>(\d+) tools across (\d+) panels</strong>", aj)
+if not total:
+    err("aj-tools/index.html no longer states its total")
+elif sum_tools and (int(total.group(1)) != sum_tools or int(total.group(2)) != sum_panels):
+    err(f"aj-tools intro says {total.group(1)} tools / {total.group(2)} panels, "
+        f"the tabs add up to {sum_tools} / {sum_panels}")
 
 
 # --------------------------------------------------- duplicated body sentences

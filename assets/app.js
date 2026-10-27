@@ -33,8 +33,7 @@
     root.setAttribute("data-theme", t);
     sw.setAttribute("aria-checked", t === "dark" ? "true" : "false");
     sw.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
-    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0e13" : "#f2f4f8");
-    if(window.__ajBirds) window.__ajBirds.retint();
+    if(metaTheme) metaTheme.setAttribute("content", t === "dark" ? "#0c0c0c" : "#f7f9fc");
   }
   applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
   sw.addEventListener("click", function(){
@@ -72,39 +71,148 @@
   window.addEventListener("resize", onScroll, {passive:true});
   paint();
 
-  /* mobile menu */
+  /* ---- navigation: the sheet, and the three menus ----
+     Desktop: each trigger is a disclosure button. Hover or click opens it,
+     Escape closes it and puts focus back on the trigger, the arrow keys walk
+     the links. Only one is open at a time.
+     Under 1000px the triggers are inert headings (CSS) and the whole thing is
+     one sheet behind the menu button - so the code below only has to leave the
+     menus alone at that width. */
   var menuBtn = document.getElementById("menuBtn");
   var links = document.getElementById("navLinks");
-  function closeMenu(){ links.classList.remove("open"); menuBtn.setAttribute("aria-expanded","false"); menuBtn.setAttribute("aria-label","Open menu"); }
-  menuBtn.addEventListener("click", function(){
-    var open = links.classList.toggle("open");
-    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  });
-  links.addEventListener("click", function(e){ if(e.target.tagName === "A") closeMenu(); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
+  var groups = links ? [].slice.call(links.querySelectorAll(".navgroup")) : [];
+  var mqSheet = window.matchMedia ? window.matchMedia("(max-width: 1000px)") : null;
+  var sheetMode = function(){ return !!(mqSheet && mqSheet.matches); };
 
-  /* macOS-style pill that glides between the centred tabs */
-  var pill = links ? links.querySelector(".navpill") : null;
-  var mqDesktop = window.matchMedia ? window.matchMedia("(min-width: 1025px)") : null;
-  if(pill && links){
-    links.addEventListener("pointerover", function(e){
-      var a = e.target.closest ? e.target.closest("a") : null;
-      if(!a || !links.contains(a)) return;
-      if(mqDesktop && !mqDesktop.matches) return;
-      pill.style.width = a.offsetWidth + "px";
-      pill.style.transform = "translateX(" + a.offsetLeft + "px)";
-      links.classList.add("armed");
-    });
-    links.addEventListener("pointerleave", function(){ links.classList.remove("armed"); });
-    window.addEventListener("resize", function(){ links.classList.remove("armed"); }, {passive:true});
+  /* Under 1000px every menu is simply open and the trigger is an inert heading
+     (chrome.css turns off its pointer events). Left as it is written, it would
+     still be a focusable <button aria-expanded="false"> - so a screen reader
+     announces three collapsed menus, tabs onto each, and pressing them does
+     nothing. Out of the reading order it goes; the <ul aria-label> under it
+     carries the group's name there. */
+  function syncTriggers(){
+    var sheet = sheetMode();
+    for(var i=0;i<groups.length;i++){
+      var t = groups[i].querySelector(".navtrig");
+      if(!t) continue;
+      if(sheet){
+        t.setAttribute("tabindex","-1");
+        t.setAttribute("aria-hidden","true");
+        t.removeAttribute("aria-expanded");
+        t.removeAttribute("aria-controls");
+      }else{
+        t.removeAttribute("tabindex");
+        t.removeAttribute("aria-hidden");
+        t.setAttribute("aria-controls", groups[i].querySelector(".navmenu").id);
+        t.setAttribute("aria-expanded", groups[i].classList.contains("open") ? "true" : "false");
+      }
+    }
   }
-  /* close the mobile menu when tapping outside it */
-  document.addEventListener("click", function(e){
-    if(!links || !links.classList.contains("open")) return;
-    if(e.target.closest("#navLinks") || e.target.closest("#menuBtn")) return;
-    closeMenu();
+
+  function closeMenus(except){
+    for(var i=0;i<groups.length;i++){
+      if(groups[i] === except) continue;
+      groups[i].classList.remove("open");
+      groups[i].removeAttribute("data-clicked");
+      var t = groups[i].querySelector(".navtrig");
+      if(t && !sheetMode()) t.setAttribute("aria-expanded","false");
+    }
+  }
+  function openGroup(g, byClick){
+    if(sheetMode()) return;
+    closeMenus(g);
+    g.classList.add("open");
+    /* Remembers how it was opened. Hovering a trigger opens its menu, so
+       without this the click that follows the hover - the ordinary way a
+       person uses a menu bar - would read as "already open" and shut it
+       again in their face. A click closes only what a click opened. */
+    if(byClick) g.setAttribute("data-clicked","");
+    g.querySelector(".navtrig").setAttribute("aria-expanded","true");
+  }
+  function closeGroup(g){
+    g.classList.remove("open");
+    g.removeAttribute("data-clicked");
+    if(!sheetMode()) g.querySelector(".navtrig").setAttribute("aria-expanded","false");
+  }
+
+  groups.forEach(function(g){
+    var trig = g.querySelector(".navtrig");
+    var items = [].slice.call(g.querySelectorAll(".navmenu a"));
+    if(!trig) return;
+
+    trig.addEventListener("click", function(){
+      if(sheetMode()) return;
+      if(g.hasAttribute("data-clicked")) closeGroup(g); else openGroup(g, true);
+    });
+    /* Pointer opens it too, which is what a pointer expects of a menu bar.
+       A short delay on leaving means crossing the gap down to the panel does
+       not shut it. */
+    var leaveTimer = null;
+    g.addEventListener("pointerenter", function(e){
+      if(e.pointerType === "touch") return;
+      clearTimeout(leaveTimer);
+      openGroup(g);
+    });
+    g.addEventListener("pointerleave", function(e){
+      if(e.pointerType === "touch") return;
+      leaveTimer = setTimeout(function(){
+        if(!g.contains(document.activeElement)) closeGroup(g);
+      }, 140);
+    });
+
+    g.addEventListener("keydown", function(e){
+      if(sheetMode()) return;
+      var i = items.indexOf(document.activeElement);
+      if(e.key === "Escape"){
+        if(!g.classList.contains("open")) return;
+        closeGroup(g); trig.focus(); e.stopPropagation();
+      } else if(e.key === "ArrowDown"){
+        e.preventDefault();
+        if(!g.classList.contains("open")) openGroup(g, true);
+        /* reading a layout property forces the style change above to land, so
+           the link is out of a hidden subtree before focus is asked for */
+        void g.querySelector(".navmenu").offsetWidth;
+        (items[i + 1] || items[0]).focus();
+      } else if(e.key === "ArrowUp"){
+        e.preventDefault();
+        (i > 0 ? items[i - 1] : items[items.length - 1]).focus();
+      }
+    });
+    /* Tabbing out of the last link closes it behind you. */
+    g.addEventListener("focusout", function(){
+      setTimeout(function(){
+        if(!sheetMode() && !g.contains(document.activeElement)) closeGroup(g);
+      }, 0);
+    });
   });
+
+  function closeSheet(){
+    if(!links || !menuBtn) return;
+    links.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded","false");
+    menuBtn.setAttribute("aria-label","Open menu");
+  }
+  if(menuBtn && links){
+    menuBtn.addEventListener("click", function(){
+      var open = links.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    });
+    links.addEventListener("click", function(e){ if(e.target.closest("a")) closeSheet(); });
+  }
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Escape") return;
+    closeSheet(); closeMenus(null);
+  });
+  document.addEventListener("click", function(e){
+    if(e.target.closest("#nav")) return;
+    closeSheet(); closeMenus(null);
+  });
+  /* Leaving the sheet width with the sheet open would otherwise strand it. */
+  if(mqSheet && mqSheet.addEventListener){
+    mqSheet.addEventListener("change", function(){ closeSheet(); closeMenus(null); syncTriggers(); });
+  }
+  syncTriggers();
 
   /* links from the old single-page version land on the right page now */
   var legacy = {
@@ -199,34 +307,6 @@
     tlItems.forEach(function(el){ dotIo.observe(el); });
   }
 
-  /* ribbon tabs — without JS both panels stay open and readable */
-  (function(){
-    var list = document.querySelector(".rtabs[role=tablist]");
-    if(!list) return;
-    var tabs = [].slice.call(list.querySelectorAll("[role=tab]"));
-    function select(tab, focus){
-      tabs.forEach(function(t){
-        var on = t === tab;
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
-        var panel = document.getElementById(t.getAttribute("aria-controls"));
-        if(panel) panel.hidden = !on;
-      });
-      if(focus) tab.focus();
-    }
-    tabs.forEach(function(t){ t.addEventListener("click", function(){ select(t, false); }); });
-    list.addEventListener("keydown", function(e){
-      var i = tabs.indexOf(document.activeElement);
-      if(i < 0) return;
-      var n = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1
-            : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : -1;
-      if(n < 0 && e.key !== "Home" && e.key !== "End") return;
-      e.preventDefault();
-      select(tabs[(n + tabs.length) % tabs.length], true);
-    });
-    select(tabs[0], false);   // JS is on, so collapse to a real tab view
-  })();
-
   /* ------------------------------------------------------------------
      Analytics — ON. Dashboard: https://ajmalps.goatcounter.com
 
@@ -271,152 +351,6 @@
     for(var i=0;i<els.length;i++) io.observe(els[i]);
   })();
 
-  /* ---------- Vanta BIRDS behind the hero, any page with #vanta-hero ----------
-     /heron-ai/ today; the home page had one until it moved to landing/. The
-     gate below has always been the element, not the page, so adding one is
-     all a page needs.
-     three.js is 600kb, so it is fetched only when it will actually be drawn:
-     never for reduced-motion, never on Save-Data, never without WebGL, and
-     never on the pages that have no hero. The flock is destroyed when the hero
-     scrolls away so it is not burning a phone battery further down the page. */
-  (function(){
-    var host = document.getElementById("vanta-hero");
-    if(!host || reduceMotion) return;
-
-    var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-    if(conn && conn.saveData) return;
-
-    var gl = false;
-    try{
-      var probe = document.createElement("canvas");
-      gl = !!(window.WebGLRenderingContext &&
-              (probe.getContext("webgl") || probe.getContext("experimental-webgl")));
-    }catch(e){ gl = false; }
-    if(!gl) return;
-
-    var vendor = host.getAttribute("data-vendor") || "vendor/";
-    var effect = null, loading = null, retintTimer = null;
-    /* `wanted` is owned by the observer. three.js takes seconds to arrive on a
-       slow connection, and without this the hero can scroll away mid-download
-       and start() still fires afterwards, leaving a flock running off-screen
-       for the rest of the visit - exactly the battery cost this is meant to
-       avoid. stop() has to stay authoritative while the scripts are in flight. */
-    var wanted = false;
-
-    function palette(){
-      /* Vanta's own demo is red 0xff0000 + cyan 0x00d1ff in the additive mode:
-         one channel pinned at max on every bird while the other two sweep up
-         from zero. That is what keeps its birds saturated instead of muddy, and
-         why no two look alike. This is the same construction mirrored into the
-         cool half of the wheel - blue pinned, gold sweeping red and green in -
-         so the flock spreads across blue, violet, magenta, pink and pale cyan.
-         Lerping between opposite colours instead would pass through grey.
-         One pair serves both themes; it reads on the pale hero and the dark. */
-      return { color1:0x0000ff, color2:0xffcc00 };
-    }
-
-    function loadScript(src){
-      return new Promise(function(resolve, reject){
-        var s = document.createElement("script");
-        s.src = src; s.async = true;
-        s.onload = resolve;
-        s.onerror = function(){ reject(new Error("failed: " + src)); };
-        document.head.appendChild(s);
-      });
-    }
-
-    function libs(){
-      if(!loading){
-        loading = loadScript(vendor + "three.min.js").then(function(){
-          return loadScript(vendor + "vanta.birds.min.js");
-        }).catch(function(err){
-          loading = null;   /* do not cache the failure, or one dropped request kills it for the whole visit */
-          throw err;
-        });
-      }
-      return loading;
-    }
-
-    function start(){
-      if(!wanted || effect || !window.VANTA || !window.VANTA.BIRDS || !window.THREE) return;
-      var narrow = window.innerWidth < 1025;
-      var tint = palette();
-      try{
-        effect = window.VANTA.BIRDS({
-          el: host,
-          THREE: window.THREE,
-          mouseControls: !narrow,   /* vanta binds this to window, so the hero buttons stay clickable */
-          touchControls: false,     /* would fight with scrolling on a phone */
-          gyroControls: false,
-          minHeight: 200, minWidth: 200,
-          scale: 1, scaleMobile: 1,
-          backgroundAlpha: 0,       /* keep the hero gradient underneath */
-          color1: tint.color1,
-          color2: tint.color2,
-          colorMode: "varianceGradient",   /* additive - see palette() */
-          /* tuned down from the Vanta defaults: the default 1024 birds with
-             high cohesion ball up in the middle of the hero and sit all over
-             the name. Fewer birds, pushed apart, moving slower. */
-          birdSize: 1,
-          wingSpan: 20,
-          speedLimit: 3.5,
-          separation: 60,
-          alignment: 28,
-          cohesion: 14,
-          quantity: narrow ? 3 : 4
-        });
-        host.classList.add("on");
-      }catch(e){
-        effect = null;            /* a WebGL failure must never break the page */
-      }
-    }
-
-    function stop(){
-      if(!effect) return;
-      host.classList.remove("on");
-      var renderer = effect.renderer;      /* destroy() clears the reference */
-      try{ effect.destroy(); }catch(e){}
-      try{
-        /* hand the WebGL context back now instead of waiting for the collector */
-        if(renderer){
-          renderer.dispose();
-          var lose = renderer.getContext().getExtension("WEBGL_lose_context");
-          if(lose) lose.loseContext();
-        }
-      }catch(e){}
-      effect = null;
-    }
-
-    window.__ajBirds = { retint: function(){
-      /* BIRDS bakes color1/color2 into a per-vertex attribute when it is built,
-         so setOptions cannot recolour a running flock - it has to be rebuilt.
-         Debounced so flipping the switch quickly does not thrash WebGL. */
-      if(!effect) return;
-      var next = palette();
-      /* both themes currently share one pair, so there is nothing to rebuild.
-         Kept so a future per-theme palette still repaints correctly. */
-      if(effect.options.color1 === next.color1 && effect.options.color2 === next.color2) return;
-      clearTimeout(retintTimer);
-      retintTimer = setTimeout(function(){
-        if(!effect || !wanted) return;
-        stop();
-        start();
-      }, 160);
-    } };
-
-    if("IntersectionObserver" in window){
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(en){
-          if(en.isIntersecting){ wanted = true; libs().then(start).catch(function(){}); }
-          else { wanted = false; stop(); }
-        });
-      }, { rootMargin: "200px" });
-      io.observe(host);
-    } else {
-      wanted = true;
-      libs().then(start).catch(function(){});
-    }
-  })();
 
   var yrEl = document.getElementById("yr");
   if(yrEl) yrEl.textContent = new Date().getFullYear();

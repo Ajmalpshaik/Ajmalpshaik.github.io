@@ -1,7 +1,9 @@
 // Puts one model on screen and keeps it turning.
 //
 // This module, and three.js with it, is only fetched when a model is about to
-// be shown (see Model3D.tsx), so it never weighs on the first paint.
+// be shown, so it never weighs on the first paint. Nothing on the published
+// page imports it any more: it is kept because scripts/posters.mjs renders the
+// model-*.webp pictures through it, and those pictures are what the page shows.
 //
 // The poster that shows until the model is ready is rendered by this same code
 // (renderPoster), at the same angle and framing, so the swap is invisible.

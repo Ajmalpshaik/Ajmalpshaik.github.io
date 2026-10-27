@@ -1,0 +1,208 @@
+/* ajmalps.com - the bar, and nothing else.
+   ------------------------------------------------------------------
+   Loaded by every page INCLUDING the home page, which is built from
+   landing/ and has a stylesheet of its own. That is the point: the bar is
+   written once and both halves of the site get the same one, so it cannot
+   drift the way the old nine-tab capsule and the cover's four anchors did.
+
+   The cover has no token sheet, so every token here carries a fallback, and
+   each fallback is the dark-theme value from assets/style.css. On a content
+   page the tokens win and the bar follows the theme; on the cover the
+   fallbacks apply and the bar is dark, which is what the cover is.
+   Change a fallback only together with its token in assets/style.css.
+
+   The markup is written by tools/sync_chrome.py for the content pages and by
+   landing/src/components/SiteNav.tsx for the cover - the two must carry the
+   same classes, and --check will not catch it if they stop.
+   ================================================================== */
+
+/* ============ Nav ============
+   Three menus and a button, not nine flat tabs. The tabs were measured to the
+   pixel against the 1080px bar and a tenth label would have broken the row;
+   this fits at any width and takes another page without a re-measure.
+
+   Shape: brand left, the menus centred on the viewport, the Contact button and
+   the theme switch right. The menus are centred absolutely rather than laid out
+   between the brand and the switch, so their position does not move when the
+   brand or the switch changes width. */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h,60px);
+  /* The fallback is darker than the dark theme's own --nav-bg: on a content
+     page the bar only ever floats over content of its own theme, but on the
+     cover it crosses the white Services section, where 72% read as a muddy
+     grey slab. At 92% it is near-black over white and indistinguishable from
+     the ground over the dark sections. */
+  background:var(--nav-bg,rgba(12,12,12,.92));
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s var(--ease,cubic-bezier(.25,.1,.25,1)),box-shadow .3s var(--ease,cubic-bezier(.25,.1,.25,1)),background .3s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+#nav.scrolled{border-bottom-color:var(--nav-border,rgba(255,255,255,.12));box-shadow:0 1px 14px rgba(0,0,0,.06)}
+.navin{
+  max-width:1180px;height:100%;margin:0 auto;padding:0 22px;
+  display:flex;align-items:center;gap:10px;position:relative;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-size:16px;color:var(--ink,#e8eef3);letter-spacing:-.005em;
+}
+.brand svg{width:26px;height:26px;flex:none}
+
+/* ---- the centred menu row ---- */
+.navlinks{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:2px;
+}
+.navgroup{position:relative}
+.navtrig,.navcta{
+  font-family:var(--body,-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI Variable Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif);font-size:14px;font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  padding:8px 15px;border-radius:999px;border:1px solid transparent;
+  background:none;color:var(--muted,#aab8c4);cursor:pointer;
+  transition:color .25s var(--ease,cubic-bezier(.25,.1,.25,1)),background .25s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+.navtrig:hover,.navtrig[aria-expanded="true"]{color:var(--ink,#e8eef3);background:var(--hover-bg,rgba(255,255,255,.08))}
+.navtrig .caret{width:11px;height:11px;flex:none;transition:transform .3s var(--ease-out,cubic-bezier(.16,1,.3,1))}
+.navtrig[aria-expanded="true"] .caret{transform:rotate(180deg)}
+/* the section you are in, marked without moving anything */
+.navgroup[data-current] .navtrig{color:var(--ink,#e8eef3)}
+.navgroup[data-current] .navtrig::after{
+  content:"";position:absolute;left:50%;bottom:-1px;width:16px;height:2px;border-radius:2px;
+  transform:translateX(-50%);background:var(--grad,linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%));
+}
+.navcta{
+  margin-left:8px;background:var(--blue,#0071e3);color:#fff;
+  transition:background .25s var(--ease,cubic-bezier(.25,.1,.25,1)),transform .2s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+.navcta:hover{background:var(--blue-hover,#2997ff);color:#fff}
+.navcta[aria-current="page"]{background:var(--ink,#e8eef3);color:var(--bg,#0c0c0c)}
+
+/* ---- the panel under a menu ---- */
+.navmenu{
+  position:absolute;top:calc(100% + 9px);left:50%;transform:translate(-50%,0);
+  min-width:272px;padding:8px;border-radius:20px;
+  background:var(--menu-bg,#111214);border:1px solid var(--nav-border,rgba(255,255,255,.12));
+  box-shadow:0 22px 50px rgba(0,0,0,.22);
+  display:grid;gap:2px;list-style:none;margin:0;
+}
+.navmenu li{min-width:0}
+/* Closed only once the script is running. With no JavaScript every menu simply
+   stays open under its heading - nothing on this site hides behind a script. */
+/* visibility switches on its own clock rather than riding the transition
+   list: hidden the moment the fade-out ends, visible the instant the menu
+   opens. Transitioning it meant a link could still be in a hidden subtree on
+   the tick the menu opened, and a hidden element cannot take focus - so
+   ArrowDown opened the panel and left the caret on the trigger. */
+html.js .navmenu{
+  opacity:0;visibility:hidden;transform:translate(-50%,-7px);
+  transition:opacity .22s var(--ease,cubic-bezier(.25,.1,.25,1)),
+             transform .28s var(--ease-out,cubic-bezier(.16,1,.3,1)),
+             visibility 0s linear .22s;
+}
+html.js .navgroup.open .navmenu{
+  opacity:1;visibility:visible;transform:translate(-50%,0);
+  transition:opacity .22s var(--ease,cubic-bezier(.25,.1,.25,1)),
+             transform .28s var(--ease-out,cubic-bezier(.16,1,.3,1)),
+             visibility 0s linear 0s;
+}
+.navmenu a{
+  display:grid;gap:2px;padding:10px 13px;border-radius:13px;color:var(--ink,#e8eef3);
+  transition:background .2s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+.navmenu a:hover{background:var(--hover-bg,rgba(255,255,255,.08))}
+.navmenu a b{font-family:var(--display,"Kanit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif);font-weight:500;font-size:15px;letter-spacing:-.005em}
+.navmenu a span{font-size:13px;color:var(--faint,#7d8a95);line-height:1.35}
+.navmenu a[aria-current="page"]{background:var(--hover-bg,rgba(255,255,255,.08))}
+.navmenu a[aria-current="page"] b{color:var(--link,#4aa8ff)}
+
+/* ---- right cluster ---- */
+.navend{display:flex;align-items:center;gap:4px;margin-left:auto}
+#menuBtn{
+  display:none;width:42px;height:42px;border:none;background:none;cursor:pointer;
+  align-items:center;justify-content:center;border-radius:12px;
+}
+#menuBtn span{position:relative;display:block;width:18px;height:1.5px;background:var(--ink,#e8eef3);transition:transform .3s var(--ease,cubic-bezier(.25,.1,.25,1)),background .3s var(--ease,cubic-bezier(.25,.1,.25,1))}
+#menuBtn span::before,#menuBtn span::after{
+  content:"";position:absolute;left:0;width:18px;height:1.5px;background:var(--ink,#e8eef3);transition:transform .3s var(--ease,cubic-bezier(.25,.1,.25,1)),top .3s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+#menuBtn span::before{top:-6px}
+#menuBtn span::after{top:6px}
+#menuBtn[aria-expanded="true"] span{background:transparent}
+#menuBtn[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
+#menuBtn[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
+
+/* theme switch: pill track + sliding bubble */
+#themeSwitch{
+  border:none;background:none;cursor:pointer;padding:5px;
+  display:flex;align-items:center;border-radius:999px;
+}
+#themeSwitch .track{
+  position:relative;display:block;width:54px;height:30px;border-radius:999px;
+  background:var(--neu-surface,#17181c);
+  /* the inner shadow alone vanished against a white bar, so it carries a
+     hairline of its own and reads as a control at any zoom */
+  border:1px solid var(--hairline,#262a2e);
+  box-shadow:var(--neu-in,inset 0 1px 3px rgba(0,0,0,.6));
+  transition:background .35s var(--ease,cubic-bezier(.25,.1,.25,1)),box-shadow .35s var(--ease,cubic-bezier(.25,.1,.25,1)),border-color .35s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+:root[data-theme="dark"] #themeSwitch .track{border-color:rgba(255,255,255,.14)}
+:root[data-theme="dark"] #themeSwitch .track{background:rgba(0,113,227,.35)}
+#themeSwitch .knob{
+  position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;box-shadow:2px 2px 6px rgba(0,0,0,.3),-2px -2px 6px rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .35s var(--ease,cubic-bezier(.25,.1,.25,1));
+}
+:root[data-theme="dark"] #themeSwitch .knob{transform:translateX(24px)}
+#themeSwitch svg{position:absolute;transition:opacity .25s var(--ease,cubic-bezier(.25,.1,.25,1))}
+#themeSwitch .ic-sun{color:#ff9f0a;opacity:1}
+#themeSwitch .ic-moon{color:#0071e3;opacity:0}
+:root[data-theme="dark"] #themeSwitch .ic-sun{opacity:0}
+:root[data-theme="dark"] #themeSwitch .ic-moon{opacity:1}
+
+/* ---- under 1000px: one sheet, every page one tap away ----
+   The menus do not become sub-menus to open. The three triggers turn into plain
+   headings and their links are simply listed, so no page on the site is more
+   than one tap from the sheet. */
+@media(max-width:1000px){
+  #menuBtn{display:flex;order:-1}
+  .navlinks{
+    position:fixed;top:var(--nav-h,60px);left:0;right:0;
+    max-height:calc(100dvh - var(--nav-h,60px));overflow-y:auto;overscroll-behavior:contain;
+    transform:none;
+    display:block;padding:10px 22px 30px;
+    background:var(--menu-bg,#111214);border-bottom:1px solid var(--nav-border,rgba(255,255,255,.12));
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
+    opacity:0;transform:translateY(-8px);pointer-events:none;visibility:hidden;
+    transition:opacity .3s var(--ease,cubic-bezier(.25,.1,.25,1)),transform .3s var(--ease,cubic-bezier(.25,.1,.25,1)),visibility .3s;
+  }
+  .navlinks.open{opacity:1;transform:none;pointer-events:auto;visibility:visible}
+  .navgroup{position:static;padding-top:16px}
+  .navtrig{
+    pointer-events:none;width:100%;padding:0 2px 8px;border-radius:0;
+    font-family:var(--display,"Kanit",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif);font-size:12.5px;font-weight:500;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--faint,#7d8a95);background:none;
+  }
+  .navtrig .caret{display:none}
+  .navgroup[data-current] .navtrig::after{display:none}
+  html.js .navmenu,.navmenu{
+    position:static;transform:none;opacity:1;visibility:visible;
+    min-width:0;padding:0;border:none;background:none;box-shadow:none;
+    transition:none;
+  }
+  .navmenu a{padding:13px 2px;border-radius:0;border-bottom:1px solid var(--nav-border,rgba(255,255,255,.12))}
+  .navmenu li:last-child a{border-bottom:none}
+  .navmenu a:hover{background:none}
+  .navmenu a b{font-size:17px}
+  /* The one-line description under each link doubles the height of the sheet
+     and pushes Contact off the bottom of a phone. The names carry themselves
+     at this size; the descriptions are for the desktop panels, where there is
+     room for them and no list to get through. */
+  .navmenu a span{display:none}
+  .navmenu a[aria-current="page"]{background:none}
+  .navcta{
+    margin:22px 0 0;width:100%;justify-content:center;
+    min-height:48px;font-size:16px;
+  }
+}

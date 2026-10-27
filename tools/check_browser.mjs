@@ -95,7 +95,13 @@ const WIDTHS = [1440, 1280, 834, 390];
 
 const failures = [];
 const fail = (m) => failures.push(m);
-const browser = await chromium.launch();
+// CHROMIUM_PATH lets a machine that already has a Chromium point at it
+// instead of downloading a second copy. CI leaves it unset and uses the
+// browser `npx playwright install` put in place.
+const launch = (opts = {}) => chromium.launch(
+  process.env.CHROMIUM_PATH ? { ...opts, executablePath: process.env.CHROMIUM_PATH } : opts,
+);
+const browser = await launch();
 
 for (const page of PAGES) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -159,23 +165,6 @@ for (const page of PAGES) {
   if (!skip.cls.includes('skip')) fail(`first tab stop is ".${skip.cls}", expected the skip link`);
   else if (skip.top < 0) fail('skip link stays off-screen when focused');
 
-  // ribbon tabs, if present, must actually switch
-  if (await p.$('.rtabs [role=tab]')) {
-    await p.click('#tabAnno');
-    await p.waitForTimeout(300);
-    const ok = await p.evaluate(() => document.getElementById('panTools').hidden && !document.getElementById('panAnno').hidden);
-    if (!ok) fail('ribbon tab click does not switch panels');
-  }
-
-  // counters, if present, must land on their target, not sit at 0
-  if (await p.$('.stats-band')) {
-    await p.evaluate(() => document.querySelector('.stats-band').scrollIntoView());
-    await p.waitForTimeout(2200);
-    const stuck = await p.$$eval('.stats-band [data-count]', (els) =>
-      els.filter((e) => e.textContent.replace(/\D/g, '') !== e.getAttribute('data-count')).length);
-    if (stuck) fail(`${stuck} counter(s) did not reach their value`);
-  }
-
   // The home page is built from landing/ and arrives as finished HTML that
   // React then attaches to. It marks <html data-ready> when it has; a bundle
   // that failed to load or threw on the way would leave that unset.
@@ -197,6 +186,140 @@ for (const page of PAGES) {
   }
 
   await ctx.close();
+}
+
+// ---- the bar, on both halves of the site -----------------------------------
+// The bar is written twice - tools/sync_chrome.py for the content pages,
+// landing/src/components/SiteNav.tsx for the cover - over one stylesheet. It is
+// the one thing on the site with two implementations, so it is the one thing
+// most likely to drift. These run against both.
+{
+  const EXPECTED = [
+    '/story/', '/experience/', '/work/',
+    '/aj-tools/', '/heron-ai/', '/toolbox/',
+    '/skills/', '/about/', '/faq/',
+  ];
+
+  for (const page of ['index.html', 'about/index.html']) {
+    const where = page === 'index.html' ? 'the cover' : 'a content page';
+
+    // ---- desktop: each menu opens, and Escape closes it ----
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+      const p = await ctx.newPage();
+      await p.goto(url(page));
+      await p.waitForTimeout(900);
+
+      const triggers = await p.$$('#nav .navtrig');
+      if (triggers.length !== 3) fail(`${where}: ${triggers.length} menu(s) in the bar, expected 3`);
+
+      // The menu fades, so wait for the state rather than for a stopwatch -
+      // a fixed sleep here is how a check starts failing on a slow runner and
+      // passing on a fast one.
+      const settle = (id, want) => p.waitForFunction(
+        ([sel, open]) => {
+          const s = getComputedStyle(document.getElementById(sel));
+          const shown = s.visibility !== 'hidden' && s.opacity !== '0';
+          return shown === open;
+        },
+        [id, want],
+        { timeout: 3000 },
+      ).then(() => true, () => false);
+
+      for (const trigger of triggers) {
+        const name = (await trigger.textContent()).trim();
+        const id = await trigger.getAttribute('aria-controls');
+        if (!(await p.$(`#${id}`))) { fail(`${where}: the "${name}" menu has no panel (#${id})`); continue; }
+
+        await trigger.click();
+        if (!(await settle(id, true))) fail(`${where}: clicking "${name}" does not open its menu`);
+        const links = await p.$$eval(`#${id} a`, (as) => as.length);
+        if (links !== 3) fail(`${where}: the "${name}" menu holds ${links} links, expected 3`);
+
+        await p.keyboard.press('Escape');
+        if (!(await settle(id, false))) fail(`${where}: Escape does not close the "${name}" menu`);
+      }
+
+      // ---- the keyboard, which is the whole reason these are buttons ----
+      {
+        const trigger = triggers[0];
+        const id = await trigger.getAttribute('aria-controls');
+        await trigger.focus();
+        await p.keyboard.press('ArrowDown');
+        await settle(id, true);
+        const landed = await p.evaluate((sel) => {
+          const first = document.querySelector(`#${sel} a`);
+          return document.activeElement === first;
+        }, id);
+        // One press, not two: the panel opens and the caret is on its first
+        // link. On the cover this took two, because the focus call ran while
+        // the panel was still visibility:hidden.
+        if (!landed) fail(`${where}: ArrowDown on a closed menu does not reach its first link`);
+
+        // Tab off the end and the panel closes behind you, rather than
+        // hanging over the page until Escape.
+        for (let i = 0; i < 3; i++) await p.keyboard.press('Tab');
+        if (!(await settle(id, false))) fail(`${where}: tabbing out of a menu leaves it open`);
+      }
+
+      // ---- the sheet's headings are inert, so they may not claim to be menus ----
+      await p.setViewportSize({ width: 390, height: 844 });
+      await p.waitForTimeout(400);
+      const claims = await p.$$eval('#nav .navtrig', (ts) =>
+        ts.filter((t) => t.hasAttribute('aria-expanded') || t.tabIndex >= 0).length);
+      if (claims) fail(`${where}: ${claims} inert menu heading(s) still read as a menu button at 390px`);
+      await p.setViewportSize({ width: 1280, height: 900 });
+      await p.waitForTimeout(400);
+
+      // every page the bar promises must be in it, and must be a real page
+      const hrefs = await p.$$eval('#nav .navmenu a', (as) => as.map((a) => new URL(a.href).pathname));
+      for (const want of EXPECTED) {
+        if (!hrefs.includes(want)) fail(`${where}: the bar has no link to ${want}`);
+      }
+      if (!(await p.$('#nav .navcta'))) fail(`${where}: the bar has no Contact button`);
+      if (!(await p.$('#nav .brand'))) fail(`${where}: the bar has no brand mark`);
+      await ctx.close();
+    }
+
+    // ---- phone: one sheet, every page one tap away ----
+    {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const p = await ctx.newPage();
+      await p.goto(url(page));
+      await p.waitForTimeout(900);
+
+      // A closed sheet is laid out, just hidden, so a bounding box is not the
+      // question - checkVisibility is, with visibility and opacity counted.
+      const seen = (a) => a.checkVisibility({ visibilityProperty: true, opacityProperty: true });
+      const before = await p.$$eval('#navLinks a', (as, fn) =>
+        as.filter(new Function('a', `return (${fn})(a)`)).length, seen.toString());
+      if (before) fail(`${where}: ${before} bar link(s) are on screen before the menu is opened at 390px`);
+
+      await p.click('#menuBtn');
+      await p.waitForFunction(
+        () => document.getElementById('navLinks').classList.contains('open'),
+        null, { timeout: 3000 },
+      ).catch(() => fail(`${where}: the menu button does not open the sheet at 390px`));
+      await p.waitForTimeout(450);
+      const after = await p.$$eval('#navLinks a', (as, fn) =>
+        as.filter(new Function('a', `return (${fn})(a)`)).map((a) => new URL(a.href).pathname), seen.toString());
+      for (const want of [...EXPECTED, '/contact/']) {
+        if (!after.includes(want)) fail(`${where}: ${want} is not reachable from the phone menu`);
+      }
+      await ctx.close();
+    }
+  }
+
+  // ---- no JavaScript: the menus are simply open, nothing is hidden ----
+  for (const page of ['index.html', 'about/index.html']) {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, javaScriptEnabled: false });
+    const p = await ctx.newPage();
+    await p.goto(url(page));
+    const hidden = await p.$$eval('#nav .navmenu a', (as) =>
+      as.filter((a) => !a.checkVisibility({ visibilityProperty: true, opacityProperty: true })).length);
+    if (hidden) fail(`${page}: ${hidden} bar link(s) stay hidden with JavaScript off`);
+    await ctx.close();
+  }
 }
 
 // ---- script never arrives: the failsafe must show the page ------------------
@@ -238,74 +361,15 @@ for (const page of PAGES) {
 }
 
 // ---- reduced motion: nothing may stay hidden -------------------------------
-// The home page's 3D models are motion too: asked for less, the page keeps
-// their stills and must not even fetch three.js.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const p = await ctx.newPage();
-  let fetched3D = false;
-  p.on('request', (r) => { if (/\/assets\/home\/viewer-[^/]*\.js$/.test(r.url())) fetched3D = true; });
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
   const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in, .enter',
     (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
   if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
-  await p.evaluate(() => document.getElementById('projects')?.scrollIntoView());
-  await p.waitForTimeout(1500);
-  if (fetched3D) fail('reduced motion: index.html fetched the 3D models instead of keeping their stills');
   await ctx.close();
-}
-
-// ---- the home page's 3D models: each must come alive, cleanly --------------
-// Headless Chromium has no GPU, and on a software renderer the page rightly
-// keeps the stills (it asks for WebGL with failIfMajorPerformanceCaveat). So
-// here WebGL is drawn by SwiftShader and that refusal is taken out, which is
-// what a visitor with a real GPU gets: every model must replace its still,
-// with no script error and no warning from three.js on the way.
-{
-  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-  for (const [w, h] of [[1440, 900], [390, 844]]) {
-    const ctx = await gpu.newContext({ viewport: { width: w, height: h } });
-    await ctx.addInitScript(() => {
-      const get = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (type, opts) {
-        if (opts && typeof opts === 'object') {
-          opts = { ...opts };
-          delete opts.failIfMajorPerformanceCaveat;
-        }
-        return get.call(this, type, opts);
-      };
-    });
-    // other origins (the visit counter) are not what is being tested here
-    await ctx.route((u) => !u.href.startsWith(ORIGIN), (r) => r.fulfill({ status: 204, body: '' }));
-    const p = await ctx.newPage();
-    p.on('pageerror', (e) => fail(`3D at ${w}px: uncaught script error — ${e.message}`));
-    p.on('console', (m) => {
-      if (m.type() === 'error' || (m.type() === 'warning' && m.text().includes('THREE'))) fail(`3D at ${w}px: console ${m.type()} — ${m.text()}`);
-    });
-    await p.goto(url('index.html'));
-    if (!(await p.evaluate(() => !!document.createElement('canvas').getContext('webgl2')))) {
-      console.log('note: no WebGL 2 in this Chromium, even in software; the 3D models were not checked');
-      await ctx.close();
-      break;
-    }
-    const total = await p.$$eval('.model3d', (els) => els.length);
-    if (total !== 4) fail(`3D at ${w}px: expected 4 models on index.html, found ${total}`);
-    for (let i = 0; i < total; i++) {
-      await p.evaluate((i) => document.querySelectorAll('.model3d')[i].scrollIntoView({ block: 'center' }), i);
-      const live = await p.waitForFunction((i) => document.querySelectorAll('.model3d')[i].hasAttribute('data-live'), i, { timeout: 15000 })
-        .then(() => true, () => false);
-      if (!live) fail(`3D at ${w}px: model ${i + 1} never replaced its still`);
-    }
-    // printed, a live model gives way to its still again
-    await p.emulateMedia({ media: 'print' });
-    const unprinted = await p.$$eval('.model3d', (els) => els.filter((e) =>
-      getComputedStyle(e.querySelector('.model3d-poster')).opacity !== '1' ||
-      getComputedStyle(e.querySelector('.model3d-stage')).display !== 'none').length);
-    if (unprinted) fail(`3D at ${w}px: ${unprinted} live model(s) would print as a blank canvas, not their still`);
-    await ctx.close();
-  }
-  await gpu.close();
 }
 
 // ---- the BIM viewer: opens its model, picks, walks, all without an error ---
@@ -313,7 +377,7 @@ for (const page of PAGES) {
 // first: a software renderer cannot keep up with the High preset, and what is
 // under test here is that everything works, not how it looks.
 {
-  const gpu = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const gpu = await launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   for (const [w, h] of [[1280, 860], [390, 844]]) {
     const phone = w < 500;
     const ctx = await gpu.newContext({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone });
@@ -455,10 +519,7 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
-  // a model prints as its still
-  const stills = await p.$$eval('.model3d-poster', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-  if (stills) fail(`print: ${stills} 3D model still(s) would print blank`);
-  const invisible = await p.$$eval('.grad-text, .ch-idx, .stat-b b, .brain-stat b, .hero-heading',
+  const invisible = await p.$$eval('.grad-text, .ch-idx, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;
       return f === 'rgba(0, 0, 0, 0)' || f === 'transparent';

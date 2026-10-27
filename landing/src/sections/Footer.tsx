@@ -60,19 +60,28 @@ export default function Footer() {
         </FadeIn>
       </div>
 
-      <nav aria-label="Site" className="mx-auto mt-20 max-w-7xl border-t border-[#D7E2EA]/15 pt-8 sm:mt-28">
-        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 sm:gap-x-8">
-          {footer.pages.map((page) => (
-            <li key={page.href}>
-              <a
-                href={page.href}
-                className="text-xs font-medium uppercase tracking-wider text-[#D7E2EA]/70 transition-opacity duration-200 hover:opacity-70 sm:text-sm"
-              >
-                {page.label}
-              </a>
-            </li>
+      <nav aria-label="Site" className="mx-auto mt-20 max-w-5xl border-t border-[#D7E2EA]/15 pt-10 sm:mt-28">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 text-left sm:grid-cols-3 sm:gap-x-10">
+          {footer.columns.map((column) => (
+            <div key={column.name}>
+              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-[#D7E2EA]/50">
+                {column.name}
+              </h3>
+              <ul className="mt-4 grid gap-3">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-[#D7E2EA]/80 transition-opacity duration-200 hover:opacity-60 sm:text-base"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </nav>
       <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#D7E2EA]/60">
         &copy; {year} Ajmal P.S &middot; Designed and built in Doha, Qatar
