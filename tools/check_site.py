@@ -214,7 +214,9 @@ if "<main" not in src:
 heron = read(os.path.join("heron-ai", "index.html"))
 for marker in ("numbers", "skills", "skills-heading", "fragments",
                "fragments-heading", "tools", "tools-heading", "tools-note",
-               "skills-count", "proven-count"):
+               "skills-count", "proven-count", "ribbon", "ribbon-heading",
+               "fragments-total", "proven-n", "draft-n", "agents-total",
+               "tier-1", "tier-2", "tier-3"):
     if f"<!-- heron:{marker} -->" not in heron or f"<!-- /heron:{marker} -->" not in heron:
         err(f"heron-ai/index.html has lost its <!-- heron:{marker} --> markers; "
             f"tools/update_heron.py can no longer write that part of the page")
