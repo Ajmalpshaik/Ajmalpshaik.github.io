@@ -31,10 +31,30 @@ import re
 import subprocess
 import sys
 from collections import defaultdict
-from datetime import date
+from datetime import datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGE = os.path.join(ROOT, "heron-ai", "index.html")
+
+def counted_on(src):
+    """The date the figures describe - the Heron-AI commit they were read from.
+
+    Not today. Today changes at midnight whether or not Heron has changed, and
+    this file is compared against the page byte for byte by --check: a clock
+    date makes the page "out of date" every morning and says nothing true when
+    it does. The commit date moves only when the thing being counted moves.
+    """
+    try:
+        out = subprocess.run(["git", "-C", src, "log", "-1", "--format=%cI"],
+                             capture_output=True, text=True, timeout=20)
+        if out.returncode == 0 and out.stdout.strip():
+            return datetime.fromisoformat(out.stdout.strip()).date()
+    except (OSError, ValueError, subprocess.SubprocessError):
+        pass
+    # Not a checkout, or no git. Say so rather than stamping a date that would
+    # make the page disagree with itself on the next run.
+    return None
+
 
 # How an area's folder name is written on the page.
 AREAS = {
@@ -221,9 +241,11 @@ def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def block_numbers(frag, agents, tools):
+def block_numbers(frag, agents, tools, counted):
     total = sum(len(v) for v in frag.values())
     proven = sum(1 for v in frag.values() for _, p in v if p)
+    stamp = (f"Counted on {counted:%-d %B %Y}" if counted
+             else "Counted from the repository")
     return "\n".join([
         '    <div class="nums reveal">',
         f'      <div><b>{total}</b><span>fragments in the library</span></div>',
@@ -231,7 +253,7 @@ def block_numbers(frag, agents, tools):
         f'      <div><b>{agents}</b><span>agents behind them</span></div>',
         f'      <div><b>{len(tools)}</b><span>tools the chat can call</span></div>',
         '    </div>',
-        f'    <p class="numnote">Counted on {date.today():%-d %B %Y}, straight from the '
+        f'    <p class="numnote">{stamp}, straight from the '
         f'repository rather than typed here &mdash; {total - proven} fragments are still draft, '
         'meaning they have never met a real model. These numbers move as the work moves.</p>',
     ])
@@ -314,7 +336,7 @@ def rewrite(page, heron):
     looks = sum(1 for _, r, _ in tools if r in ("READ", "ANALYZE"))
     changes = sum(1 for _, r, _ in tools if r == "MODIFY")
     blocks = {
-        "numbers": block_numbers(frag, agents, tools),
+        "numbers": block_numbers(frag, agents, tools, counted_on(heron)),
         "fragments": block_fragments(frag),
         "skills": block_skills(skills),
         "tools": block_tools(tools),
