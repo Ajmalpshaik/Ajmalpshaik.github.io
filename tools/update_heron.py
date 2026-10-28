@@ -36,16 +36,28 @@ from datetime import datetime
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGE = os.path.join(ROOT, "heron-ai", "index.html")
 
+# Everything the figures on the page are read from. The stamp is the date of
+# the last commit that touched one of these - see counted_on().
+COUNTED = (
+    "brain/fragments", "brain/skills",
+    "mcp/server/heron_tools.py", "mcp/server/heron_mcp_server.py",
+    "docs/28-agent-registry.md", "tools/agent-count.py",
+)
+
+
 def counted_on(src):
-    """The date the figures describe - the Heron-AI commit they were read from.
+    """The date the figures describe - the last change to what they count.
 
     Not today. Today changes at midnight whether or not Heron has changed, and
     this file is compared against the page byte for byte by --check: a clock
     date makes the page "out of date" every morning and says nothing true when
-    it does. The commit date moves only when the thing being counted moves.
+    it does. Nor the repository's newest commit: Heron commits documentation
+    most days, and a commit that changes no fragment, skill, tool or agent
+    would move the date while every number under it stayed the same. The last
+    commit to touch COUNTED moves only when something counted can have moved.
     """
     try:
-        out = subprocess.run(["git", "-C", src, "log", "-1", "--format=%cI"],
+        out = subprocess.run(["git", "-C", src, "log", "-1", "--format=%cI", "--", *COUNTED],
                              capture_output=True, text=True, timeout=20)
         if out.returncode == 0 and out.stdout.strip():
             return datetime.fromisoformat(out.stdout.strip()).date()
@@ -186,6 +198,19 @@ def read_agents(heron):
     return int(m.group(1))
 
 
+def read_tiers(heron, total):
+    """{1: n, 2: n, 3: n} - the TOTAL column of agent-count.py's BY TIER table."""
+    out = subprocess.run([sys.executable, "tools/agent-count.py"], cwd=heron,
+                         capture_output=True, text=True, timeout=300)
+    tiers = {int(t): int(n) for t, n in
+             re.findall(r"^\s*T([123])\b.*?(\d+)\s*$", out.stdout, re.M)}
+    if sorted(tiers) != [1, 2, 3]:
+        die("tools/agent-count.py did not report the three tiers")
+    if sum(tiers.values()) != total:
+        die(f"the tiers add up to {sum(tiers.values())}, not the register's {total}")
+    return tiers
+
+
 # What a tool is allowed to do, in the words the page uses.
 RISKS = [
     ("READ", "Only looks", "Reads the model and answers. Changes nothing, ever."),
@@ -195,6 +220,26 @@ RISKS = [
     ("MODIFY", "Can change the model", "Behind the padlock on the ribbon. Nothing here "
                                        "runs unless Changes is switched on."),
 ]
+
+
+# Three tools that change nothing themselves but hand the modeller something to
+# apply in the Companion. Heron's first sentence for each is about the job -
+# "Lay sprinklers out" - and under a heading that says these can only look, it
+# reads as if the tool did the writing. Each line here says what the same
+# docstring says a few sentences on: the tool reads, the page's Apply writes,
+# and Apply needs the Changes switch. read_tools() refuses to use a line here
+# for a tool that has stopped being a read, so this cannot go quietly stale.
+SAY = {
+    "revit_sprinkler_layout":
+        "Plan sprinklers for the selected Spaces or Rooms and show the layout in the "
+        "Companion. Places nothing - placing is the panel's Apply, behind the padlock.",
+    "revit_edit_table":
+        "Open a table of elements and their parameters in the Companion. Changes "
+        "nothing - the edited cells are written by the page's Apply, behind the padlock.",
+    "revit_offer_settings":
+        "Put a setting's current values in the Companion as a table, without changing "
+        "anything - the page's Apply writes them, behind the padlock.",
+}
 
 
 def read_tools(heron):
@@ -229,10 +274,72 @@ def read_tools(heron):
         if not any(ast.unparse(d) == "server.tool()" for d in node.decorator_list):
             continue
         doc = " ".join((ast.get_docstring(node) or "").split())
-        out.append((node.name, risks.get(node.name, "READ"), first_sentence(quieten(doc))))
+        # No default. A tool missing from the table is one nobody has classed
+        # yet, and the page sorts tools into "can only look" and "can change
+        # the model": guessing READ is how a new write tool would be listed as
+        # harmless.
+        if node.name not in risks:
+            die(f"{node.name} is served but has no risk in mcp/server/heron_tools.py")
+        out.append((node.name, risks[node.name], SAY.get(node.name) or first_sentence(quieten(doc))))
     if not out:
         die("no @server.tool() functions found in mcp/server/heron_mcp_server.py")
+    served = {name: risk for name, risk, _ in out}
+    for name in SAY:
+        if name not in served:
+            die(f"SAY has a line for {name}, which Heron no longer serves")
+        if served[name] not in ("READ", "ANALYZE"):
+            die(f"SAY says {name} changes nothing, but Heron now classes it {served[name]}")
     return out
+
+
+def read_ribbon(heron):
+    """[(label, tooltip, [(label, tooltip) under its arrow])] for the Heron tab.
+
+    Read from the add-in rather than typed, because typing it is how the page
+    came to say "5 buttons, and that is the whole ribbon" while the add-in
+    already put seven things on it. The words are the tooltips Revit shows.
+    """
+    path = os.path.join(heron, "revit", "Heron.Revit.Addin", "HeronApplication.cs")
+    with open(path, encoding="utf-8") as fh:
+        src = fh.read()
+    lit = r'"((?:[^"\\]|\\.)*)"'
+    unq = lambda t: t.replace('\\"', '"').replace("\\n", " ")
+
+    buttons = {}
+    for m in re.finditer(r'var (\w+) = new PushButtonData\(\s*"\w+",\s*' + lit, src):
+        var = m.group(1)
+        tip = re.search(re.escape(var) + r'\.ToolTip\s*=\s*((?:\s*' + lit + r'\s*\+?)+);', src[m.end():])
+        if not tip:
+            die(f"the {unq(m.group(2))} button has no ToolTip in {path}")
+        buttons[var] = (unq(m.group(2)), unq("".join(re.findall(lit, tip.group(1)))))
+    if not buttons:
+        die(f"no buttons found in {path}")
+
+    items, groups, placed = [], {}, set()
+    for m in re.finditer(r'(\w+)\s*=\s*panel\.AddItem\(\s*new SplitButtonData'
+                         r'|panel\.AddItem\(\s*(\w+)\s*\)'
+                         r'|(\w+)\.AddPushButton\(\s*(\w+)\s*\)', src):
+        group, single, owner, member = m.groups()
+        if group:
+            groups[group] = len(items)
+            items.append(None)
+        elif single:
+            items.append((*buttons[single], []))
+            placed.add(single)
+        elif owner in groups:
+            i = groups[owner]
+            if items[i] is None:
+                items[i] = (*buttons[member], [])
+            else:
+                items[i][2].append(buttons[member])
+            placed.add(member)
+    # A button that is built and never placed means this reader has fallen
+    # behind the way the add-in builds its ribbon. Stop rather than list less.
+    for var in buttons:
+        if var not in placed:
+            die(f"the {buttons[var][0]} button is built in {path} but this script "
+                "cannot see where it is placed - update read_ribbon()")
+    return [i for i in items if i]
 
 
 # ------------------------------------------------------------------ the page
@@ -299,6 +406,15 @@ def block_skills(skills):
     return "\n".join(out).rstrip()
 
 
+def block_ribbon(ribbon):
+    out = ['    <ul class="tlist">']
+    for label, tip, under in ribbon:
+        extra = "".join(f" <em>Under its arrow: {esc(l)}</em> &mdash; {esc(t)}" for l, t in under)
+        out.append(f'      <li><b>{esc(label)}</b><span>{esc(tip)}{extra}</span></li>')
+    out.append('    </ul>')
+    return "\n".join(out)
+
+
 def block_tools(tools):
     """Grouped by what a tool is allowed to do, which is the whole safety
     story of this page: most of them cannot touch the model at all."""
@@ -332,6 +448,10 @@ def rewrite(page, heron):
     skills = read_skills(heron)
     agents = read_agents(heron)
     tools = read_tools(heron)
+    ribbon = read_ribbon(heron)
+    tiers = read_tiers(heron, agents)
+    total = sum(len(v) for v in frag.values())
+    proven = sum(1 for v in frag.values() for _, p in v if p)
 
     looks = sum(1 for _, r, _ in tools if r in ("READ", "ANALYZE"))
     changes = sum(1 for _, r, _ in tools if r == "MODIFY")
@@ -340,6 +460,18 @@ def rewrite(page, heron):
         "fragments": block_fragments(frag),
         "skills": block_skills(skills),
         "tools": block_tools(tools),
+        "ribbon": block_ribbon(ribbon),
+        # Figures the prose states. Each was typed once and then sat there
+        # while the work moved: "329 have one, 66 do not" under a heading
+        # that said 534 of 605.
+        "fragments-total": str(total),
+        "proven-n": str(proven),
+        "draft-n": str(total - proven),
+        "agents-total": str(agents),
+        "tier-1": str(tiers[1]),
+        "tier-2": str(tiers[2]),
+        "tier-3": str(tiers[3]),
+        "ribbon-heading": f"{len(ribbon)} on the ribbon",
         "skills-heading": heading(sum(len(v) for v in skills.values()), len(skills), "skills"),
         "fragments-heading": heading(sum(len(v) for v in frag.values()), len(frag), "fragments"),
         "tools-heading": f"{len(tools)} tools &middot; {looks} of them can only look",

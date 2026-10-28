@@ -488,19 +488,23 @@
   <h2 class="head reveal">What is actually there <span class="dim"><!-- heron:tools-heading -->51 tools &middot; 45 of them can only look<!-- /heron:tools-heading --></span></h2>
 
   <div class="pgrp reveal">
-    <h3>The Heron tab <i>5 buttons</i></h3>
-    <p>Everything a person presses. Two of them answer a question a picture answers faster than a menu; three are the permissions, and each one is a padlock you can see across the room.</p>
+    <h3>The Heron tab <i><!-- heron:ribbon-heading -->7 on the ribbon<!-- /heron:ribbon-heading --></i></h3>
+    <p>Everything a person presses, in the order it sits on the ribbon, in the words of the tooltip Revit shows. Changes, Admin and Publish are the permissions, and each one is a padlock you can see across the room &mdash; closed, or open.</p>
+<!-- heron:ribbon -->
     <ul class="tlist">
-      <li><b>Heron</b><span>Connect or disconnect this Revit session. Click again to reverse it. The picture is the state &mdash; lit when connected, dark when not &mdash; so &ldquo;am I connected?&rdquo; is answered without clicking anything.</span></li>
-      <li><b>Bridge Status</b><span>Whether the bridge is running, and on which pipe. The detail you only want when something looks wrong, so it sits under the arrow instead of taking a button of its own.</span></li>
-      <li><b>Changes</b><span>Whether Heron may change this model at all. Closed padlock: it can read and nothing else. Open padlock: it may change it. Turning it on asks first; turning it off never does.</span></li>
-      <li><b>Admin</b><span>Whether Heron may change how the project itself is set up &mdash; project parameters, templates, the things a model is built on rather than the things in it. Off unless you say otherwise.</span></li>
-      <li><b>Publish</b><span>Whether Heron may send anything out of the model &mdash; export, print, save, sync with central. Separate from Changes on purpose: reading and writing a model is not the same act as putting a copy of it somewhere.</span></li>
+      <li><b>Heron</b><span>Connect or disconnect this Revit session. Click again to reverse it. <em>Under its arrow: Bridge Status</em> &mdash; Show whether the bridge is running, and on which pipe.</span></li>
+      <li><b>Changes</b><span>Whether Heron may change this model. Click to turn it on or off.</span></li>
+      <li><b>Admin</b><span>Whether Heron may change how this project is set up - project parameters, worksets, global parameters. Click to turn it on or off.</span></li>
+      <li><b>Publish</b><span>Whether Heron may send things out of the model - export, print, save, sync with central. Click to turn it on or off.</span></li>
+      <li><b>Ask to Keep</b><span>Whether Revit shows you each change from a chat and asks Keep or Discard before it is kept. Click to turn it on or off.</span></li>
+      <li><b>Free this model</b><span>Free the model in front from the chat using it, so another chat can use it now.</span></li>
+      <li><b>Companion</b><span>Open the Heron Companion - a page beside Revit that shows the model, the view and what is selected. <em>Under its arrow: Turn Companion off</em> &mdash; Switch the Companion page off or on. Heron and the chat keep working either way.</span></li>
     </ul>
+<!-- /heron:ribbon -->
     <div class="note">
-      <b>Five buttons, and that is the whole ribbon</b>
-      <p>A Revit add-in usually puts a button on the ribbon for every job it does, because pressing the button is how you ask. Heron is the other way round &mdash; you say what you want, so there is nothing to press. The only things that earn a button are the two questions a picture answers faster than a menu, <em>am I connected</em> and <em>can this thing change my model</em>, and the two further padlocks under it.</p>
-      <p>Everything in the list below runs in the chat and on your own PC, on the far side of the bridge &mdash; not inside Revit.</p>
+      <b>No button for each job</b>
+      <p>A Revit add-in usually puts a button on the ribbon for every job it does, because pressing the button is how you ask. Heron is the other way round &mdash; you say what you want, so there is no button per job. What earns a place on the ribbon is the connection, the switches that decide what Heron may do, and the page that sits beside Revit.</p>
+      <p>Everything in the list below is called from the chat. It reaches Revit through the bridge, and what it may do there is decided by the padlocks above.</p>
     </div>
   </div>
 
@@ -529,7 +533,7 @@
       <li><b>heron_version</b><span>Report Heron's version, the protocol it speaks, and the version of each connected Revit add-in — and whether all three agree.</span></li>
       <li><b>revit_annotation</b><span>List the dimensions, tags, text and keynotes in the open Revit model, and find the ones that lie.</span></li>
       <li><b>revit_building_loads</b><span>Calculate the heating and cooling load of every MEP Space in the open model (docs/44).</span></li>
-      <li><b>revit_edit_table</b><span>Open an editable table of elements and their parameters in the Heron Companion page.</span></li>
+      <li><b>revit_edit_table</b><span>Open a table of elements and their parameters in the Companion. Changes nothing - the edited cells are written by the page's Apply, behind the padlock.</span></li>
       <li><b>revit_export_check</b><span>Say whether an export of the open Revit model would be worth sending - without exporting anything.</span></li>
       <li><b>revit_families</b><span>List the families and types in the open Revit model, and how many of each are actually placed.</span></li>
       <li><b>revit_groups</b><span>List the groups and assemblies in the open Revit model, or - with a category - show which of those elements sit inside one and how many other placements an edit would reach.</span></li>
@@ -537,7 +541,7 @@
       <li><b>revit_imports</b><span>List what has been brought into the open Revit model from outside, with linked and imported told apart.</span></li>
       <li><b>revit_levels</b><span>List the levels and grids in the open Revit model, and what sits on each level.</span></li>
       <li><b>revit_links</b><span>List the linked models in the open Revit model — what is linked, whether each one is loaded, and how many elements each holds.</span></li>
-      <li><b>revit_offer_settings</b><span>Put a settings capability's current values on the Heron Companion page as an editable table.</span></li>
+      <li><b>revit_offer_settings</b><span>Put a setting's current values in the Companion as a table, without changing anything - the page's Apply writes them, behind the padlock.</span></li>
       <li><b>revit_parameters</b><span>Read the parameters of every element of one category in the open Revit model.</span></li>
       <li><b>revit_phases</b><span>List the phases and design options in the open Revit model, with how many elements sit in each.</span></li>
       <li><b>revit_preview_move</b><span>Show what moving elements up or down would do, without changing anything.</span></li>
@@ -547,7 +551,7 @@
       <li><b>revit_schedules</b><span>List the schedules in the open Revit model and what governs each of them.</span></li>
       <li><b>revit_sheets</b><span>List the sheets in the open Revit model - numbering, titleblocks and revisions.</span></li>
       <li><b>revit_sprinkler_hydraulics</b><span>Run the hydraulic calculation of one sprinkler system in the open model (docs/46).</span></li>
-      <li><b>revit_sprinkler_layout</b><span>Lay sprinklers out in the selected Spaces or Rooms of any shape (docs/47).</span></li>
+      <li><b>revit_sprinkler_layout</b><span>Plan sprinklers for the selected Spaces or Rooms and show the layout in the Companion. Places nothing - placing is the panel's Apply, behind the padlock.</span></li>
       <li><b>revit_systems</b><span>List the duct and pipe systems in the open Revit model.</span></li>
       <li><b>revit_use_session</b><span>Choose which connected Revit this chat should work with, when more than one is open.</span></li>
       <li><b>revit_use_this_model</b><span>Move this chat onto whichever model is now in front in Revit.</span></li>
@@ -595,7 +599,7 @@
   </div>
 
   <div class="pgrp reveal">
-    <h3>Every area covered <i>395</i></h3>
+    <h3>Every area covered <i><!-- heron:fragments-total -->605<!-- /heron:fragments-total --></i></h3>
     <p>Click an area to open its full list. A name shown faded is still draft &mdash; it has not met a real model yet.</p>
 <!-- heron:fragments -->
     <ul class="tlist doms">
@@ -681,7 +685,7 @@
 
   <div class="pgrp reveal">
     <h3>What &ldquo;proven&rdquo; means here <i><!-- heron:proven-count -->534 of 605<!-- /heron:proven-count --></i></h3>
-    <p>A compile is not a proof. A passing test is not a proof. A proof is a recorded run against a <strong>named real model</strong>, with a negative case and a fingerprint that goes stale the moment the code changes underneath it. 329 fragments have one. 66 do not, and stay marked draft until they do &mdash; including every fragment re-authored from Ajmal&rsquo;s earlier libraries, which arrives here unproven no matter how well it worked where it came from.</p>
+    <p>A compile is not a proof. A passing test is not a proof. A proof is a recorded run against a <strong>named real model</strong>, with a negative case and a fingerprint that goes stale the moment the code changes underneath it. <!-- heron:proven-n -->534<!-- /heron:proven-n --> fragments have one. <!-- heron:draft-n -->71<!-- /heron:draft-n --> do not, and stay marked draft until they do &mdash; including every fragment re-authored from Ajmal&rsquo;s earlier libraries, which arrives here unproven no matter how well it worked where it came from.</p>
   </div>
 </section>
 
@@ -710,11 +714,11 @@
   </div>
 
   <div class="pgrp reveal">
-    <h3>Three kinds of agent <i>250</i></h3>
+    <h3>Three kinds of agent <i><!-- heron:agents-total -->252<!-- /heron:agents-total --></i></h3>
     <ul class="tlist">
-      <li><b>Tier 1 &mdash; service <em>&middot; 167</em></b><span>Plain deterministic code. Never calls a language model at all. Runs in about a millisecond.</span></li>
-      <li><b>Tier 2 &mdash; reasoner <em>&middot; 63</em></b><span>One tightly scoped model call with a strict contract. Hundreds of milliseconds.</span></li>
-      <li><b>Tier 3 &mdash; worker <em>&middot; 20</em></b><span>A full agentic loop with tools. Seconds to minutes, and used sparingly.</span></li>
+      <li><b>Tier 1 &mdash; service <em>&middot; <!-- heron:tier-1 -->169<!-- /heron:tier-1 --></em></b><span>Plain deterministic code. Never calls a language model at all. Runs in about a millisecond.</span></li>
+      <li><b>Tier 2 &mdash; reasoner <em>&middot; <!-- heron:tier-2 -->63<!-- /heron:tier-2 --></em></b><span>One tightly scoped model call with a strict contract. Hundreds of milliseconds.</span></li>
+      <li><b>Tier 3 &mdash; worker <em>&middot; <!-- heron:tier-3 -->20<!-- /heron:tier-3 --></em></b><span>A full agentic loop with tools. Seconds to minutes, and used sparingly.</span></li>
     </ul>
     <p>Roughly two thirds of the agents never call a model at all, and that is deliberate. Once &ldquo;select all ducts&rdquo; has a proven fragment, the whole run should be ordinary code &mdash; the model is asked what you meant, then gets out of the way. Faster, repeatable, and the same question twice gives the same answer twice.</p>
   </div>
