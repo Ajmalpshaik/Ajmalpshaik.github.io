@@ -151,6 +151,21 @@ for page in PAGES:
         if not os.path.exists(target):
             err(f"{page} references a file that is not in the repo: {ref}")
 
+# assets/app.js redirects the old single-page anchors to the pages that replaced
+# them. Those paths are in a JavaScript object, not in an href, so the scan
+# above cannot see them - and a page can be renamed out from under one of them
+# in total silence. That is exactly what happened to /aj-tools/: it was deleted
+# and the map went on sending #ajtools to it for a release.
+app_js = read("assets/app.js")
+legacy = re.search(r"var legacy = \{(.*?)\};", app_js, re.S)
+if not legacy:
+    err("assets/app.js: the legacy redirect map is gone or no longer matches - "
+        "if it was removed on purpose, remove this check with it")
+else:
+    for dest in re.findall(r'"(/[^"]*)"', legacy.group(1)):
+        if not os.path.exists(os.path.join(ROOT, dest.strip("/"), "index.html")):
+            err(f"assets/app.js redirects an old anchor to {dest}, which is not a page")
+
 # Files nothing links to with src or href, so the scan above cannot see them:
 # the display face is asked for by assets/style.css, and the rest are read by
 # crawlers rather than by the pages. Without this, deleting one of them leaves
