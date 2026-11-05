@@ -183,6 +183,105 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   .mini{padding:13px 10px;font-size:13px}
 }
 
+/* ============ 3D lift view (crane-3d.js) ============
+   A dark stage whatever the page does, because the scene is lit for one. The
+   labels, chips and panels sit over the canvas and never move the layout. */
+.l3d{position:relative}
+.l3d-stage{
+  position:relative;height:clamp(380px,62vh,640px);border-radius:16px;overflow:hidden;
+  background:#0f1216;border:1px solid var(--line,#23262a);touch-action:none;
+}
+.l3d-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}
+.l3d-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.l3d-lbl{
+  position:absolute;left:0;top:0;white-space:nowrap;pointer-events:none;
+  font-size:11.5px;font-weight:600;line-height:1;padding:4px 7px;border-radius:7px;
+  background:rgba(12,14,18,.82);border:1px solid rgba(255,255,255,.08);color:#e6edf3;
+  font-variant-numeric:tabular-nums;
+}
+.l3d-lbl.dim{color:#8cc6ff;border-color:rgba(74,168,255,.35)}
+.l3d-lbl.dim2{color:#b5c2cf;font-weight:500;font-size:10.5px;padding:3px 6px}
+.l3d-lbl.wind{color:#7dd3fc;border-color:rgba(56,189,248,.35)}
+.l3d-lbl.ok{color:#4ade80;border-color:rgba(74,222,128,.35)}
+.l3d-lbl.bad{color:#f87171;border-color:rgba(248,113,113,.45)}
+.l3d-lbl.warn{color:#fbbf24;border-color:rgba(251,191,36,.4)}
+.l3d-hud{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:7px;pointer-events:none;max-width:calc(100% - 24px)}
+.l3d-chip{
+  pointer-events:auto;cursor:pointer;font:inherit;font-size:12px;font-weight:600;
+  padding:6px 11px;border-radius:999px;color:#dbe4ec;
+  background:rgba(12,14,18,.8);border:1px solid rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-variant-numeric:tabular-nums;
+}
+.l3d-chip:hover{border-color:rgba(255,255,255,.28)}
+.l3d-chip.ok{color:#4ade80;border-color:rgba(74,222,128,.4)}
+.l3d-chip.bad{color:#f87171;border-color:rgba(248,113,113,.5)}
+.l3d-chip.warn{color:#fbbf24;border-color:rgba(251,191,36,.45)}
+.l3d-tools{
+  position:absolute;right:12px;bottom:12px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;
+  max-width:calc(100% - 24px);
+}
+.l3d-seg{display:flex;border-radius:11px;overflow:hidden;background:rgba(12,14,18,.82);border:1px solid rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.l3d-seg button{
+  font:inherit;font-size:12px;font-weight:600;color:#aab8c4;background:none;border:0;
+  padding:8px 11px;cursor:pointer;border-right:1px solid rgba(255,255,255,.07);
+}
+.l3d-seg button:last-child{border-right:0}
+.l3d-seg button:hover{color:#fff}
+.l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(74,168,255,.22)}
+.l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #4aa8ff;outline-offset:-2px}
+.l3d-info{
+  position:absolute;right:12px;top:56px;width:min(320px,calc(100% - 24px));z-index:2;
+  max-height:clamp(200px,calc(62vh - 120px),520px);overflow:auto;padding:12px 14px 10px;border-radius:13px;
+  background:rgba(12,14,18,.9);border:1px solid rgba(255,255,255,.12);color:#dbe4ec;font-size:12.5px;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.l3d-info-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.l3d-info-h b{font-size:13.5px;color:#fff}
+.l3d-x{font:inherit;font-size:18px;line-height:1;background:none;border:0;color:#aab8c4;cursor:pointer;padding:2px 6px}
+.l3d-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-top:1px solid rgba(255,255,255,.06)}
+.l3d-row span:first-child{color:#9fb0bf}
+.l3d-row .v{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.l3d-row .v.ok{color:#4ade80}.l3d-row .v.bad{color:#f87171}.l3d-row .v.warn{color:#fbbf24}
+.l3d-info p{margin-top:8px;color:#8a99a8;font-size:11.5px;line-height:1.5}
+.l3d-warn{
+  position:absolute;left:12px;bottom:58px;max-width:min(420px,calc(100% - 24px));
+  font-size:12px;line-height:1.45;color:#fbbf24;background:rgba(12,14,18,.85);
+  border:1px solid rgba(251,191,36,.35);border-radius:10px;padding:7px 10px;
+}
+.l3d-msg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:24px;color:#aab8c4;font-size:14px;line-height:1.55;
+}
+.l3d-msg[hidden],.l3d-warn[hidden],.l3d-info[hidden]{display:none}
+.l3d-quick{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 22px;margin-top:16px;
+}
+.l3d-q{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--faint,#767f88);font-weight:600;letter-spacing:.02em}
+.l3d-q output{color:var(--ink,#f2f6f9);font-variant-numeric:tabular-nums}
+.l3d-q input[type=range]{width:100%;accent-color:#4aa8ff;height:22px;margin:0}
+.l3d-q input[type=range]:disabled{opacity:.4}
+/* full screen: the real API where there is one, a fixed sheet where there is not */
+.l3d:fullscreen,.l3d.l3d-max{background:#0b0d10;padding:12px;display:flex;flex-direction:column;gap:10px}
+.l3d.l3d-max{position:fixed;inset:0;z-index:1000}
+.l3d:fullscreen .l3d-stage,.l3d.l3d-max .l3d-stage{flex:1;height:auto;min-height:0}
+.l3d:fullscreen .l3d-info,.l3d.l3d-max .l3d-info{top:68px;right:24px;max-height:calc(100% - 200px)}
+.l3d:fullscreen .l3d-quick,.l3d.l3d-max .l3d-quick{margin-top:0;padding:4px 6px 2px}
+html.l3d-lock,html.l3d-lock body{overflow:hidden}
+@media(max-width:720px){
+  .l3d-stage{height:clamp(360px,68vh,560px)}
+  .l3d-tools{left:8px;right:8px;bottom:8px;justify-content:center}
+  /* one row of chips that scrolls, so they never cover the model */
+  .l3d-hud{left:8px;top:8px;right:8px;gap:5px;flex-wrap:nowrap;overflow-x:auto;pointer-events:auto;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .l3d-hud::-webkit-scrollbar{display:none}
+  .l3d-chip{font-size:11px;padding:5px 9px;flex:0 0 auto}
+  .l3d-seg button{padding:8px 9px;font-size:11.5px}
+  /* the part card sits under the stage on a phone, not over the model */
+  .l3d-info{position:static;width:auto;max-height:none;margin-top:10px}
+  .l3d-warn{left:8px;right:8px;top:44px;bottom:auto;max-width:none}
+}
+
 /* ============ Print ============
    One printed result, whatever the screen is doing. The sheet is a record of a
    check that gets filed, so it prints as a record: every control is replaced by
