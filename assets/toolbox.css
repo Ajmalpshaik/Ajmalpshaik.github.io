@@ -2,6 +2,23 @@
    Built on the surface tokens in style.css, so light and dark both work and a
    tool page looks like the rest of the site without repeating its rules. */
 
+/* Surface tokens. These lived in style.css until the 2026-10-27 redesign took
+   the light theme and the switch out; this file kept using them, so every card,
+   input and result box on the tool pages lost its surface and drew straight on
+   the page. They are the old dark values, which is the one skin the site has. */
+:root{
+  --muted:#aab8c4;
+  --hairline:#262a2e;
+  --blue:#4aa8ff;
+  --glass:#141518;
+  --glass-border:#26282d;
+  --neu-surface:#15171a;
+  --neu-out:0 0 0 1px #202327,0 10px 26px rgba(0,0,0,.4);
+  --neu-out-sm:0 0 0 1px #24282d;
+  --neu-hover:0 0 0 1px #30353b,0 18px 40px rgba(0,0,0,.55);
+  --neu-in:inset 0 0 0 1px #2a2f35,inset 0 1px 3px rgba(0,0,0,.6);
+}
+
 /* ============ Toolbox landing ============ */
 .tb-grid{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
@@ -35,12 +52,10 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   border-radius:14px;padding:16px 18px;margin-top:22px;
 }
 .tool-note b{color:var(--ink)}
-.tool-note.warn{color:#a1560f}
-:root[data-theme="dark"] .tool-note.warn{color:#f0a760}
+.tool-note.warn{color:#f0a760}
 
 /* ============ Calculator ============ */
-.calc{--c-ok:#2f855a;--c-bad:#c53030;--c-warn:#b7601a}
-:root[data-theme="dark"] .calc{--c-ok:#4ade80;--c-bad:#f87171;--c-warn:#fbbf24}
+.calc{--c-ok:#4ade80;--c-bad:#f87171;--c-warn:#fbbf24}
 
 .calc-grid{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
@@ -71,7 +86,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .f-in{position:relative}
 .f-in input,.f-in select{
   width:100%;padding:11px 13px;border-radius:12px;
-  background:var(--neu-surface);box-shadow:var(--neu-in);
+  background:#0f1113;box-shadow:var(--neu-in);
   border:none;outline:none;color:var(--ink);
   font-family:inherit;font-weight:500;font-size:15px;
 }
@@ -137,14 +152,11 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   padding:11px;overflow:hidden;
 }
 .dg-box svg{width:100%;display:block}
+/* the side view is drawn wide; at full card width it stood 700px tall */
+.dg-wrap>div:last-child .dg-box svg{max-height:420px}
 .dg-box svg text{font-family:inherit}
-/* theme-aware diagram palette */
+/* diagram palette: the dark one, the site's only skin (print sets its own) */
 .calc{
-  --d-sky:#e8ebf2;--d-ground:#cbd5e0;--d-line:#94a3b8;--d-ink:#374151;
-  --d-steel:#4a5568;--d-steel-d:#2d3748;--d-steel-l:#718096;--d-pale:#cbd5e0;
-  --d-load:#f6ad55;--d-load-s:#c05621;--d-glass:#a8c5e0;--d-halo:#e8ebf2;
-}
-:root[data-theme="dark"] .calc{
   --d-sky:#161922;--d-ground:#23283340;--d-line:#4b5563;--d-ink:#cbd5e0;
   --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#374151;
   --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#161922;
@@ -189,7 +201,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d{position:relative}
 .l3d-stage{
   position:relative;height:clamp(380px,62vh,640px);border-radius:16px;overflow:hidden;
-  background:#0f1216;border:1px solid var(--line,#23262a);touch-action:none;
+  background:#0f1216;border:1px solid var(--line,#23262a);
 }
 .l3d-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}
 .l3d-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -253,7 +265,25 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
   padding:24px;color:#aab8c4;font-size:14px;line-height:1.55;
 }
-.l3d-msg[hidden],.l3d-warn[hidden],.l3d-info[hidden]{display:none}
+.l3d-msg[hidden],.l3d-warn[hidden],.l3d-info[hidden],.l3d-done[hidden]{display:none}
+/* quiet until engaged: say how, and show that it is */
+.l3d-stage{transition:border-color .2s var(--ease,ease),box-shadow .2s var(--ease,ease)}
+.l3d-stage.l3d-engaged{border-color:rgba(74,168,255,.55);box-shadow:0 0 0 3px rgba(74,168,255,.12)}
+.l3d-hint{
+  position:absolute;left:12px;bottom:12px;pointer-events:none;
+  font-size:12.5px;font-weight:600;color:#dbe4ec;white-space:nowrap;
+  padding:8px 14px;border-radius:999px;background:rgba(12,14,18,.78);border:1px solid rgba(255,255,255,.14);
+  opacity:0;transition:opacity .35s ease;
+}
+.l3d-card.l3d-on .l3d-stage:not(.l3d-engaged) .l3d-hint{opacity:.92}
+.l3d-card.l3d-on .l3d-stage:not(.l3d-engaged):hover .l3d-hint{opacity:.55}
+.l3d-hint.l3d-nudge{animation:l3dNudge .9s ease}
+@keyframes l3dNudge{0%,100%{opacity:.92;transform:scale(1)}30%{opacity:1;transform:scale(1.08)}}
+.l3d-done{
+  position:absolute;left:12px;bottom:12px;font:inherit;font-size:13px;font-weight:700;color:#0b0d10;
+  background:#4aa8ff;border:0;border-radius:11px;padding:9px 18px;cursor:pointer;
+}
+@media(prefers-reduced-motion:reduce){.l3d-hint.l3d-nudge{animation:none}}
 .l3d-quick{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 22px;margin-top:16px;
 }
@@ -269,7 +299,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d:fullscreen .l3d-quick,.l3d.l3d-max .l3d-quick{margin-top:0;padding:4px 6px 2px}
 html.l3d-lock,html.l3d-lock body{overflow:hidden}
 @media(max-width:720px){
-  .l3d-stage{height:clamp(360px,68vh,560px)}
+  .l3d-stage{height:clamp(340px,60vh,520px)}
   .l3d-tools{left:8px;right:8px;bottom:8px;justify-content:center}
   /* one row of chips that scrolls, so they never cover the model */
   .l3d-hud{left:8px;top:8px;right:8px;gap:5px;flex-wrap:nowrap;overflow-x:auto;pointer-events:auto;
@@ -279,7 +309,12 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
   .l3d-seg button{padding:8px 9px;font-size:11.5px}
   /* the part card sits under the stage on a phone, not over the model */
   .l3d-info{position:static;width:auto;max-height:none;margin-top:10px}
-  .l3d-warn{left:8px;right:8px;top:44px;bottom:auto;max-width:none}
+  .l3d-warn{left:8px;right:8px;bottom:100px;max-width:none}
+  .l3d-done{left:auto;right:8px;bottom:auto;top:44px}
+  .l3d-hint{font-size:12px;left:8px;bottom:auto;top:46px}
+  .l3d-card{padding:20px 12px}
+  .l3d-card h2{margin-left:6px}
+  .l3d-card>.f-hint{margin-left:6px}
 }
 
 /* ============ Print ============

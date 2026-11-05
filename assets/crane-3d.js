@@ -230,6 +230,11 @@ function run(THREE, OrbitControls, renderer) {
     lines(pts, mat, dims);
   }
 
+  /* full screen is decided here, before anything asks whether we are in it */
+  const shell = $('l3d');
+  const fsBtn = $('l3dFull');
+  const isFull = () => document.fullscreenElement === shell || shell.classList.contains('l3d-max');
+
   /* ---------- picking ---------- */
   let pickables = [];
   let selected = null, selBox = null, selKey = null;
@@ -751,9 +756,62 @@ function run(THREE, OrbitControls, renderer) {
     const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
     down = null;
     if (moved > 6) return;
+    if (e.pointerType !== 'mouse' && !engaged) engage(true);
     const o = hit(e);
     if (o) select(o); else hideInfo();
   });
+  canvas.addEventListener('pointercancel', () => { down = null; });
+
+  /* ---------- engaging the view ----------
+     The view sits in a page that scrolls, with Lenis smoothing the wheel. Left
+     to itself it kept every wheel turn and every swipe that landed on it: Lenis
+     does not look at preventDefault, so one wheel turn zoomed the model and
+     scrolled the page at once; and OrbitControls sets touch-action:none, so on
+     a phone, where the view is most of the screen, the page would not scroll
+     past it. So it stays quiet until engaged. A mouse engages by pressing in it
+     (drag works at once) and lets go when it leaves; a finger engages with a
+     tap and lets go with Done, a tap outside, or by scrolling it away. Full
+     screen is always engaged. */
+  let engaged = false;
+  const hintEl = $('l3dHint');
+  const doneBtn = $('l3dDone');
+  const touchFirst = window.matchMedia && window.matchMedia('(hover: none)').matches;
+  if (hintEl) hintEl.textContent = touchFirst ? 'Tap to move the 3D view' : 'Drag to orbit · click, then scroll to zoom';
+  function engage(on) {
+    if (isFull()) on = true;
+    engaged = on;
+    controls.enabled = on;
+    canvas.style.touchAction = on ? 'none' : 'pan-y';
+    if (on) stage.setAttribute('data-lenis-prevent', '');
+    else stage.removeAttribute('data-lenis-prevent');
+    stage.classList.toggle('l3d-engaged', on);
+    if (doneBtn) doneBtn.hidden = !on || isFull() || !touchUsed;
+  }
+  let touchUsed = false;
+  /* capture, so a mouse is engaged before OrbitControls sees the press */
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse') { if (!engaged) engage(true); }
+    else touchUsed = true;
+  }, true);
+  stage.addEventListener('pointerleave', (e) => {
+    if (e.pointerType === 'mouse' && !e.buttons && engaged) engage(false);
+  });
+  stage.addEventListener('wheel', () => {
+    if (engaged || !hintEl) return;
+    hintEl.classList.remove('l3d-nudge');
+    void hintEl.offsetWidth;
+    hintEl.classList.add('l3d-nudge');
+  }, { passive: true });
+  document.addEventListener('pointerdown', (e) => {
+    if (engaged && e.pointerType !== 'mouse' && !shell.contains(e.target)) engage(false);
+  });
+  if (doneBtn) doneBtn.addEventListener('click', () => engage(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && engaged && !isFull()) engage(false); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((en) => {
+      if (engaged && !isFull() && en.some((x) => x.intersectionRatio < 0.35)) engage(false);
+    }, { threshold: [0, 0.35] }).observe(stage);
+  }
   let hoverQueued = false;
   canvas.addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse' || e.buttons || hoverQueued) return;
@@ -806,10 +864,10 @@ function run(THREE, OrbitControls, renderer) {
   }
 
   /* ---------- fullscreen (a fixed overlay where the API is missing, as on iPhone) ---------- */
-  const shell = $('l3d');
-  const fsBtn = $('l3dFull');
-  const isFull = () => document.fullscreenElement === shell || shell.classList.contains('l3d-max');
-  function setFsLabel() { if (fsBtn) { fsBtn.textContent = isFull() ? 'Exit full screen' : 'Full screen'; fsBtn.setAttribute('aria-pressed', String(isFull())); } }
+  function setFsLabel() {
+    if (fsBtn) { fsBtn.textContent = isFull() ? 'Exit full screen' : 'Full screen'; fsBtn.setAttribute('aria-pressed', String(isFull())); }
+    engage(isFull());
+  }
   if (fsBtn && shell) {
     fsBtn.addEventListener('click', () => {
       if (isFull()) {
@@ -913,6 +971,7 @@ function run(THREE, OrbitControls, renderer) {
     });
   }
   window.addEventListener('cranelift', (e) => update(e.detail));
+  engage(false);
   resize();
   update(window.craneLift);
   card.classList.add('l3d-on');
