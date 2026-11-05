@@ -31,6 +31,23 @@
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="stylesheet" href="/assets/chrome.css">
 <link rel="stylesheet" href="../../assets/toolbox.css">
+<!-- three.js 0.186.1 for the 3D lift view, pinned the same way as the AR Viewer:
+     each file carries its SHA-384 fingerprint, so a browser that checks them
+     refuses any copy that differs from the npm release. Fetched only when the
+     3D card is about to come on screen; every check works without it. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  },
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js": "sha384-m8JoFX52V6NGv2usipnlLJKnJfL7IE8dbniPDDCSGSQv3Hm4n6PjfV6syVwfuoRc",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.core.js": "sha384-mdKeCwPEcbDvzaxwhm+MVuLoMou+E7jQqrs4tmu/n8HBYPGI1kZt0MkJxlMR4zFM",
+    "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/controls/OrbitControls.js": "sha384-LSqANrugPGTgf0eYsQTloqKWy926dOOXo2iZ9y6wLMIDEQoU9AaCLJF1Vcc7oJXr"
+  }
+}
+</script>
 <script>
 /* The menus and the reveals are hidden only while a script is there to show
    them again. If it never runs - blocked, offline, an old browser - drop the
@@ -164,6 +181,45 @@
       </div>
 
       <div class="calc-grid">
+
+        <!-- 0. 3D LIFT VIEW - drawn by crane-3d.js from the same numbers as the cards -->
+        <div class="calc-card full no-print l3d-card" id="l3dCard">
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></span>3D Lift View</h2>
+
+          <div class="l3d" id="l3d">
+            <div class="l3d-stage" id="l3dStage">
+              <canvas id="l3dCanvas" role="img" aria-label="3D view of the lift"></canvas>
+              <div class="l3d-labels" id="l3dLabels" aria-hidden="true"></div>
+              <div class="l3d-hud" id="l3dHud" aria-label="Lift status"></div>
+              <div class="l3d-tools" role="toolbar" aria-label="3D view controls">
+                <div class="l3d-seg">
+                  <button type="button" data-l3d-view="iso" aria-pressed="true">3D</button>
+                  <button type="button" data-l3d-view="side" aria-pressed="false">Side</button>
+                  <button type="button" data-l3d-view="top" aria-pressed="false">Top</button>
+                  <button type="button" data-l3d-view="front" aria-pressed="false">Front</button>
+                  <button type="button" data-l3d-view="load" aria-pressed="false">Rigging</button>
+                </div>
+                <div class="l3d-seg">
+                  <button type="button" data-l3d-toggle="dims" aria-pressed="true">Dims</button>
+                  <button type="button" data-l3d-toggle="tags" aria-pressed="true">Labels</button>
+                  <button type="button" id="l3dFull" aria-pressed="false">Full screen</button>
+                </div>
+              </div>
+              <p class="l3d-warn" id="l3dWarn" hidden></p>
+              <p class="l3d-msg" id="l3dMsg">The 3D view needs JavaScript. Every check below works the same without it.</p>
+            </div>
+            <div class="l3d-info" id="l3dInfo" hidden></div>
+
+            <div class="l3d-quick">
+              <label class="l3d-q"><span>Load weight <output>5</output> T</span><input type="range" data-for="loadWeight" min="0" max="60" step="0.1" value="5"></label>
+              <label class="l3d-q"><span>Working radius <output>8</output> m</span><input type="range" data-for="workingRadius" min="1" max="60" step="0.5" value="8"></label>
+              <label class="l3d-q"><span>Target height <output>12</output> m</span><input type="range" data-for="targetHeight" min="0" max="80" step="0.5" value="12"></label>
+              <label class="l3d-q"><span>Sling angle <output>60</output>°</span><input type="range" data-for="slingAngle" min="10" max="90" step="1" value="60"></label>
+            </div>
+          </div>
+
+          <p class="f-hint" style="margin-top:14px">Drag to orbit, scroll or pinch to zoom, right-drag or two fingers to pan. Tap any part, or a status chip, to read its numbers. Drawn to scale in metres from the same figures as the cards below, and it redraws as you type. The crane is a generic outline, not your machine.</p>
+        </div>
 
         <!-- 1. LIFT DATA -->
         <div class="calc-card">
@@ -605,5 +661,6 @@
 <script src="../../vendor/ScrollTrigger.min.js" defer></script>
 <script src="../../assets/app.js" defer></script>
 <script src="../../assets/crane-calc.js" defer></script>
+<script type="module" src="../../assets/crane-3d.js"></script>
 </body>
 </html>

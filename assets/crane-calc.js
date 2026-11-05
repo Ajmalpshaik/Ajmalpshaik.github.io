@@ -233,6 +233,29 @@
     drawSling(slingAngle, slingLegs, legsSharing, tensionPerLeg, utilMeaningful, slingUtil, effectiveWLL);
     drawBoom(workingRadius, riseNeeded, requiredBoomLength, requiredBoomAngle, targetHeight, slingAngle);
     drawHeadroom(targetHeight, riggingStack + clearanceMargin, heightRequired);
+
+    /* the 3D view (crane-3d.js) draws from these same numbers, never its own */
+    var lift = {
+      loadWeight: loadWeight, gearWeight: gearWeight, hookBlockWeight: hookBlockWeight,
+      totalLiftWeight: totalLiftWeight, suspendedWeight: suspendedWeight,
+      chartCapacity: chartCapacity, utilization: capacityKnown ? utilization : null,
+      utilCls: !capacityKnown ? 'warn' : (utilization > 90 ? 'bad' : (utilization > 75 ? 'warn' : 'ok')),
+      craneWeight: craneWeight, counterWeight: counterWeight,
+      outriggerForce: outriggerForce, gbp: gbp, padDimension: padDimension,
+      actualPressure: actualPressure, gpCls: gpCls,
+      vChart: vChart, sailArea: sailArea, maxWind: maxWind, windOk: denominator > 0 && numerator > 0,
+      slingLegs: slingLegs, legsSharing: legsSharing, slingWLL: slingWLL, effectiveWLL: effectiveWLL,
+      slingLength: slingLength, slingAngle: slingAngle, forceVertical: forceVertical,
+      tensionPerLeg: tensionPerLeg, slingUtil: utilMeaningful ? slingUtil : null,
+      slingStatus: statusText, slingCls: statusCls, hitch: hitchOpt ? hitchOpt.textContent : '',
+      loadLength: loadLength, loadWidth: loadWidth, loadHeight: loadHeight,
+      targetHeight: targetHeight, workingRadius: workingRadius, pivotHeight: pivotHeight,
+      hookHeight: hookHeight, clearanceMargin: clearanceMargin,
+      slingVerticalDrop: slingVerticalDrop, riggingStack: riggingStack, heightRequired: heightRequired,
+      boomLength: requiredBoomLength, boomAngle: requiredBoomAngle
+    };
+    window.craneLift = lift;
+    try { window.dispatchEvent(new CustomEvent('cranelift', { detail: lift })); } catch (e) { /* very old browser: no 3D anyway */ }
   }
 
   /* ---------- Sling diagram ---------- */

@@ -11,7 +11,11 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest. In November 2026 ubuntu-latest became 26.04,
+    # and Playwright 1.56.1 cannot install Chromium there ("Playwright does not
+    # support chromium on ubuntu26.04-x64"), so every run failed before a single
+    # browser check ran. Move this on together with the Playwright version.
+    runs-on: ubuntu-24.04
     # The job itself takes about three minutes. The budget is for the Chromium
     # download in the middle of it, which is usually quick and occasionally is
     # not: on 2026-10-27 it ran past ten minutes and the job was cancelled with
