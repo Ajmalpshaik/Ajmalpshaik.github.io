@@ -242,6 +242,7 @@ function run(THREE, OrbitControls, renderer) {
   function pickable(obj, key, describe) {
     obj.traverse((o) => { if (o.isMesh) o.userData.pick = { key, describe, root: obj }; });
     pickables.push(obj);
+    if (!partsByKey[key]) partsByKey[key] = obj;   /* so a selection survives the next rebuild */
     return obj;
   }
 
@@ -261,7 +262,7 @@ function run(THREE, OrbitControls, renderer) {
     labels = [];
     pickables = [];
     partsByKey = {};
-    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); selBox = null; }
+    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); selBox = null; }
     selected = null;
   }
 
@@ -430,6 +431,7 @@ function run(THREE, OrbitControls, renderer) {
         ['Working radius', f(L.workingRadius) + ' m'],
         ['Boom pivot height', f(L.pivotHeight) + ' m'],
         ['Boom tip height needed', f(L.heightRequired) + ' m'],
+        ['Boom clearance over roof edge', L.boomClrText || 'not checked', L.boomClrCls || ''],
       ],
       note: 'Check this length and angle sit inside your crane\'s chart. Radius is from the slew centre.',
     }));
@@ -438,6 +440,10 @@ function run(THREE, OrbitControls, renderer) {
     /* ===== hook block ===== */
     const hookH = Math.max(L.hookHeight, 0);
     const hookPt = V(R, tipY - hookH, 0);                  /* where the slings meet */
+    /* the calc's rise is never below zero, so with the pivot above the tip height
+       needed the boom lies level at the pivot: hang the hoist from there */
+    const headY = boomLen > 0.2 ? Math.max(tip.y, tipY) : tipY;
+    if (headY > tipY + 0.05) notes.push('Pivot is above the tip height needed, so the boom is drawn level and the hook hangs lower on its rope.');
     const rig = new THREE.Group();
     world.add(rig);
     const hb = new THREE.Group();
@@ -446,7 +452,7 @@ function run(THREE, OrbitControls, renderer) {
       const blockTop = tipY - Math.min(0.35, hookH * 0.15);
       const blockBot = hookPt.y + hookH * 0.32;
       if (blockTop > blockBot) {
-        for (const z of [-0.14, 0.14]) hb.add(rod(V(R, tipY, z), V(R, blockTop, z), 0.025, M.rope, 6));
+        for (const z of [-0.14, 0.14]) hb.add(rod(V(R, headY, z), V(R, blockTop, z), 0.025, M.rope, 6));
         hb.add(box(0.55, blockTop - blockBot, 0.85, M.yellow, R, (blockTop + blockBot) / 2, 0));
         hb.add(box(0.6, (blockTop - blockBot) * 0.5, 0.06, M.steelD, R, (blockTop + blockBot) / 2, 0.45));
         hb.add(box(0.6, (blockTop - blockBot) * 0.5, 0.06, M.steelD, R, (blockTop + blockBot) / 2, -0.45));
@@ -460,7 +466,7 @@ function run(THREE, OrbitControls, renderer) {
       hook.castShadow = true;
       hb.add(hook);
     } else {
-      hb.add(rod(V(R, tipY, 0), hookPt.clone().setY(hookPt.y - 0.01), 0.04, M.rope, 6));
+      hb.add(rod(V(R, headY, 0), hookPt.clone().setY(hookPt.y - 0.01), 0.04, M.rope, 6));
     }
     pickable(hb, 'hook', () => ({
       t: 'Hook block',
@@ -522,7 +528,7 @@ function run(THREE, OrbitControls, renderer) {
     }
 
     /* the load */
-    const loadBot = topY - lH;
+    const loadBot = topY - Math.max(L.loadHeight, 0);
     const load = box(lL, lH, lW, M.load, R, topY - lH / 2, 0);
     rig.add(load);
     lines(boxEdges(R, topY - lH / 2, 0, lL, lH, lW), LM.edgeLoad, rig, 1);
@@ -547,8 +553,10 @@ function run(THREE, OrbitControls, renderer) {
     /* ===== building and landing ===== */
     const T = Math.max(L.targetHeight, 0);
     const halfL = lL / 2, halfW = lW / 2;
-    let near = Math.max(spread + 1.4, R - Math.max(halfL + 2, 4));
-    if (near > R - halfL) near = R - halfL - 0.3;
+    /* the edge the user gave, or a stand-in that only shows the landing level */
+    const edgeReal = L.buildingEdge != null && L.buildingEdge < R;
+    let near = edgeReal ? L.buildingEdge : Math.max(spread + 1.4, R - Math.max(halfL + 2, 4));
+    if (!edgeReal && near > R - halfL) near = R - halfL - 0.3;
     const far = R + Math.max(halfL + 3, 6);
     const bz = Math.max(halfW + 3, 6);
     if (T > 0.05) {
@@ -571,9 +579,22 @@ function run(THREE, OrbitControls, renderer) {
       for (const s of [-0.3, 0.3]) b.add(box(0.15, 0.12, lW * 0.9, M.timber, R + s * lL, T + 0.06, 0));
       pickable(b, 'building', () => ({
         t: 'Building / landing',
-        rows: [['Target height', f(L.targetHeight) + ' m'], ['Clearance margin', f(L.clearanceMargin) + ' m'], ['Working radius to load centre', f(L.workingRadius) + ' m']],
-        note: 'Building drawn only to show the landing level. Dashed outline is the load\'s footprint.',
+        rows: [
+          ['Target height', f(L.targetHeight) + ' m'],
+          ['Clearance margin', f(L.clearanceMargin) + ' m'],
+          ['Working radius to load centre', f(L.workingRadius) + ' m'],
+          ['Building edge from slew centre', edgeReal ? f(L.buildingEdge) + ' m' : 'not given'],
+          ['Boom clearance over roof edge', L.boomClrText || 'not checked', L.boomClrCls || ''],
+        ],
+        note: edgeReal ? 'Near face drawn at the edge you gave. Clearance is to the boom centreline: allow for boom depth, deflection and any parapet.'
+          : 'No building edge given, so the near face is a stand-in that only shows the landing level. Enter it in Boom Geometry to check boom clearance.',
       }));
+    }
+
+    if (edgeReal && T > 0.05 && L.boomAtEdge != null) {
+      const ey = L.boomAtEdge;
+      lines([V(near, T, 0), V(near, Math.max(ey, T), 0)], LM.dim2, dims);
+      label('Edge ' + L.boomClrText, V(near, (T + Math.max(ey, T)) / 2, 0.8), 'tag ' + (L.boomClrCls || 'warn'), 'tags');
     }
 
     /* ===== wind on the bigger face ===== */
@@ -599,11 +620,11 @@ function run(THREE, OrbitControls, renderer) {
     const g = 0.02;
     /* slew centre: radius is measured from here */
     lines([V(0, 0, 0), V(0, pivotH, 0)], LM.axis, dims);
-    dim(V(0, g, 0), V(R, g, 0), 'Radius ' + f(R, 1) + ' m', V(0, 0, 1), tick);
+    dim(V(0, g, 0), V(R, g, 0), 'Radius ' + f(R) + ' m', V(0, 0, 1), tick);
     if (pivotH > 0.05) label('Pivot ' + f(pivotH, 1) + ' m', V(-0.2, pivotH * 0.5, 1.4), 'dim2', 'dims');
     if (boomLen > 0.2) {
       const off = perp.clone().multiplyScalar(-1.3);     /* above the boom */
-      dim(foot.clone().add(off), tip.clone().add(off), 'Boom ' + f(boomLen, 1) + ' m', V(-Math.sin(boomA), Math.cos(boomA), 0), tick);
+      dim(foot.clone().add(off), tip.clone().add(off), 'Boom ' + f(boomLen) + ' m', V(-Math.sin(boomA), Math.cos(boomA), 0), tick);
       const ar = clamp(boomLen * 0.22, 1.2, 5);
       lines([foot, foot.clone().add(V(ar * 1.25, 0, 0))], LM.dim2, dims);
       arc(foot, ar, 0, boomA, [V(1, 0, 0), V(0, 1, 0)]);
@@ -612,10 +633,10 @@ function run(THREE, OrbitControls, renderer) {
     /* the rigging stack, as a chain on the near side of the load */
     const cx = R - halfL - Math.max(0.8, tick * 2);
     const left = V(-1, 0, 0);
-    if (T > 0.05) dim(V(near - 0.8, 0, 0), V(near - 0.8, T, 0), 'Target ' + f(T, 1) + ' m', left, tick);
+    if (T > 0.05) dim(V(near - 0.8, 0, 0), V(near - 0.8, T, 0), 'Target ' + f(T) + ' m', left, tick);
     const chain = [
       [T, T + L.clearanceMargin, 'Clear ' + f(L.clearanceMargin, 2)],
-      [loadBot, topY, 'Load ' + f(lH, 2)],
+      [loadBot, topY, 'Load ' + f(L.loadHeight, 2)],
       [topY, hookPt.y, 'Sling ' + f(drop, 2)],
       [hookPt.y, tipY, 'Hook ' + f(hookH, 2)],
     ];
@@ -624,7 +645,7 @@ function run(THREE, OrbitControls, renderer) {
     /* total tip height on the far side */
     const tx = far + 1.2;
     lines([V(R + 0.4, tipY, 0), V(tx + 0.4, tipY, 0)], LM.dim2, dims);
-    dim(V(tx, 0, 0), V(tx, tipY, 0), 'Tip height ' + f(tipY, 1) + ' m', V(1, 0, 0), tick);
+    dim(V(tx, 0, 0), V(tx, tipY, 0), 'Tip height ' + f(tipY) + ' m', V(1, 0, 0), tick);
     /* sling angle at the first carrying leg */
     if (legs > 1 && L.slingAngle < 89.5 && pts.length) {
       const p = pts[carrying[0]] || pts[0];
@@ -692,20 +713,22 @@ function run(THREE, OrbitControls, renderer) {
     hudChip('Ground ' + f(L.actualPressure, 1) + (L.gbp > 0 ? ' / ' + f(L.gbp, 0) : '') + ' T/m²', L.gpCls, 'pads');
     hudChip('Wind ≤ ' + (L.windOk ? f(L.maxWind, 1) : '--') + ' m/s', L.windOk ? '' : 'warn', 'load');
     hudChip('Boom ' + f(L.boomLength, 1) + ' m @ ' + f(L.boomAngle, 0) + '°', '', 'boom');
+    requestAnimationFrame(placeInfo);
+    if (L.buildingEdge != null) hudChip('Edge ' + L.boomClrText.toLowerCase(), L.boomClrCls, 'boom');
   }
 
   /* ---------- selection ---------- */
   function hideInfo() {
     if (info) info.hidden = true;
-    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); selBox = null; }
+    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); selBox = null; }
     selected = null; selKey = null;
     dirty = true;
   }
   function select(obj) {
     let pick = null;
     obj.traverse((o) => { if (!pick && o.userData.pick) pick = o.userData.pick; });
-    if (!pick || !pick.describe) return;
-    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); }
+    if (!pick || !pick.describe) { hideInfo(); return; }
+    if (selBox) { scene.remove(selBox); selBox.geometry.dispose(); selBox.material.dispose(); }
     selected = obj; selKey = pick.key;
     selBox = new THREE.BoxHelper(obj, C.pick);
     selBox.material.depthTest = false;
@@ -823,7 +846,12 @@ function run(THREE, OrbitControls, renderer) {
   let userMoved = false;
   let currentView = 'iso';
   let fly = null;
-  controls.addEventListener('start', () => { userMoved = true; fly = null; });
+  /* OrbitControls says 'start' on any press, a tap included; only a press that
+     actually moves the camera means the user has taken over the framing */
+  let pressing = false;
+  controls.addEventListener('start', () => { pressing = true; });
+  controls.addEventListener('end', () => { pressing = false; });
+  controls.addEventListener('change', () => { if (pressing) { userMoved = true; fly = null; } });
   function view(name, instant) {
     currentView = name;
     if (fitBox.isEmpty()) return;
@@ -840,6 +868,7 @@ function run(THREE, OrbitControls, renderer) {
     const d = (dirs[name] || dirs.iso).clone().normalize();
     const dist = radius / Math.sin(Math.min(vf, hf) / 2) * (name === 'load' ? 0.9 : 0.8);
     const pos = center.clone().addScaledVector(d, dist);
+    controls.maxDistance = Math.max(600, dist * 3);
     camera.near = Math.max(dist / 200, 0.05);
     camera.far = dist * 30;
     camera.updateProjectionMatrix();
@@ -864,7 +893,21 @@ function run(THREE, OrbitControls, renderer) {
   }
 
   /* ---------- fullscreen (a fixed overlay where the API is missing, as on iPhone) ---------- */
+  /* the fixed-sheet fallback covers the page but does not remove it, so make
+     everything else inert while it is up, or Tab walks off behind it */
+  let inerted = [];
+  function trapFocus(on) {
+    inerted.forEach((el) => { el.inert = false; });
+    inerted = [];
+    if (!on) return;
+    for (let n = shell; n && n !== document.body; n = n.parentElement) {
+      for (const sib of n.parentElement ? n.parentElement.children : []) {
+        if (sib !== n && !sib.inert && sib.tagName !== 'SCRIPT') { sib.inert = true; inerted.push(sib); }
+      }
+    }
+  }
   function setFsLabel() {
+    trapFocus(shell.classList.contains('l3d-max'));
     if (fsBtn) { fsBtn.textContent = isFull() ? 'Exit full screen' : 'Full screen'; fsBtn.setAttribute('aria-pressed', String(isFull())); }
     engage(isFull());
   }
@@ -918,7 +961,12 @@ function run(THREE, OrbitControls, renderer) {
   /* ---------- size, loop ---------- */
   let dirty = true;
   let visible = true;
+  /* the part card sits under the status chips, however many rows they wrap to */
+  function placeInfo() {
+    if (hud && shell) shell.style.setProperty('--l3d-hud', hud.offsetHeight + 'px');
+  }
   function resize() {
+    placeInfo();
     const w = stage.clientWidth, h = stage.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);

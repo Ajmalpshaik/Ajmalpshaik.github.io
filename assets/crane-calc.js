@@ -6,6 +6,9 @@
    - Wind: v = vChart * sqrt(1.2 * m / (A * cw)). The 1.2 is the chart's sail-area-per-tonne
      constant (m^2/T), NOT air density. Result is capped at vChart.
    - Boom length uses the full rigging stack, not the target height.
+   - Edge clearance is the boom centreline height at the building edge, from the
+     same pivot-at-slew-centre triangle as the boom length, minus the target
+     height. Optional: a blank edge is "not checked", never a pass.
    - A blank or impossible input must never render green. Show "--" and flag it. */
 (function () {
   'use strict';
@@ -22,16 +25,6 @@
     if (!e) return;
     e.classList.remove('ok', 'bad', 'warn');
     if (s) e.classList.add(s);
-  }
-
-  function svgText(id, s, cls) {
-    var e = el(id);
-    if (!e) return;
-    e.textContent = s;
-    if (cls) {
-      e.classList.remove('ok', 'bad', 'warn');
-      e.classList.add(cls);
-    }
   }
 
   function useSuggestedPad() {
@@ -93,21 +86,6 @@
     var gpCls = !gbpKnown ? 'warn' : (gpPass ? 'ok' : 'bad');
     state('pressureBadge', gpCls);
 
-    txt('gpForceLabel', 'Force: ' + outriggerForce.toFixed(2) + ' T');
-    txt('gpPadLabel', padDimension.toFixed(2) + ' x ' + padDimension.toFixed(2) + ' m');
-    var gpPad = el('gpPad');
-    if (gpPad) {
-      gpPad.classList.remove('ok', 'bad', 'warn');
-      gpPad.classList.add(gpCls);
-    }
-    svgText('gpStatusLabel', !gbpKnown
-      ? 'ENTER GBP LIMIT'
-      : (gpPass ? 'PASS — ' : 'FAIL — ') + actualPressure.toFixed(1) + ' / ' + gbp + ' T/m²',
-      gpCls);
-    ['outriggerPadLeft', 'outriggerPadRight'].forEach(function (id) {
-      var e = el(id);
-      if (e) { e.classList.remove('ok', 'bad', 'warn'); e.classList.add(gpCls); }
-    });
 
     /* ---------- 3. Wind ---------- */
     var refInput = el('densityFactor');
@@ -128,7 +106,6 @@
     txt('resSailAreaUsed', sailArea.toFixed(2));
     txt('resWindRaw', windRaw.toFixed(2));
     txt('resMaxWind', maxWind.toFixed(2));
-    txt('wsSpeedLabel', 'Max: ' + maxWind.toFixed(2) + ' m/s');
 
     var capNote = el('windCapNote');
     if (capNote) {
@@ -224,17 +201,32 @@
     txt('resBoomLength', requiredBoomLength.toFixed(2));
     txt('resBoomAngle', requiredBoomAngle.toFixed(2));
 
+    /* ---------- 6b. Boom clearance over the building edge (optional) ---------- */
+    var buildingEdge = num('buildingEdge');
+    var edgeKnown = buildingEdge > 0;
+    var boomAtEdge = null, boomClearance = null, boomClrCls = '', boomClrText = 'not checked';
+    if (edgeKnown) {
+      if (workingRadius <= 0) { boomClrText = 'ENTER RADIUS'; boomClrCls = 'warn'; }
+      else if (buildingEdge >= workingRadius) { boomClrText = 'EDGE BEYOND RADIUS'; boomClrCls = 'warn'; }
+      else {
+        boomAtEdge = pivotHeight + buildingEdge * riseNeeded / workingRadius;
+        boomClearance = boomAtEdge - targetHeight;
+        boomClrCls = boomClearance < clearanceMargin ? 'bad' : 'ok';
+        boomClrText = boomClearance.toFixed(2) + ' m ' + (boomClearance < 0 ? 'CLASH' : boomClearance < clearanceMargin ? 'FAIL' : 'PASS');
+      }
+    }
+    txt('resBoomAtEdge', boomAtEdge == null ? '--' : boomAtEdge.toFixed(2));
+    txt('resBoomClr', boomClrText);
+    state('boomClrBadge', boomClrCls);
+
     /* ---------- 7. Headroom display ---------- */
     txt('resSlingDrop', slingVerticalDrop.toFixed(2));
     txt('resRiggingStack', riggingStack.toFixed(2));
     txt('resClearanceShown', clearanceMargin.toFixed(2));
     txt('resHeightRequired', heightRequired.toFixed(2));
 
-    drawSling(slingAngle, slingLegs, legsSharing, tensionPerLeg, utilMeaningful, slingUtil, effectiveWLL);
-    drawBoom(workingRadius, riseNeeded, requiredBoomLength, requiredBoomAngle, targetHeight, slingAngle);
-    drawHeadroom(targetHeight, riggingStack + clearanceMargin, heightRequired);
-
-    /* the 3D view (crane-3d.js) draws from these same numbers, never its own */
+    /* the diagrams (crane-diagrams.js) and the 3D view (crane-3d.js) draw from
+       these same numbers, never their own */
     var lift = {
       loadWeight: loadWeight, gearWeight: gearWeight, hookBlockWeight: hookBlockWeight,
       totalLiftWeight: totalLiftWeight, suspendedWeight: suspendedWeight,
@@ -243,7 +235,9 @@
       craneWeight: craneWeight, counterWeight: counterWeight,
       outriggerForce: outriggerForce, gbp: gbp, padDimension: padDimension,
       actualPressure: actualPressure, gpCls: gpCls,
-      vChart: vChart, sailArea: sailArea, maxWind: maxWind, windOk: denominator > 0 && numerator > 0,
+      requiredArea: requiredArea, minPad: minPadDimension, suggestedPad: suggestedPad,
+      vChart: vChart, sailArea: sailArea, dragCoeff: dragCoeff, windRaw: windRaw, maxWind: maxWind,
+      windOk: denominator > 0 && numerator > 0,
       slingLegs: slingLegs, legsSharing: legsSharing, slingWLL: slingWLL, effectiveWLL: effectiveWLL,
       slingLength: slingLength, slingAngle: slingAngle, forceVertical: forceVertical,
       tensionPerLeg: tensionPerLeg, slingUtil: utilMeaningful ? slingUtil : null,
@@ -252,188 +246,12 @@
       targetHeight: targetHeight, workingRadius: workingRadius, pivotHeight: pivotHeight,
       hookHeight: hookHeight, clearanceMargin: clearanceMargin,
       slingVerticalDrop: slingVerticalDrop, riggingStack: riggingStack, heightRequired: heightRequired,
-      boomLength: requiredBoomLength, boomAngle: requiredBoomAngle
+      boomLength: requiredBoomLength, boomAngle: requiredBoomAngle,
+      buildingEdge: edgeKnown ? buildingEdge : null, boomAtEdge: boomAtEdge,
+      boomClearance: boomClearance, boomClrCls: boomClrCls, boomClrText: boomClrText
     };
     window.craneLift = lift;
     try { window.dispatchEvent(new CustomEvent('cranelift', { detail: lift })); } catch (e) { /* very old browser: no 3D anyway */ }
-  }
-
-  /* ---------- Sling diagram ---------- */
-  function drawSling(angle, legs, sharing, tension, utilOk, util, wll) {
-    var hookX = 150, hookY = 84, legPx = 72;
-    var rad = angle * Math.PI / 180;
-    var spread = legPx * Math.cos(rad);
-    var drop = legPx * Math.sin(rad);
-    var topY = hookY + drop;
-
-    var pos = legs === 1 ? [0] : legs === 2 ? [-1, 1] : legs === 3 ? [-1, 0, 1] : [-1, -0.4, 0.4, 1];
-    var parts = '';
-    pos.forEach(function (p) {
-      var x = hookX + p * spread;
-      parts += '<line x1="' + hookX + '" y1="' + hookY + '" x2="' + x + '" y2="' + topY + '" class="d-rope" stroke-width="1.8"/>';
-      parts += '<rect x="' + (x - 3) + '" y="' + (topY - 3) + '" width="6" height="5" rx="1" fill="var(--d-load-s)"/>';
-    });
-
-    var lbl = el('srAngleLabel');
-    if (legs >= 2 && spread > 6) {
-      var ax = hookX - spread, r = 14;
-      parts += '<line x1="' + (ax - 6) + '" y1="' + topY + '" x2="' + (ax + 30) + '" y2="' + topY + '" class="d-line" stroke-width="1.3" stroke-dasharray="5,4"/>';
-      parts += '<path d="M ' + (ax + r) + ' ' + topY + ' A ' + r + ' ' + r + ' 0 0 0 ' +
-        (ax + r * Math.cos(rad)) + ' ' + (topY - r * Math.sin(rad)) + '" stroke="var(--blue)" stroke-width="2" fill="none"/>';
-      lbl.setAttribute('x', ax + r + 7);
-      lbl.setAttribute('y', topY - 7);
-    } else {
-      lbl.setAttribute('x', hookX + 14);
-      lbl.setAttribute('y', (hookY + topY) / 2);
-    }
-    lbl.setAttribute('text-anchor', 'start');
-    lbl.textContent = angle.toFixed(0) + '°';
-    el('srSlingLegs').innerHTML = parts;
-
-    var box = el('srLoadBox');
-    box.setAttribute('x', hookX - 40);
-    box.setAttribute('y', topY);
-    box.setAttribute('width', 80);
-    box.setAttribute('height', 30);
-
-    txt('srTensionLabel', 'Tension: ' + tension.toFixed(2) + ' T/leg (' + sharing + ' of ' + legs + ' sharing)');
-
-    var pass = utilOk && angle >= 30 && util <= 100;
-    if (!utilOk) svgText('srStatusLabel', wll > 0 ? 'CHECK ANGLE' : 'ENTER SLING WLL', 'warn');
-    else svgText('srStatusLabel', (pass ? 'PASS — ' : 'FAIL — ') + util.toFixed(0) + '% WLL', pass ? 'ok' : 'bad');
-  }
-
-  /* ---------- Boom / overview diagram ---------- */
-  function drawBoom(radius, rise, len, angle, target, slingAngle) {
-    var pivotX = 67, pivotY = 160;
-    var scale = 150 / Math.max(radius, rise, 1);
-    var tipX = Math.min(pivotX + radius * scale, 330);
-    var tipY = Math.max(pivotY - rise * scale, 15);
-
-    var dx = tipX - pivotX, dy = tipY - pivotY;
-    var px = Math.sqrt(dx * dx + dy * dy) || 1;
-
-    var g = el('boomGroup');
-    g.setAttribute('transform', 'translate(' + pivotX + ' ' + pivotY + ') rotate(' + (Math.atan2(dy, dx) * 180 / Math.PI).toFixed(2) + ')');
-    var L1 = px * 0.46, L2 = px * 0.30, L3 = px * 0.24;
-    var s = '';
-    s += '<rect x="-4" y="-5.5" width="' + (L1 + 4) + '" height="11" rx="2.5" class="d-pale" stroke="var(--d-line)" stroke-width="1"/>';
-    s += '<rect x="' + L1 + '" y="-4.5" width="' + L2 + '" height="9" rx="2" class="d-steel-d"/>';
-    s += '<rect x="' + (L1 + L2) + '" y="-3.5" width="' + L3 + '" height="7" rx="2" class="d-steel-d"/>';
-    [L1, L1 + L2 * 0.5, L1 + L2, L1 + L2 + L3 * 0.5].forEach(function (p, i) {
-      var h = i < 2 ? 10 : 8;
-      s += '<rect x="' + (p - 1.6) + '" y="' + (-h / 2) + '" width="3.2" height="' + h + '" rx="1.2" class="d-steel-l"/>';
-    });
-    s += '<rect x="' + (px - 3) + '" y="-5" width="7" height="10" rx="2" class="d-steel"/>';
-    g.innerHTML = s;
-
-    var c = el('hookCable');
-    c.setAttribute('x1', tipX); c.setAttribute('y1', tipY);
-    c.setAttribute('x2', tipX); c.setAttribute('y2', tipY + 20);
-    el('hookBlock').setAttribute('x', tipX - 5);
-    el('hookBlock').setAttribute('y', tipY + 20);
-    el('hookSheave').setAttribute('cx', tipX);
-    el('hookSheave').setAttribute('cy', tipY + 24.5);
-    var hx = tipX, hy = tipY + 29;
-    el('hookCurve').setAttribute('d',
-      'M ' + hx + ' ' + hy +
-      ' C ' + hx + ' ' + (hy + 3.9) + ', ' + (hx - 5.9) + ' ' + (hy + 3.9) + ', ' + (hx - 5.9) + ' ' + (hy + 8.5) +
-      ' C ' + (hx - 5.9) + ' ' + (hy + 12.7) + ', ' + (hx - 1.6) + ' ' + (hy + 14.6) + ', ' + (hx + 2) + ' ' + (hy + 13) +
-      ' C ' + (hx + 4.2) + ' ' + (hy + 11.9) + ', ' + (hx + 4.9) + ' ' + (hy + 9.4) + ', ' + (hx + 3.8) + ' ' + (hy + 7.5));
-
-    var apexX = tipX - 1, apexY = tipY + 42;
-    var sRad = slingAngle * Math.PI / 180;
-    var sx = 25 * Math.cos(sRad), sy = 25 * Math.sin(sRad);
-    var loadTop = apexY + sy;
-    el('slingLegLeft').setAttribute('x1', apexX); el('slingLegLeft').setAttribute('y1', apexY);
-    el('slingLegLeft').setAttribute('x2', apexX - sx); el('slingLegLeft').setAttribute('y2', loadTop);
-    el('slingLegRight').setAttribute('x1', apexX); el('slingLegRight').setAttribute('y1', apexY);
-    el('slingLegRight').setAttribute('x2', apexX + sx); el('slingLegRight').setAttribute('y2', loadTop);
-    el('loadBox').setAttribute('x', apexX - 20);
-    el('loadBox').setAttribute('y', loadTop);
-
-    el('boomRadiusLine').setAttribute('x1', pivotX);
-    el('boomRadiusLine').setAttribute('x2', tipX);
-    var rl = el('boomRadiusLabel');
-    rl.setAttribute('x', (pivotX + tipX) / 2 + 25);
-    rl.textContent = 'R: ' + radius.toFixed(1) + 'm';
-
-    el('boomAngleRefLine').setAttribute('x1', pivotX);
-    el('boomAngleRefLine').setAttribute('y1', pivotY);
-    el('boomAngleRefLine').setAttribute('x2', pivotX + 80);
-    el('boomAngleRefLine').setAttribute('y2', pivotY);
-
-    var ar = 34, fr = angle * Math.PI / 180;
-    el('boomAngleArc').setAttribute('d',
-      'M ' + (pivotX + ar) + ' ' + pivotY + ' A ' + ar + ' ' + ar + ' 0 0 0 ' +
-      (pivotX + ar * Math.cos(fr)) + ' ' + (pivotY - ar * Math.sin(fr)));
-
-    var hr = (angle / 2) * Math.PI / 180;
-    var al = el('boomAngleLabel');
-    al.setAttribute('x', pivotX + 48 * Math.cos(hr));
-    al.setAttribute('y', pivotY - 48 * Math.sin(hr) + 4);
-    al.textContent = angle.toFixed(0) + '°';
-
-    var mx = (pivotX + tipX) / 2, my = (pivotY + tipY) / 2;
-    var perpX = -dy / px * 4, perpY = dx / px * 4;
-    var lx = mx - perpX * 3.5, ly = my - perpY * 3.5;
-    var bl = el('boomLengthLabel');
-    bl.setAttribute('x', lx); bl.setAttribute('y', ly);
-    bl.setAttribute('transform', 'rotate(' + (Math.atan2(dy, dx) * 180 / Math.PI).toFixed(1) + ' ' + lx + ' ' + ly + ')');
-    bl.textContent = len.toFixed(1) + 'm';
-
-    var hl = el('boomHeightLabel');
-    hl.setAttribute('x', apexX);
-    hl.setAttribute('y', loadTop + 36);
-    hl.textContent = 'H: ' + target.toFixed(1) + 'm';
-  }
-
-  /* ---------- Headroom diagram ---------- */
-  function drawHeadroom(target, stackTotal, total) {
-    var groundY = 200;
-    var scale = 140 / Math.max(total, 1);
-    var targetPx = target * scale, stackPx = stackTotal * scale;
-    var topY = groundY - targetPx - stackPx;
-    var bTop = groundY - targetPx;
-    var bx = 78, bw = 84, bcx = bx + bw / 2;
-
-    var s = '';
-    s += '<rect x="' + bx + '" y="' + bTop + '" width="' + bw + '" height="' + Math.max(targetPx, 2) + '" class="d-pale" stroke="var(--d-line)" stroke-width="1" rx="2"/>';
-    s += '<rect x="' + (bx - 3) + '" y="' + (bTop - 3) + '" width="' + (bw + 6) + '" height="4" rx="1.5" class="d-steel-l"/>';
-    for (var wy = bTop + 10; wy < groundY - 14; wy += 20) {
-      for (var wc = 0; wc < 3; wc++) {
-        s += '<rect x="' + (bx + 12 + wc * 24) + '" y="' + wy + '" width="12" height="12" class="d-glass" rx="1"/>';
-      }
-    }
-    if (stackPx > 10) {
-      var gap = Math.min(9, stackPx * 0.15);
-      var lh = Math.min(18, stackPx * 0.35);
-      var lb = bTop - gap, lt = lb - lh;
-      s += '<line x1="' + bcx + '" y1="' + (topY - 6) + '" x2="' + bcx + '" y2="' + topY + '" class="d-rope" stroke-width="1.5"/>';
-      s += '<rect x="' + (bcx - 6) + '" y="' + topY + '" width="12" height="8" rx="1.5" class="d-steel-d"/>';
-      s += '<line x1="' + bcx + '" y1="' + (topY + 8) + '" x2="' + (bcx - 22) + '" y2="' + lt + '" class="d-rope" stroke-width="1.5"/>';
-      s += '<line x1="' + bcx + '" y1="' + (topY + 8) + '" x2="' + (bcx + 22) + '" y2="' + lt + '" class="d-rope" stroke-width="1.5"/>';
-      s += '<rect x="' + (bcx - 27) + '" y="' + lt + '" width="54" height="' + lh + '" rx="2.5" class="d-load" stroke-width="1.2"/>';
-    }
-    el('hrScene').innerHTML = s;
-
-    var sl = el('hrStackLabel');
-    sl.setAttribute('y', Math.max(topY - 8, 12));
-    sl.textContent = 'Rig stack: ' + stackTotal.toFixed(1) + 'm';
-    var tl = el('hrTargetLabel');
-    tl.setAttribute('y', bTop + Math.min(targetPx / 2, 60) + 4);
-    tl.textContent = 'Target: ' + target.toFixed(1) + 'm';
-
-    el('hrTotalLine').setAttribute('y2', topY);
-    el('hrExtTop').setAttribute('y1', topY);
-    el('hrExtTop').setAttribute('y2', topY);
-    el('hrArrTop').setAttribute('d', 'M 207 ' + topY + ' L 203 ' + (topY + 10) + ' L 211 ' + (topY + 10) + ' Z');
-    var ly = (groundY + topY) / 2;
-    var tot = el('hrTotalLabel');
-    tot.setAttribute('x', 203);
-    tot.setAttribute('y', ly);
-    tot.setAttribute('transform', 'rotate(-90 203 ' + ly + ')');
-    tot.textContent = 'Total: ' + total.toFixed(1) + 'm';
   }
 
   /* ---------- Print ----------
