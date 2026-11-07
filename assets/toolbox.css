@@ -155,11 +155,62 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 /* the side view is drawn wide; at full card width it stood 700px tall */
 .dg-wrap>div:last-child .dg-box svg{max-height:420px}
 .dg-box svg text{font-family:inherit}
+.dg-box svg{height:auto}
+/* the drawings (crane-diagrams.js) */
+.dg-ground{stroke:var(--d-line);stroke-width:1.5}
+.dg-soil{stroke:var(--d-line);stroke-width:1;opacity:.45}
+.dg-sail{stroke:var(--d-load-s);stroke-width:1.2;opacity:.55}
+.dg-crane{fill:var(--d-crane)}
+.dg-crane-d{fill:var(--d-crane-d)}
+.dg-tyre{fill:var(--d-steel-d)}
+.dg-boom{stroke:var(--d-crane);fill:none}
+.dg-boom-d{stroke:var(--d-crane-d);fill:none}
+.dg-bld{fill:var(--d-bld);stroke:var(--d-line);stroke-width:1}
+.dg-floor{stroke:var(--d-floor);stroke-width:.8}
+.dg-pad{stroke-width:1}
+.dg-ghost{fill:none;stroke:var(--d-mute);stroke-width:1;stroke-dasharray:4 3}
+.dg-rope{stroke:var(--d-steel-l);stroke-width:1.5}
+.dg-hook{stroke:var(--d-steel-d);stroke-width:3.5;fill:none;stroke-linecap:round}
+.dg-leg{stroke-width:2.4;stroke-linecap:round}
+.dg-leg-thin{stroke-width:1.2}
+.dg-leg,.dg-leg-thin{stroke:var(--c-warn)}
+.dg-leg.ok,.dg-leg-thin.ok{stroke:var(--c-ok)}
+.dg-leg.bad,.dg-leg-thin.bad{stroke:var(--c-bad)}
+.dg-edge{fill:var(--c-warn)}
+.calc svg circle.dg-edge.ok{fill:var(--c-ok)}
+.calc svg circle.dg-edge.bad{fill:var(--c-bad)}
+.dg-force{stroke:#e5484d;stroke-width:3}
+.dg-force-h{fill:#e5484d}
+.dg-react{stroke:var(--d-mute);stroke-width:1.2}
+.dg-react-h{fill:var(--d-mute)}
+.dg-wind{stroke:var(--d-dim);stroke-width:2.2;stroke-linecap:round}
+.dg-wind-h{fill:var(--d-dim)}
+.dg-dim{stroke:var(--d-dim);stroke-width:1}
+.dg-dim-strong{stroke:var(--d-dim);stroke-width:1.4}
+.dg-dim-thin{stroke:var(--d-mute);stroke-width:.8;stroke-dasharray:3 3}
+.dg-arc{stroke:var(--d-dim);stroke-width:1.5;fill:none}
+.dg-ext{stroke:var(--d-mute);stroke-width:.6;opacity:.8}
+.dg-axis{stroke:var(--d-mute);stroke-width:.8;stroke-dasharray:3 3}
+.dg-scale{stroke:var(--d-ink);stroke-width:1.2}
+.dg-track{fill:var(--d-track)}
+.dg-fill{fill:var(--d-dim)}
+.dg-limit{stroke:var(--d-ink);stroke-width:1.5}
+.calc svg rect.dg-fill.ok{fill:var(--c-ok);stroke:none}
+.calc svg rect.dg-fill.bad{fill:var(--c-bad);stroke:none}
+.calc svg rect.dg-fill.warn{fill:var(--c-warn);stroke:none}
+.dg-tx{fill:var(--d-ink)}
+.dg-t-mute{fill:var(--d-mute)}
+.dg-t-dim{fill:var(--d-dim);paint-order:stroke;stroke:var(--d-halo);stroke-width:3px}
+.dg-t-strong{fill:var(--d-ink);font-weight:700;paint-order:stroke;stroke:var(--d-halo);stroke-width:3px}
+.dg-t-big{fill:var(--d-dim);font-weight:700}
+.dg-t-onload{fill:#1a1206;font-weight:700}
 /* diagram palette: the dark one, the site's only skin (print sets its own) */
 .calc{
   --d-sky:#161922;--d-ground:#23283340;--d-line:#4b5563;--d-ink:#cbd5e0;
   --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#374151;
   --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#161922;
+  --d-crane:#e0a42e;--d-crane-d:#a97b1f;--d-bld:#262c36;--d-floor:#353d49;
+  --d-dim:#4aa8ff;--d-track:#262b33;--d-mute:#8a99a8;
 }
 .d-sky{fill:var(--d-sky)}
 .d-ground{fill:var(--d-ground)}
@@ -243,7 +294,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(74,168,255,.22)}
 .l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #4aa8ff;outline-offset:-2px}
 .l3d-info{
-  position:absolute;right:12px;top:56px;width:min(320px,calc(100% - 24px));z-index:2;
+  position:absolute;right:12px;top:calc(var(--l3d-hud,33px) + 22px);width:min(320px,calc(100% - 24px));z-index:2;
   max-height:clamp(200px,calc(62vh - 120px),520px);overflow:auto;padding:12px 14px 10px;border-radius:13px;
   background:rgba(12,14,18,.9);border:1px solid rgba(255,255,255,.12);color:#dbe4ec;font-size:12.5px;
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
@@ -284,6 +335,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   background:#4aa8ff;border:0;border-radius:11px;padding:9px 18px;cursor:pointer;
 }
 @media(prefers-reduced-motion:reduce){.l3d-hint.l3d-nudge{animation:none}}
+/* where the view buttons take the bottom row, the hint goes under the chips */
+@media(max-width:1000px){.l3d-hint{bottom:auto;top:calc(var(--l3d-hud,33px) + 20px)}}
 .l3d-quick{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 22px;margin-top:16px;
 }
@@ -295,9 +348,12 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d:fullscreen,.l3d.l3d-max{background:#0b0d10;padding:12px;display:flex;flex-direction:column;gap:10px}
 .l3d.l3d-max{position:fixed;inset:0;z-index:1000}
 .l3d:fullscreen .l3d-stage,.l3d.l3d-max .l3d-stage{flex:1;height:auto;min-height:0}
-.l3d:fullscreen .l3d-info,.l3d.l3d-max .l3d-info{top:68px;right:24px;max-height:calc(100% - 200px)}
+.l3d:fullscreen .l3d-info,.l3d.l3d-max .l3d-info{top:calc(var(--l3d-hud,33px) + 34px);right:24px;max-height:calc(100% - 200px)}
 .l3d:fullscreen .l3d-quick,.l3d.l3d-max .l3d-quick{margin-top:0;padding:4px 6px 2px}
 html.l3d-lock,html.l3d-lock body{overflow:hidden}
+/* the sliders work through the 3D script, so they show only once it is running */
+.l3d-card:not(.l3d-on) .l3d-quick{display:none}
+@media print{html.l3d-lock,html.l3d-lock body{overflow:visible}}
 @media(max-width:720px){
   .l3d-stage{height:clamp(340px,60vh,520px)}
   .l3d-tools{left:8px;right:8px;bottom:8px;justify-content:center}
@@ -310,8 +366,8 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
   /* the part card sits under the stage on a phone, not over the model */
   .l3d-info{position:static;width:auto;max-height:none;margin-top:10px}
   .l3d-warn{left:8px;right:8px;bottom:100px;max-width:none}
-  .l3d-done{left:auto;right:8px;bottom:auto;top:44px}
-  .l3d-hint{font-size:12px;left:8px;bottom:auto;top:46px}
+  .l3d-done{left:auto;right:8px;bottom:auto;top:calc(var(--l3d-hud,30px) + 14px)}
+  .l3d-hint{font-size:12px;left:8px;bottom:auto;top:calc(var(--l3d-hud,30px) + 16px)}
   .l3d-card{padding:20px 12px}
   .l3d-card h2{margin-left:6px}
   .l3d-card>.f-hint{margin-left:6px}
@@ -354,6 +410,8 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
     --d-sky:#fff;--d-ground:#e4e7ec;--d-line:#7c838f;--d-ink:#000;
     --d-steel:#4a5568;--d-steel-d:#2d3748;--d-steel-l:#6b7280;--d-pale:#d6dae1;
     --d-load:#f0b46a;--d-load-s:#8a4b12;--d-glass:#cbd9e8;--d-halo:#fff;
+    --d-crane:#e8b84f;--d-crane-d:#b88a2a;--d-bld:#eef0f3;--d-floor:#c9ced6;
+    --d-dim:#134a8e;--d-track:#e4e7ec;--d-mute:#555;
   }
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
 
