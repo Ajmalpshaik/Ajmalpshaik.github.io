@@ -38,17 +38,20 @@ So: **one skin, one layout language, and no decoration that is not the work.**
   loads instantly and it is the right thing for long text.
 - **No cards, no glass, no shadows, no gradients behind sections.** A hairline
   and space do the same job and never fight the text.
-- **The only pictures on the site are the four model renders**, the tools in
-  `/toolbox/`, and the Heron mark on the three Heron pages (the product's
-  own logo: the app icon on a phone, the 3D heron beside the title on a wide
-  screen).
+- **The only pictures on the site are the tools in `/toolbox/` and the Heron
+  mark on the three Heron pages** (the product's own logo: the app icon on a
+  phone, the 3D heron beside the title on a wide screen). The four 3D model
+  renders that stood on the cover went in November 2026; the models are
+  still in `landing/src/three/` and `npm run posters` still renders them.
+- **Short beats complete.** Every page is a headline, a few big figures and
+  short numbered rows of one line each. A detail that only some readers need
+  goes behind one `<details>` line (as on `/heron-ai/`), not into the page.
 - **The Heron pages wear the Heron brand.** `/heron-ai/`, `/heron-tools/` and
   `/heron-autocad/` load `assets/heron/heron.css` on `<body class="heron">`:
   Heron's Ink, Mist and orange Accent, and its Manrope font inside the page.
   The values come from the Heron brand page (`docs/brand/README.md` in
   Heron-AI) and nowhere else. The bar and footer stay the site's, in Heron's
-  colours. Every other page keeps the site's own blue. The renders are made, not drawn: `npm run posters` renders them
-  from 3D models built in code out of MEP parts at real sizes.
+  colours. Every other page keeps the site's own blue.
 
 ## 3. The system
 
@@ -183,8 +186,8 @@ assets/fonts/         Kanit 500 and 900, Latin, self-hosted
 assets/app.js         menus, reveals, the year, analytics
 assets/toolbox.css    the tool pages' own controls
 landing/src/          the home page's source. Edit this, never ../index.html
-landing/src/three/    the models. Build-time only: `npm run posters` renders
-                      them to assets/home/img/model-*.webp
+landing/src/three/    the 3D models, no longer shown. `npm run posters` still
+                      renders them to assets/home/img/model-*.webp
 tools/sync_chrome.py  writes the nav, pager and footer into every page; --check
 tools/check_site.py   static checks
 tools/check_browser.mjs  the pages in a real browser, at four widths, including

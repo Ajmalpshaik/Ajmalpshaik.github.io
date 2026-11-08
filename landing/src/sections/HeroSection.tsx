@@ -1,29 +1,22 @@
 import type { CSSProperties } from 'react'
 import ContactButton from '../components/ContactButton'
-import Magnet from '../components/Magnet'
-import ModelShot from '../components/ModelShot'
-import { hero } from '../content'
+import { figures, hero } from '../content'
 
 // The first screen comes in with a CSS animation (.enter in index.css), not
 // with script like the rest of the page: it starts with the first paint, so a
-// slow phone shows the name and the model before the JavaScript has arrived.
-// The name and the model start visible and only rise; the rest fades in.
+// slow phone shows the name before the JavaScript has arrived. The name starts
+// visible and only rises; the rest fades in.
 const enter = (delay: number, y: number, opacity = 0) =>
   ({ '--enter-delay': `${delay}s`, '--enter-y': `${y}px`, '--enter-opacity': opacity }) as CSSProperties
 
 export default function HeroSection() {
   return (
     // Top padding clears the fixed bar - 60px of it, plus a little air so the
-    // name is not touching it.
-    <section
-      aria-label="Introduction"
-      className="hero-screen relative flex flex-col pt-[68px] md:pt-[82px]"
-      style={{ overflowX: 'clip' }}
-    >
-      {/* Sized so "Hi, i'm Ajmal" fills the width in the same proportion the
-          original four-letter name did: 74% on phones, 93% from 1024px.
-
-          The heading rises out of a clipping box. */}
+    // name is not touching it. The 3D tower that stood in the middle of this
+    // screen is gone: the name, one line and four figures say it faster.
+    <section aria-label="Introduction" className="relative pt-[68px] md:pt-[82px]" style={{ overflowX: 'clip' }}>
+      {/* Sized so "Hi, i'm Ajmal" fills the width: 74% on phones, 93% from
+          1024px. The heading rises out of a clipping box. */}
       <div className="mt-6 overflow-hidden sm:mt-4 md:-mt-5">
         <h1
           className="enter hero-heading w-full whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[12.1vw] sm:text-[13vw] md:text-[13.8vw] lg:text-[15.1vw]"
@@ -33,39 +26,31 @@ export default function HeroSection() {
         </h1>
       </div>
 
-      <div className="relative z-20 mt-auto flex items-end justify-between gap-4 px-6 pb-7 sm:pb-8 md:px-10 md:pb-10">
+      <div className="flex flex-col items-center gap-8 px-6 pb-16 pt-8 text-center sm:pb-20 md:gap-10 md:px-10 md:pb-24 md:pt-10">
         <p
-          className="enter max-w-[160px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA] sm:max-w-[220px] md:max-w-[260px]"
-          style={{ ...enter(0.35, 20), fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}
+          className="enter max-w-[640px] font-light leading-snug text-[#D7E2EA]"
+          style={{ ...enter(0.3, 20), fontSize: 'clamp(1.05rem, 2.1vw, 1.6rem)' }}
         >
           {hero.tagline}
         </p>
-        <div className="enter" style={enter(0.45, 20)}>
+        <div className="enter" style={enter(0.4, 20)}>
           <ContactButton />
         </div>
       </div>
 
-      <div className="hero-portrait absolute left-1/2 top-1/2 z-10 w-[280px] -translate-x-1/2 -translate-y-1/2 sm:bottom-0 sm:top-auto sm:w-[360px] sm:translate-y-0 md:w-[440px] lg:w-[520px]">
-        <div className="enter" style={enter(0.25, 30, 1)}>
-          <Magnet
-            padding={150}
-            strength={3}
-            activeTransition="transform 0.3s ease-out"
-            inactiveTransition="transform 0.6s ease-in-out"
-          >
-            {/* The largest thing on the first screen, so it is fetched at
-                high priority and nothing waits on a script to see it. */}
-            <ModelShot
-              src={hero.model.poster}
-              alt={hero.model.alt}
-              width={hero.model.width}
-              height={hero.model.height}
-              priority
-              className="hero-model block h-auto w-full"
-            />
-          </Magnet>
-        </div>
-      </div>
+      <dl
+        className="enter mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-t border-[#D7E2EA]/15 px-6 py-12 md:grid-cols-4 md:px-10 md:py-16"
+        style={enter(0.5, 20)}
+      >
+        {figures.map((f) => (
+          <div key={f.label} className="flex flex-col-reverse gap-2">
+            <dt className="text-sm font-light uppercase tracking-widest text-[#D7E2EA]/70">{f.label}</dt>
+            <dd className="hero-heading font-black leading-none" style={{ fontSize: 'clamp(2.6rem, 6vw, 5rem)' }}>
+              {f.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </section>
   )
 }

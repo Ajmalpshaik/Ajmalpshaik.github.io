@@ -8,7 +8,7 @@ export default function AboutSection() {
     // The four illustrated objects that used to float in the corners are
     // gone. They were decoration, and they were the kind of decoration that
     // made the page look generated.
-    <section id="about" className="relative flex min-h-screen items-center justify-center px-5 py-20 sm:px-8 md:px-10">
+    <section id="about" className="relative flex items-center justify-center px-5 py-24 sm:px-8 sm:py-28 md:px-10 md:py-36">
       <div className="relative z-10 flex flex-col items-center gap-16 sm:gap-20 md:gap-24">
         <div className="flex flex-col items-center gap-10 sm:gap-14 md:gap-16">
           <FadeIn
