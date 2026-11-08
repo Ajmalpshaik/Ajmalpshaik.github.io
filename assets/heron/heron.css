@@ -53,7 +53,9 @@ body.heron .head{font-weight:800;text-transform:none;letter-spacing:-.035em}
 body.heron .display{line-height:.98}
 body.heron .display .dim,
 body.heron .head .dim{color:var(--heron-dim)}
-body.heron .head .dim{letter-spacing:.14em}
+/* the small grey line under a section title in the folded details keeps its
+   label spacing; the grey half of an ordinary title stays tight */
+body.heron .tabsec .head .dim{letter-spacing:.14em}
 body.heron .row-t,
 body.heron .tlist b,
 body.heron .pgrp h3,
@@ -85,3 +87,27 @@ body.heron main .btn:not(.btn-ghost):hover{background:var(--accent-hi);color:var
 @media print{
   .heron3d{display:none !important}
 }
+
+/* ---- the full details, folded ----
+   The long lists - every skill, tool and fragment - are kept for whoever
+   wants them, behind one line, so the page itself stays short. <details>
+   rather than a script: it opens with JavaScript off and from the keyboard. */
+details.more{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+details.more > summary{list-style:none;cursor:pointer;display:block;padding:clamp(28px,3.4vw,44px) 0;-webkit-tap-highlight-color:transparent}
+details.more > summary::-webkit-details-marker{display:none}
+details.more > summary .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px}
+.more-t{
+  font-family:"Manrope",var(--display);font-weight:800;color:var(--ink);
+  font-size:clamp(1.25rem,2.4vw,1.8rem);letter-spacing:-.02em;
+  display:inline-flex;align-items:center;gap:14px;
+}
+.more-t::after{
+  content:"";width:10px;height:10px;margin-top:-4px;
+  border-right:2.5px solid var(--accent);border-bottom:2.5px solid var(--accent);
+  transform:rotate(45deg);transition:transform .25s var(--ease-out);
+}
+details.more[open] .more-t::after{transform:rotate(-135deg);margin-top:6px}
+.more-s{font-size:.9rem;color:var(--faint)}
+details.more > summary:hover .more-t{color:var(--accent)}
+details.more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+details.more[open]{padding-bottom:clamp(48px,6vw,90px)}

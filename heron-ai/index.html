@@ -336,7 +336,7 @@
     <img class="heron3d" src="/assets/heron/heron-3d.webp" width="718" height="720" alt="" aria-hidden="true">
     <span class="kicker enter" style="--d:.02s">In development &middot; version 0.1.0</span>
     <h1 class="display enter" style="--d:.06s">Heron <span class="dim">AI</span></h1>
-    <p class="lede enter" style="--d:.18s">A modular, agent-based AI engineering platform for BIM. <strong>The user focuses on BIM. Heron AI focuses on everything behind the BIM work.</strong></p>
+    <p class="lede enter" style="--d:.18s">Tell Revit what you want. <strong>Heron AI does the work</strong> &mdash; checked, reversible and logged.</p>
     <div class="btnrow enter" style="--d:.28s">
       <a class="btn" href="#what">See what it does</a>
       <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-AI" rel="noopener">Read the code on GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
@@ -358,26 +358,75 @@
   </div>
 </section>
 
-<section class="sec" id="what" data-track="06-heron">
+<section class="sec" id="what">
   <div class="wrap">
-    <span class="kicker">Heron AI</span>
-    <h2 class="head">Say what you want. <span class="dim">Get it done, in the model.</span></h2>
-    <div>
-      <p class="lede reveal">Heron AI lets a BIM modeller, BIM coordinator or engineer drive complex Revit automation by describing the work in ordinary language.</p>
-      <div class="say reveal" style="--d:.06s">
-        <p>&ldquo;What&rsquo;s missing before I issue this?&rdquo;<br>
-        &ldquo;Did anything come apart? Check the ductwork.&rdquo;<br>
-        &ldquo;Which unit feeds this? Follow the pipe.&rdquo;<br>
-        &ldquo;Work out the air for this room, then lay out the terminals.&rdquo;</p>
+    <span class="kicker">Just ask</span>
+    <h2 class="head">Say it. <span class="dim">Heron does it in Revit.</span></h2>
+    <div class="say reveal">
+      <p>&ldquo;What&rsquo;s missing before I issue this?&rdquo;<br>
+      &ldquo;Which unit feeds this? Follow the pipe.&rdquo;<br>
+      &ldquo;Make the drawing set for this building.&rdquo;</p>
+    </div>
+    <p class="lede reveal" style="--d:.06s">No C#, no Revit API, no scripts. You ask in plain words &mdash; Heron writes, checks and runs the work, and tells you what it did.</p>
+  </div>
+</section>
+
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">Safe on a live model</span>
+    <h2 class="head">Your model. <span class="dim">Your call.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">Locked until you open it</h3></div>
+        <div><p>A padlock on the ribbon. Closed, Heron can only read.</p></div>
       </div>
-      <p class="lede reveal" style="--d:.12s">Behind that sentence, Heron performs the analysis, knowledge retrieval, code generation, validation, testing, execution, logging and learning. The user never has to know C#, the Revit API, MCP, RAG, vector databases, build systems or version compatibility.</p>
-      <p class="lede reveal" style="--d:.18s">It is <strong>not</strong> a chatbot, a coding assistant, or a plain MCP server. It is a platform that turns a sentence into a checked, reversible, logged change in a real model &mdash; or into a straight answer, and nothing else.</p>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">It shows you first</h3></div>
+        <div><p>&ldquo;This will move 247 ducts up 200&nbsp;mm. Proceed?&rdquo;</p></div>
+      </div>
+      <div class="row reveal" style="--d:.12s">
+        <div class="row-n"><i>03</i><h3 class="row-t">One Ctrl+Z</h3></div>
+        <div><p>Everything it changed comes back in a single undo.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.18s">
+        <div class="row-n"><i>04</i><h3 class="row-t">Local only</h3></div>
+        <div><p>No open ports. Model files are never uploaded.</p></div>
+      </div>
     </div>
   </div>
 </section>
 
+<section class="sec" id="family">
+  <div class="wrap">
+    <span class="kicker">The Heron family</span>
+    <h2 class="head reveal">One name. <span class="dim">Three products.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">Heron AI</h3></div>
+        <div><p>Ask in plain words. Heron does the Revit work.</p></div>
+      </div>
+      <a class="row reveal" style="--d:.06s" href="/heron-tools/">
+        <div class="row-n"><i>02</i><span class="row-t">Heron Tools</span></div>
+        <div>
+          <p>17 everyday Revit buttons. One click, one undo.</p>
+          <span class="row-go">Heron Tools <span class="chev" aria-hidden="true">&rsaquo;</span></span>
+        </div>
+      </a>
+      <a class="row reveal" style="--d:.12s" href="/heron-autocad/">
+        <div class="row-n"><i>03</i><span class="row-t">Heron AI for AutoCAD</span></div>
+        <div>
+          <p>The same chat and padlocks, inside AutoCAD.</p>
+          <span class="row-go">Heron for AutoCAD <span class="chev" aria-hidden="true">&rsaquo;</span></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<details class="more" id="details">
+  <summary><span class="wrap"><span class="more-t">See the full details</span><span class="more-s">every skill, tool and fragment, counted from the repository</span></span></summary>
 <section class="tabsec">
-  <h2 class="head reveal">What you can ask for <span class="dim"><!-- heron:skills-heading -->38 skills &middot; 11 areas of Revit<!-- /heron:skills-heading --></span></h2>
+  <h2 class="head">What you can ask for <span class="dim"><!-- heron:skills-heading -->38 skills &middot; 11 areas of Revit<!-- /heron:skills-heading --></span></h2>
 
 <!-- heron:skills -->
   <div class="pgrp reveal">
@@ -485,7 +534,7 @@
   </div>
 <!-- /heron:skills -->
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <div class="note">
       <b>Why &ldquo;how many sprinklers&rdquo; is not on that list</b>
       <p>It used to be, until September 2026. A question about <em>how many</em> must never quietly become an instruction to <em>place</em> &mdash; so the counting question went back to the counting skill, where it belongs, and the layout skill now runs only when a layout is actually what was asked for.</p>
@@ -495,9 +544,9 @@
 </section>
 
 <section class="tabsec sec-soft">
-  <h2 class="head reveal">What is actually there <span class="dim"><!-- heron:tools-heading -->52 tools &middot; 46 of them can only look<!-- /heron:tools-heading --></span></h2>
+  <h2 class="head">What is actually there <span class="dim"><!-- heron:tools-heading -->52 tools &middot; 46 of them can only look<!-- /heron:tools-heading --></span></h2>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>The Heron tab <i><!-- heron:ribbon-heading -->3 on the ribbon<!-- /heron:ribbon-heading --></i></h3>
     <p>Everything a person presses, in the order it sits on the ribbon, in the words of the tooltip Revit shows. Changes, Admin and Publish are the permissions, and each one is a padlock you can see across the room &mdash; closed, or open.</p>
 <!-- heron:ribbon -->
@@ -589,7 +638,7 @@
   </div>
 <!-- /heron:tools -->
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <div class="note">
       <b>What the chat can and cannot do</b>
       <p><!-- heron:tools-note -->Of the 52 tools the chat can call, 46 can only read and answer. 2 can change the model, and not one of them runs unless the padlock on the ribbon is open.<!-- /heron:tools-note --></p>
@@ -598,14 +647,14 @@
 </section>
 
 <section class="tabsec">
-  <h2 class="head reveal">The library behind it <span class="dim"><!-- heron:fragments-heading -->731 fragments &middot; 19 areas of Revit<!-- /heron:fragments-heading --></span></h2>
+  <h2 class="head">The library behind it <span class="dim"><!-- heron:fragments-heading -->731 fragments &middot; 19 areas of Revit<!-- /heron:fragments-heading --></span></h2>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>How the pieces fit <i>3 words</i></h3>
     <p>A <strong>fragment</strong> is one reusable unit of implementation &mdash; C# plus the notes that describe it. It is the thing that actually does the work. A <strong>capability</strong> is what you want done, named without naming who does it. A <strong>skill</strong> is what you can ask for in your own words. Skills name capabilities, never fragments &mdash; so a fragment can be replaced, split or retired without a single skill changing.</p>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>Every area covered <i><!-- heron:fragments-total -->731<!-- /heron:fragments-total --></i></h3>
     <p>Click an area to open its full list. A name shown faded is still draft &mdash; it has not met a real model yet.</p>
 <!-- heron:fragments -->
@@ -690,16 +739,16 @@
 <!-- /heron:fragments -->
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>What &ldquo;proven&rdquo; means here <i><!-- heron:proven-count -->454 of 731<!-- /heron:proven-count --></i></h3>
     <p>A compile is not a proof. A passing test is not a proof. A proof is a recorded run against a <strong>named real model</strong>, with a negative case and a fingerprint that goes stale the moment the code changes underneath it. <!-- heron:proven-n -->454<!-- /heron:proven-n --> fragments have one. <!-- heron:draft-n -->277<!-- /heron:draft-n --> do not, and stay marked draft until they do &mdash; including every fragment re-authored from Ajmal&rsquo;s earlier libraries, which arrives here unproven no matter how well it worked where it came from.</p>
   </div>
 </section>
 
 <section class="tabsec sec-soft">
-  <h2 class="head reveal">How it is built <span class="dim">four parts, and only one of them is inside Revit</span></h2>
+  <h2 class="head">How it is built <span class="dim">four parts, and only one of them is inside Revit</span></h2>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>The four parts <i>4</i></h3>
     <ul class="tlist">
       <li><b>Heron Revit</b><span>The add-in, the ribbon, and everything that touches the Revit API. C#, running inside Revit itself &mdash; and deliberately the smallest of the four parts, because it is the only one that can bring Revit down with it.</span></li>
@@ -709,7 +758,7 @@
     </ul>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>What happens when you ask for something <i>5 steps</i></h3>
     <ol class="ladder">
       <li style="--rd:.04s"><b>You type a sentence</b><span>&ldquo;Select all ducts&rdquo; &mdash; in ordinary words, in the chat.</span></li>
@@ -720,7 +769,7 @@
     </ol>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>Three kinds of agent <i><!-- heron:agents-total -->252<!-- /heron:agents-total --></i></h3>
     <ul class="tlist">
       <li><b>Tier 1 &mdash; service <em>&middot; <!-- heron:tier-1 -->169<!-- /heron:tier-1 --></em></b><span>Plain deterministic code. Never calls a language model at all. Runs in about a millisecond.</span></li>
@@ -732,9 +781,9 @@
 </section>
 
 <section class="tabsec">
-  <h2 class="head reveal">Why it is safe to point at a real model <span class="dim">the part that matters most</span></h2>
+  <h2 class="head">Why it is safe to point at a real model <span class="dim">the part that matters most</span></h2>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>Before it can change anything <i>4</i></h3>
     <ul class="tlist">
       <li><b>Writing is off until you turn it on</b><span>There is a padlock button on the Heron ribbon tab. Closed, Heron can read the model and nothing else. It ships closed and stays closed until you open it.</span></li>
@@ -744,7 +793,7 @@
     </ul>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>While it is working <i>3</i></h3>
     <ul class="tlist">
       <li><b>Everything it changes is one Ctrl+Z</b><span>Every modifying operation runs inside exactly one transaction group, named after what you asked for. Your undo stack reads &ldquo;Heron: Move ducts 200&nbsp;mm up&rdquo; &mdash; one entry, not two hundred.</span></li>
@@ -753,7 +802,7 @@
     </ul>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>Where your data goes <i>3</i></h3>
     <ul class="tlist">
       <li><b>The part inside Revit opens no connections</b><span>No sockets, listening on no ports. It speaks over a named pipe to another process on the same machine, and that is the only way out of it. An IT department can be told that accurately, and check it.</span></li>
@@ -764,9 +813,9 @@
 </section>
 
 <section class="tabsec sec-soft">
-  <h2 class="head reveal">Where it actually stands <span class="dim">version 0.1.0 &middot; not released</span></h2>
+  <h2 class="head">Where it actually stands <span class="dim">version 0.1.0 &middot; not released</span></h2>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>What has been proved, and on which Revit <i>honestly</i></h3>
     <p>Every row here is a thing somebody watched happen in front of a real Revit, on a named date. Nothing on this page is called proven because it compiled.</p>
     <ul class="tlist">
@@ -779,7 +828,7 @@
     </ul>
   </div>
 
-  <div class="pgrp reveal">
+  <div class="pgrp">
     <h3>How it is put together <i>the short answer</i></h3>
     <ul class="tlist">
       <li><b>Host</b><span>A Claude Code plugin &mdash; skills, subagents, the MCP server and the Revit add-in.</span></li>
@@ -797,40 +846,13 @@
     </div>
   </div>
 </section>
-
-<section class="sec" id="family">
-  <div class="wrap">
-    <span class="kicker">The Heron family</span>
-    <h2 class="head reveal">One name, <span class="dim">three products</span></h2>
-    <p class="lede reveal">Heron is one tab and one way of working, in Revit and in AutoCAD. Each product stands on its own, and all three are open source.</p>
-    <div class="rows">
-      <div class="row reveal">
-        <div class="row-n"><i>01</i><h3 class="row-t">Heron AI</h3></div>
-        <div><p>This page. Describe Revit work in ordinary language, and Heron does it in the model &mdash; checked, reversible and logged.</p></div>
-      </div>
-      <a class="row reveal" style="--d:.06s" href="/heron-tools/">
-        <div class="row-n"><i>02</i><span class="row-t">Heron Tools</span></div>
-        <div>
-          <p>Seventeen everyday Revit buttons for modellers &mdash; Filter Pro, Colorize, View Crop, datums, levels and coordination &mdash; on the same Heron tab. No AI needed.</p>
-          <span class="row-go">Heron Tools <span class="chev" aria-hidden="true">&rsaquo;</span></span>
-        </div>
-      </a>
-      <a class="row reveal" style="--d:.12s" href="/heron-autocad/">
-        <div class="row-n"><i>03</i><span class="row-t">Heron AI for AutoCAD</span></div>
-        <div>
-          <p>The same chat, ribbon and padlocks, in the AutoCAD you have open &mdash; drawing, checking, sheets and PDFs.</p>
-          <span class="row-go">Heron for AutoCAD <span class="chev" aria-hidden="true">&rsaquo;</span></span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
+</details>
 
 <section class="sec sec-soft">
   <div class="wrap">
-    <span class="kicker">Open on purpose</span>
-    <h2 class="head reveal">Read the code and <span class="dim">tell me what is wrong</span></h2>
-    <p class="lede reveal">Heron AI is public because the work should be open, not because it is finished. If you build Revit tools, write AI systems, or can simply see where this is going to break &mdash; that is the help worth having right now.</p>
+    <span class="kicker">In development &middot; not released yet</span>
+    <h2 class="head reveal">Open source. <span class="dim">Follow it on GitHub.</span></h2>
+    <p class="lede reveal">Please don&rsquo;t install it yet &mdash; I&rsquo;ll announce it here and on LinkedIn when it&rsquo;s ready. Developers: ideas and corrections are welcome as an Issue.</p>
     <div class="btnrow reveal">
       <a class="btn" href="https://github.com/Ajmalpshaik/Heron-AI" rel="noopener">Heron-AI on GitHub</a>
       <a class="btn btn-ghost" href="/contact/">Get in touch</a>
