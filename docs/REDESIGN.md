@@ -39,8 +39,15 @@ So: **one skin, one layout language, and no decoration that is not the work.**
 - **No cards, no glass, no shadows, no gradients behind sections.** A hairline
   and space do the same job and never fight the text.
 - **The only pictures on the site are the four model renders**, the tools in
-  `/toolbox/`, and the Heron app icon at the head of the three Heron pages
-  (it is the product's own mark, the thing on the ribbon). The renders are made, not drawn: `npm run posters` renders them
+  `/toolbox/`, and the Heron mark on the three Heron pages (the product's
+  own logo: the app icon on a phone, the 3D heron beside the title on a wide
+  screen).
+- **The Heron pages wear the Heron brand.** `/heron-ai/`, `/heron-tools/` and
+  `/heron-autocad/` load `assets/heron/heron.css` on `<body class="heron">`:
+  Heron's Ink, Mist and orange Accent, and its Manrope font inside the page.
+  The values come from the Heron brand page (`docs/brand/README.md` in
+  Heron-AI) and nowhere else. The bar and footer stay the site's, in Heron's
+  colours. Every other page keeps the site's own blue. The renders are made, not drawn: `npm run posters` renders them
   from 3D models built in code out of MEP parts at real sizes.
 
 ## 3. The system
