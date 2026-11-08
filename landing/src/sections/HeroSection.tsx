@@ -19,7 +19,7 @@ export default function HeroSection() {
           1024px. The heading rises out of a clipping box. */}
       <div className="mt-6 overflow-hidden sm:mt-4 md:-mt-5">
         <h1
-          className="enter hero-heading w-full whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[12.1vw] sm:text-[13vw] md:text-[13.8vw] lg:text-[15.1vw]"
+          className="enter hero-heading w-full whitespace-nowrap text-center font-extrabold leading-none tracking-[-0.04em] text-[12.1vw] sm:text-[13vw] md:text-[13.8vw] lg:text-[15.1vw]"
           style={enter(0.1, 40, 1)}
         >
           {hero.heading}
@@ -28,7 +28,7 @@ export default function HeroSection() {
 
       <div className="flex flex-col items-center gap-8 px-6 pb-16 pt-8 text-center sm:pb-20 md:gap-10 md:px-10 md:pb-24 md:pt-10">
         <p
-          className="enter max-w-[640px] font-light leading-snug text-[#D7E2EA]"
+          className="enter max-w-[640px] font-light leading-snug text-[#F7F5F2]"
           style={{ ...enter(0.3, 20), fontSize: 'clamp(1.05rem, 2.1vw, 1.6rem)' }}
         >
           {hero.tagline}
@@ -39,13 +39,13 @@ export default function HeroSection() {
       </div>
 
       <dl
-        className="enter mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-t border-[#D7E2EA]/15 px-6 py-12 md:grid-cols-4 md:px-10 md:py-16"
+        className="enter mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 border-t border-[#F7F5F2]/15 px-6 py-12 md:grid-cols-4 md:px-10 md:py-16"
         style={enter(0.5, 20)}
       >
         {figures.map((f) => (
           <div key={f.label} className="flex flex-col-reverse gap-2">
-            <dt className="text-sm font-light uppercase tracking-widest text-[#D7E2EA]/70">{f.label}</dt>
-            <dd className="hero-heading font-black leading-none" style={{ fontSize: 'clamp(2.6rem, 6vw, 5rem)' }}>
+            <dt className="text-sm font-light uppercase tracking-widest text-[#F7F5F2]/70">{f.label}</dt>
+            <dd className="font-extrabold leading-none text-[#FD641A]" style={{ fontSize: 'clamp(2.6rem, 6vw, 5rem)' }}>
               {f.value}
             </dd>
           </div>

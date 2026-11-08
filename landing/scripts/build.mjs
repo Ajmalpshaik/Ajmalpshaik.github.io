@@ -35,14 +35,10 @@ let html = await readFile(join(landing, 'dist', 'index.html'), 'utf8')
 if (!html.includes('<!--app-html-->')) throw new Error('index.html lost its <!--app-html--> marker')
 html = html.replace('<!--app-html-->', () => render())
 
-// Preload the two faces the first screen needs, so the heading and the nav do
-// not arrive in a fallback font and then jump.
+// Preload the one face the page uses, so the heading and the nav do not
+// arrive in a fallback font and then jump. It is the site's shared file.
 const built = await readdir(join(landing, 'dist', 'assets', 'home'))
-const preloads = ['kanit-latin-900-normal', 'kanit-latin-500-normal'].map((face) => {
-  const file = built.find((f) => f.startsWith(face) && f.endsWith('.woff2'))
-  if (!file) throw new Error(`font ${face} is missing from the build`)
-  return `<link rel="preload" href="/assets/home/${file}" as="font" type="font/woff2" crossorigin>`
-})
+const preloads = ['<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>']
 html = html.replace('</title>', `</title>\n${preloads.join('\n')}`)
 
 html = html.replace(

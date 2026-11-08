@@ -17,7 +17,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative min-h-screen bg-[#0C0C0C]" style={{ overflowX: 'clip' }}>
+      <div className="relative min-h-screen bg-[#0F0F10]" style={{ overflowX: 'clip' }}>
         <a href="#main" className="skip">
           Skip to content
         </a>

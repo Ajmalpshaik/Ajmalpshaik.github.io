@@ -24,8 +24,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BRAND_SVG = (
     '<svg viewBox="0 0 64 64" aria-hidden="true">'
     '<rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/>'
-    '<text x="32" y="42" font-family="Kanit,-apple-system,Segoe UI,Arial,sans-serif" font-size="25" '
-    'font-weight="500" fill="currentColor" text-anchor="middle">AJ</text></svg>'
+    '<text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" '
+    'font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg>'
 )
 
 # Three menus and a button. Each entry is (href, label, the one line under it).

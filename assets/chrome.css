@@ -18,12 +18,12 @@
   height:var(--nav-h,60px);
   /* Translucent over the page, and dark enough to stay near-black where it
      crosses the cover's one white section. */
-  background:rgba(12,12,12,.88);
+  background:rgba(15,15,16,.88);
   -webkit-backdrop-filter:saturate(170%) blur(18px);backdrop-filter:saturate(170%) blur(18px);
   border-bottom:1px solid transparent;
   transition:border-color .3s var(--ease,cubic-bezier(.25,.1,.25,1));
 }
-#nav.scrolled{border-bottom-color:var(--line,#23262a)}
+#nav.scrolled{border-bottom-color:var(--line,#262627)}
 .navin{
   max-width:1180px;height:100%;margin:0 auto;padding:0 var(--gut,22px);
   display:flex;align-items:center;gap:10px;position:relative;
@@ -31,11 +31,11 @@
 
 .brand{
   display:flex;align-items:center;gap:10px;
-  font-family:var(--display,"Kanit",sans-serif);font-weight:500;
+  font-family:var(--display,"Manrope",sans-serif);font-weight:500;
   font-size:15px;letter-spacing:.01em;text-transform:uppercase;
-  color:var(--ink,#f2f6f9);
+  color:var(--ink,#F7F5F2);
 }
-.brand:hover{color:var(--ink,#f2f6f9)}
+.brand:hover{color:var(--ink,#F7F5F2)}
 .brand svg{width:26px;height:26px;flex:none}
 
 /* ---- the centred menu row ----
@@ -47,30 +47,30 @@
 }
 .navgroup{position:relative}
 .navtrig,.navcta{
-  font-family:var(--display,"Kanit",sans-serif);font-weight:500;
+  font-family:var(--display,"Manrope",sans-serif);font-weight:500;
   font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
   display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
   padding:9px 15px;border-radius:999px;border:1px solid transparent;
-  background:none;color:var(--faint,#767f88);cursor:pointer;
+  background:none;color:var(--faint,#888786);cursor:pointer;
   transition:color .25s var(--ease,ease),background .25s var(--ease,ease);
 }
-.navtrig:hover,.navtrig[aria-expanded="true"]{color:var(--ink,#f2f6f9);background:rgba(255,255,255,.06)}
+.navtrig:hover,.navtrig[aria-expanded="true"]{color:var(--ink,#F7F5F2);background:rgba(255,255,255,.06)}
 .navtrig .caret{width:10px;height:10px;flex:none;transition:transform .3s var(--ease-out,ease)}
 .navtrig[aria-expanded="true"] .caret{transform:rotate(180deg)}
 /* the section you are in, marked without moving anything */
-.navgroup[data-current] .navtrig{color:var(--ink,#f2f6f9)}
+.navgroup[data-current] .navtrig{color:var(--ink,#F7F5F2)}
 .navgroup[data-current] .navtrig::after{
   content:"";position:absolute;left:50%;bottom:-1px;width:16px;height:2px;border-radius:2px;
   transform:translateX(-50%);
-  background:var(--grad,linear-gradient(96deg,#00c8ff 0%,#2563eb 48%,#7c3aed 100%));
+  background:var(--grad,linear-gradient(96deg,#FF9A5C 0%,#FD641A 100%));
 }
 .navcta{
-  margin-left:10px;background:var(--ink,#f2f6f9);color:var(--bg,#0c0c0c);
+  margin-left:10px;background:var(--accent,#FD641A);color:var(--bg,#0F0F10);
   border-color:transparent;
   transition:background .25s var(--ease,ease),color .25s var(--ease,ease);
 }
-.navcta:hover{background:#fff;color:var(--bg,#0c0c0c)}
-.navcta[aria-current="page"]{background:transparent;color:var(--ink,#f2f6f9);box-shadow:inset 0 0 0 1px var(--line,#23262a)}
+.navcta:hover{background:var(--accent-hi,#FF9A5C);color:var(--bg,#0F0F10)}
+.navcta[aria-current="page"]{background:transparent;color:var(--ink,#F7F5F2);box-shadow:inset 0 0 0 1px var(--line,#262627)}
 
 /* ---- the panel under a menu ----
    Opaque. A menu is for reading, and a translucent one puts the page's own
@@ -79,7 +79,7 @@
 .navmenu{
   position:absolute;top:calc(100% + 10px);left:50%;transform:translate(-50%,0);
   min-width:280px;padding:8px;border-radius:18px;list-style:none;margin:0;
-  background:#131315;border:1px solid var(--line,#23262a);
+  background:#161617;border:1px solid var(--line,#262627);
   box-shadow:0 24px 56px rgba(0,0,0,.6);
   display:grid;gap:2px;
 }
@@ -96,16 +96,16 @@ html.js .navgroup.open .navmenu{
 }
 .navmenu a{
   display:grid;gap:3px;padding:11px 14px;border-radius:12px;
-  color:var(--ink,#f2f6f9);transition:background .2s var(--ease,ease);
+  color:var(--ink,#F7F5F2);transition:background .2s var(--ease,ease);
 }
-.navmenu a:hover{background:rgba(255,255,255,.06);color:var(--ink,#f2f6f9)}
+.navmenu a:hover{background:rgba(255,255,255,.06);color:var(--ink,#F7F5F2)}
 .navmenu a b{
-  font-family:var(--display,"Kanit",sans-serif);font-weight:500;font-size:14px;
+  font-family:var(--display,"Manrope",sans-serif);font-weight:500;font-size:14px;
   letter-spacing:.02em;text-transform:uppercase;
 }
-.navmenu a span{font-size:12.5px;line-height:1.35;color:var(--faint,#767f88)}
+.navmenu a span{font-size:12.5px;line-height:1.35;color:var(--faint,#888786)}
 .navmenu a[aria-current="page"]{background:rgba(255,255,255,.06)}
-.navmenu a[aria-current="page"] b{color:var(--accent,#4aa8ff)}
+.navmenu a[aria-current="page"] b{color:var(--accent,#FD641A)}
 
 /* ---- right cluster ---- */
 .navend{display:flex;align-items:center;gap:4px;margin-left:auto}
@@ -115,11 +115,11 @@ html.js .navgroup.open .navmenu{
 }
 #menuBtn span{
   position:relative;display:block;width:20px;height:1.5px;
-  background:var(--ink,#f2f6f9);transition:background .3s var(--ease,ease);
+  background:var(--ink,#F7F5F2);transition:background .3s var(--ease,ease);
 }
 #menuBtn span::before,#menuBtn span::after{
   content:"";position:absolute;left:0;width:20px;height:1.5px;
-  background:var(--ink,#f2f6f9);transition:transform .3s var(--ease,ease),top .3s var(--ease,ease);
+  background:var(--ink,#F7F5F2);transition:transform .3s var(--ease,ease),top .3s var(--ease,ease);
 }
 #menuBtn span::before{top:-6px}
 #menuBtn span::after{top:6px}
@@ -137,7 +137,7 @@ html.js .navgroup.open .navmenu{
     position:fixed;top:var(--nav-h,60px);left:0;right:0;
     max-height:calc(100dvh - var(--nav-h,60px));overflow-y:auto;overscroll-behavior:contain;
     display:block;padding:8px var(--gut,22px) 34px;
-    background:#0e0e10;border-bottom:1px solid var(--line,#23262a);
+    background:#0F0F10;border-bottom:1px solid var(--line,#262627);
     opacity:0;transform:translateY(-8px);pointer-events:none;visibility:hidden;
     transition:opacity .28s var(--ease,ease),transform .28s var(--ease,ease),visibility .28s;
   }
@@ -145,7 +145,7 @@ html.js .navgroup.open .navmenu{
   .navgroup{position:static;padding-top:18px}
   .navtrig{
     pointer-events:none;width:100%;padding:0 2px 10px;border-radius:0;
-    font-size:11.5px;letter-spacing:.2em;color:var(--faint,#767f88);background:none;
+    font-size:11.5px;letter-spacing:.2em;color:var(--faint,#888786);background:none;
   }
   .navtrig .caret{display:none}
   .navgroup[data-current] .navtrig::after{display:none}
@@ -154,7 +154,7 @@ html.js .navgroup.open .navmenu{
     min-width:0;padding:0;border:none;background:none;box-shadow:none;
     transition:none;
   }
-  .navmenu a{padding:14px 2px;border-radius:0;border-bottom:1px solid var(--line-soft,#191b1e)}
+  .navmenu a{padding:14px 2px;border-radius:0;border-bottom:1px solid var(--line-soft,#1d1d1e)}
   .navmenu li:last-child a{border-bottom:none}
   .navmenu a:hover{background:none}
   .navmenu a b{font-size:17px;letter-spacing:.01em}

@@ -33,9 +33,9 @@ So: **one skin, one layout language, and no decoration that is not the work.**
   headline, then sections that are a kicker, a headline and a list of numbered
   rows separated by hairlines. That layout is the cover's Services section,
   which was already the simplest and loudest thing on the old site.
-- **Kanit 900** carries every headline, uppercase, at display sizes. Kanit 500
-  carries labels, names and the bar. Body prose stays on the system face: it
-  loads instantly and it is the right thing for long text.
+- **Manrope** (the Heron brand's font) carries everything: 800 for headlines,
+  in sentence case; 500-700 for labels, names and the bar, which stay
+  uppercase; regular weights for prose.
 - **No cards, no glass, no shadows, no gradients behind sections.** A hairline
   and space do the same job and never fight the text.
 - **The only pictures on the site are the tools in `/toolbox/` and the Heron
@@ -46,12 +46,12 @@ So: **one skin, one layout language, and no decoration that is not the work.**
 - **Short beats complete.** Every page is a headline, a few big figures and
   short numbered rows of one line each. A detail that only some readers need
   goes behind one `<details>` line (as on `/heron-ai/`), not into the page.
-- **The Heron pages wear the Heron brand.** `/heron-ai/`, `/heron-tools/` and
-  `/heron-autocad/` load `assets/heron/heron.css` on `<body class="heron">`:
-  Heron's Ink, Mist and orange Accent, and its Manrope font inside the page.
-  The values come from the Heron brand page (`docs/brand/README.md` in
-  Heron-AI) and nowhere else. The bar and footer stay the site's, in Heron's
-  colours. Every other page keeps the site's own blue.
+- **The whole site wears the Heron brand** (November 2026): Heron's Ink,
+  Mist and orange Accent, and its Manrope font, from the Heron brand page
+  (`docs/brand/README.md` in Heron-AI) and nowhere else. Headlines are in
+  sentence case, as Heron writes its name. `assets/heron/heron.css` keeps
+  only what the three Heron pages add: the heron mark and the folded
+  details.
 
 ## 3. The system
 
@@ -59,38 +59,39 @@ So: **one skin, one layout language, and no decoration that is not the work.**
 
 | Role | Face | Size |
 |---|---|---|
-| Cover heading | Kanit 900 | `12.1–15.1vw` |
-| Page title (`.display`) | Kanit 900 | `clamp(2.6rem, 9.2vw, 8.4rem)` |
-| Section head (`.head`) | Kanit 900 | `clamp(1.9rem, 5.2vw, 4.1rem)` |
-| Row number (`.row-n i`) | Kanit 900 | `clamp(2.1rem, 5.4vw, 4.6rem)` |
-| Row name (`.row-t`) | Kanit 500 | `clamp(1.05rem, 1.9vw, 1.6rem)` |
-| Kicker | Kanit 500 | `12.5px`, `0.2em`, uppercase |
-| Lead (`.lede`) | system | `clamp(1.05rem, 1.5vw, 1.4rem)` |
-| Body | system | `~1rem`, line-height 1.6 |
+| Cover heading | Manrope 800, sentence case | `12.1–15.1vw` |
+| Page title (`.display`) | Manrope 800, sentence case | `clamp(2.6rem, 9.2vw, 8.4rem)` |
+| Section head (`.head`) | Manrope 800, sentence case | `clamp(1.9rem, 5.2vw, 4.1rem)` |
+| Row number (`.row-n i`) | Manrope 800 | `clamp(2.1rem, 5.4vw, 4.6rem)` |
+| Row name (`.row-t`) | Manrope 500, uppercase | `clamp(1.05rem, 1.9vw, 1.6rem)` |
+| Kicker | Manrope 500, uppercase | `12.5px`, `0.2em` |
+| Lead (`.lede`) | Manrope | `clamp(1.05rem, 1.5vw, 1.4rem)` |
+| Body | Manrope | `~1rem`, line-height 1.6 |
 
-Everything in Kanit is uppercase. Two weights are self-hosted, Latin only,
-about 19 KB each, preloaded — no page makes a third-party request for a font.
+One variable file, `assets/fonts/manrope.woff2` (Latin, ~24 KB, SIL OFL),
+self-hosted and preloaded — no page makes a third-party request for a font.
 
 ### Colour
 
-One set. Every text colour clears WCAG AA on both grounds; the tightest pair is
-`--faint` on `--bg-soft` at 4.64:1.
+The Heron brand palette (Heron-AI `docs/brand/README.md`). Greys are Mist over
+Ink at an opacity, which the brand page allows. Every text colour clears WCAG
+AA on both grounds; the tightest pair is `--faint` on `--bg-soft` at 5.0:1.
 
 | Token | Value | On `--bg` |
 |---|---|---|
-| `--bg` | `#0c0c0c` | — |
-| `--bg-soft` | `#111113` | — |
-| `--ink` | `#f2f6f9` | 18.0:1 |
-| `--body` | `#aab8c4` | 9.7:1 |
-| `--faint` | `#767f88` | 4.8:1 |
-| `--line` | `#23262a` | — |
-| `--accent` | `#4aa8ff` | 7.8:1 |
+| `--bg` | `#0F0F10` Ink | — |
+| `--bg-soft` | `#161617` (Mist 3%) | — |
+| `--ink` | `#F7F5F2` Mist | 17.6:1 |
+| `--body` | `#b6b5b3` (Mist 72%) | 9.4:1 |
+| `--faint` | `#888786` (Mist 52%) | 5.3:1 |
+| `--line` | `#262627` (Mist 10%) | — |
+| `--accent` | `#FD641A` Accent | 6.4:1 |
 
-The cyan → blue → violet gradient is the one accent, and it is used in four
-places only: the bar's current-section mark, the reading-progress bar, the rule
-beside a pull quote, and the cover's Contact button. Not on numbers — across a
-one-character number a gradient samples a sliver of its ramp, so "395" comes
-out cyan and "0" solid violet side by side.
+Accent is the one highlight: links, figures, the main button (with Ink text —
+white on Accent is only 3.0:1) and the Contact button in the bar. Accent Light
+`#FF9A5C` appears only as the light end of the one gradient (the bar's
+current-section mark, the reading-progress bar, the rule beside a pull quote).
+The Services band on the cover is Mist with Ink text.
 
 ### Components
 

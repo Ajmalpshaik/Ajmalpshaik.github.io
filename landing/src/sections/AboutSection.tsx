@@ -14,14 +14,14 @@ export default function AboutSection() {
           <FadeIn
             as="h2"
             y={40}
-            className="hero-heading text-center font-black uppercase leading-none tracking-tight"
+            className="hero-heading text-center font-extrabold leading-none tracking-[-0.04em]"
             style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
           >
             {about.heading}
           </FadeIn>
           <AnimatedText
             text={about.text}
-            className="max-w-[560px] text-pretty text-center font-medium leading-relaxed text-[#D7E2EA]"
+            className="max-w-[560px] text-pretty text-center font-medium leading-relaxed text-[#F7F5F2]"
             style={{ fontSize: 'clamp(1rem, 2vw, 1.35rem)' }}
           />
         </div>

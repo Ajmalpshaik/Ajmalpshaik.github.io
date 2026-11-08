@@ -88,7 +88,7 @@ export default function SiteNav() {
             <text
               x="32"
               y="42"
-              fontFamily="Kanit,-apple-system,Segoe UI,Arial,sans-serif"
+              fontFamily="Manrope,-apple-system,Segoe UI,Arial,sans-serif"
               fontSize="25"
               fontWeight="500"
               fill="currentColor"

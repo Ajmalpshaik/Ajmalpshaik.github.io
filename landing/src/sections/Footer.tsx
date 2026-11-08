@@ -11,12 +11,12 @@ export default function Footer() {
   useEffect(() => setYear(new Date().getFullYear()), [])
 
   return (
-    <footer className="bg-[#0C0C0C] px-5 pb-10 pt-24 sm:px-8 sm:pt-32 md:px-10 md:pt-40">
+    <footer className="bg-[#0F0F10] px-5 pb-10 pt-24 sm:px-8 sm:pt-32 md:px-10 md:pt-40">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 text-center sm:gap-12">
         <FadeIn
           as="h2"
           y={40}
-          className="hero-heading font-black uppercase leading-none tracking-tight"
+          className="hero-heading font-extrabold leading-none tracking-[-0.04em]"
           style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
         >
           {footer.heading}
@@ -24,7 +24,7 @@ export default function Footer() {
         <FadeIn
           as="p"
           delay={0.1}
-          className="max-w-[560px] font-light leading-relaxed text-[#D7E2EA]"
+          className="max-w-[560px] font-light leading-relaxed text-[#F7F5F2]"
           style={{ fontSize: 'clamp(1rem, 2vw, 1.35rem)' }}
         >
           {footer.text}
@@ -33,7 +33,7 @@ export default function Footer() {
           <ContactButton />
           <a
             href={`mailto:${footer.email}`}
-            className="inline-flex items-center gap-2 text-sm font-light tracking-wide text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70 sm:text-base"
+            className="inline-flex items-center gap-2 text-sm font-light tracking-wide text-[#F7F5F2] transition-opacity duration-200 hover:opacity-70 sm:text-base"
           >
             <Mail aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.5} />
             {footer.email}
@@ -47,7 +47,7 @@ export default function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener"
-                    className="inline-flex items-center gap-2 rounded-full border border-[#D7E2EA]/25 px-5 py-2.5 text-xs font-medium uppercase tracking-widest text-[#D7E2EA] transition-colors duration-200 hover:bg-[#D7E2EA]/10 sm:text-sm"
+                    className="inline-flex items-center gap-2 rounded-full border border-[#F7F5F2]/25 px-5 py-2.5 text-xs font-medium uppercase tracking-widest text-[#F7F5F2] transition-colors duration-200 hover:bg-[#F7F5F2]/10 sm:text-sm"
                   >
                     <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.75} />
                     {link.label}
@@ -60,11 +60,11 @@ export default function Footer() {
         </FadeIn>
       </div>
 
-      <nav aria-label="Site" className="mx-auto mt-20 max-w-5xl border-t border-[#D7E2EA]/15 pt-10 sm:mt-28">
+      <nav aria-label="Site" className="mx-auto mt-20 max-w-5xl border-t border-[#F7F5F2]/15 pt-10 sm:mt-28">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 text-left sm:grid-cols-3 sm:gap-x-10">
           {footer.columns.map((column) => (
             <div key={column.name}>
-              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-[#D7E2EA]/50">
+              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-[#F7F5F2]/50">
                 {column.name}
               </h3>
               <ul className="mt-4 grid gap-3">
@@ -72,7 +72,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-sm text-[#D7E2EA]/80 transition-opacity duration-200 hover:opacity-60 sm:text-base"
+                      className="text-sm text-[#F7F5F2]/80 transition-opacity duration-200 hover:opacity-60 sm:text-base"
                     >
                       {link.label}
                     </a>
@@ -83,7 +83,7 @@ export default function Footer() {
           ))}
         </div>
       </nav>
-      <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#D7E2EA]/60">
+      <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#F7F5F2]/60">
         &copy; {year} Ajmal P.S &middot; Designed and built in Doha, Qatar
       </p>
     </footer>
