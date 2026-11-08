@@ -16,7 +16,37 @@
   var CHART_REF_RATIO = 1.2;
 
   function el(id) { return document.getElementById(id); }
-  function num(id) { var e = el(id); return e ? (parseFloat(e.value) || 0) : 0; }
+  /* Every field declares min="0" (and some a max). A value below it is
+     impossible - a negative weight, factor or length - and used to flow
+     straight through: a negative outrigger force gave NaN for the pad size and
+     a negative pressure that rendered PASS. So below the minimum is read as
+     blank, and the field is outlined and says why. Above a max is only flagged
+     and still used as typed, so it can never quietly turn a check green. */
+  function num(id) {
+    var e = el(id);
+    if (!e) return 0;
+    var v = parseFloat(e.value);
+    if (!isFinite(v)) { flagField(e, ''); return 0; }
+    var lo = e.min !== '' ? parseFloat(e.min) : null;
+    var hi = e.max !== '' ? parseFloat(e.max) : null;
+    if (lo != null && v < lo) { flagField(e, 'Must be ' + lo + ' or more. Read as blank.'); return 0; }
+    if (hi != null && v > hi) { flagField(e, 'Usually ' + hi + ' at most. Check this value.'); return v; }
+    flagField(e, '');
+    return v;
+  }
+  function flagField(e, msg) {
+    var f = e.closest ? e.closest('.f') : null;
+    if (msg) e.setAttribute('aria-invalid', 'true'); else e.removeAttribute('aria-invalid');
+    if (!f) return;
+    var note = f.querySelector('.f-bad');
+    if (msg && !note) {
+      note = document.createElement('p');
+      note.className = 'f-bad';
+      note.setAttribute('role', 'status');
+      f.appendChild(note);
+    }
+    if (note) { note.textContent = msg; note.hidden = !msg; }
+  }
   function txt(id, s) { var e = el(id); if (e) e.textContent = s; }
 
   /* state is one of: '', 'ok', 'bad', 'warn', 'dim' */
