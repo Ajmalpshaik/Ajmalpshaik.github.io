@@ -43,8 +43,8 @@ export const navCta = { href: '/contact/', label: 'Contact' }
 export const contactHref = '/contact/'
 
 export const hero = {
-  // Rendered uppercase. The apostrophe is a real curly one.
-  heading: 'Hi, i’m Ajmal',
+  // Sentence case, as the Heron brand writes. The apostrophe is a real curly one.
+  heading: 'Hi, I’m Ajmal',
   tagline: 'MEP BIM coordinator in Doha. I build the models, and the tools that build them faster.',
 }
 

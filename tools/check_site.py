@@ -171,7 +171,7 @@ else:
 # crawlers rather than by the pages. Without this, deleting one of them leaves
 # the static check green.
 for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
-              "assets/fonts/kanit-500.woff2", "assets/fonts/kanit-900.woff2"):
+              "assets/fonts/manrope.woff2"):
     if not os.path.exists(os.path.join(ROOT, asset)):
         err(f"missing expected file: {asset}")
 
