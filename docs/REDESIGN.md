@@ -38,8 +38,9 @@ So: **one skin, one layout language, and no decoration that is not the work.**
   loads instantly and it is the right thing for long text.
 - **No cards, no glass, no shadows, no gradients behind sections.** A hairline
   and space do the same job and never fight the text.
-- **The only pictures on the site are the four model renders** and the tools in
-  `/toolbox/`. The renders are made, not drawn: `npm run posters` renders them
+- **The only pictures on the site are the four model renders**, the tools in
+  `/toolbox/`, and the Heron app icon at the head of the three Heron pages
+  (it is the product's own mark, the thing on the ribbon). The renders are made, not drawn: `npm run posters` renders them
   from 3D models built in code out of MEP parts at real sizes.
 
 ## 3. The system
@@ -111,16 +112,18 @@ Three menus and a button, the same on every page including the cover:
 
 ```
 [AJ AJMAL P.S]   EXPERIENCE ▾   TOOLS ▾   ABOUT ▾            [CONTACT]
-                 ├ Story        ├ Automation ├ Skills
-                 ├ Experience   ├ Heron AI   ├ About
-                 └ Work         └ Toolbox    └ FAQ
+                 ├ Story        ├ Automation        ├ Skills
+                 ├ Experience   ├ Heron AI          ├ About
+                 └ Work         ├ Heron Tools       └ FAQ
+                                ├ Heron for AutoCAD
+                                └ Toolbox
 ```
 
 - Each menu is a `<button aria-expanded>` and a `<ul aria-label="…">`. Hover or
   click opens it; a click closes only what a click opened. Escape closes and
   returns focus; `↑ ↓` walk the links; Tab out closes it behind you.
 - Under 1000px the three become one sheet with the groups as headings — every
-  page one tap away, all ten links on one phone screen. The trigger is inert
+  page one tap away, all twelve links in one phone sheet. The trigger is inert
   there, so it leaves the reading order and the list's label names the group.
 - With JavaScript off every menu is simply open. Nothing hides behind a script.
 - The bar is written **once**, in `assets/chrome.css`, which every page loads —
@@ -139,11 +142,13 @@ as that decision, and **every page ends by handing over to the next one**.
 4. **Work** — five projects, scope and role
 5. **Automation** — the Revit add-ins and scripts a whole team runs
 6. **Heron AI** — where it is going
-7. **Toolbox** — tools you can use right now, in the browser
-8. **Skills** — the full stack, named
-9. **About** — visa, notice, languages
-10. **FAQ** — the questions before a call
-11. **Contact** — act
+7. **Heron Tools** — the everyday Revit buttons, open source
+8. **Heron for AutoCAD** — Heron AI, inside AutoCAD
+9. **Toolbox** — tools you can use right now, in the browser
+10. **Skills** — the full stack, named
+11. **About** — visa, notice, languages
+12. **FAQ** — the questions before a call
+13. **Contact** — act
 
 The pager carries the previous and next titles and what is on them, so the
 visitor always knows what they are about to get.

@@ -38,6 +38,8 @@ GROUPS = [
     ("Tools", [
         ("/automation/", "Automation", "The Revit tools I build"),
         ("/heron-ai/", "Heron AI", "An AI that works inside Revit"),
+        ("/heron-tools/", "Heron Tools", "Everyday buttons on the Revit ribbon"),
+        ("/heron-autocad/", "Heron for AutoCAD", "Heron AI, inside AutoCAD"),
         ("/toolbox/", "Toolbox", "Tools you can use in the browser"),
     ]),
     ("About", [
@@ -57,6 +59,8 @@ TOUR = [
     ("/work/", "Selected work", "Five projects in Qatar"),
     ("/automation/", "Automation", "The Revit tools I build"),
     ("/heron-ai/", "Heron AI", "An AI that works inside Revit"),
+    ("/heron-tools/", "Heron Tools", "Everyday buttons on the Revit ribbon"),
+    ("/heron-autocad/", "Heron for AutoCAD", "Heron AI, inside AutoCAD"),
     ("/toolbox/", "Toolbox", "Tools you can use in the browser"),
     ("/skills/", "Skills", "The full stack, named"),
     ("/about/", "About", "Visa, notice, languages"),
@@ -86,6 +90,8 @@ PAGES = {
     "work/index.html": ("/work/", "/work/"),
     "automation/index.html": ("/automation/", "/automation/"),
     "heron-ai/index.html": ("/heron-ai/", "/heron-ai/"),
+    "heron-tools/index.html": ("/heron-tools/", "/heron-tools/"),
+    "heron-autocad/index.html": ("/heron-autocad/", "/heron-autocad/"),
     "about/index.html": ("/about/", "/about/"),
     "skills/index.html": ("/skills/", "/skills/"),
     "faq/index.html": ("/faq/", "/faq/"),

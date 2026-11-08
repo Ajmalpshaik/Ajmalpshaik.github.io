@@ -65,6 +65,7 @@ const PAGES = [
   'index.html', '404.html',
   'story/index.html', 'experience/index.html', 'work/index.html',
   'automation/index.html', 'heron-ai/index.html',
+  'heron-tools/index.html', 'heron-autocad/index.html',
   'about/index.html',
   'skills/index.html', 'faq/index.html', 'contact/index.html',
   // Added 2026-09-20. These two shipped on 2026-08-12 and were never in this
@@ -196,7 +197,7 @@ for (const page of PAGES) {
 {
   const EXPECTED = [
     '/story/', '/experience/', '/work/',
-    '/automation/', '/heron-ai/', '/toolbox/',
+    '/automation/', '/heron-ai/', '/heron-tools/', '/heron-autocad/', '/toolbox/',
     '/skills/', '/about/', '/faq/',
   ];
 
@@ -233,8 +234,11 @@ for (const page of PAGES) {
 
         await trigger.click();
         if (!(await settle(id, true))) fail(`${where}: clicking "${name}" does not open its menu`);
+        // Tools carries the three Heron products beside Automation and the
+        // Toolbox; the other two menus hold three each.
+        const want = name === 'Tools' ? 5 : 3;
         const links = await p.$$eval(`#${id} a`, (as) => as.length);
-        if (links !== 3) fail(`${where}: the "${name}" menu holds ${links} links, expected 3`);
+        if (links !== want) fail(`${where}: the "${name}" menu holds ${links} links, expected ${want}`);
 
         await p.keyboard.press('Escape');
         if (!(await settle(id, false))) fail(`${where}: Escape does not close the "${name}" menu`);

@@ -33,6 +33,8 @@ export const navGroups = [
     items: [
       { href: '/automation/', label: 'Automation', note: 'The Revit tools I build' },
       { href: '/heron-ai/', label: 'Heron AI', note: 'An AI that works inside Revit' },
+      { href: '/heron-tools/', label: 'Heron Tools', note: 'Everyday buttons on the Revit ribbon' },
+      { href: '/heron-autocad/', label: 'Heron for AutoCAD', note: 'Heron AI, inside AutoCAD' },
       { href: '/toolbox/', label: 'Toolbox', note: 'Tools you can use in the browser' },
     ],
   },
@@ -174,6 +176,8 @@ export const footer = {
       links: [
         { label: 'Automation', href: '/automation/' },
         { label: 'Heron AI', href: '/heron-ai/' },
+        { label: 'Heron Tools', href: '/heron-tools/' },
+        { label: 'Heron for AutoCAD', href: '/heron-autocad/' },
         { label: 'Toolbox', href: '/toolbox/' },
       ],
     },
