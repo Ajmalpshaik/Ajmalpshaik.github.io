@@ -92,6 +92,10 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .f-in input:focus-visible,.f-in select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .f-in input[readonly]{opacity:.66;cursor:not-allowed}
+/* a value outside the field's range: crane-calc.js reads it as blank and says why */
+.f-in input[aria-invalid="true"]{box-shadow:inset 0 0 0 1.5px var(--c-bad,#f87171)}
+.f-bad{font-size:11.5px;font-weight:600;color:var(--c-bad,#f87171);margin:6px 0 0 3px;line-height:1.45}
+.f-bad[hidden]{display:none}
 .f-in .u{
   position:absolute;right:13px;top:50%;transform:translateY(-50%);
   color:var(--faint);font-size:12px;font-weight:600;pointer-events:none;
