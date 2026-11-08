@@ -334,12 +334,12 @@
     <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>Heron Tools</span></nav>
     <img class="hicon enter" style="--d:0s" src="/assets/heron/heron-icon.webp" width="72" height="72" alt="The Heron app icon: a white heron on orange">
     <img class="heron3d" src="/assets/heron/heron-3d.webp" width="718" height="720" alt="" aria-hidden="true">
-    <span class="kicker enter" style="--d:.02s">Revit add-in &middot; version 1.0.0 &middot; not released yet</span>
+    <span class="kicker enter" style="--d:.02s">Revit add-in &middot; free &middot; open source</span>
     <h1 class="display enter" style="--d:.06s">Heron <span class="dim">Tools</span></h1>
-    <p class="lede enter" style="--d:.18s">Everyday Revit tools for BIM modellers, on the <strong>Heron</strong> ribbon tab. The jobs a drafting team repeats every week &mdash; filters, colours, crops, datums, levels &mdash; each one a single button and a single Undo.</p>
+    <p class="lede enter" style="--d:.18s">Everyday Revit tools for BIM modellers. <strong>One click. One undo.</strong></p>
     <div class="btnrow enter" style="--d:.28s">
-      <a class="btn" href="#tools">See the tools</a>
-      <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">Read the code on GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="btn" href="#tools">See what it does</a>
+      <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
     </div>
   </div>
 </header>
@@ -347,118 +347,88 @@
 <section class="sec sec-soft" aria-label="At a glance">
   <div class="wrap">
     <div class="nums reveal">
-      <div><b>17</b><span>tools on five panels of the ribbon</span></div>
-      <div><b>8</b><span>Revit releases, 2020 to 2027</span></div>
-      <div><b>1</b><span>Undo step for every press</span></div>
-      <div><b>0</b><span>administrator rights needed to install</span></div>
+      <div><b>17</b><span>tools on the Heron tab</span></div>
+      <div><b>8</b><span>Revit releases, 2020&ndash;2027</span></div>
+      <div><b>1</b><span>undo for every click</span></div>
+      <div><b>0</b><span>admin rights to install</span></div>
     </div>
-    <p class="numnote">Counted from the Heron-Tools repository on 8 November 2026. Free and open source under the Apache&nbsp;2.0 licence.</p>
+    <p class="numnote">Counted from the Heron-Tools repository, 8 November 2026. Apache&nbsp;2.0.</p>
   </div>
 </section>
 
-<section class="tabsec" id="tools">
-  <h2 class="head reveal">What is on the ribbon <span class="dim">17 tools &middot; 5 panels &middot; plus About</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>View <i>6</i></h3>
-    <ul class="tlist">
-      <li><b>Filter Pro</b><span>Pick categories, a parameter and its values. Filter Pro makes one view filter per value, names it for you &mdash; the name says the rule, such as &ldquo;Not 300&rdquo; or &ldquo;Has value&rdquo; &mdash; and adds it to the active view or the views you pick, first in the filter list. Shuffle colours gives every filter its own colour.</span></li>
-      <li><b>Colorize</b><span>The same picks, but the colour goes straight onto the matching elements, with no view filter &mdash; by value, or whole categories. <em>Restore original</em> puts back the elements&rsquo; own overrides.</span></li>
-      <li><b>View Crop</b><span><em>Crop View by Elements</em> fits plan crops around their elements with a margin. <em>Annotation Crop by View Crop</em> turns the annotation crop on at an offset measured on paper.</span></li>
-      <li><b>Unhide All</b><span>Shows everything hidden one by one in the view, and turns Temporary Hide/Isolate off.</span></li>
-      <li><b>Toggle Links</b><span>Turns the RVT Links category off or on in the view, and tells you if some links stay hidden one by one.</span></li>
-      <li><b>Highlight</b><span>The selection in red, the rest grey. Click again and the view comes back exactly as it was &mdash; every element&rsquo;s own overrides are remembered.</span></li>
+<section class="sec" id="tools">
+  <div class="wrap">
+    <span class="kicker">The tools</span>
+    <h2 class="head reveal">17 tools. <span class="dim">Zero fuss.</span></h2>
+    <ul class="tlist reveal">
+      <li><b>Filter Pro</b><span>One view filter per value, named for you.</span></li>
+      <li><b>Colorize</b><span>Colour elements by value. Restore in one click.</span></li>
+      <li><b>View Crop</b><span>Crop views tight around their elements.</span></li>
+      <li><b>Unhide All</b><span>Everything hidden in the view, back on.</span></li>
+      <li><b>Toggle Links</b><span>Revit links off or on in one click.</span></li>
+      <li><b>Highlight</b><span>Selection red, the rest grey. Click again to reset.</span></li>
+      <li><b>Quick Menu</b><span>Your favourite tools in a wheel at the cursor.</span></li>
+      <li><b>Reset Datums to 3D</b><span>Grid and level ends back to their 3D extents.</span></li>
+      <li><b>Level Extents</b><span>Match levels, or stretch them to the section box.</span></li>
+      <li><b>Flip Bubbles</b><span>Swap the bubble end of grids and levels.</span></li>
+      <li><b>Match Elevation</b><span>Line up MEP at centre, top or bottom.</span></li>
+      <li><b>Reassign Level</b><span>New reference level. Nothing moves.</span></li>
+      <li><b>Pin / Unpin</b><span>Pin whole groups at once.</span></li>
+      <li><b>Smart Selection</b><span>Window-select, keep one category.</span></li>
+      <li><b>Element ID</b><span>Find any element by ID, in links too.</span></li>
+      <li><b>3D Views by Workset</b><span>One 3D view per workset, in one click.</span></li>
+      <li><b>Link Workset</b><span>Put links and CAD imports on a workset.</span></li>
     </ul>
   </div>
+</section>
 
-  <div class="pgrp reveal">
-    <h3>Quick <i>1</i></h3>
-    <ul class="tlist">
-      <li><b>Quick Menu</b><span>A tool wheel that opens around the mouse pointer with your favourite Heron Tools buttons and Revit commands. <em>Quick Menu Settings</em> chooses what sits in each slot.</span></li>
-    </ul>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>Datums <i>3</i></h3>
-    <ul class="tlist">
-      <li><b>Reset Datums to 3D</b><span>Puts grid and level ends in the view back to their 3D extents.</span></li>
-      <li><b>Level Extents</b><span>Matches level extents to another level, or stretches them to the section box.</span></li>
-      <li><b>Flip Bubbles</b><span>Swaps which end of a grid or level shows its bubble.</span></li>
-    </ul>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>Modify <i>4</i></h3>
-    <ul class="tlist">
-      <li><b>Match Elevation</b><span>Matches the centre, top or bottom elevation of a source MEP element.</span></li>
-      <li><b>Reassign Level</b><span>Moves MEP elements to another reference level without moving them in space &mdash; it measures every element before and after to prove it.</span></li>
-      <li><b>Pin / Unpin</b><span>Pins or unpins whole groups at once: title blocks, views on sheets, ducts, pipes, grids, levels.</span></li>
-      <li><b>Smart Selection</b><span>Pick one element, window-select, and keep only that category.</span></li>
-    </ul>
-  </div>
-
-  <div class="pgrp reveal">
-    <h3>Coordination <i>3</i></h3>
-    <ul class="tlist">
-      <li><b>Element ID</b><span>See the ID of a picked element, in links too, or find an element by its ID and zoom to it.</span></li>
-      <li><b>3D Views by Workset</b><span>One 3D view per user workset, in one press.</span></li>
-      <li><b>Link Workset</b><span>Puts the selected Revit links and CAD imports on a workset.</span></li>
-    </ul>
-    <div class="note">
-      <b>The Filter Pro window reads in the order you work</b>
-      <p>Left to right: <strong>1 Categories &middot; 2 Parameter &middot; 3 Values</strong>, each with a count (&ldquo;2 of 10 picked&rdquo;), a search box and a hint when the list is empty. On the right, a live preview of the filter name sits above four tabs &mdash; Rule, Name, Apply and Colours &mdash; and rules that do not suit the picked parameter are switched off. Anything a run skipped is listed with the reason. A missing pick is said in the status line, never in a pop-up.</p>
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">Install</span>
+    <h2 class="head reveal">One file. <span class="dim">Done.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">One installer</h3></div>
+        <div><p>Finds every Revit 2020&ndash;2027 on your PC. Tick, install.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">No admin rights</h3></div>
+        <div><p>Installs for your Windows user only.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.12s">
+        <div class="row-n"><i>03</i><h3 class="row-t">Never closes Revit</h3></div>
+        <div><p>If Revit is open, it waits.</p></div>
+      </div>
     </div>
-  </div>
-</section>
-
-<section class="tabsec sec-soft">
-  <h2 class="head reveal">Installing it <span class="dim">one file, no administrator</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>The installer <i>HeronToolsInstaller.exe</i></h3>
-    <ul class="tlist">
-      <li><b>One file, nothing to install first</b><span>It runs on the .NET Framework that every Windows 10 and 11 already has.</span></li>
-      <li><b>It finds your Revits</b><span>Every Revit 2020 to 2027 on the PC is listed. Tick the ones you want, and press Install. Untick and press Install to remove it again &mdash; it asks first.</span></li>
-      <li><b>For your Windows user only</b><span>No administrator rights. Revit 2027 moved the all-users add-in folder into Program Files; the per-user folder is the same on every release.</span></li>
-      <li><b>It never closes Revit</b><span>If one of those Revits is open, it waits, says so, and carries on by itself once Revit is closed.</span></li>
-      <li><b>It keeps what it replaces</b><span>The previous install is kept, put back by itself if a copy fails, and every file written is checked against the build it carries.</span></li>
-      <li><b>For an office with many PCs</b><span>The same file runs without a window: <em>/install</em>, <em>/install /years 2024,2026</em>, <em>/uninstall</em>, <em>/status</em>, with a log if you want one.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="tabsec">
-  <h2 class="head reveal">Why it is safe on a live model <span class="dim">the rules the code follows</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>Every press <i>4</i></h3>
-    <ul class="tlist">
-      <li><b>One press, one Undo</b><span>Every button that changes the model runs as one named transaction. If anything in that run fails, the whole run is rolled back and the window says, in plain words, that nothing was changed.</span></li>
-      <li><b>The view comes back</b><span>Highlight and Colorize remember every element&rsquo;s own overrides, so putting the view back is one click, not an afternoon.</span></li>
-      <li><b>Revit&rsquo;s own thread, only</b><span>The Revit API is called only from Revit&rsquo;s thread &mdash; the one rule that keeps an add-in from taking Revit down with it.</span></li>
-      <li><b>One codebase, every release</b><span>Units in 2021, parameter types in 2022, 64-bit element IDs in 2024, a new .NET in 2025 and again in 2027. The differences live in one place, and the build stops with a clear message for a Revit year it does not know yet.</span></li>
-    </ul>
-    <div class="note">
-      <b>What has been checked, and what has not</b>
-      <p>Every change is compiled against every Revit from 2020 to 2027 before it is accepted. A compile is not a Revit test, though, and version 1.0.0 is still waiting for its test inside Revit. It is not released until that is done &mdash; I will say so here and on LinkedIn when it is.</p>
-    </div>
-  </div>
-</section>
-
-<section class="tabsec sec-soft">
-  <h2 class="head reveal">One tab, with Heron AI <span class="dim">two products, one ribbon</span></h2>
-
-  <div class="pgrp reveal">
-    <p>Heron Tools is a stand-alone add-in. It does not need <a href="/heron-ai/">Heron AI</a> and uses none of its code. The two only share the name of the ribbon tab &mdash; so when both are installed, their buttons sit side by side on one <strong>Heron</strong> tab, whichever one Revit happens to load first.</p>
-    <p>The tools themselves grew out of AJ-Tools, the add-in I built for my own team. Moving them here, every run became one named Undo step, every element ID became 64-bit, and a long list of small workflow faults was fixed on the way.</p>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <span class="kicker">Free and open source</span>
-    <h2 class="head reveal">The code is public. <span class="dim">Read it, and tell me what is wrong.</span></h2>
-    <p class="lede reveal">Heron Tools is licensed under Apache&nbsp;2.0. If you build Revit tools, or can see a workflow it gets wrong, an Issue on GitHub is the help worth having.</p>
+    <span class="kicker">Safe on a live model</span>
+    <h2 class="head reveal">If it fails, <span class="dim">nothing changes.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">One undo per click</h3></div>
+        <div><p>Every click is one named Undo step.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">All or nothing</h3></div>
+        <div><p>Any error rolls the whole run back, and it tells you.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.12s">
+        <div class="row-n"><i>03</i><h3 class="row-t">Works with Heron AI</h3></div>
+        <div><p>Same Heron tab. Neither needs the other.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">Version 1.0.0 &middot; not released yet</span>
+    <h2 class="head reveal">Free and open. <span class="dim">Follow it on GitHub.</span></h2>
+    <p class="lede reveal">Waiting for its final test inside Revit. I&rsquo;ll announce it here and on LinkedIn when it&rsquo;s ready.</p>
     <div class="btnrow reveal">
       <a class="btn" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">Heron-Tools on GitHub</a>
       <a class="btn btn-ghost" href="/contact/">Get in touch</a>

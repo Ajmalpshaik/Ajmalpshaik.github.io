@@ -334,12 +334,12 @@
     <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>Heron AI for AutoCAD</span></nav>
     <img class="hicon enter" style="--d:0s" src="/assets/heron/heron-icon.webp" width="72" height="72" alt="The Heron app icon: a white heron on orange">
     <img class="heron3d" src="/assets/heron/heron-3d.webp" width="718" height="720" alt="" aria-hidden="true">
-    <span class="kicker enter" style="--d:.02s">In development &middot; plug-in 1.4.0</span>
+    <span class="kicker enter" style="--d:.02s">In development &middot; AutoCAD 2021&ndash;2027</span>
     <h1 class="display enter" style="--d:.06s">Heron AI <span class="dim">for AutoCAD</span></h1>
-    <p class="lede enter" style="--d:.18s">Let a chat work in your AutoCAD &mdash; only when you connect it, and only as far as your padlocks allow. <strong>The modeller focuses on the drawing. Heron does the AutoCAD work behind it.</strong></p>
+    <p class="lede enter" style="--d:.18s">Talk to AutoCAD. <strong>Heron draws it.</strong></p>
     <div class="btnrow enter" style="--d:.28s">
       <a class="btn" href="#what">See what it does</a>
-      <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">Read the code on GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
     </div>
   </div>
 </header>
@@ -348,106 +348,82 @@
   <div class="wrap">
     <div class="nums reveal">
       <div><b>128</b><span>tools the chat can call</span></div>
-      <div><b>5</b><span>levels of access, each behind a switch</span></div>
-      <div><b>7</b><span>AutoCAD releases, 2021 to 2027</span></div>
-      <div><b>1</b><span>undo step for every call</span></div>
+      <div><b>5</b><span>padlocks, all off at start</span></div>
+      <div><b>7</b><span>AutoCAD releases, 2021&ndash;2027</span></div>
+      <div><b>1</b><span>undo for every request</span></div>
     </div>
-    <p class="numnote">Counted from the Heron-AutoCAD repository on 8 November 2026. Full AutoCAD only, not AutoCAD LT.</p>
+    <p class="numnote">Counted from the Heron-AutoCAD repository, 8 November 2026. Full AutoCAD only, not LT.</p>
   </div>
 </section>
 
 <section class="sec" id="what">
   <div class="wrap">
-    <span class="kicker">Heron AI for AutoCAD</span>
-    <h2 class="head">Say what you want. <span class="dim">Watch it appear in the drawing.</span></h2>
-    <div>
-      <p class="lede reveal">You describe the work in plain language, and Claude does it in the AutoCAD you already have open. Geometry appears live, and nothing reaches AutoCAD until you press <strong>Heron</strong> on the ribbon.</p>
-      <div class="say reveal" style="--d:.06s">
-        <p>&ldquo;Check this drawing against our layer standard.&rdquo;<br>
-        &ldquo;Make me a camera schedule from the CAM blocks.&rdquo;<br>
-        &ldquo;Put sheet E-101 on A1 with our title block, ground floor at 1:100.&rdquo;<br>
-        &ldquo;This IFC came in on IfcWall, IfcDuct&hellip; make it a shop drawing.&rdquo;<br>
-        &ldquo;Give me the flat pattern for that 200 to 100 reducer.&rdquo;<br>
-        &ldquo;Dimension these grid lines, with the overall above.&rdquo;</p>
+    <span class="kicker">Just ask</span>
+    <h2 class="head reveal">Say it. <span class="dim">Watch it appear.</span></h2>
+    <div class="say reveal">
+      <p>&ldquo;Check this drawing against our layer standard.&rdquo;<br>
+      &ldquo;Put sheet E-101 on A1 with our title block.&rdquo;<br>
+      &ldquo;This IFC came in &mdash; make it a shop drawing.&rdquo;</p>
+    </div>
+    <p class="lede reveal" style="--d:.06s">Same chat, same padlocks as <a href="/heron-ai/">Heron AI</a> for Revit.</p>
+  </div>
+</section>
+
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">What it does</span>
+    <h2 class="head reveal">Drawing work, <span class="dim">done for you.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">Draw and edit</h3></div>
+        <div><p>Lines to 3D solids, blocks, hatches, dimensions.</p></div>
       </div>
-      <p class="lede reveal" style="--d:.12s">It is the AutoCAD member of the <a href="/heron-ai/">Heron AI</a> family. Same name, same ribbon, same padlocks, same &ldquo;Heron AI is changing your drawing&rdquo; banner &mdash; a modeller who knows Heron in Revit already knows it here.</p>
-    </div>
-  </div>
-</section>
-
-<section class="tabsec sec-soft">
-  <h2 class="head reveal">What you see in AutoCAD <span class="dim">the Heron tab &middot; AI Bridge panel</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>Five buttons <i>all off at start</i></h3>
-    <ul class="tlist">
-      <li><b>Heron</b><span>Dark heron: no chat can see this AutoCAD. Lit heron: a chat can reach it. Its arrow opens <em>Bridge Status</em>.</span></li>
-      <li><b>Changes</b><span>Blue padlock: Heron can only read and look. Red padlock: Heron may draw, modify and delete.</span></li>
-      <li><b>Publish</b><span>Off: Heron may not save or export. On: Heron may save, export to PDF and plot.</span></li>
-      <li><b>Admin</b><span>Off: no commands and no AutoLISP. On: Heron may run commands, AutoLISP and system variables.</span></li>
-      <li><b>Ask to Keep</b><span>Off: changes are kept at once. On: after each change, <em>Keep it</em> or <em>Discard it</em>.</span></li>
-    </ul>
-    <div class="note">
-      <b>You always know what it is doing</b>
-      <p>While Heron works, a small card at the top of AutoCAD says <strong>&ldquo;Heron AI is reading your drawing&rdquo;</strong> in blue or <strong>&ldquo;Heron AI is changing your drawing&rdquo;</strong> in amber, then finished in green or stopped in red. The command line keeps a line such as <em>Heron: Draw Line. Done in 0.4 s</em>.</p>
-      <p>Turning a padlock on asks first; turning it off never asks. The same switches are commands too: HERON, HERONSTATUS, HERONCHANGES, HERONPUBLISH, HERONADMIN and HERONASKTOKEEP.</p>
-    </div>
-  </div>
-</section>
-
-<section class="tabsec">
-  <h2 class="head reveal">What it can do <span class="dim">128 tools &middot; 5 levels</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>Every tool has a level <i>and the level decides the padlock</i></h3>
-    <ul class="tlist">
-      <li><b>Read <em>&middot; connected</em></b><span>Status, list and find, measure, extents, layers, blocks, styles, the UCS, solid volumes and centroids, a preview image, a standards check, attribute schedules, the xref tree and a report on a drawing you were sent.</span></li>
-      <li><b>View <em>&middot; connected</em></b><span>Zoom, regen, switch, open or create a drawing, and the 3D view direction and visual style.</span></li>
-      <li><b>Change <em>&middot; Changes</em></b><span>Draw, text, dimensions and dimension runs, hatch, blocks, multileaders, tables, revision clouds, sheets with title blocks and viewports, tidying an import, 24 named shapes, and 3D solids &mdash; extrude, revolve, loft, fillet, shell and booleans &mdash; with lights and materials for a render.</span></li>
-      <li><b>Publish <em>&middot; Changes + Publish</em></b><span>Save, and export or plot to PDF &mdash; a whole sheet, a window, a saved location, or every sheet in one PDF.</span></li>
-      <li><b>Admin <em>&middot; Changes + Admin</em></b><span>Any command, AutoLISP, system variables, purge and audit.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="tabsec sec-soft">
-  <h2 class="head reveal">What keeps your drawing safe <span class="dim">the part that matters most</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>Six rules <i>6</i></h3>
-    <ul class="tlist">
-      <li><b>Invisible until connected</b><span>AutoCAD starts disconnected every time. The pipe answers only your Windows user, and every connect makes a new session password.</span></li>
-      <li><b>Padlocks, off by default</b><span>Read fresh on every call. A broken settings file means all of them off, never all on.</span></li>
-      <li><b>One undo step per call</b><span>Whatever one request did, one Ctrl+Z takes it back &mdash; and Ask to Keep lets you decide after every change.</span></li>
-      <li><b>Wrong-drawing guard</b><span>Switch drawings half-way through a job and a change is refused until Heron has looked again.</span></li>
-      <li><b>No double drawing</b><span>If AutoCAD goes busy half-way through a change, Heron does not retry. It says the outcome is unknown and reads the drawing back first.</span></li>
-      <li><b>Every call written down</b><span>Each call goes into an audit log on your own PC. Drawings stay on the PC that made them.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="tabsec">
-  <h2 class="head reveal">Where it actually stands <span class="dim">plug-in 1.4.0 &middot; not released</span></h2>
-
-  <div class="pgrp reveal">
-    <h3>How it is put together <i>two parts</i></h3>
-    <ul class="tlist">
-      <li><b>Heron for AutoCAD</b><span>The plug-in, in C#: the ribbon, the padlocks, the banner, Keep or Discard, and the secure pipe. Built for AutoCAD 2021 to 2027.</span></li>
-      <li><b>Heron MCP for AutoCAD</b><span>The server, in Python: the tools the chat calls, done through AutoCAD&rsquo;s own automation and gated by the plug-in at every step.</span></li>
-    </ul>
-    <div class="note">
-      <b>Please do not install this yet</b>
-      <p>The repository is public so the work is open, but it is not finished. The plug-in still has to pass its live checks inside AutoCAD, and the newest tools have only been tested offline. I will announce it here and on LinkedIn when it is ready to install.</p>
-      <p>Programmers and AI engineers &mdash; your thoughts are welcome now. Read the code and share suggestions or corrections through an Issue.</p>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">Check</h3></div>
+        <div><p>Layer standards, drawing reports, schedules from blocks.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.12s">
+        <div class="row-n"><i>03</i><h3 class="row-t">Sheets and PDF</h3></div>
+        <div><p>Title blocks, viewports, plot to PDF.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.18s">
+        <div class="row-n"><i>04</i><h3 class="row-t">Clean up imports</h3></div>
+        <div><p>An IFC or a messy DWG, made into a clean drawing.</p></div>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="sec">
   <div class="wrap">
-    <span class="kicker">Open on purpose</span>
-    <h2 class="head reveal">Read the code and <span class="dim">tell me what is wrong</span></h2>
-    <p class="lede reveal">Heron AI for AutoCAD is MIT-licensed and public because the work should be open, not because it is finished. If you write AutoCAD tools or AutoLISP, you will see where it can break before I do.</p>
+    <span class="kicker">You stay in control</span>
+    <h2 class="head reveal">Nothing moves <span class="dim">until you say so.</span></h2>
+    <div class="rows">
+      <div class="row reveal">
+        <div class="row-n"><i>01</i><h3 class="row-t">Off until you press Heron</h3></div>
+        <div><p>No chat can see your AutoCAD until you connect it.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.06s">
+        <div class="row-n"><i>02</i><h3 class="row-t">Padlocks</h3></div>
+        <div><p>Change, Publish and Admin each unlock on their own.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.12s">
+        <div class="row-n"><i>03</i><h3 class="row-t">Keep or Discard</h3></div>
+        <div><p>Check every change before you keep it.</p></div>
+      </div>
+      <div class="row reveal" style="--d:.18s">
+        <div class="row-n"><i>04</i><h3 class="row-t">Local only</h3></div>
+        <div><p>The link answers only your Windows user, with a new password each time.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-soft">
+  <div class="wrap">
+    <span class="kicker">In development &middot; not released yet</span>
+    <h2 class="head reveal">Open source. <span class="dim">Follow it on GitHub.</span></h2>
+    <p class="lede reveal">Please don&rsquo;t install it yet &mdash; it is still passing its live checks in AutoCAD. Developers: ideas and corrections are welcome as an Issue.</p>
     <div class="btnrow reveal">
       <a class="btn" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">Heron-AutoCAD on GitHub</a>
       <a class="btn btn-ghost" href="/contact/">Get in touch</a>
