@@ -1,0 +1,87 @@
+/* ============ Heron ============
+   The three Heron pages (/heron-ai/, /heron-tools/, /heron-autocad/) wear the
+   Heron brand instead of the site's own: its colours, its font and its mark.
+   Every value here comes from the Heron brand page, docs/brand/README.md in
+   the Heron-AI repository - Ink, Mist, Accent, Accent Light - and the greys
+   are Mist laid over Ink at an opacity, which that page allows ("shades are
+   see-through versions of these, not new colours").
+
+   Loaded after style.css and chrome.css, on <body class="heron">. The bar and
+   the footer stay the site's (they are the same on every page), but they take
+   these colours, so the page reads as one thing.
+
+   Contrast, all on Ink #0F0F10 / the soft band #161617:
+     --ink    Mist             17.6 : 1
+     --body   Mist at 72%       9.4 : 1
+     --faint  Mist at 52%       5.3 / 5.0 : 1
+     --accent Accent            6.4 / 6.0 : 1
+   White on Accent is 3.0 : 1, under AA for button-size text, so an Accent
+   button carries Ink, at 6.4 : 1. */
+
+@font-face{
+  font-family:"Manrope";font-style:normal;font-weight:200 800;font-display:swap;
+  src:url("/assets/heron/manrope.woff2") format("woff2");
+}
+
+body.heron{
+  --bg:#0F0F10;          /* Ink */
+  --bg-soft:#161617;     /* Mist at 3% over Ink */
+  --ink:#F7F5F2;         /* Mist */
+  --body:#b6b5b3;        /* Mist at 72% */
+  --faint:#888786;       /* Mist at 52% */
+  --line:#262627;        /* Mist at 10% */
+  --line-soft:#1d1d1e;   /* Mist at 6% */
+  --accent:#FD641A;      /* Accent */
+  --accent-hi:#FF9A5C;   /* Accent Light */
+  --grad:linear-gradient(96deg,#FF9A5C 0%,#FD641A 100%);
+  --heron-dim:#626161;   /* Mist at 36% - the quiet half of a headline, 3.2 : 1 */
+  background:var(--bg);
+}
+
+/* Manrope inside the page only; the bar keeps the site's face, as on every
+   other page. Custom properties inherit, so setting them on <main> is enough
+   for every heading, label and button under it. */
+body.heron main{
+  --display:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --body-face:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-family:var(--body-face);
+}
+
+/* Heron writes its name in sentence case, heavy and tight - not shouted. */
+body.heron .display,
+body.heron .head{font-weight:800;text-transform:none;letter-spacing:-.035em}
+body.heron .display{line-height:.98}
+body.heron .display .dim,
+body.heron .head .dim{color:var(--heron-dim)}
+body.heron .head .dim{letter-spacing:.14em}
+body.heron .row-t,
+body.heron .tlist b,
+body.heron .pgrp h3,
+body.heron .kicker{font-weight:700}
+body.heron .nums b{font-weight:800;color:var(--accent)}
+body.heron .row-n i{font-weight:800}
+
+/* The main button is Accent, as in the Heron apps; its text is Ink. */
+body.heron main .btn:not(.btn-ghost){background:var(--accent);color:var(--bg)}
+body.heron main .btn:not(.btn-ghost):hover{background:var(--accent-hi);color:var(--bg)}
+
+/* ---- the mark ----
+   The app icon sits over the title on a phone. On a wide screen the 3D heron
+   stands beside the title instead, so the mark is shown once, not twice. */
+.hicon{display:block;width:72px;height:72px;border-radius:18px;margin-bottom:26px}
+.pagehead .wrap{position:relative}
+.heron3d{display:none}
+@media (min-width:1000px){
+  .heron .hicon{display:none}
+  .heron3d{
+    display:block;position:absolute;right:var(--gut);top:50%;
+    width:clamp(260px,30vw,420px);height:auto;transform:translateY(-42%);
+    pointer-events:none;
+  }
+  .heron .pagehead .lede,
+  .heron .pagehead .display{max-width:calc(100% - clamp(260px,30vw,420px))}
+}
+
+@media print{
+  .heron3d{display:none !important}
+}
