@@ -95,37 +95,6 @@ export const footer = {
     { label: 'GitHub', href: 'https://github.com/Ajmalpshaik' },
     { label: 'WhatsApp', href: 'https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com' },
   ],
-  // Grouped the way the bar groups them, and the way the footer on every
-  // other page does, so the site reads the same from either end.
-  columns: [
-    {
-      name: 'Experience',
-      links: [
-        { label: 'Story', href: '/story/' },
-        { label: 'Experience', href: '/experience/' },
-        { label: 'Selected work', href: '/work/' },
-      ],
-    },
-    {
-      name: 'Tools',
-      links: [
-        { label: 'Automation', href: '/automation/' },
-        { label: 'Heron AI', href: '/heron-ai/' },
-        { label: 'Heron Tools', href: '/heron-tools/' },
-        { label: 'Heron for AutoCAD', href: '/heron-autocad/' },
-        { label: 'Toolbox', href: '/toolbox/' },
-      ],
-    },
-    {
-      name: 'About',
-      links: [
-        { label: 'Skills', href: '/skills/' },
-        { label: 'About', href: '/about/' },
-        { label: 'FAQ', href: '/faq/' },
-        { label: 'Contact', href: '/contact/' },
-      ],
-    },
-  ],
   // The page is rendered to static HTML at build time, so it cannot read the
   // clock there without the output changing with the date. This is what the
   // HTML says; the browser swaps in the current year once it runs.

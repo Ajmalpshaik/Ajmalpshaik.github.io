@@ -200,26 +200,26 @@ def foot_html(current):
 
 
 def footer_html():
-    cols = []
-    for name, items in GROUPS:
-        lis = "\n".join(f'        <li><a href="{h}">{label}</a></li>' for h, label, _ in items)
-        cols.append(f'    <div>\n      <h3>{name}</h3>\n      <ul>\n{lis}\n      </ul>\n    </div>')
+    """Short on purpose: the bar already lists every page, so the footer only
+    says who, how to reach me, and Contact."""
     socials = "\n".join(
         '        <li><a href="%s"%s>%s</a></li>'
         % (h, ' rel="me"' if h.startswith("https") else "", label)
         for h, label in SOCIAL
     )
-    cols.append(f'    <div>\n      <h3>Elsewhere</h3>\n      <ul>\n{socials}\n      </ul>\n    </div>')
     return "\n".join([
         '<footer>',
         '  <div class="fgrid">',
         '    <div>',
         f'      <div class="fbrand">{BRAND_SVG} Ajmal P.S</div>',
-        '      <p class="fabout">MEP BIM Coordinator in Doha, Qatar. I build the models, and the '
-        'Revit tools my team runs on.</p>',
-        f'      <a class="btn btn-ghost fcta" href="{CTA[0]}">{CTA[1]}</a>',
+        '      <p class="fabout">MEP BIM Coordinator in Doha, Qatar.</p>',
         '    </div>',
-        *cols,
+        '    <div class="fend">',
+        '      <ul class="fsocial" aria-label="Elsewhere">',
+        socials,
+        '      </ul>',
+        f'      <a class="btn fcta" href="{CTA[0]}">{CTA[1]}</a>',
+        '    </div>',
         '  </div>',
         '  <div class="foot">',
         '    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>',

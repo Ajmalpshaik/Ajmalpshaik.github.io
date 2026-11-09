@@ -11,7 +11,7 @@ export default function Footer() {
   useEffect(() => setYear(new Date().getFullYear()), [])
 
   return (
-    <footer className="bg-[#0F0F10] px-5 pb-10 pt-24 sm:px-8 sm:pt-32 md:px-10 md:pt-40">
+    <footer className="bg-[#0F0F10] px-5 pb-10 pt-20 sm:px-8 sm:pt-28 md:px-10 md:pt-32">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 text-center sm:gap-12">
         <FadeIn
           as="h2"
@@ -60,30 +60,7 @@ export default function Footer() {
         </FadeIn>
       </div>
 
-      <nav aria-label="Site" className="mx-auto mt-20 max-w-5xl border-t border-[#F7F5F2]/15 pt-10 sm:mt-28">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 text-left sm:grid-cols-3 sm:gap-x-10">
-          {footer.columns.map((column) => (
-            <div key={column.name}>
-              <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-[#F7F5F2]/50">
-                {column.name}
-              </h3>
-              <ul className="mt-4 grid gap-3">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-[#F7F5F2]/80 transition-opacity duration-200 hover:opacity-60 sm:text-base"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </nav>
-      <p className="mx-auto mt-8 max-w-7xl text-center text-xs font-light uppercase tracking-widest text-[#F7F5F2]/60">
+      <p className="mx-auto mt-20 max-w-7xl border-t border-[#F7F5F2]/15 pt-8 text-center sm:mt-28 text-xs font-light uppercase tracking-widest text-[#F7F5F2]/60">
         &copy; {year} Ajmal P.S &middot; Designed and built in Doha, Qatar
       </p>
     </footer>
