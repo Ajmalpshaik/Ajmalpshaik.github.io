@@ -7,12 +7,12 @@
    input and result box on the tool pages lost its surface and drew straight on
    the page. They are the old dark values, which is the one skin the site has. */
 :root{
-  --muted:#aab8c4;
-  --hairline:#262a2e;
-  --blue:#4aa8ff;
-  --glass:#141518;
-  --glass-border:#26282d;
-  --neu-surface:#15171a;
+  --muted:#b6b5b3;
+  --hairline:#262627;
+  --blue:#FD641A;         /* the Heron Accent - the name stays, the colour is the brand's */
+  --glass:#161617;
+  --glass-border:#262627;
+  --neu-surface:#161617;
   --neu-out:0 0 0 1px #202327,0 10px 26px rgba(0,0,0,.4);
   --neu-out-sm:0 0 0 1px #24282d;
   --neu-hover:0 0 0 1px #30353b,0 18px 40px rgba(0,0,0,.55);
@@ -290,13 +290,13 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d-seg{display:flex;border-radius:11px;overflow:hidden;background:rgba(12,14,18,.82);border:1px solid rgba(255,255,255,.1);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .l3d-seg button{
-  font:inherit;font-size:12px;font-weight:600;color:#aab8c4;background:none;border:0;
+  font:inherit;font-size:12px;font-weight:600;color:#b6b5b3;background:none;border:0;
   padding:8px 11px;cursor:pointer;border-right:1px solid rgba(255,255,255,.07);
 }
 .l3d-seg button:last-child{border-right:0}
 .l3d-seg button:hover{color:#fff}
-.l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(74,168,255,.22)}
-.l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #4aa8ff;outline-offset:-2px}
+.l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(253,100,26,.24)}
+.l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #FD641A;outline-offset:-2px}
 .l3d-info{
   position:absolute;right:12px;top:calc(var(--l3d-hud,33px) + 22px);width:min(320px,calc(100% - 24px));z-index:2;
   max-height:clamp(200px,calc(62vh - 120px),520px);overflow:auto;padding:12px 14px 10px;border-radius:13px;
@@ -305,7 +305,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-info-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .l3d-info-h b{font-size:13.5px;color:#fff}
-.l3d-x{font:inherit;font-size:18px;line-height:1;background:none;border:0;color:#aab8c4;cursor:pointer;padding:2px 6px}
+.l3d-x{font:inherit;font-size:18px;line-height:1;background:none;border:0;color:#b6b5b3;cursor:pointer;padding:2px 6px}
 .l3d-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-top:1px solid rgba(255,255,255,.06)}
 .l3d-row span:first-child{color:#9fb0bf}
 .l3d-row .v{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
@@ -318,12 +318,12 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-msg{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:24px;color:#aab8c4;font-size:14px;line-height:1.55;
+  padding:24px;color:#b6b5b3;font-size:14px;line-height:1.55;
 }
 .l3d-msg[hidden],.l3d-warn[hidden],.l3d-info[hidden],.l3d-done[hidden]{display:none}
 /* quiet until engaged: say how, and show that it is */
 .l3d-stage{transition:border-color .2s var(--ease,ease),box-shadow .2s var(--ease,ease)}
-.l3d-stage.l3d-engaged{border-color:rgba(74,168,255,.55);box-shadow:0 0 0 3px rgba(74,168,255,.12)}
+.l3d-stage.l3d-engaged{border-color:rgba(253,100,26,.55);box-shadow:0 0 0 3px rgba(253,100,26,.12)}
 .l3d-hint{
   position:absolute;left:12px;bottom:12px;pointer-events:none;
   font-size:12.5px;font-weight:600;color:#dbe4ec;white-space:nowrap;
@@ -336,7 +336,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 @keyframes l3dNudge{0%,100%{opacity:.92;transform:scale(1)}30%{opacity:1;transform:scale(1.08)}}
 .l3d-done{
   position:absolute;left:12px;bottom:12px;font:inherit;font-size:13px;font-weight:700;color:#0b0d10;
-  background:#4aa8ff;border:0;border-radius:11px;padding:9px 18px;cursor:pointer;
+  background:#FD641A;border:0;border-radius:11px;padding:9px 18px;cursor:pointer;
 }
 @media(prefers-reduced-motion:reduce){.l3d-hint.l3d-nudge{animation:none}}
 /* where the view buttons take the bottom row, the hint goes under the chips */
@@ -346,7 +346,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-q{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--faint,#767f88);font-weight:600;letter-spacing:.02em}
 .l3d-q output{color:var(--ink,#f2f6f9);font-variant-numeric:tabular-nums}
-.l3d-q input[type=range]{width:100%;accent-color:#4aa8ff;height:22px;margin:0}
+.l3d-q input[type=range]{width:100%;accent-color:#FD641A;height:22px;margin:0}
 .l3d-q input[type=range]:disabled{opacity:.4}
 /* full screen: the real API where there is one, a fixed sheet where there is not */
 .l3d:fullscreen,.l3d.l3d-max{background:#0b0d10;padding:12px;display:flex;flex-direction:column;gap:10px}

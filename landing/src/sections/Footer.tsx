@@ -33,7 +33,7 @@ export default function Footer() {
           <ContactButton />
           <a
             href={`mailto:${footer.email}`}
-            className="inline-flex items-center gap-2 text-sm font-light tracking-wide text-[#F7F5F2] transition-opacity duration-200 hover:opacity-70 sm:text-base"
+            className="inline-flex min-h-[44px] items-center gap-2 text-sm font-light tracking-wide text-[#F7F5F2] transition-opacity duration-200 hover:opacity-70 sm:text-base"
           >
             <Mail aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.5} />
             {footer.email}

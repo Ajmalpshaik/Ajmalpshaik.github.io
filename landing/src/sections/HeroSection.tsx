@@ -43,7 +43,7 @@ export default function HeroSection() {
         style={enter(0.5, 20)}
       >
         {figures.map((f) => (
-          <div key={f.label} className="flex flex-col-reverse gap-2">
+          <div key={f.label} className="flex flex-col-reverse justify-end gap-2">
             <dt className="text-sm font-light uppercase tracking-widest text-[#F7F5F2]/70">{f.label}</dt>
             <dd className="font-extrabold leading-none text-[#FD641A]" style={{ fontSize: 'clamp(2.6rem, 6vw, 5rem)' }}>
               {f.value}
