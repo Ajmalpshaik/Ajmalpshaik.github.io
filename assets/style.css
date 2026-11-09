@@ -148,7 +148,8 @@ h1,h2,h3,h4{font-family:var(--display);font-weight:500;color:var(--ink);letter-s
   font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
   margin-bottom:clamp(20px,2.6vw,34px);
 }
-.crumbs a{color:var(--faint)}
+/* tall enough to tap: 24px, the WCAG 2.2 minimum */
+.crumbs a{color:var(--faint);display:inline-block;padding:3px 0;min-height:24px}
 .crumbs a:hover{color:var(--ink)}
 
 /* ============ Page header ============
@@ -271,7 +272,10 @@ a.row:hover .row-go .chev{transform:translateX(5px)}
   font-size:clamp(2.4rem,5.4vw,4.4rem);line-height:.9;letter-spacing:-.035em;
   color:var(--accent);font-variant-numeric:tabular-nums;
 }
-.nums span{
+/* The label under a figure - a direct child only. The figure itself can hold
+   a span (the years figure is <b><span data-yrs>11</span></b>, which app.js
+   keeps current), and "any span" made that one label-sized. */
+.nums > div > span{
   display:block;margin-top:12px;max-width:22ch;
   font-size:.92rem;line-height:1.5;color:var(--faint);
 }
