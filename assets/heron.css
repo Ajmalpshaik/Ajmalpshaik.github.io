@@ -1,0 +1,124 @@
+/*
+ * The Heron pages: /heron/, /heron-ai/, /heron-tools/, /heron-autocad/.
+ * Loaded after assets/site.css, and only on those four pages (each has
+ * <body class="heron-pg">). It holds what the Heron pages add to the shared
+ * look: the crumbs, the quoted asks, the small notes, and the lists that
+ * tools/update_heron.py writes into /heron-ai/ (.pgrp, .tlist, .doms, .frags).
+ * Heron orange is an accent only: links, figures, chips and the glow.
+ * Sizes are the ones site.css already uses; nothing here is bigger.
+ */
+
+/* ---------- page head (the orange glow is .page-head.heron in site.css) ---------- */
+.crumbs { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.crumbs [aria-current] { color: var(--fg); }
+.crumbs .sep { color: var(--mute); opacity: .6; }
+.heron-pg .page-head .title { max-width: 18ch; }
+
+/* ---------- accents ---------- */
+.heron-pg main p a, .heron-pg main li a:not(.ghost):not(.pill) { color: var(--heron-light); text-decoration-color: rgba(255,154,92,.4); }
+.heron-pg main p a:hover, .heron-pg main li a:not(.ghost):not(.pill):hover { text-decoration-color: currentColor; }
+.heron-pg .nums b { background: linear-gradient(180deg, #ffffff 25%, var(--heron-light) 135%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.heron-pg main :focus-visible { outline-color: var(--heron-light); }
+
+/* ---------- section tops ---------- */
+.sec-top .eyebrow { margin-bottom: 16px; }
+.sec-top > p { color: var(--body); max-width: 46ch; }
+
+/* ---------- what you can say (quoted asks) ---------- */
+.ask-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px clamp(28px, 4vw, 64px); align-items: end; }
+.asks { display: grid; gap: 14px; }
+.asks li {
+  font-family: var(--serif); font-style: italic; font-size: clamp(1.25rem, 1.7vw, 1.6rem); line-height: 1.3; letter-spacing: -0.01em;
+  color: var(--fg); padding-left: 20px; border-left: 2px solid var(--heron);
+}
+.ask-grid .lede { max-width: 40ch; }
+
+/* ---------- a closing band ---------- */
+.cta .h2 { max-width: 20ch; margin-top: 16px; }
+.cta .lede { margin-top: 20px; }
+.cta .btns { margin-top: 28px; }
+
+/* ---------- a small labelled note ---------- */
+.hnote { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); max-width: 68ch; }
+.hnote b { display: block; margin-bottom: 10px; font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+.hnote p { color: var(--body); font-size: 15.5px; }
+.hnote p + p { margin-top: .7em; }
+
+/* ---------- the full details on /heron-ai/ ---------- */
+details.more-detail > summary { -webkit-tap-highlight-color: transparent; align-items: baseline; flex-wrap: wrap; }
+details.more-detail > summary .mt { display: inline-flex; align-items: center; gap: 12px; font-weight: 500; transition: color .3s; }
+details.more-detail > summary .mt::after {
+  content: ""; flex: none; width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-3px); transition: transform .4s var(--ease);
+}
+details.more-detail[open] > summary .mt::after { transform: rotate(-135deg) translateY(-1px); }
+details.more-detail > summary:hover .mt { color: var(--heron-light); }
+.hsub + .hsub { margin-top: clamp(48px, 6vw, 80px); padding-top: clamp(32px, 4vw, 52px); border-top: 1px solid var(--line); }
+.hsub-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+.hsub-top .eyebrow { color: var(--heron-light); }
+
+/* ---------- the lists tools/update_heron.py writes ----------
+   .pgrp      a group: an <h3> label with a count in <i>, an optional <p>, a list
+   .tlist     a two-column list: <li><b>name</b><span>what it is <em>said as</em></span></li>
+   .doms      areas that open (<details>) to every fragment in them
+   .frags i   one fragment; i.d is a draft, one that has not met a real model
+   .reveal    is left alone on purpose: nothing on this site starts hidden */
+.pgrp { margin-top: clamp(28px, 3.4vw, 44px); }
+.pgrp h3 {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px;
+  font-family: var(--mono); font-weight: 500; font-size: 12px; line-height: 1.5; letter-spacing: .14em; text-transform: uppercase; color: var(--mute);
+  padding-bottom: 14px; border-bottom: 1px solid var(--line);
+}
+.pgrp h3 i {
+  font-style: normal; font-size: 11.5px; letter-spacing: .06em; white-space: nowrap;
+  color: #ffd2b8; border: 1px solid rgba(253,100,26,.35); border-radius: 999px; padding: 3px 10px;
+}
+.pgrp > p { margin-top: 16px; max-width: 68ch; color: var(--body); font-size: 15.5px; }
+.pgrp > p strong { color: var(--fg); font-weight: 500; }
+.pgrp > .steps { margin-top: 20px; }
+
+.tlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(24px, 4vw, 56px); }
+.wrap > .tlist { border-top: 1px solid var(--line); }
+.tlist li { padding: 16px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.tlist b { display: block; font-weight: 500; font-size: 15.5px; line-height: 1.4; letter-spacing: -0.01em; color: var(--fg); overflow-wrap: anywhere; }
+.tlist b em { font-weight: 400; }
+.tlist span { display: block; margin-top: 6px; font-size: 14.5px; line-height: 1.55; color: var(--body); }
+.tlist em { font-style: normal; color: var(--mute); }
+
+.tlist.doms li { padding: 0; }
+.doms details { padding: 16px 0; }
+.doms summary { list-style: none; cursor: pointer; display: block; border-radius: 6px; -webkit-tap-highlight-color: transparent; }
+.doms summary::-webkit-details-marker { display: none; }
+.doms summary b { display: flex; align-items: center; gap: 8px; transition: color .3s; }
+.doms summary b::after {
+  content: ""; flex: none; margin-left: auto; width: 7px; height: 7px; color: var(--mute);
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px); transition: transform .4s var(--ease);
+}
+.doms details[open] summary b::after { transform: rotate(-135deg) translateY(-1px); }
+.doms summary:hover b { color: var(--heron-light); }
+.frags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.frags i {
+  font-style: normal; font-size: 12px; line-height: 1.45; color: #d6d6db;
+  border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 11px; background: rgba(255,255,255,.025);
+}
+/* a draft is set back with a dashed edge and the label grey, not with opacity,
+   which would take the text under AA */
+.frags i.d { color: var(--mute); border-style: dashed; background: transparent; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 820px) {
+  .tlist { grid-template-columns: minmax(0, 1fr); }
+  .ask-grid { grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+
+/* ---------- print ---------- */
+@media print {
+  .heron-pg .nums b { color: #000; background: none; -webkit-text-fill-color: #000; }
+  .asks li { color: #000; border-color: #999; }
+  .tlist span, .pgrp > p, .hnote p { color: #333; }
+  .pgrp, .tlist li, .steps li { break-inside: avoid; }
+  /* every fragment of every area would run to pages; the areas and their counts are enough */
+  .frags { display: none !important; }
+  .doms summary b::after, details.more-detail > summary .mt::after { display: none; }
+}
