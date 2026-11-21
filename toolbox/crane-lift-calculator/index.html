@@ -92,7 +92,7 @@
           <li><a href="/heron/" data-tab="heron">Heron</a></li>
       </ul>
     </nav>
-    <a class="pill magnetic" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+    <a class="pill magnetic" href="#contact" data-contact aria-haspopup="dialog" aria-controls="cbox">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
     <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6h14M2 12h14"/></svg></button>
   </div>
 </header>
@@ -101,7 +101,25 @@
   <a class="big" href="/about/" data-tab="about">About me <small>01</small></a>
   <a class="big" href="/tools/" data-tab="tools" aria-current="page">Tools <small>02</small></a>
   <a class="big heron" href="/heron/" data-tab="heron">Heron <small>03</small></a>
-  <a class="pill" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+  <a class="pill" href="#contact" data-contact aria-haspopup="dialog" aria-controls="cbox">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+</div>
+<div class="cbox" id="cbox" role="dialog" aria-modal="true" aria-labelledby="cbox-h" hidden>
+  <div class="cbox-bg" data-close></div>
+  <div class="cbox-card">
+    <div class="cbox-in">
+      <button class="cbox-x" type="button" aria-label="Close" data-close><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg></button>
+      <p class="eyebrow cbox-top"><span>Contact</span><span class="cbox-live"><i aria-hidden="true"></i>Available now</span></p>
+      <h2 class="cbox-h" id="cbox-h">Let&rsquo;s <em class="s">talk.</em></h2>
+      <p class="cbox-say">Hiring, or want a tool built? Email is fastest, and I answer every message myself.</p>
+      <div class="cbox-mail"><a href="mailto:ajmalnattika@gmail.com">ajmalnattika@gmail.com</a><button class="copy" type="button" data-copy="ajmalnattika@gmail.com">Copy</button></div>
+      <ul class="cbox-links">
+        <li><a href="https://www.linkedin.com/in/ajmalps/" target="_blank" rel="noopener"><b>LinkedIn</b><span>/in/ajmalps</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></li>
+        <li><a href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" target="_blank" rel="noopener"><b>WhatsApp</b><span>+974 3103 3040</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></li>
+        <li><a href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener"><b>GitHub</b><span>Ajmalpshaik</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></li>
+      </ul>
+      <p class="cbox-note">Doha, Qatar &middot; Transferable QID with NOC, able to join within days.</p>
+    </div>
+  </div>
 </div>
 <!-- /chrome:nav -->
 
