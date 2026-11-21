@@ -119,7 +119,6 @@ def render_foot():
 {social}
         </div>
       </div>
-      <a class="magnet magnetic" href="mailto:{EMAIL}">Get in<br>touch</a>
     </div>
     <div class="legal">
       <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
