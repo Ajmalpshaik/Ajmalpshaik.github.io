@@ -131,17 +131,19 @@ main [hidden]{display:none !important}
 .bv-hud>*{position:absolute}
 .bv-level{top:64px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:99px;font-weight:650;letter-spacing:.01em}
 .bv-level svg{color:var(--g-mute)}
+/* where you are sits under the map, as in most games */
+.bv:not(.is-touch) .bv-level{top:254px;left:auto;right:12px;transform:none}
+.bv:not(.is-touch)[data-minimap="off"] .bv-level{top:64px}
+/* a game crosshair: a dot with four short ticks around a gap */
 .bv-cross{left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%)}
-.bv-cross::before,.bv-cross::after{content:"";position:absolute;left:50%;top:50%;background:#fff;border-radius:2px;box-shadow:0 0 4px rgba(0,0,0,.7);transform:translate(-50%,-50%)}
-.bv-cross::before{width:2px;height:14px}
-.bv-cross::after{width:14px;height:2px}
-.bv-look{left:50%;top:calc(50% + 26px);transform:translateX(-50%);max-width:min(440px,80%);padding:7px 12px;border-radius:11px;text-align:center}
-/* in third person there is no crosshair, and the character stands where
-   the hint would be: it goes up under the level instead */
-.bv-look:not(.fp){top:108px}
-.bv.is-touch .bv-look:not(.fp){top:100px}
-.bv-look b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bv-look span{color:var(--g-mute);font-size:12px}
+.bv-cross::before{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:#fff;box-shadow:0 0 3px rgba(0,0,0,.8)}
+.bv-cross::after{content:"";position:absolute;inset:0;opacity:.85;
+  background:linear-gradient(#fff,#fff) 50% 0/2px 6px no-repeat,linear-gradient(#fff,#fff) 50% 100%/2px 6px no-repeat,
+             linear-gradient(#fff,#fff) 0 50%/6px 2px no-repeat,linear-gradient(#fff,#fff) 100% 50%/6px 2px no-repeat;
+  filter:drop-shadow(0 0 1.5px rgba(0,0,0,.9))}
+.bv-look{left:calc(50% + 22px);top:calc(50% + 14px);display:flex;align-items:center;gap:8px;max-width:min(320px,45%);padding:5px 11px 5px 5px;border-radius:10px}
+.bv-look kbd{margin:0;font-weight:700}
+.bv-look b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .bv-aim{left:50%;top:calc(50% + 26px);transform:translateX(-50%);padding:7px 14px;border-radius:11px;font-weight:650;white-space:nowrap;
   background:rgba(8,30,44,.78);border:1px solid rgba(57,208,255,.55);color:#bfefff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .bv-aim.bad{background:rgba(44,10,10,.78);border-color:rgba(255,80,80,.6);color:#ffc4c4}
@@ -159,7 +161,8 @@ main [hidden]{display:none !important}
 .bv-emotes button{position:relative;width:40px;height:40px;border:0;border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;font-size:19px;line-height:1}
 .bv-emotes button:hover{background:rgba(255,255,255,.14)}
 /* on a keyboard the emotes are 1 to 6; the row is for thumbs only */
-.bv:not(.is-touch) .bv-emotes{display:none}
+.bv:not(.is-touch) .bv-emotes{right:auto;left:50%;bottom:56px;transform:translateX(-50%)}
+.bv:not(.is-touch)[data-emotes="off"] .bv-emotes{display:none}
 .bv-emotes button span{position:absolute;right:3px;bottom:2px;font-size:9.5px;font-weight:700;color:var(--g-mute)}
 .bv-mini{top:64px;right:12px;width:180px;height:180px;border-radius:16px;border:2px solid rgba(255,255,255,.18);box-shadow:0 10px 30px -10px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,0,0,.4)}
 .bv-mini span{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#fff;text-shadow:0 1px 3px #000}
@@ -223,7 +226,8 @@ main [hidden]{display:none !important}
 .bv.is-touch .bv-emotes{display:none;left:auto;right:calc(14px + env(safe-area-inset-right,0px));bottom:170px;top:auto;flex-direction:row}
 .bv.is-touch[data-emotes="on"] .bv-emotes{display:flex}
 .bv.is-touch .bv-mini{top:58px;right:calc(12px + env(safe-area-inset-right,0px));width:118px;height:118px}
-.bv.is-touch .bv-level{top:62px;left:calc(12px + env(safe-area-inset-left,0px));transform:none;padding:5px 12px;font-size:12.5px}
+.bv.is-touch .bv-level{top:184px;left:auto;right:calc(12px + env(safe-area-inset-right,0px));transform:none;padding:5px 12px;font-size:12.5px}
+.bv.is-touch[data-minimap="off"] .bv-level{top:58px}
 .bv.is-touch .bv-toast{bottom:auto;top:98px}
 .bv.is-touch .bv-fps{top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%)}
 /* Properties become a sheet down the left, where the pad of buttons is not,
@@ -315,7 +319,7 @@ main [hidden]{display:none !important}
   .bv-mini{width:124px;height:124px}
   .bv-chars button{width:70px}
   .bv-keys{display:none}
-  .bv-level{top:62px;left:12px;transform:none}
+  .bv:not(.is-touch) .bv-level{top:196px}
   .bv-emotes button{width:36px;height:36px;font-size:17px}
   .bv[data-mode="walk"] .bv-props{bottom:auto;top:62px;max-height:50%}
   .bv[data-mode="bim"] .bv-tree:not([hidden]) ~ .bv-fps{left:12px}
@@ -341,6 +345,7 @@ main [hidden]{display:none !important}
   .bv-pb-jump svg{width:22px;height:22px}
   .bv-pad{gap:8px}
   .bv.is-touch .bv-mini{width:92px;height:92px}
+  .bv.is-touch .bv-level{top:158px}
   .bv.is-touch .bv-emotes{bottom:148px}
   .bv.is-touch .bv-emotes button{width:36px;height:36px;font-size:17px}
 }
