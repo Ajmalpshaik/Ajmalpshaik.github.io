@@ -8,8 +8,9 @@ SHA-384 fingerprint on every file:
   view load three.js 0.186.1 through an import map. The BIM Viewer's map is
   written by `tools/pin_three.mjs`, which follows the imports so no file is left
   without a fingerprint.
-- The home page's forest loads three.js 0.128.0 (`build/three.min.js`) and its
-  `examples/js/misc/GPUComputationRenderer.js` as plain scripts, with
+- The home page's forest and welcome load three.js 0.128.0 (`build/three.min.js`),
+  `examples/js/misc/GPUComputationRenderer.js` and
+  `examples/js/modifiers/TessellateModifier.js` as plain scripts, with
   `integrity` attributes in index.html. These are non-module builds: releases
   after r147 no longer ship `examples/js`. The forest, mist and flock were tuned
   against r128.

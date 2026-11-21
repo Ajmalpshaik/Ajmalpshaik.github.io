@@ -105,6 +105,16 @@ const launch = (opts = {}) => chromium.launch(
   process.env.CHROMIUM_PATH ? { ...opts, executablePath: process.env.CHROMIUM_PATH } : opts,
 );
 const browser = await launch();
+// The home page's welcome plays once per visit (assets/intro.js). Every check
+// below starts as a returning visitor, so the welcome does not cover the page it
+// is testing; the welcome has its own check further down ({ intro: true }).
+const newContext = browser.newContext.bind(browser);
+browser.newContext = async (opts = {}) => {
+  const { intro, ...rest } = opts;
+  const ctx = await newContext(rest);
+  if (!intro) await ctx.addInitScript(() => { try { sessionStorage.setItem('aj-intro', '1'); } catch { /* ignore */ } });
+  return ctx;
+};
 
 for (const page of PAGES) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -294,6 +304,33 @@ for (const page of PAGES) {
   if (!st.story) fail('index.html with assets/home.js blocked: the story is not on screen');
   if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/home.js blocked: the headline never finished arriving');
   await ctx.close();
+}
+
+// ---- the welcome: plays on a first visit, can be skipped, then never again --------
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, intro: true });
+  await localThree(ctx);
+  const p = await ctx.newPage();
+  p.on('pageerror', (e) => fail(`welcome: uncaught script error — ${e.message}`));
+  await p.goto(url('index.html'));
+  const shown = await p.waitForFunction(() => document.documentElement.classList.contains('intro-run'), null, { timeout: 6000 }).then(() => true, () => false);
+  if (!shown) fail('welcome: a first visit to the home page does not play it');
+  else {
+    await p.click('#introSkip');
+    const gone = await p.waitForFunction(() => !document.getElementById('welcome') && document.body.style.overflow === '', null, { timeout: 6000 }).then(() => true, () => false);
+    if (!gone) fail('welcome: Skip does not end it and give the page back');
+    await p.reload();
+    await p.waitForTimeout(800);
+    if (await p.evaluate(() => document.documentElement.classList.contains('intro-on'))) fail('welcome: it plays again in the same visit');
+  }
+  await ctx.close();
+  // with reduced motion it never starts
+  const rm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce', intro: true });
+  const q = await rm.newPage();
+  await q.goto(url('index.html'));
+  await q.waitForTimeout(600);
+  if (await q.evaluate(() => document.documentElement.classList.contains('intro-on'))) fail('welcome: it plays even with reduced motion');
+  await rm.close();
 }
 
 // ---- reduced motion: nothing may stay hidden or half-arrived ---------------------

@@ -32,6 +32,8 @@
 <link rel="stylesheet" href="/assets/site.css">
 <link rel="stylesheet" href="/assets/home.css">
 <script>(function(d){d.className=d.className.replace('no-js','js');setTimeout(function(){if(!d.hasAttribute('data-ready'))d.className=d.className.replace(/\bjs\b/,'no-js')},3000)})(document.documentElement)</script>
+<script>/* the welcome plays once per visit: decide before first paint so nothing flashes (assets/intro.js) */
+(function(d){try{if(sessionStorage.getItem('aj-intro')||matchMedia('(prefers-reduced-motion: reduce)').matches)return;d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('intro-run'))d.classList.remove('intro-on')},5000)}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -162,6 +164,12 @@
 </script>
 </head>
 <body class="home">
+<div class="intro" id="welcome">
+  <canvas id="introCanvas" aria-hidden="true"></canvas>
+  <p class="intro-line" id="introLine" aria-hidden="true">MEP BIM Coordinator <b>&middot;</b> Doha, Qatar</p>
+  <div class="intro-bar" aria-hidden="true"><i id="introBar"></i></div>
+  <button class="intro-skip" id="introSkip" type="button">Skip intro</button>
+</div>
 <!-- chrome:nav -->
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav" id="nav">
@@ -268,6 +276,8 @@
 <script src="/assets/site.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/misc/GPUComputationRenderer.js" integrity="sha384-PUoswFxS+yEqG3jAAm9Ka/qT9luIailK2ZhxG9/2zPOybWlTejQiZdBE4q9IP8fK" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/modifiers/TessellateModifier.js" integrity="sha384-gQADEnNo9HC/TFaSO8iT4E+bL5qt/RCCYD5UKLT8jjQIjs6uuSbEoe664yzcqjXe" crossorigin="anonymous" defer></script>
 <script src="/assets/home.js" defer></script>
+<script src="/assets/intro.js" defer></script>
 </body>
 </html>

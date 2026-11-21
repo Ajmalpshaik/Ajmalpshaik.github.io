@@ -118,6 +118,14 @@ link, a meta refresh and a script, each pointing at the section that replaced it
   drifts, so about once a minute they sweep past close to the camera.
 - **Scroll:** the hero leaves, the story lights up word by word, the fog turns to
   night, and the page carries on in black.
+- **Welcome** (`assets/intro.js`), once per visit: "Ajmal P.S" in 3D Geist,
+  cut into triangles by `TessellateModifier` (after `webgl_modifier_tessellation`),
+  assembles left to right in the site's colours, breathes, then flies apart as
+  the dark lifts off the forest. About five seconds; Skip, a click or Escape ends
+  it. An inline head script decides before first paint (`sessionStorage`
+  `aj-intro`, reduced motion), so it never flashes and never replays in a visit.
+  The 3D typeface `assets/fonts/geist-600.typeface.json` is made from the site's
+  Geist (OFL) with fontTools.
 - three.js r128 and `GPUComputationRenderer` come from jsDelivr, pinned, with
   SHA-384 integrity. Without them, or without `home.js`, the hero and the story are
   plain HTML and the stage does not pin.
@@ -143,6 +151,7 @@ assets/site.css         the whole system: tokens, type, bar, components, footer
 assets/site.js          bar, menu, smooth scroll, counters, particles, years,
                         old-anchor forwards, analytics
 assets/home.css/.js     the home page's forest, mist, flock and scroll story
+assets/intro.js         the home page's welcome, once per visit
 assets/heron.css        what the Heron pages add, including the markup
                         tools/update_heron.py writes
 assets/tool.css         maps the tool pages onto the system

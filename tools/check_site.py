@@ -212,7 +212,7 @@ for extra in sorted(listed - expected):
 for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
               "assets/fonts/geist.woff2", "assets/fonts/geist-mono-400.woff2",
               "assets/fonts/geist-mono-500.woff2", "assets/fonts/instrument-serif.woff2",
-              "assets/fonts/instrument-serif-italic.woff2"):
+              "assets/fonts/instrument-serif-italic.woff2", "assets/fonts/geist-600.typeface.json"):
     if not os.path.exists(os.path.join(ROOT, asset)):
         err(f"missing expected file: {asset}")
 
