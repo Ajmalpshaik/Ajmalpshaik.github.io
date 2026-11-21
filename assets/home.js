@@ -38,20 +38,31 @@
   }
 
   // ---------- one stage: the hero leaves, the story arrives, the fog turns to night ----------
-  var stageP = 0;
+  // The story is read in near dark. Then, like eyes getting used to the night, the
+  // dark lifts a little and the same forest is there under the figures and the
+  // footer: night fog, a cold glow behind the trees, the snow still falling.
+  var stageP = 0, endP = 0, night = 0, sceneOn = false;
+  var mistEl = document.getElementById('mist');
+  var ease = function (a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   function onScroll() {
     var y = window.scrollY || 0, vh = innerHeight;
     var total = Math.max(1, stage.offsetHeight - vh);
     stageP = clamp(y / total, 0, 1);
+    endP = clamp((y - total) / Math.max(1, document.documentElement.scrollHeight - vh - total), 0, 1);
     if (nav) nav.classList.toggle('light', y < total * 0.2);
     var out = clamp(stageP / 0.28, 0, 1);
     heroCopy.style.opacity = String(1 - out);
     heroCopy.style.transform = 'translateY(' + (-out * 60) + 'px)';
     var inP = clamp((stageP - 0.22) / 0.2, 0, 1);
     stLayer.style.opacity = String(inP);
+    if (mistEl) mistEl.style.opacity = String(1 - inP);
     var lit = clamp((stageP - 0.3) / 0.55, 0, 1) * words.length;
     for (var i = 0; i < words.length; i++) words[i].style.setProperty('--o', String(clamp(lit - i, 0.2, 1)));
-    shade.style.opacity = String(Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26));
+    night = ease(0.2, 0.6, stageP);
+    // without the 3D scene there is no night forest to show: the page goes black
+    var lift = sceneOn ? ease(0.8, 1, stageP) : 0;
+    var dark = Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26);
+    shade.style.opacity = String(lerp(dark, 0.4, lift));
   }
   onScroll();
   if (lenis) lenis.on('scroll', onScroll); else addEventListener('scroll', onScroll, { passive: true });
@@ -80,9 +91,49 @@
     scene.fog = new T.FogExp2(FOG, DENSITY);
     const camera = new T.PerspectiveCamera(55, 1, 0.1, Math.sqrt(-Math.log(0.001)) / DENSITY);
     const lin = (h) => new T.Color(h).convertSRGBToLinear();
+    // every shader in the scene reads these two, so the night reaches all of them
+    const fogU = { value: new T.Vector3() }, densU = { value: DENSITY };
 
-    scene.add(new T.HemisphereLight(0xdce6ed, 0x292521, 1.3));
+    const hemi = new T.HemisphereLight(0xdce6ed, 0x292521, 1.3); scene.add(hemi);
     const sky = new T.DirectionalLight(0xdce6ed, 1.4); sky.position.set(-3, 8, 5); scene.add(sky);
+
+    // ---- night: the same forest after dark, under the figures and the footer ----
+    // a cold glow hangs behind the trees, so near trunks and branches stand out against it
+    const glowU = { uNight: { value: 0 }, uColor: { value: new T.Vector3(0.44, 0.53, 0.66) } };
+    const glow = new T.Mesh(new T.PlaneGeometry(30, 30), new T.ShaderMaterial({
+      uniforms: glowU, transparent: true, depthWrite: false, blending: T.AdditiveBlending, fog: false,
+      vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `
+        uniform float uNight; uniform vec3 uColor; varying vec2 vUv;
+        void main() {
+          float d = length(vUv - 0.5) * 2.0;
+          float g = pow(max(0.0, 1.0 - d), 2.4) * 0.5 + exp(-d * d * 220.0) * 0.32;
+          gl_FragColor = vec4(uColor * g * uNight, 1.0);
+        }`,
+    }));
+    glow.renderOrder = -1; glow.visible = false;
+    scene.add(glow);
+    const GLOW_AT = new T.Vector3(3.8, 8.5, -19);
+    const C = (h) => new T.Color(h);
+    const DAY = { fog: C(FOG), ground: lin(0x8f9398), hSky: C(0xdce6ed), hGround: C(0x292521), dir: C(0xdce6ed) };
+    const NIGHT = { fog: C(0x141b24), ground: lin(0x0d1116), hSky: C(0x6a7f99), hGround: C(0x07080a), dir: C(0x9db1c9) };
+    const mistDay = new T.Vector3(1, 1, 1), mistNight = new T.Vector3(0.2, 0.25, 0.31);
+    let birdU = null, nightNow = -1;
+    function setNight(n) {
+      nightNow = n;
+      scene.background.copy(DAY.fog).lerp(NIGHT.fog, n);
+      scene.fog.color.copy(scene.background);
+      fogU.value.set(scene.background.r, scene.background.g, scene.background.b);
+      densU.value = scene.fog.density = DENSITY * (1 - 0.18 * n);
+      ground.material.color.copy(DAY.ground).lerp(NIGHT.ground, n);
+      hemi.color.copy(DAY.hSky).lerp(NIGHT.hSky, n); hemi.groundColor.copy(DAY.hGround).lerp(NIGHT.hGround, n);
+      hemi.intensity = lerp(1.3, 0.6, n);
+      sky.color.copy(DAY.dir).lerp(NIGHT.dir, n); sky.intensity = lerp(1.4, 0.55, n);
+      for (const m of mists) m.uniforms.uColor.value.copy(mistDay).lerp(mistNight, n);
+      if (leafU) leafU.uDim.value = 1 - 0.4 * n;
+      if (birdU) birdU.uNight.value = n;
+      glowU.uNight.value = n; glow.visible = n > 0.01;
+    }
 
     // ---- bare trees, grown from a seed: a gnarled trunk, then four levels of branches ----
     const UP = new T.Vector3(0, 1, 0);
@@ -190,7 +241,6 @@
           float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
           gl_FragColor = vec4(mix(uColor, fogColor, fog * 0.6), a);
         }`;
-      const fc = new T.Color(FOG);
       const layers = small
         ? [[5.5, 0.58], [1, 0.66], [-4, 0.7], [-9, 0.68]]
         : [[6.5, 0.5], [3, 0.62], [-0.5, 0.68], [-4, 0.7], [-8, 0.7], [-12, 0.66]];
@@ -199,7 +249,7 @@
           uniforms: {
             uTime: { value: 0 }, uColor: { value: new T.Vector3(1.0, 1.0, 1.0) }, uOpacity: { value: op },
             uSpeed: { value: new T.Vector2(0.035 + i * 0.007, 0.004) }, uSeed: { value: i * 7.3 },
-            fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY },
+            fogColor: fogU, fogDensity: densU,
           },
           vertexShader: vs, fragmentShader: fs, transparent: true, depthWrite: false, defines: { OCT: small ? 3 : 5 },
         });
@@ -303,10 +353,9 @@
       geo.setAttribute('aSpeed', new T.BufferAttribute(aSpeed, 1));
       geo.setAttribute('aPhase', new T.BufferAttribute(aPhase, 1));
       geo.setAttribute('aSpin', new T.BufferAttribute(aSpin, 1));
-      const fc = new T.Color(FOG);
       snowU = {
         uTime: { value: 0 }, uTex: { value: tex }, uScale: { value: 800 },
-        fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY },
+        fogColor: fogU, fogDensity: densU,
       };
       const mat = new T.ShaderMaterial({
         uniforms: snowU, transparent: true, depthWrite: false,
@@ -358,8 +407,7 @@
       g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -24); g.lineTo(0, 26); g.stroke();
       const tex = new T.CanvasTexture(cv2);
       const plane = new T.PlaneGeometry(0.1, 0.1);
-      const fc = new T.Color(FOG);
-      leafU = { uTime: { value: 0 }, uTex: { value: tex }, fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY } };
+      leafU = { uTime: { value: 0 }, uTex: { value: tex }, uDim: { value: 1 }, fogColor: fogU, fogDensity: densU };
       const layers = [0xFD641A, 0xFF9A5C, 0xC9A14A];
       layers.forEach((hex, li) => {
         const geo = new T.InstancedBufferGeometry();
@@ -406,13 +454,13 @@
               gl_Position = projectionMatrix * mv;
             }`,
           fragmentShader: `
-            uniform sampler2D uTex; uniform vec3 uColor; uniform vec3 fogColor; uniform float fogDensity;
+            uniform sampler2D uTex; uniform vec3 uColor; uniform float uDim; uniform vec3 fogColor; uniform float fogDensity;
             varying vec2 vUv; varying float vShade; varying float vDepth;
             void main() {
               vec4 t = texture2D(uTex, vUv);
               if (t.a < 0.1) discard;
               float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-              vec3 col = uColor * vShade * (1.0 - (1.0 - t.r) * 0.6);
+              vec3 col = uColor * uDim * vShade * (1.0 - (1.0 - t.r) * 0.6);
               gl_FragColor = vec4(mix(col, fogColor, fog * 0.8), t.a * (1.0 - fog * 0.5));
             }`,
         });
@@ -523,13 +571,14 @@
           vColor = vec4(birdColor, 1.0);
           gl_Position = projectionMatrix * mv;
         }`;
-      // dark birds against the bright fog, fogged with the same exponential fog as the trees
+      // dark birds against the bright fog, fogged with the same exponential fog as the trees;
+      // darker still at night, so they show against the glow
       const birdFS = `
-        uniform vec3 fogColor; uniform float fogDensity;
+        uniform vec3 fogColor; uniform float fogDensity; uniform float uNight;
         varying vec4 vColor; varying float vDepth;
         void main() {
           float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-          vec3 c = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5);
+          vec3 c = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5) * (1.0 - 0.6 * uNight);
           gl_FragColor = vec4(mix(c, fogColor, clamp(fog, 0., 1.)), 1.0);
         }`;
       const gpu = new T.GPUComputationRenderer(W, W, r);
@@ -569,12 +618,12 @@
       g.setAttribute('reference', new T.BufferAttribute(ref, 2));
       g.setAttribute('birdVertex', new T.BufferAttribute(bv, 1));
       g.scale(0.2, 0.2, 0.2);
-      const fc = new T.Color(FOG);
       const bU = {
         texturePosition: { value: null }, textureVelocity: { value: null },
         uScale: { value: SCALE }, uOffset: { value: OFFSET },
-        fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY },
+        fogColor: fogU, fogDensity: densU, uNight: { value: 0 },
       };
+      birdU = bU;
       const mesh = new T.Mesh(g, new T.ShaderMaterial({ uniforms: bU, vertexShader: birdVS, fragmentShader: birdFS, side: T.DoubleSide }));
       mesh.rotation.y = Math.PI / 2; mesh.matrixAutoUpdate = false; mesh.updateMatrix(); mesh.frustumCulled = false;
       scene.add(mesh);
@@ -606,20 +655,28 @@
     }
 
     // ---- camera: eye height, a very slow drift, and a walk in as you scroll ----
-    // the pointer does not move the view: only the scroll walks you through the forest
+    // the pointer does not move the view: only the scroll walks you through the forest,
+    // and at the end of the page you look up through the branches at the night glow
     const target = new T.Vector3();
     function size() {
       const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
       r.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      // on a phone the words fill the screen: the glow sits nearer the middle, higher and fainter
+      const narrow = camera.aspect < 1;
+      GLOW_AT.set(3.8 * clamp(camera.aspect / 1.6, 0.3, 1), narrow ? 10 : 8.5, -19);
+      glowU.uColor.value.set(0.44, 0.53, 0.66).multiplyScalar(narrow ? 0.6 : 1);
       if (snowU) snowU.uScale.value = (h * 0.5 * r.getPixelRatio()) / Math.tan((camera.fov * Math.PI) / 360);
     }
     let t = 0;
     function place(dt) {
       if (!reduce) t += dt;
-      const p = reduce ? 0 : stageP;
-      camera.position.set(0.4 + Math.sin(t * 0.05) * 0.35, 1.7 + Math.sin(t * 0.09) * 0.04, 9 - p * 2.6);
-      target.set(-0.2, 1.9 + p * 0.5, camera.position.z - 17);
+      const p = reduce ? 0 : stageP, e = reduce ? 0 : endP;
+      camera.position.set(0.4 + Math.sin(t * 0.05) * 0.35, 1.7 + Math.sin(t * 0.09) * 0.04, 9 - p * 2.6 - e * 0.5);
+      target.set(-0.2, 1.9 + p * 0.5 + e * 3, camera.position.z - 17);
       camera.lookAt(target);
+      // the glow is far off: it keeps its place in the sky as you walk
+      glow.position.copy(camera.position).add(GLOW_AT);
+      glow.lookAt(camera.position);
     }
 
     let visible = true, last = performance.now(), started = false;
@@ -632,9 +689,10 @@
       if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
       if (snowU && !reduce) snowU.uTime.value = now / 1000;
       if (leafU && !reduce) leafU.uTime.value = now / 1000;
+      if (Math.abs(night - nightNow) > 0.002) setNight(night);
       place(d);
       r.render(scene, camera);
-      if (!started) { started = true; cv.classList.add('on'); }
+      if (!started) { started = true; sceneOn = true; cv.classList.add('on'); onScroll(); }
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {

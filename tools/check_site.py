@@ -209,7 +209,7 @@ for extra in sorted(listed - expected):
 # the fonts are asked for by assets/site.css, and the rest are read by crawlers
 # rather than by the pages. Without this, deleting one of them leaves the static
 # check green.
-for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
+for asset in ("og-cover.png", "favicon.ico", "CNAME", "robots.txt", "sitemap.xml",
               "assets/fonts/geist.woff2", "assets/fonts/geist-mono-400.woff2",
               "assets/fonts/geist-mono-500.woff2", "assets/fonts/instrument-serif.woff2",
               "assets/fonts/instrument-serif-italic.woff2", "assets/fonts/geist-600.typeface.json"):

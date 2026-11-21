@@ -116,8 +116,12 @@ link, a meta refresh and a script, each pointing at the section that replaced it
 - **Flock:** the three.js GPGPU birds (`webgl_gpgpu_birds`, MIT), stepped on the
   GPU in the same scene so the fog reaches them. The mouse scares them. Their home
   drifts, so about once a minute they sweep past close to the camera.
-- **Scroll:** the hero leaves, the story lights up word by word, the fog turns to
-  night, and the page carries on in black.
+- **Scroll:** the hero leaves, the story lights up word by word in near dark, the
+  fog turns to night, then the dark lifts a little: the same forest stays behind
+  the figures and the footer (a fixed `.sky` layer), in night fog with a cold glow
+  behind the trees, and the view tilts up through the branches at the very end.
+  Small grey text on the home page is `#A1A1A7` there, so it keeps 4.5:1 over the
+  glow and the snow. Without the 3D scene the page goes to black as before.
 - **Snow:** light point-sprite snow (after `webgl_points_sprites`): five
   snowflake shapes drawn in code, small, falling, swaying and spinning, fogged
   like the trees.
@@ -162,6 +166,8 @@ assets/heron.css        what the Heron pages add, including the markup
 assets/tool.css         maps the tool pages onto the system
 assets/toolbox.css      the tools' own controls
 assets/fonts/           Geist, Geist Mono, Instrument Serif (OFL)
+favicon.ico, assets/heron/favicon-64.png, apple-touch-180.png
+                        the site icon on every page: the Heron mark
 tools/sync_chrome.py    writes the bar and footer into every page; --check
 tools/check_site.py     static checks
 tools/check_browser.mjs the pages in a real browser, at four widths
