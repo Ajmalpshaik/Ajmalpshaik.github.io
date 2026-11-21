@@ -123,6 +123,15 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .mark { font-weight: 600; font-size: 17px; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 10px; justify-self: start; }
 .mark i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .nav .pill { justify-self: end; }
+/* Contact in the bar: the same soft raised pill as the selected tab, pressed in
+   under the pointer. A solid colour, so the card it grows into (assets/site.js)
+   starts from it. */
+.nav .pill {
+  background: #1f2024; color: var(--fg);
+  box-shadow: 4px 4px 10px rgba(0,0,0,.65), -3px -3px 8px rgba(255,255,255,.06), inset 1px 1px 0 rgba(255,255,255,.07);
+  transition: transform .4s var(--ease), background .3s, box-shadow .3s var(--ease);
+}
+.nav .pill:hover { background: #1f2024; box-shadow: inset 3px 3px 7px rgba(0,0,0,.7), inset -3px -3px 7px rgba(255,255,255,.05); }
 
 /* tabs: a soft, neumorphic capsule pressed into the bar, and one raised
    highlight that glides to the tab under the pointer (assets/site.js) */
@@ -155,7 +164,8 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .nav.light .tabs a.lit { color: #0F1114; }
 .nav.light .tabs .tab-ind { background: #cfd3d7; box-shadow: 3px 3px 7px rgba(118,124,131,.42), -3px -3px 7px rgba(255,255,255,.7); }
 .nav.light .tabs .tab-ind[data-mode="sel"] { background: linear-gradient(145deg, #dde1e5 0%, #c9cdd1 100%); box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85); }
-.nav.light .pill { background: #0F1114; color: #fff; }
+.nav.light .pill { background: #d3d7db; color: #0F1114; box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85), inset 1px 1px 0 rgba(255,255,255,.6); }
+.nav.light .pill:hover { background: #d3d7db; box-shadow: inset 3px 3px 7px rgba(118,124,131,.5), inset -3px -3px 7px rgba(255,255,255,.75); }
 .nav.light .burger { color: #0F1114; border-color: rgba(15,17,20,.16); background: rgba(255,255,255,.3); }
 .nav.light.solid { background: rgba(206,209,212,.6); border-color: rgba(15,17,20,.08); }
 .nav.light :focus-visible { outline-color: #0F1114; }
