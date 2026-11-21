@@ -316,9 +316,9 @@ for (const page of PAGES) {
   await ctx.close();
 }
 
-// ---- three.js unreachable: no night forest, so the page under the hero is black ----
-// assets/forest.js still runs and pins the hero, but there is no scene to turn to
-// night; the shade must go all the way to black or light text sits on the fog.
+// ---- three.js unreachable: no forest, so the page under the hero is plain fog ----
+// assets/forest.js still runs and pins the hero, but there is no scene to show
+// through; the fog veil must go all the way to solid so the text has a calm ground.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const p = await ctx.newPage();
@@ -329,7 +329,7 @@ for (const page of PAGES) {
     await p.evaluate(() => { const l = window.__aj && window.__aj.lenis; const y = document.documentElement.scrollHeight; if (l) l.scrollTo(y, { immediate: true }); else scrollTo(0, y); });
     await p.waitForTimeout(600);
     const o = await p.evaluate(() => parseFloat(getComputedStyle(document.getElementById('shade')).opacity));
-    if (o < 0.99) fail(`${page} without three.js: the page under the hero is not black (shade ${o.toFixed(2)})`);
+    if (o < 0.99) fail(`${page} without three.js: the veil under the text is not solid (shade ${o.toFixed(2)})`);
   }
   await ctx.close();
 }

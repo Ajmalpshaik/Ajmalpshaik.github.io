@@ -12,14 +12,14 @@
 .crumbs { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
 .crumbs [aria-current] { color: var(--fg); }
 .crumbs .sep { color: var(--mute); opacity: .6; }
-.page-head .eyebrow > .crumbs ~ span { color: #ffd2b8; }
+.page-head .eyebrow > .crumbs ~ span { color: var(--heron-ink); }
 .heron-pg .page-head .title { max-width: 18ch; }
 
 /* ---------- accents ---------- */
-.heron-pg main p a, .heron-pg main li a:not(.ghost):not(.pill) { color: var(--heron-light); text-decoration-color: rgba(255,154,92,.4); }
+.heron-pg main p a, .heron-pg main li a:not(.ghost):not(.pill) { color: var(--heron-ink); text-decoration-color: rgba(163,58,10,.4); }
 .heron-pg main p a:hover, .heron-pg main li a:not(.ghost):not(.pill):hover { text-decoration-color: currentColor; }
-.heron-pg .nums b { background: linear-gradient(180deg, #ffffff 25%, var(--heron-light) 135%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.heron-pg main :focus-visible { outline-color: var(--heron-light); }
+.heron-pg .nums b { background: linear-gradient(180deg, #0F1114 25%, var(--heron) 140%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.heron-pg main :focus-visible { outline-color: var(--heron-ink); }
 
 /* ---------- section tops ---------- */
 .sec-top .eyebrow { margin-bottom: 16px; }
@@ -53,10 +53,10 @@ details.more-detail > summary .mt::after {
   transform: rotate(45deg) translateY(-3px); transition: transform .4s var(--ease);
 }
 details.more-detail[open] > summary .mt::after { transform: rotate(-135deg) translateY(-1px); }
-details.more-detail > summary:hover .mt { color: var(--heron-light); }
+details.more-detail > summary:hover .mt { color: var(--heron-ink); }
 .hsub + .hsub { margin-top: clamp(48px, 6vw, 80px); padding-top: clamp(32px, 4vw, 52px); border-top: 1px solid var(--line); }
 .hsub-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
-.hsub-top .eyebrow { color: var(--heron-light); }
+.hsub-top .eyebrow { color: var(--heron-ink); }
 
 /* ---------- the lists tools/update_heron.py writes ----------
    .pgrp      a group: an <h3> label with a count in <i>, an optional <p>, a list
@@ -72,7 +72,7 @@ details.more-detail > summary:hover .mt { color: var(--heron-light); }
 }
 .pgrp h3 i {
   font-style: normal; font-size: 11.5px; letter-spacing: .06em; white-space: nowrap;
-  color: #ffd2b8; border: 1px solid rgba(253,100,26,.35); border-radius: 999px; padding: 3px 10px;
+  color: var(--heron-ink); border: 1px solid rgba(163,58,10,.35); border-radius: 999px; padding: 3px 10px;
 }
 .pgrp > p { margin-top: 16px; max-width: 68ch; color: var(--body); font-size: 15.5px; }
 .pgrp > p strong { color: var(--fg); font-weight: 500; }
@@ -97,11 +97,11 @@ details.more-detail > summary:hover .mt { color: var(--heron-light); }
   transform: rotate(45deg) translateY(-2px); transition: transform .4s var(--ease);
 }
 .doms details[open] summary b::after { transform: rotate(-135deg) translateY(-1px); }
-.doms summary:hover b { color: var(--heron-light); }
+.doms summary:hover b { color: var(--heron-ink); }
 .frags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .frags i {
-  font-style: normal; font-size: 12px; line-height: 1.45; color: #d6d6db;
-  border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 11px; background: rgba(255,255,255,.025);
+  font-style: normal; font-size: 12px; line-height: 1.45; color: var(--body);
+  border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 11px; background: rgba(255,255,255,.35);
 }
 /* a draft is set back with a dashed edge and the label grey, not with opacity,
    which would take the text under AA */

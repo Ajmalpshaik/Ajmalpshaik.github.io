@@ -3,7 +3,7 @@
  * under the hero, and the welcome.
  */
 /* the story, lit word by word as you scroll (assets/forest.js builds it) */
-.statement-layer { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; opacity: 0; }
+.statement-layer { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; opacity: 0; will-change: opacity; }
 .statement-layer .wrap { width: 100%; }
 .statement { font-weight: 500; font-size: clamp(1.5rem, 2.7vw, 2.6rem); line-height: 1.16; letter-spacing: -0.035em; max-width: 17ch; }
 .statement .w { opacity: var(--o, .2); transition: opacity .25s linear; }
@@ -28,7 +28,7 @@ html:not(.forest-ready) .statement-layer { display: none; }
 .intro { display: none; }
 .intro-on .intro {
   position: fixed; inset: 0; z-index: 88; display: grid; place-items: center;
-  background: radial-gradient(60% 50% at 50% 46%, #121215 0%, var(--bg) 70%);
+  background: radial-gradient(60% 50% at 50% 46%, #e4e7ea 0%, var(--bg) 70%);
   transition: opacity 1.1s cubic-bezier(.4, 0, .2, 1);
 }
 .intro.out { opacity: 0; pointer-events: none; }
@@ -39,14 +39,14 @@ html:not(.forest-ready) .statement-layer { display: none; }
   opacity: 0; transform: translateY(10px); transition: opacity 1s ease, transform 1.2s var(--ease);
 }
 .intro-line.on { opacity: 1; transform: none; }
-.intro-line b { color: var(--heron); font-weight: 500; }
+.intro-line b { color: var(--heron-ink); font-weight: 500; }
 .intro-skip {
   position: absolute; right: max(24px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
   font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--mute);
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 10px 16px; cursor: pointer;
+  background: var(--bg); border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; box-shadow: var(--neu-up-sm); transition: box-shadow .3s var(--ease);
 }
-.intro-skip:hover { color: var(--fg); border-color: rgba(255,255,255,.3); }
-.intro-bar { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 40px); width: 120px; height: 1px; margin-left: -60px; background: rgba(255,255,255,.1); overflow: hidden; }
+.intro-skip:hover { color: var(--fg); box-shadow: var(--neu-in-sm); }
+.intro-bar { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 40px); width: 120px; height: 1px; margin-left: -60px; background: rgba(15,17,20,.12); overflow: hidden; }
 .intro-bar i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--heron), var(--heron-light)); transform-origin: left; transform: scaleX(var(--p, 0)); }
 @media (max-width: 900px) { .intro-line { top: calc(50% + 15vw); font-size: 11px; letter-spacing: .2em; } .intro-bar { display: none; } }
 @media print { .intro { display: none !important; } }
