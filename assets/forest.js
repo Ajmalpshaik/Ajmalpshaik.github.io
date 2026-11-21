@@ -723,19 +723,20 @@
       glow.lookAt(camera.position);
     }
 
-    // Watches how long frames take, a second and a half at a time, and lowers the
-    // resolution a step when the middle one is slower than about 48 frames a
-    // second. Not while the welcome draws on top, and never back up in a visit,
-    // so it cannot flip between two sizes.
+    // Watches how long frames take, at least a second and a half (and 8 frames)
+    // at a time, and lowers the resolution a step when the middle frame is slower
+    // than about 48 a second. The middle one, not the average, so a one-off hitch
+    // does not count. Not while the welcome draws on top, and never back up in a
+    // visit, so it cannot flip between two sizes.
     const dts = [];
-    let watchFrom = 0;
+    let watchFrom = 0, watched = 0;
     function govern(now, d) {
-      if (pr <= MINPR || now < watchFrom || d > 0.25 || document.documentElement.classList.contains('intro-run')) return;
-      dts.push(d);
-      if (dts.length < 90) return;
+      if (pr <= MINPR || now < watchFrom || document.documentElement.classList.contains('intro-run')) return;
+      dts.push(d); watched += d;
+      if (watched < 1.5 || dts.length < 8) return;
       dts.sort((a, b) => a - b);
-      const mid = dts[45];
-      dts.length = 0;
+      const mid = dts[dts.length >> 1];
+      dts.length = 0; watched = 0;
       if (mid > 1 / 48) { pr = Math.max(MINPR, pr - 0.25); r.setPixelRatio(pr); size(); }
     }
 
