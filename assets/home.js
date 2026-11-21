@@ -251,7 +251,7 @@
     // and spinning. Near flakes are larger; far ones melt into the same fog.
     let snowU = null;
     function snow() {
-      const N = small ? 900 : 2100, CELL = 128;
+      const N = small ? 600 : 1400, CELL = 128;
       const atlas = document.createElement('canvas');
       atlas.width = CELL * 5; atlas.height = CELL;
       const g = atlas.getContext('2d');
