@@ -68,10 +68,11 @@ const PAGES = [
   'toolbox/crane-lift-calculator/index.html', 'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
 ];
 
-// The tool pages load three.js 0.186.1 and the home page 0.128.0, all from
-// jsDelivr. When node_modules has the same release, serve it from there instead,
-// so the checks run without a network:
-//   npm i --no-save three@0.186.1 three-r128@npm:three@0.128.0
+// The tool pages load three.js 0.186.1 and the home and About pages 0.128.0,
+// all from jsDelivr. package.json pins both releases as dev dependencies, so
+// `npm install` puts them in node_modules and they are served from there: the
+// checks never wait on the network. That matters: the welcome gives up after
+// 5 s without three.js, so a slow CDN once failed its check in CI.
 // Any folder in node_modules whose package.json says "name": "three" counts.
 // The SHA-384 fingerprints still apply, so a local copy that differs from the
 // release fails just the same.
@@ -286,13 +287,14 @@ for (const page of PAGES) {
   }
 }
 
-// ---- the home page without its 3D script --------------------------------------
-// assets/home.js adds the forest and pins the story to the scroll. Blocked (or
-// three.js unreachable), the hero and the story must still read as plain HTML.
+// ---- the forest pages without their 3D script ------------------------------------
+// assets/forest.js adds the forest and pins the hero to the scroll (and, on the
+// home page, the story). Blocked (or three.js unreachable), the hero and the
+// text must still read as plain HTML.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const p = await ctx.newPage();
-  await p.route(/\/assets\/home\.js$/, (route) => route.abort());
+  await p.route(/\/assets\/forest\.js$/, (route) => route.abort());
   await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.128\.0\//, (route) => route.abort());
   await p.goto(url('index.html'));
   await p.waitForTimeout(2400);
@@ -301,8 +303,34 @@ for (const page of PAGES) {
     const r = s.getBoundingClientRect();
     return { story: r.width > 100 && r.height > 20, heading: getComputedStyle(document.querySelector('.hero-heading .ln > span')).transform };
   });
-  if (!st.story) fail('index.html with assets/home.js blocked: the story is not on screen');
-  if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/home.js blocked: the headline never finished arriving');
+  if (!st.story) fail('index.html with assets/forest.js blocked: the story is not on screen');
+  if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/forest.js blocked: the headline never finished arriving');
+  await p.goto(url('about/index.html'));
+  await p.waitForTimeout(1200);
+  const ab = await p.evaluate(() => ({
+    pinned: getComputedStyle(document.querySelector('.stage-spacer')).display !== 'none',
+    story: document.getElementById('story').getBoundingClientRect().top < innerHeight * 1.2,
+  }));
+  if (ab.pinned) fail('about/index.html with assets/forest.js blocked: the hero still pins to the scroll');
+  if (!ab.story) fail('about/index.html with assets/forest.js blocked: the text does not follow the hero');
+  await ctx.close();
+}
+
+// ---- three.js unreachable: no night forest, so the page under the hero is black ----
+// assets/forest.js still runs and pins the hero, but there is no scene to turn to
+// night; the shade must go all the way to black or light text sits on the fog.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await ctx.newPage();
+  await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.128\.0\//, (route) => route.abort());
+  for (const page of ['index.html', 'about/index.html']) {
+    await p.goto(url(page));
+    await p.waitForTimeout(800);
+    await p.evaluate(() => { const l = window.__aj && window.__aj.lenis; const y = document.documentElement.scrollHeight; if (l) l.scrollTo(y, { immediate: true }); else scrollTo(0, y); });
+    await p.waitForTimeout(600);
+    const o = await p.evaluate(() => parseFloat(getComputedStyle(document.getElementById('shade')).opacity));
+    if (o < 0.99) fail(`${page} without three.js: the page under the hero is not black (shade ${o.toFixed(2)})`);
+  }
   await ctx.close();
 }
 
@@ -310,11 +338,22 @@ for (const page of PAGES) {
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, intro: true });
   await localThree(ctx);
+  // The welcome is what this checks, so the forest under it is left out. Here it
+  // is drawn in software, a frame can hold the page for over a second, and the
+  // polling below then missed a welcome that did play (CI, 2026-11-21). The
+  // welcome does not need assets/forest.js; it is also noted the moment it
+  // starts, so a slow poll cannot miss it.
+  await ctx.route(/\/assets\/forest\.js$/, (route) => route.abort());
+  await ctx.addInitScript(() => {
+    new MutationObserver(() => { if (document.documentElement && document.documentElement.classList.contains('intro-run')) window.__introSeen = true; })
+      .observe(document, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => fail(`welcome: uncaught script error — ${e.message}`));
-  await p.goto(url('index.html'));
-  const shown = await p.waitForFunction(() => document.documentElement.classList.contains('intro-run'), null, { timeout: 6000 }).then(() => true, () => false);
+  await p.goto(url('index.html'), { waitUntil: 'commit' });
+  const shown = await p.waitForFunction(() => window.__introSeen === true, null, { timeout: 12000 }).then(() => true, () => false);
   if (!shown) fail('welcome: a first visit to the home page does not play it');
+  else if (!(await p.$('#introSkip'))) fail('welcome: it ended before Skip could be tried');
   else {
     await p.click('#introSkip');
     const gone = await p.waitForFunction(() => !document.getElementById('welcome') && document.body.style.overflow === '', null, { timeout: 6000 }).then(() => true, () => false);

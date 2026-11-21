@@ -19,10 +19,10 @@ and read as a template. The new one is:
   **Tools** (his own tools, not Heron) and **Heron** (the product family).
   Contact is the footer of every page.
 - **One premium dark skin.** Near-black, calm, generous space, small type.
-  The one light place is the home page's hero: a misty forest in bright grey fog
-  that turns to night as you scroll.
+  The one light place is the hero of the home and About pages: a misty forest in
+  bright grey fog that turns to night as you scroll.
 - **Small, calm type.** Headings are deliberately modest. When in doubt, smaller.
-- **Motion with a job:** the forest and its flock on the home page, a highlight
+- **Motion with a job:** the forest and its flock on the home and About pages, a highlight
   that glides between tabs, figures that count up, smooth scrolling, and linked
   particles behind the mouse. Nothing starts hidden.
 
@@ -95,7 +95,7 @@ If something new is needed, it is probably `.rows` or `.cards`.
 | URL | What |
 |---|---|
 | `/` | The forest, the headline, a short story, four figures |
-| `/about/` | Story, experience, selected work, skills, visa and notice, FAQ |
+| `/about/` | The forest hero, then story, experience, selected work, skills, visa and notice, FAQ on the night forest. Each fact appears once. |
 | `/tools/` | The browser tools and the Revit automation |
 | `/toolbox/*/` | Crane Lift Calculator, AR Viewer, BIM Viewer |
 | `/heron/` | The Heron family |
@@ -106,9 +106,14 @@ Old addresses (`/story/`, `/experience/`, `/work/`, `/skills/`, `/faq/`,
 link, a meta refresh and a script, each pointing at the section that replaced it.
 `assets/site.js` also forwards the old single-page anchors (`/#faq` and so on).
 
-## 6. The home page
+## 6. The home page (and the forest)
 
-`assets/home.css` and `assets/home.js`, on top of the shared files.
+`assets/forest.css` and `assets/forest.js` hold the forest, shared with the
+About page; `assets/home.css` adds the home page's story and welcome. On About
+the hero pins for a short moment (`.stage-spacer.short`) while the fog turns to
+night, then the sections follow on the night forest (`data-shade="0.58"` on
+`.sky`, a little darker than home's 0.4, for longer reading). Headings over the
+forest are small (`.forest-ready main .h2`).
 
 - **Forest:** bare trees grown in code from a seed (`makeTree`), instanced, in an
   exponential fog whose colour is the background's, so far trunks dissolve.
@@ -136,7 +141,7 @@ link, a meta refresh and a script, each pointing at the section that replaced it
   The 3D typeface `assets/fonts/geist-600.typeface.json` is made from the site's
   Geist (OFL) with fontTools.
 - three.js r128 and `GPUComputationRenderer` come from jsDelivr, pinned, with
-  SHA-384 integrity. Without them, or without `home.js`, the hero and the story are
+  SHA-384 integrity. Without them, or without `forest.js`, the hero and the text are
   plain HTML and the stage does not pin.
 
 ## 7. Non-negotiable
@@ -149,7 +154,7 @@ link, a meta refresh and a script, each pointing at the section that replaced it
 - Years of experience are never typed as a number: `<span data-yrs>11</span>` or
   `<span data-yrs-word>Eleven</span>`. `tools/update_years.py` rewrites any literal
   "N years" in every HTML file every month.
-- No third-party request except three.js on the home page and the tool pages
+- No third-party request except three.js on the home, About and tool pages
   (pinned, fingerprinted) and the analytics counter (GoatCounter: async,
   cookie-less, skipped for Do Not Track and Global Privacy Control).
 
@@ -159,7 +164,8 @@ link, a meta refresh and a script, each pointing at the section that replaced it
 assets/site.css         the whole system: tokens, type, bar, components, footer
 assets/site.js          bar, menu, smooth scroll, counters, particles, years,
                         old-anchor forwards, analytics
-assets/home.css/.js     the home page's forest, mist, flock and scroll story
+assets/forest.css/.js   the forest, mist, flock, snow, leaves and night (home, About)
+assets/home.css         the home page's lit story and welcome
 assets/intro.js         the home page's welcome, once per visit
 assets/heron.css        what the Heron pages add, including the markup
                         tools/update_heron.py writes
