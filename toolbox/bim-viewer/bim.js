@@ -12,8 +12,8 @@ const VIEWS = {
   side: new THREE.Vector3(1, 0.1, 0),        // east elevation
 };
 
-const markMat = new THREE.PointsMaterial({ color: 0xffc83d, size: 9, sizeAttenuation: false, depthTest: false });
-const lineMat = new THREE.LineBasicMaterial({ color: 0xffc83d, depthTest: false });
+const markMat = new THREE.PointsMaterial({ color: 0xffc83d, size: 9, sizeAttenuation: false, depthTest: false, toneMapped: false });
+const lineMat = new THREE.LineBasicMaterial({ color: 0xffc83d, depthTest: false, toneMapped: false });
 
 export class Bim {
   constructor(world, canvas, overlay, hooks) {
