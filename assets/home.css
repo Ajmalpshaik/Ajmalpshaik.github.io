@@ -3,7 +3,7 @@
  * under the hero, and the welcome.
  */
 /* the story, lit word by word as you scroll (assets/forest.js builds it) */
-.statement-layer { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; opacity: 0; }
+.statement-layer { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; opacity: 0; will-change: opacity; }
 .statement-layer .wrap { width: 100%; }
 .statement { font-weight: 500; font-size: clamp(1.5rem, 2.7vw, 2.6rem); line-height: 1.16; letter-spacing: -0.035em; max-width: 17ch; }
 .statement .w { opacity: var(--o, .2); transition: opacity .25s linear; }
