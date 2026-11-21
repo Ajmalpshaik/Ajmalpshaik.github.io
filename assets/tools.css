@@ -1,0 +1,55 @@
+/*
+ * ajmalps.com, the Tools tab (/tools/) only. Loaded after assets/site.css.
+ *
+ * The tool cards wear the same soft, neumorphic surface as the tabs and the
+ * contact card: one surface colour, lit from the top left and shaded to the
+ * bottom right. Pointing at a card presses it in, the way the contact card's
+ * links do. The in-progress card sits pressed into the page from the start.
+ */
+
+/* layout this page needs: four cards in one row on wide screens, room above
+   the second heading in a section, the Heron line at the end */
+@media (min-width: 1240px) { #browser-tools .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.sec-top.sub { margin-top: clamp(56px, 7vw, 100px); }
+.endline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding-top: clamp(24px, 3vw, 36px); border-top: 1px solid var(--line); }
+
+/* ---------- soft tool cards ---------- */
+.cards.neu {
+  --neu: #16171b;
+  --neu-up: 10px 10px 24px rgba(0, 0, 0, .7), -6px -6px 16px rgba(255, 255, 255, .035),
+    inset 1px 1px 0 rgba(255, 255, 255, .07), inset -1px -1px 0 rgba(0, 0, 0, .5);
+  --neu-in: inset 6px 6px 14px rgba(0, 0, 0, .7), inset -5px -5px 12px rgba(255, 255, 255, .035);
+  gap: clamp(18px, 2vw, 28px);
+}
+.cards.neu .card {
+  border: 0; border-radius: 26px;
+  background: var(--neu); box-shadow: var(--neu-up);
+  transition: box-shadow .45s var(--ease), transform .6s var(--ease);
+}
+/* the tool's colour, kept as a faint glow in the corner */
+.cards.neu .card::after { opacity: .12; }
+.cards.neu a.card:hover { transform: none; box-shadow: var(--neu-in); }
+.cards.neu a.card:hover::after { opacity: .18; }
+.cards.neu a.card:active { transform: scale(.99); }
+.cards.neu a.card:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+
+/* the number reads as cut into the surface, not drawn on it */
+.cards.neu .card .idx { -webkit-text-stroke: 0; color: #121317; text-shadow: 1px 1px 0 rgba(255, 255, 255, .07), -1px -1px 1px rgba(0, 0, 0, .8); }
+
+/* chips: small pressed pills */
+.cards.neu .chip { border: 0; background: var(--neu); box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .65), inset -2px -2px 4px rgba(255, 255, 255, .04); }
+
+/* still to come: pressed into the page */
+.cards.neu .card.soon { background: #121317; box-shadow: var(--neu-in); }
+.cards.neu .card.soon::after { display: none; }
+.cards.neu .card.soon .idx { color: #101114; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cards.neu .card { transition: none; }
+}
+
+@media print {
+  .cards.neu .card, .cards.neu .card.soon { background: none; box-shadow: none; border: 1px solid #ccc; }
+  .cards.neu .chip { box-shadow: none; border: 1px solid #ccc; }
+  .cards.neu .card .idx { color: #999; text-shadow: none; }
+}

@@ -28,13 +28,7 @@
   <link rel="apple-touch-icon" href="/assets/heron/apple-touch-180.png">
   <link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/site.css">
-  <style>
-    /* this page only: four cards in one row on wide screens, room above the second heading in a section, the in-progress card, the Heron line */
-    @media (min-width: 1240px) { #browser-tools .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-    .sec-top.sub { margin-top: clamp(56px, 7vw, 100px); }
-    .card.soon { background: transparent; border-style: dashed; border-color: var(--line-2); }
-    .endline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding-top: clamp(24px, 3vw, 36px); border-top: 1px solid var(--line); }
-  </style>
+  <link rel="stylesheet" href="/assets/tools.css">
   <script>(function(d){d.className=d.className.replace('no-js','js');setTimeout(function(){if(!d.hasAttribute('data-ready'))d.className=d.className.replace(/\bjs\b/,'no-js')},3000)})(document.documentElement)</script>
   <script type="application/ld+json">
 {
@@ -277,7 +271,7 @@
         <h2 class="h2">Open one <em class="s">and use it.</em></h2>
         <p class="eyebrow">Free &middot; no sign-up &middot; works offline</p>
       </div>
-      <div class="cards">
+      <div class="cards neu">
         <a class="card" href="/toolbox/crane-lift-calculator/" style="--tint: #c9a14a">
           <span class="idx" aria-hidden="true">01</span>
           <div class="chips"><span class="chip">Lifting &middot; BS&nbsp;7121</span></div>
