@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/heron-autocad/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" content="#0F0F10">
+<meta name="theme-color" content="#050506">
 <meta name="color-scheme" content="dark">
 <meta name="geo.region" content="QA-DA">
 <meta name="geo.placename" content="Doha">
@@ -28,20 +28,10 @@
 <meta name="twitter:image" content="https://ajmalps.com/assets/heron/heron-social.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/heron/favicon-64.png">
 <link rel="apple-touch-icon" href="/assets/heron/apple-touch-180.png">
-<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/style.css">
-<link rel="stylesheet" href="/assets/chrome.css">
-<link rel="stylesheet" href="/assets/heron/heron.css">
-<script>
-/* The menus and the reveals are hidden only while a script is there to show
-   them again. If it never runs - blocked, offline, an old browser - drop the
-   class after 3s so nothing stays invisible. */
-(function(){
-  var d = document.documentElement;
-  d.classList.add("js");
-  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
-})();
-</script>
+<link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/heron.css">
+<script>(function(d){d.className=d.className.replace('no-js','js');setTimeout(function(){if(!d.hasAttribute('data-ready'))d.className=d.className.replace(/\bjs\b/,'no-js')},3000)})(document.documentElement)</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -175,6 +165,12 @@
         {
           "@type": "ListItem",
           "position": 2,
+          "name": "Heron",
+          "item": "https://ajmalps.com/heron/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
           "name": "Heron AI for AutoCAD",
           "item": "https://ajmalps.com/heron-autocad/"
         }
@@ -199,152 +195,53 @@
   ]
 }
 </script>
-<style>
-/* Page-specific layout only; everything shared comes from assets/style.css. */
-.numnote{margin:clamp(26px,3vw,40px) 0 0;max-width:72ch;font-size:.85rem;line-height:1.6;color:var(--faint)}
-
-.tabsec{padding:clamp(56px,7vw,100px) 0 0}
-.tabsec > .head,.tabsec > .kicker{max-width:1180px;margin-inline:auto;padding-inline:var(--gut)}
-.tabsec .head .dim{display:block;margin-top:14px;font-size:.3em;font-weight:500;letter-spacing:.18em;color:var(--faint)}
-.pgrp{max-width:1180px;margin:0 auto;padding:clamp(28px,3.4vw,44px) var(--gut) 0}
-.pgrp h3{
-  display:flex;align-items:center;gap:12px;
-  font-family:var(--display);font-weight:500;font-size:12px;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--faint);
-  padding-bottom:14px;border-bottom:1px solid var(--line);
-}
-.pgrp h3 i{
-  font-style:normal;font-size:11px;color:var(--faint);white-space:nowrap;
-  border:1px solid var(--line);border-radius:999px;padding:3px 10px;
-}
-.pgrp > p{margin-top:18px;max-width:68ch;font-size:.98rem;line-height:1.62;color:var(--body)}
-.tlist{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,64px)}
-@media(max-width:820px){.tlist{grid-template-columns:1fr}}
-.tlist li{padding:16px 0;border-bottom:1px solid var(--line-soft)}
-.tlist b{
-  display:block;font-family:var(--display);font-weight:500;font-size:1rem;
-  letter-spacing:.01em;text-transform:uppercase;color:var(--ink);
-}
-.tlist span{display:block;margin-top:6px;font-size:.92rem;line-height:1.55;color:var(--body)}
-.tlist em{font-style:normal;color:var(--faint)}
-
-/* Each area opens to its whole list. <details> rather than a script, so it
-   still opens with JavaScript off and the keyboard gets it for free. */
-.tlist.doms li{padding:0}
-.doms details{padding:16px 0}
-.doms summary{list-style:none;cursor:pointer;display:block;-webkit-tap-highlight-color:transparent}
-.doms summary::-webkit-details-marker{display:none}
-.doms summary b{display:flex;align-items:center;gap:10px}
-.doms summary b::after{
-  content:"";flex:none;margin-left:auto;width:7px;height:7px;
-  border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);
-  transform:rotate(45deg);transition:transform .25s var(--ease-out);
-}
-.doms details[open] summary b::after{transform:rotate(-135deg)}
-.doms summary:hover b{color:var(--accent)}
-.doms summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
-.frags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.frags i{
-  font-style:normal;font-size:12px;line-height:1.45;color:var(--body);
-  border:1px solid var(--line);border-radius:999px;padding:5px 11px;
-}
-/* draft = has never met a real model. Set back with ink and a dashed edge,
-   not with opacity, which took the text under AA. */
-.frags i.d{color:var(--faint);border-style:dashed}
-
-.say{
-  margin:clamp(24px,3vw,36px) 0 0;padding-left:clamp(18px,2.4vw,32px);
-  border-left:2px solid transparent;border-image:var(--grad) 1;max-width:58ch;
-}
-.say p{
-  font-family:var(--display);font-weight:500;
-  font-size:clamp(1.05rem,1.8vw,1.4rem);line-height:1.6;letter-spacing:-.01em;color:var(--ink);
-}
-.note{
-  margin:clamp(28px,3.4vw,44px) 0 0;padding-top:22px;border-top:1px solid var(--line);max-width:68ch;
-}
-.note b{
-  display:block;margin-bottom:12px;
-  font-family:var(--display);font-weight:500;font-size:12px;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--faint);
-}
-.note p{font-size:.95rem;line-height:1.62;color:var(--body)}
-.note p + p{margin-top:12px}
-
-@media print{
-  .pgrp,.tlist li,.ladder li{break-inside:avoid}
-  /* a closed <details> prints nothing of its contents and cannot be forced
-     open from CSS, so the chips are dropped rather than printed at random */
-  .frags{display:none !important}
-  .doms summary b::after{display:none !important}
-}
-
-</style>
 </head>
-<body class="heron">
+<body class="heron-pg">
+<!-- chrome:nav -->
 <a class="skip" href="#main">Skip to content</a>
-
-<div class="progress" aria-hidden="true"><i id="prog"></i></div>
-
-<nav id="nav" aria-label="Main">
-  <div class="navin">
-    <a class="brand" href="/" aria-label="Ajmal P.S &mdash; home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</a>
-
-    <div class="navlinks" id="navLinks">
-      <div class="navgroup">
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-experience">Experience<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-experience" aria-label="Experience">
-          <li><a href="/story/"><b>Story</b><span>How it started</span></a></li>
-          <li><a href="/experience/"><b>Experience</b><span>Eleven years, and where</span></a></li>
-          <li><a href="/work/"><b>Selected work</b><span>Five projects in Qatar</span></a></li>
-        </ul>
-      </div>
-      <div class="navgroup" data-current>
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-tools">Tools<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-tools" aria-label="Tools">
-          <li><a href="/automation/"><b>Automation</b><span>The Revit tools I build</span></a></li>
-          <li><a href="/heron-ai/"><b>Heron AI</b><span>An AI that works inside Revit</span></a></li>
-          <li><a href="/heron-tools/"><b>Heron Tools</b><span>Everyday buttons on the Revit ribbon</span></a></li>
-          <li><a href="/heron-autocad/" aria-current="page"><b>Heron for AutoCAD</b><span>Heron AI, inside AutoCAD</span></a></li>
-          <li><a href="/toolbox/"><b>Toolbox</b><span>Tools you can use in the browser</span></a></li>
-        </ul>
-      </div>
-      <div class="navgroup">
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-about">About<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-about" aria-label="About">
-          <li><a href="/skills/"><b>Skills</b><span>The full stack, named</span></a></li>
-          <li><a href="/about/"><b>About</b><span>Visa, notice, languages</span></a></li>
-          <li><a href="/faq/"><b>FAQ</b><span>The questions before a call</span></a></li>
-        </ul>
-      </div>
-      <a class="navcta" href="/contact/">Contact</a>
-    </div>
-
-    <div class="navend">
-      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-    </div>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="/" aria-label="Ajmal P.S, home"><i aria-hidden="true"></i>Ajmal P.S</a>
+    <nav class="nav-tabs" aria-label="Main">
+      <ul class="tabs" id="tabs">
+        <li class="tab-ind" aria-hidden="true"></li>
+          <li><a href="/about/" data-tab="about">About me</a></li>
+          <li><a href="/tools/" data-tab="tools">Tools</a></li>
+          <li><a href="/heron/" data-tab="heron" aria-current="page">Heron</a></li>
+      </ul>
+    </nav>
+    <a class="pill magnetic" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6h14M2 12h14"/></svg></button>
   </div>
-</nav>
-
+</header>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="burger close" type="button" aria-label="Close menu"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg></button>
+  <a class="big" href="/about/" data-tab="about">About me <small>01</small></a>
+  <a class="big" href="/tools/" data-tab="tools">Tools <small>02</small></a>
+  <a class="big heron" href="/heron/" data-tab="heron" aria-current="page">Heron <small>03</small></a>
+  <a class="pill" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+</div>
+<!-- /chrome:nav -->
 <main id="main">
-<header class="pagehead" id="top">
+<header class="page-head heron" id="top">
   <div class="wrap">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <span>Heron AI for AutoCAD</span></nav>
-    <img class="hicon enter" style="--d:0s" src="/assets/heron/heron-icon.webp" width="72" height="72" alt="The Heron app icon: a white heron on orange">
-    <img class="heron3d" src="/assets/heron/heron-3d.webp" width="718" height="720" alt="" aria-hidden="true">
-    <span class="kicker enter" style="--d:.02s">In development &middot; AutoCAD 2021&ndash;2027</span>
-    <h1 class="display enter" style="--d:.06s">Heron AI <span class="dim">for AutoCAD</span></h1>
-    <p class="lede enter" style="--d:.18s">Talk to AutoCAD. <strong>Heron draws it.</strong></p>
-    <div class="btnrow enter" style="--d:.28s">
-      <a class="btn" href="#what">See what it does</a>
-      <a class="tlink" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">GitHub <span class="chev" aria-hidden="true">&rsaquo;</span></a>
+    <img class="heron-mark" src="/assets/heron/heron-icon.webp" width="64" height="64" alt="Heron app icon">
+    <div class="eyebrow">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span class="sep" aria-hidden="true">/</span> <a href="/heron/">Heron</a> <span class="sep" aria-hidden="true">/</span> <span aria-current="page">Heron AI for AutoCAD</span></nav>
+      <span>In development &middot; AutoCAD 2021&ndash;2027</span>
+    </div>
+    <h1 class="title">Heron AI <em class="s">for AutoCAD</em></h1>
+    <p class="lede">Talk to AutoCAD. <strong>Heron draws it.</strong></p>
+    <div class="btns">
+      <a class="pill heron" href="#what">See what it does <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
+      <a class="ghost" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
     </div>
   </div>
 </header>
 
-<section class="sec sec-soft" aria-label="At a glance">
+<section class="sec" id="figures" aria-label="At a glance" data-track="heron-autocad-figures">
   <div class="wrap">
-    <div class="nums reveal">
+    <div class="nums">
       <div><b>128</b><span>tools the chat can call</span></div>
       <div><b>5</b><span>padlocks, all off at start</span></div>
       <div><b>7</b><span>AutoCAD releases, 2021&ndash;2027</span></div>
@@ -354,125 +251,109 @@
   </div>
 </section>
 
-<section class="sec" id="what">
+<section class="sec" id="what" data-track="heron-autocad-ask">
   <div class="wrap">
-    <span class="kicker">Just ask</span>
-    <h2 class="head reveal">Say it. <span class="dim">Watch it appear.</span></h2>
-    <div class="say reveal">
-      <p>&ldquo;Check this drawing against our layer standard.&rdquo;<br>
-      &ldquo;Put sheet E-101 on A1 with our title block.&rdquo;<br>
-      &ldquo;This IFC came in &mdash; make it a shop drawing.&rdquo;</p>
-    </div>
-    <p class="lede reveal" style="--d:.06s">Same chat, same padlocks as <a href="/heron-ai/">Heron AI</a> for Revit.</p>
-  </div>
-</section>
-
-<section class="sec sec-soft">
-  <div class="wrap">
-    <span class="kicker">What it does</span>
-    <h2 class="head reveal">Drawing work, <span class="dim">done for you.</span></h2>
-    <div class="rows">
-      <div class="row reveal">
-        <div class="row-n"><i>01</i><h3 class="row-t">Draw and edit</h3></div>
-        <div><p>Lines to 3D solids, blocks, hatches, dimensions.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.06s">
-        <div class="row-n"><i>02</i><h3 class="row-t">Check</h3></div>
-        <div><p>Layer standards, drawing reports, schedules from blocks.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.12s">
-        <div class="row-n"><i>03</i><h3 class="row-t">Sheets and PDF</h3></div>
-        <div><p>Title blocks, viewports, plot to PDF.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.18s">
-        <div class="row-n"><i>04</i><h3 class="row-t">Clean up imports</h3></div>
-        <div><p>An IFC or a messy DWG, made into a clean drawing.</p></div>
+    <div class="sec-top">
+      <div>
+        <p class="eyebrow">Just ask</p>
+        <h2 class="h2">Say it. <em class="s">Watch it appear.</em></h2>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="wrap">
-    <span class="kicker">You stay in control</span>
-    <h2 class="head reveal">Nothing moves <span class="dim">until you say so.</span></h2>
-    <div class="rows">
-      <div class="row reveal">
-        <div class="row-n"><i>01</i><h3 class="row-t">Off until you press Heron</h3></div>
-        <div><p>No chat can see your AutoCAD until you connect it.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.06s">
-        <div class="row-n"><i>02</i><h3 class="row-t">Padlocks</h3></div>
-        <div><p>Change, Publish and Admin each unlock on their own.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.12s">
-        <div class="row-n"><i>03</i><h3 class="row-t">Keep or Discard</h3></div>
-        <div><p>Check every change before you keep it.</p></div>
-      </div>
-      <div class="row reveal" style="--d:.18s">
-        <div class="row-n"><i>04</i><h3 class="row-t">Local only</h3></div>
-        <div><p>The link answers only your Windows user, with a new password each time.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="sec sec-soft">
-  <div class="wrap">
-    <span class="kicker">In development &middot; not released yet</span>
-    <h2 class="head reveal">Open source. <span class="dim">Follow it on GitHub.</span></h2>
-    <p class="lede reveal">Please don&rsquo;t install it yet &mdash; it is still passing its live checks in AutoCAD. Developers: ideas and corrections are welcome as an Issue.</p>
-    <div class="btnrow reveal">
-      <a class="btn" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">Heron-AutoCAD on GitHub</a>
-      <a class="btn btn-ghost" href="/contact/">Get in touch</a>
-    </div>
-  </div>
-</section>
-
-<!-- foot:start -->
-<section class="sec-foot">
-  <div class="wrap">
-    <nav class="pager" aria-label="More of the site">
-      <a class="pcard prev" href="/heron-tools/"><small>Previous</small><b><span class="chev" aria-hidden="true">&lsaquo;</span> Heron Tools</b><span>Everyday buttons on the Revit ribbon</span></a>
-      <a class="pcard next" href="/toolbox/"><small>Next</small><b>Toolbox <span class="chev" aria-hidden="true">&rsaquo;</span></b><span>Tools you can use in the browser</span></a>
-    </nav>
-    <div class="cta reveal">
-      <h2>Looking for an MEP BIM Coordinator?</h2>
-      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>
-      <div class="btnrow">
-        <a class="btn" href="/contact/">Get in touch</a>
-        <a class="tlink" href="/faq/">Read the FAQ <span class="chev" aria-hidden="true">&rsaquo;</span></a>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- foot:end -->
-</main>
-
-<footer>
-  <div class="fgrid">
-    <div>
-      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
-      <p class="fabout">MEP BIM Coordinator in Doha, Qatar.</p>
-    </div>
-    <div class="fend">
-      <ul class="fsocial" aria-label="Elsewhere">
-        <li><a href="https://www.linkedin.com/in/ajmalps/" rel="me">LinkedIn</a></li>
-        <li><a href="https://github.com/Ajmalpshaik" rel="me">GitHub</a></li>
-        <li><a href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" rel="me">WhatsApp</a></li>
-        <li><a href="mailto:ajmalnattika@gmail.com">Email</a></li>
+    <div class="ask-grid">
+      <ul class="asks">
+        <li>&ldquo;Check this drawing against our layer standard.&rdquo;</li>
+        <li>&ldquo;Put sheet E-101 on A1 with our title block.&rdquo;</li>
+        <li>&ldquo;This IFC came in. Make it a shop drawing.&rdquo;</li>
       </ul>
-      <a class="btn fcta" href="/contact/">Contact</a>
+      <p class="lede">Same chat, same padlocks as <a href="/heron-ai/">Heron AI</a> for Revit.</p>
     </div>
   </div>
-  <div class="foot">
-    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
-    <span><a href="/">ajmalps.com</a></span>
+</section>
+
+<section class="sec" id="does" data-track="heron-autocad-does">
+  <div class="wrap">
+    <div class="sec-top">
+      <div>
+        <p class="eyebrow">What it does</p>
+        <h2 class="h2">Drawing work, <em class="s">done for you.</em></h2>
+      </div>
+    </div>
+    <div class="rows">
+      <div class="row">
+        <div class="row-k"><span class="n">01</span><h3 class="h3">Draw and edit</h3></div>
+        <div class="row-v"><p>Lines to 3D solids, blocks, hatches, dimensions.</p></div>
+      </div>
+      <div class="row">
+        <div class="row-k"><span class="n">02</span><h3 class="h3">Check</h3></div>
+        <div class="row-v"><p>Layer standards, drawing reports, schedules from blocks.</p></div>
+      </div>
+      <div class="row">
+        <div class="row-k"><span class="n">03</span><h3 class="h3">Sheets and PDF</h3></div>
+        <div class="row-v"><p>Title blocks, viewports, plot to PDF.</p></div>
+      </div>
+      <div class="row">
+        <div class="row-k"><span class="n">04</span><h3 class="h3">Clean up imports</h3></div>
+        <div class="row-v"><p>An IFC or a messy DWG, made into a clean drawing.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="control" data-track="heron-autocad-control">
+  <div class="wrap">
+    <div class="sec-top">
+      <div>
+        <p class="eyebrow">You stay in control</p>
+        <h2 class="h2">Nothing moves <em class="s">until you say so.</em></h2>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><b>Off until you press Heron</b><span>No chat can see your AutoCAD until you connect it.</span></li>
+      <li><b>Padlocks</b><span>Change, Publish and Admin each unlock on their own.</span></li>
+      <li><b>Keep or Discard</b><span>Check every change before you keep it.</span></li>
+      <li><b>Local only</b><span>The link answers only your Windows user, with a new password each time.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec cta" id="follow" data-track="heron-autocad-github">
+  <div class="wrap">
+    <p class="eyebrow">In development &middot; not released yet</p>
+    <h2 class="h2">Open source. <em class="s">Follow it on GitHub.</em></h2>
+    <p class="lede">Please don&rsquo;t install it yet. It is still passing its live checks in AutoCAD. Developers: ideas and corrections are welcome as an Issue.</p>
+    <div class="btns">
+      <a class="pill heron" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">Heron-AutoCAD on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+      <a class="ghost" href="/heron/">All of Heron <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
+      <a class="ghost" href="#contact">Get in touch</a>
+    </div>
+  </div>
+</section>
+</main>
+<!-- chrome:foot -->
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <h2 class="foot-h">Let&rsquo;s <em class="s">talk.</em></h2>
+    <div class="foot-grid">
+      <div>
+        <div class="mail"><a href="mailto:ajmalnattika@gmail.com">ajmalnattika@gmail.com</a><button class="copy" type="button" data-copy="ajmalnattika@gmail.com">Copy</button></div>
+        <p class="say">Hiring, or want a tool built? Email is fastest, and I answer every message myself. Transferable QID with NOC, able to join within days.</p>
+        <div class="socials">
+          <a class="ghost" href="https://www.linkedin.com/in/ajmalps/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="ghost" href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="ghost" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <a class="magnet magnetic" href="mailto:ajmalnattika@gmail.com">Get in<br>touch</a>
+    </div>
+    <div class="legal">
+      <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+      <nav aria-label="Footer"><a href="/about/">About me</a> <a href="/tools/">Tools</a> <a href="/heron/">Heron</a> <a href="#main">Back to top &uarr;</a></nav>
+    </div>
   </div>
 </footer>
-<script src="../vendor/lenis.min.js" defer></script>
-<script src="../vendor/gsap.min.js" defer></script>
-<script src="../vendor/ScrollTrigger.min.js" defer></script>
-<script src="../assets/app.js" defer></script>
+<!-- /chrome:foot -->
+<script src="/vendor/lenis.min.js" defer></script>
+<script src="/assets/site.js" defer></script>
 </body>
 </html>

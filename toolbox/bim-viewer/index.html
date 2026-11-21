@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="en" data-no-count>
+<!doctype html>
+<html lang="en" class="no-js" data-no-count>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BIM Viewer — open IFC in your browser and walk inside it</title>
-<meta name="description" content="Free IFC viewer for Revit models. See properties, levels and categories, cut sections and measure, then walk inside the building as a robot, game style. Runs in your browser.">
+<meta name="description" content="Free IFC viewer for Revit models. Properties, levels, sections and measuring, then walk inside the building as a robot, game style. Runs in your browser.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/bim-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" content="#0F0F10">
+<meta name="theme-color" content="#050506">
 <meta name="color-scheme" content="dark">
 <meta property="og:title" content="BIM Viewer — open IFC in your browser and walk inside it">
 <meta property="og:description" content="Free IFC viewer for Revit models. See properties, cut sections and measure, then walk inside the building as a robot, game style. Your file never leaves your device.">
@@ -24,23 +24,14 @@
 <meta name="twitter:title" content="BIM Viewer — open IFC in your browser and walk inside it">
 <meta name="twitter:description" content="Open a Revit IFC export in your browser, check its properties, then walk inside it as a robot. The file never leaves your device.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="apple-touch-icon" href="../../favicon.svg">
-<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../assets/style.css">
-<link rel="stylesheet" href="/assets/chrome.css">
-<link rel="stylesheet" href="../../assets/toolbox.css">
-<link rel="stylesheet" href="viewer.css">
-<script>
-/* The menus and the reveals are hidden only while a script is there to show
-   them again. If it never runs - blocked, offline, an old browser - drop the
-   class after 3s so nothing stays invisible. */
-(function(){
-  var d = document.documentElement;
-  d.classList.add("js");
-  setTimeout(function(){ if(!d.getAttribute("data-ready")) d.classList.remove("js"); }, 3000);
-})();
-</script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/tool.css">
+<link rel="stylesheet" href="/assets/toolbox.css">
+<link rel="stylesheet" href="/toolbox/bim-viewer/viewer.css">
+<script>(function(d){d.className=d.className.replace('no-js','js');setTimeout(function(){if(!d.hasAttribute('data-ready'))d.className=d.className.replace(/\bjs\b/,'no-js')},3000)})(document.documentElement)</script>
 <!-- IMPORTMAP:START (written by tools/pin_three.mjs - do not edit by hand) -->
 <!-- three.js 0.186.1, pinned. Each file carries its SHA-384 fingerprint, so a
      browser that checks them refuses any copy that differs from the npm release.
@@ -102,7 +93,7 @@
       "@id": "https://ajmalps.com/toolbox/bim-viewer/#crumbs",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ajmalps.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Toolbox", "item": "https://ajmalps.com/toolbox/" },
+        { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://ajmalps.com/tools/" },
         { "@type": "ListItem", "position": 3, "name": "BIM Viewer", "item": "https://ajmalps.com/toolbox/bim-viewer/" }
       ]
     }
@@ -111,63 +102,52 @@
 </script>
 </head>
 <body>
+<!-- chrome:nav -->
 <a class="skip" href="#main">Skip to content</a>
-
-<div class="progress" aria-hidden="true"><i id="prog"></i></div>
-
-<nav id="nav" aria-label="Main">
-  <div class="navin">
-    <a class="brand" href="/" aria-label="Ajmal P.S &mdash; home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</a>
-
-    <div class="navlinks" id="navLinks">
-      <div class="navgroup">
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-experience">Experience<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-experience" aria-label="Experience">
-          <li><a href="/story/"><b>Story</b><span>How it started</span></a></li>
-          <li><a href="/experience/"><b>Experience</b><span>Eleven years, and where</span></a></li>
-          <li><a href="/work/"><b>Selected work</b><span>Five projects in Qatar</span></a></li>
-        </ul>
-      </div>
-      <div class="navgroup" data-current>
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-tools">Tools<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-tools" aria-label="Tools">
-          <li><a href="/automation/"><b>Automation</b><span>The Revit tools I build</span></a></li>
-          <li><a href="/heron-ai/"><b>Heron AI</b><span>An AI that works inside Revit</span></a></li>
-          <li><a href="/heron-tools/"><b>Heron Tools</b><span>Everyday buttons on the Revit ribbon</span></a></li>
-          <li><a href="/heron-autocad/"><b>Heron for AutoCAD</b><span>Heron AI, inside AutoCAD</span></a></li>
-          <li><a href="/toolbox/" aria-current="page"><b>Toolbox</b><span>Tools you can use in the browser</span></a></li>
-        </ul>
-      </div>
-      <div class="navgroup">
-        <button type="button" class="navtrig" aria-expanded="false" aria-controls="nm-about">About<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-        <ul class="navmenu" id="nm-about" aria-label="About">
-          <li><a href="/skills/"><b>Skills</b><span>The full stack, named</span></a></li>
-          <li><a href="/about/"><b>About</b><span>Visa, notice, languages</span></a></li>
-          <li><a href="/faq/"><b>FAQ</b><span>The questions before a call</span></a></li>
-        </ul>
-      </div>
-      <a class="navcta" href="/contact/">Contact</a>
-    </div>
-
-    <div class="navend">
-      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
-    </div>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="/" aria-label="Ajmal P.S, home"><i aria-hidden="true"></i>Ajmal P.S</a>
+    <nav class="nav-tabs" aria-label="Main">
+      <ul class="tabs" id="tabs">
+        <li class="tab-ind" aria-hidden="true"></li>
+          <li><a href="/about/" data-tab="about">About me</a></li>
+          <li><a href="/tools/" data-tab="tools" aria-current="page">Tools</a></li>
+          <li><a href="/heron/" data-tab="heron">Heron</a></li>
+      </ul>
+    </nav>
+    <a class="pill magnetic" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6h14M2 12h14"/></svg></button>
   </div>
-</nav>
+</header>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="burger close" type="button" aria-label="Close menu"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg></button>
+  <a class="big" href="/about/" data-tab="about">About me <small>01</small></a>
+  <a class="big" href="/tools/" data-tab="tools" aria-current="page">Tools <small>02</small></a>
+  <a class="big heron" href="/heron/" data-tab="heron">Heron <small>03</small></a>
+  <a class="pill" href="#contact">Contact <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
+</div>
+<!-- /chrome:nav -->
 
 <main id="main">
+<header class="page-head tool-head">
+  <div class="wrap">
+    <nav class="eyebrow crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">/</span>
+      <a href="/tools/">Tools</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">BIM Viewer</span>
+    </nav>
+    <h1 class="title">BIM Viewer</h1>
+    <p class="lede">Open a Revit model as IFC. Check every element's properties, levels and categories, cut a plan or a section, and measure. Then switch to the walk view and walk through the building as a robot, a soldier or X Bot, like a game.</p>
+    <ul class="chips" aria-label="About this tool">
+      <li class="chip">Free tool</li>
+      <li class="chip">Runs in your browser</li>
+      <li class="chip">No API key</li>
+    </ul>
+  </div>
+</header>
+
 <section class="sec-tool">
   <div class="wrap">
-
-    <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="/">Home</a> <span aria-hidden="true">›</span>
-      <a href="/toolbox/">Toolbox</a> <span aria-hidden="true">›</span>
-      <span>BIM Viewer</span>
-    </nav>
-
-    <p class="kicker">Free tool · runs in your browser · no API key</p>
-    <h1 class="display tool-display">BIM Viewer</h1>
-    <p class="sub" style="max-width:680px">Open a Revit model as IFC. Check every element's properties, levels and categories, cut a plan or a section, and measure. Then switch to the walk view and walk through the building as a robot, a soldier or X Bot, like a game.</p>
 
     <div class="bvp-private" role="note">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
@@ -386,39 +366,40 @@
       <p><b>Walls and doors.</b> In the walk view you collide with what is visible. Doors and rooms are left out, so doorways are open. Hide a category in the BIM view and it stops blocking you too. Very large models collide with walls, floors, roofs and stairs only, to stay smooth.</p>
       <p><b>Position.</b> The model is moved near the origin when it opens, so georeferenced exports far from 0,0,0 still draw cleanly. The sun is not set to the site's real north or location.</p>
       <p><b>Size.</b> Everything runs on your device, so a big model needs a big device. If a file struggles, export less of it, or lower the Quality setting.</p>
-      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 by That Open Company (MPL-2.0), served from this site, and three.js 0.186.1 from jsDelivr. The robot is RobotExpressive by Tomás Laulhé, with changes by Don McCurdy, released as CC0. The soldier and X Bot are Adobe Mixamo characters from the three.js examples; they load from three.js's own copy on jsDelivr when you pick them and are not stored on this site. The sample villa was made for this page. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="/contact/">Tell me</a> and I will fix it.</p>
+      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 by That Open Company (MPL-2.0), served from this site, and three.js 0.186.1 from jsDelivr. The robot is RobotExpressive by Tomás Laulhé, with changes by Don McCurdy, released as CC0. The soldier and X Bot are Adobe Mixamo characters from the three.js examples; they load from three.js's own copy on jsDelivr when you pick them and are not stored on this site. The sample villa was made for this page. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="#contact">Tell me</a> and I will fix it.</p>
     </div>
 
   </div>
 </section>
 </main>
 
-<footer>
-  <div class="fgrid">
-    <div>
-      <div class="fbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/><text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg> Ajmal P.S</div>
-      <p class="fabout">MEP BIM Coordinator in Doha, Qatar.</p>
+<!-- chrome:foot -->
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <h2 class="foot-h">Let&rsquo;s <em class="s">talk.</em></h2>
+    <div class="foot-grid">
+      <div>
+        <div class="mail"><a href="mailto:ajmalnattika@gmail.com">ajmalnattika@gmail.com</a><button class="copy" type="button" data-copy="ajmalnattika@gmail.com">Copy</button></div>
+        <p class="say">Hiring, or want a tool built? Email is fastest, and I answer every message myself. Transferable QID with NOC, able to join within days.</p>
+        <div class="socials">
+          <a class="ghost" href="https://www.linkedin.com/in/ajmalps/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="ghost" href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="ghost" href="https://github.com/Ajmalpshaik" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <a class="magnet magnetic" href="mailto:ajmalnattika@gmail.com">Get in<br>touch</a>
     </div>
-    <div class="fend">
-      <ul class="fsocial" aria-label="Elsewhere">
-        <li><a href="https://www.linkedin.com/in/ajmalps/" rel="me">LinkedIn</a></li>
-        <li><a href="https://github.com/Ajmalpshaik" rel="me">GitHub</a></li>
-        <li><a href="https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com" rel="me">WhatsApp</a></li>
-        <li><a href="mailto:ajmalnattika@gmail.com">Email</a></li>
-      </ul>
-      <a class="btn fcta" href="/contact/">Contact</a>
+    <div class="legal">
+      <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+      <nav aria-label="Footer"><a href="/about/">About me</a> <a href="/tools/">Tools</a> <a href="/heron/">Heron</a> <a href="#main">Back to top &uarr;</a></nav>
     </div>
-  </div>
-  <div class="foot">
-    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>
-    <span><a href="/">ajmalps.com</a></span>
   </div>
 </footer>
+<!-- /chrome:foot -->
 
-<script src="../../vendor/lenis.min.js" defer></script>
-<script src="../../vendor/gsap.min.js" defer></script>
-<script src="../../vendor/ScrollTrigger.min.js" defer></script>
-<script src="../../assets/app.js" defer></script>
+<script src="/vendor/lenis.min.js" defer></script>
+<script src="/assets/site.js" defer></script>
 <script type="module">
 /* Starts the viewer only where it can run: import maps for three.js, and
    WebGL 2 for drawing. Anywhere else the note above says why, and nothing

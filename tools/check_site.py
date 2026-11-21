@@ -19,13 +19,26 @@ import sys
 from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# The pages people read. Every one carries the chrome from tools/sync_chrome.py.
 PAGES = ["index.html", "404.html"] + [
     os.path.join(d, "index.html")
-    for d in ("story", "experience", "work", "automation", "heron-ai", "heron-tools", "heron-autocad",
-              "about", "skills", "faq", "contact",
-              "toolbox", os.path.join("toolbox", "crane-lift-calculator"),
+    for d in ("about", "tools", "heron", "heron-ai", "heron-tools", "heron-autocad",
+              os.path.join("toolbox", "crane-lift-calculator"),
               os.path.join("toolbox", "ar-viewer"), os.path.join("toolbox", "bim-viewer"))
 ]
+
+# Old addresses that forward to where their content lives now. Each is a tiny
+# page with a canonical link and a meta refresh; nothing else.
+STUBS = {
+    "story/index.html": "/about/#story",
+    "experience/index.html": "/about/#experience",
+    "work/index.html": "/about/#work",
+    "skills/index.html": "/about/#skills",
+    "faq/index.html": "/about/#faq",
+    "automation/index.html": "/tools/#automation",
+    "toolbox/index.html": "/tools/#browser-tools",
+    "contact/index.html": "/#contact",
+}
 
 errors, warnings = [], []
 
@@ -56,7 +69,7 @@ def norm(text):
 
 
 # ---------------------------------------------------------------- pages exist
-for page in PAGES:
+for page in PAGES + list(STUBS):
     if not os.path.exists(os.path.join(ROOT, page)):
         err(f"missing page: {page}")
 if errors:
@@ -86,18 +99,18 @@ for required in ("Person", "WebSite", "ProfilePage"):
 
 
 # --------------------------------------------- FAQ schema vs what is on screen
-# The FAQ has its own page now, so read the schema and the questions from there.
-faq_src = read(os.path.join("faq", "index.html"))
+# The FAQ is the last section of the About me page.
+faq_src = read(os.path.join("about", "index.html"))
 faq_graph = []
 for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', faq_src, re.S):
     try:
         faq_graph = json.loads(block).get("@graph", [])
     except json.JSONDecodeError as exc:
-        err(f"faq/index.html JSON-LD does not parse: {exc}")
+        err(f"about/index.html JSON-LD does not parse: {exc}")
 
 faq_nodes = [n for n in faq_graph if n.get("@type") == "FAQPage"]
 if not faq_nodes:
-    err("faq/index.html has no FAQPage node")
+    err("about/index.html has no FAQPage node")
 if faq_nodes:
     schema_qa = [
         (q.get("name", ""), q.get("acceptedAnswer", {}).get("text", ""))
@@ -151,58 +164,89 @@ for page in PAGES:
         if not os.path.exists(target):
             err(f"{page} references a file that is not in the repo: {ref}")
 
-# assets/app.js redirects the old single-page anchors to the pages that replaced
-# them. Those paths are in a JavaScript object, not in an href, so the scan
-# above cannot see them - and a page can be renamed out from under one of them
-# in total silence. That is exactly what happened to /aj-tools/: it was deleted
-# and the map went on sending #ajtools to it for a release.
-app_js = read("assets/app.js")
-legacy = re.search(r"var legacy = \{(.*?)\};", app_js, re.S)
+# assets/site.js forwards the old single-page anchors (#story, #faq...) to where
+# that content lives now. Those paths are in a JavaScript object, not in an
+# href, so the scan above cannot see them - and a page can be renamed out from
+# under one of them in total silence.
+site_js = read("assets/site.js")
+legacy = re.search(r"var legacy = \{(.*?)\};", site_js, re.S)
 if not legacy:
-    err("assets/app.js: the legacy redirect map is gone or no longer matches - "
+    err("assets/site.js: the legacy redirect map is gone or no longer matches - "
         "if it was removed on purpose, remove this check with it")
 else:
-    for dest in re.findall(r'"(/[^"]*)"', legacy.group(1)):
-        if not os.path.exists(os.path.join(ROOT, dest.strip("/"), "index.html")):
-            err(f"assets/app.js redirects an old anchor to {dest}, which is not a page")
+    for dest in re.findall(r"'(/[^']*)'", legacy.group(1)):
+        path, _, frag = dest.partition("#")
+        page = os.path.join(path.strip("/"), "index.html") if path.strip("/") else "index.html"
+        if not os.path.exists(os.path.join(ROOT, page)):
+            err(f"assets/site.js redirects an old anchor to {dest}, which is not a page")
+        elif frag and f'id="{frag}"' not in read(page):
+            err(f"assets/site.js redirects an old anchor to {dest}, but {page} has no id=\"{frag}\"")
+
+# --------------------------------------------------- old addresses still forward
+for stub, dest in STUBS.items():
+    if not os.path.exists(os.path.join(ROOT, stub)):
+        continue
+    stub_src = read(stub)
+    if f'content="0; url={dest}"' not in stub_src:
+        err(f"{stub} should forward to {dest} with a meta refresh")
+    path, _, frag = dest.partition("#")
+    page = os.path.join(path.strip("/"), "index.html") if path.strip("/") else "index.html"
+    if not os.path.exists(os.path.join(ROOT, page)):
+        err(f"{stub} forwards to {dest}, which is not a page")
+    elif frag and f'id="{frag}"' not in read(page):
+        err(f"{stub} forwards to {dest}, but {page} has no id=\"{frag}\"")
+
+# ------------------------------------------- the sitemap lists exactly the pages
+sitemap = read("sitemap.xml")
+listed = set(re.findall(r"<loc>https://ajmalps\.com/([^<]*)</loc>", sitemap))
+expected = {("" if p == "index.html" else p[: -len("index.html")]) for p in PAGES if p != "404.html"}
+for missing in sorted(expected - listed):
+    err(f"sitemap.xml does not list /{missing}")
+for extra in sorted(listed - expected):
+    err(f"sitemap.xml lists /{extra}, which is not a page (or is a redirect)")
 
 # Files nothing links to with src or href, so the scan above cannot see them:
-# the display face is asked for by assets/style.css, and the rest are read by
-# crawlers rather than by the pages. Without this, deleting one of them leaves
-# the static check green.
+# the fonts are asked for by assets/site.css, and the rest are read by crawlers
+# rather than by the pages. Without this, deleting one of them leaves the static
+# check green.
 for asset in ("og-cover.png", "favicon.svg", "CNAME", "robots.txt", "sitemap.xml",
-              "assets/fonts/manrope.woff2"):
+              "assets/fonts/geist.woff2", "assets/fonts/geist-mono-400.woff2",
+              "assets/fonts/geist-mono-500.woff2", "assets/fonts/instrument-serif.woff2",
+              "assets/fonts/instrument-serif-italic.woff2"):
     if not os.path.exists(os.path.join(ROOT, asset)):
         err(f"missing expected file: {asset}")
 
 
-# ------------------------------------------------------- absolute URLs resolve
-canonical = re.search(r'<link rel="canonical" href="([^"]+)"', src)
-if not canonical:
-    err("no canonical link")
-for meta_url in re.findall(r'content="(https://ajmalps\.com/[^"]+)"', src):
-    path = meta_url.replace("https://ajmalps.com/", "")
-    if path and not os.path.exists(os.path.join(ROOT, path)):
-        err(f"meta tag points at a file that is not in the repo: {meta_url}")
-
-
-# ------------------------------------------------------------ head essentials
-desc = re.search(r'<meta name="description" content="([^"]+)"', src)
-if not desc:
-    err("no meta description")
-elif len(desc.group(1)) > 165:
-    warn(f"meta description is {len(desc.group(1))} chars; search results cut off near 160")
-
-title = re.search(r"<title>(.*?)</title>", src, re.S)
-if not title:
-    err("no <title>")
-elif len(strip_tags(title.group(1))) > 65:
-    warn(f"title is {len(strip_tags(title.group(1)))} chars; search results cut off near 60")
-
-if src.count("<h1") != 1:
-    err(f"expected exactly one h1, found {src.count('<h1')}")
-if "<main" not in src:
-    err("no <main> landmark")
+# ------------------------------------------- head essentials, on every page
+for page in PAGES:
+    page_src = read(page)
+    canonical = re.search(r'<link rel="canonical" href="([^"]+)"', page_src)
+    if page != "404.html" and not canonical:
+        err(f"{page}: no canonical link")
+    for meta_url in re.findall(r'content="(https://ajmalps\.com/[^"]+)"', page_src):
+        path = meta_url.replace("https://ajmalps.com/", "").split("#")[0]
+        if path and not os.path.exists(os.path.join(ROOT, path)):
+            err(f"{page}: meta tag points at a file that is not in the repo: {meta_url}")
+    desc = re.search(r'<meta name="description" content="([^"]+)"', page_src)
+    if not desc:
+        err(f"{page}: no meta description")
+    elif len(desc.group(1)) > 165:
+        warn(f"{page}: meta description is {len(desc.group(1))} chars; search results cut off near 160")
+    title = re.search(r"<title>(.*?)</title>", page_src, re.S)
+    if not title:
+        err(f"{page}: no <title>")
+    elif len(strip_tags(title.group(1))) > 65:
+        warn(f"{page}: title is {len(strip_tags(title.group(1)))} chars; search results cut off near 60")
+    h1s = len(re.findall(r"<h1[\s>]", page_src))
+    if h1s != 1:
+        err(f"{page}: expected exactly one h1, found {h1s}")
+    if '<main id="main"' not in page_src:
+        err(f"{page}: no <main id=\"main\"> landmark (the skip link points at it)")
+    for blk in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page_src, re.S):
+        try:
+            json.loads(blk)
+        except json.JSONDecodeError as exc:
+            err(f"{page}: JSON-LD does not parse: {exc}")
 
 
 # ------------------------------------------------------ stated counts are true

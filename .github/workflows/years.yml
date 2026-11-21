@@ -2,7 +2,7 @@ name: years
 
 # The years-of-experience figure a crawler sees.
 #
-# The VISIBLE one on every page already computes itself in assets/app.js. This
+# The VISIBLE one on every page already computes itself in assets/site.js. This
 # is for the text app.js cannot reach - the JSON-LD Person description,
 # experienceRequirements, and the meta / og: / twitter: descriptions - which a
 # search engine or a link preview reads straight out of the file, often without

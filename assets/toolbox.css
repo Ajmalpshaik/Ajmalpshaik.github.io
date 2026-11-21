@@ -1,22 +1,23 @@
-/* ajmalps.com - Toolbox. Shared by /toolbox/ and every tool page.
-   Built on the surface tokens in style.css, so light and dark both work and a
-   tool page looks like the rest of the site without repeating its rules. */
+/* ajmalps.com - the browser tools' controls. Loaded by every tool page, after
+   assets/site.css and assets/tool.css, so the tools wear the site's one dark
+   look: panels on #0D0D0F and #151518, hairline edges, white for what matters.
 
-/* Surface tokens. These lived in style.css until the 2026-10-27 redesign took
-   the light theme and the switch out; this file kept using them, so every card,
-   input and result box on the tool pages lost its surface and drew straight on
-   the page. They are the old dark values, which is the one skin the site has. */
+   Surface tokens. The names are older than the look; the values are the
+   site.css panels. A card is --neu-surface, the field or value box inside it
+   is --neu-raised, and every edge is a hairline drawn as a shadow so it never
+   moves the layout. The print block at the bottom resets each one to paper. */
 :root{
-  --muted:#b6b5b3;
-  --hairline:#262627;
-  --blue:#FD641A;         /* the Heron Accent - the name stays, the colour is the brand's */
-  --glass:#161617;
-  --glass-border:#262627;
-  --neu-surface:#161617;
-  --neu-out:0 0 0 1px #202327,0 10px 26px rgba(0,0,0,.4);
-  --neu-out-sm:0 0 0 1px #24282d;
-  --neu-hover:0 0 0 1px #30353b,0 18px 40px rgba(0,0,0,.55);
-  --neu-in:inset 0 0 0 1px #2a2f35,inset 0 1px 3px rgba(0,0,0,.6);
+  --muted:var(--body,#B9B9BE);
+  --hairline:var(--line,rgba(255,255,255,.09));
+  --blue:var(--fg,#F5F5F7);   /* the tools' accent: white, like the rest of the site (the name is historical) */
+  --glass:var(--bg-2,#0D0D0F);
+  --glass-border:var(--line,rgba(255,255,255,.09));
+  --neu-surface:var(--bg-2,#0D0D0F);
+  --neu-raised:var(--bg-3,#151518);
+  --neu-out:0 0 0 1px var(--line,rgba(255,255,255,.09));
+  --neu-out-sm:0 0 0 1px var(--line,rgba(255,255,255,.09));
+  --neu-hover:0 0 0 1px var(--line-2,rgba(255,255,255,.16)),0 18px 40px rgba(0,0,0,.5);
+  --neu-in:inset 0 0 0 1px var(--line,rgba(255,255,255,.09));
 }
 
 /* ============ Toolbox landing ============ */
@@ -47,12 +48,14 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 /* ============ Shared tool-page chrome ============ */
 .tool-head{margin-bottom:8px}
 .tool-note{
-  font-size:13.5px;line-height:1.65;color:var(--muted);
+  font-size:14px;line-height:1.65;color:var(--muted);
   background:var(--neu-surface);border:1px solid var(--hairline);
-  border-radius:14px;padding:16px 18px;margin-top:22px;
+  border-radius:16px;padding:18px 20px;margin-top:22px;
 }
-.tool-note b{color:var(--ink)}
-.tool-note.warn{color:#f0a760}
+.tool-note b{color:var(--ink);font-weight:600}
+/* a caution: calm amber, so it reads as one without shouting */
+.tool-note.warn{border-color:rgba(251,191,36,.26);background:linear-gradient(180deg,rgba(251,191,36,.05),rgba(251,191,36,0) 70%),var(--neu-surface)}
+.tool-note.warn b{color:#F6D58E}
 
 /* ============ Calculator ============ */
 .calc{--c-ok:#4ade80;--c-bad:#f87171;--c-warn:#fbbf24}
@@ -63,33 +66,37 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .calc-card{
   background:var(--neu-surface);border-radius:20px;padding:26px 24px;
-  box-shadow:var(--neu-out);display:flex;flex-direction:column;
+  box-shadow:var(--neu-out);display:flex;flex-direction:column;min-width:0;
 }
 .calc-card.full{grid-column:1/-1}
 .calc-card h2{
-  font-size:17px;font-weight:600;letter-spacing:-.01em;
+  font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.25;
   padding-bottom:13px;margin-bottom:18px;border-bottom:1px solid var(--hairline);
   display:flex;align-items:center;gap:11px;
 }
 .calc-card h2 .ic{
   width:34px;height:34px;flex:0 0 34px;border-radius:11px;
-  background:var(--neu-surface);box-shadow:var(--neu-out-sm);
+  background:var(--neu-raised);box-shadow:var(--neu-out-sm);
   display:flex;align-items:center;justify-content:center;
 }
-.calc-card h2 .ic svg{width:17px;height:17px;stroke:var(--blue);fill:none;stroke-width:1.9}
+.calc-card h2 .ic svg{width:17px;height:17px;stroke:var(--body,#B9B9BE);fill:none;stroke-width:1.8}
 
 .f{margin-bottom:15px}
 .f label{
-  display:block;font-size:11px;font-weight:600;letter-spacing:.05em;
-  text-transform:uppercase;color:var(--muted);margin:0 0 6px 3px;line-height:1.4;
+  display:block;font-size:11px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 7px 3px;line-height:1.4;
 }
 .f-in{position:relative}
 .f-in input,.f-in select{
   width:100%;padding:11px 13px;border-radius:12px;
-  background:#0f1113;box-shadow:var(--neu-in);
+  background:var(--neu-raised);box-shadow:var(--neu-in);
   border:none;outline:none;color:var(--ink);
   font-family:inherit;font-weight:500;font-size:15px;
+  transition:box-shadow .2s;
 }
+.f-in input:hover,.f-in select:hover{box-shadow:inset 0 0 0 1px var(--line-2,rgba(255,255,255,.16))}
+.f-in input::placeholder{color:var(--faint);opacity:1}
+.f-in input[type=date]{color-scheme:dark}
 .f-in input:focus-visible,.f-in select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .f-in input[readonly]{opacity:.66;cursor:not-allowed}
 /* a value outside the field's range: crane-calc.js reads it as blank and says why */
@@ -115,11 +122,13 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .f-hint{font-size:11.5px;color:var(--faint);margin:6px 0 0 3px;line-height:1.45}
 .f-flag{font-size:11.5px;font-weight:600;color:var(--blue);margin:6px 0 0 3px;line-height:1.45}
 .mini{
-  width:100%;margin-top:7px;padding:7px;border-radius:10px;
-  background:var(--neu-surface);box-shadow:var(--neu-out-sm);
-  border:none;color:var(--blue);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;
+  width:100%;margin-top:7px;padding:8px;border-radius:999px;
+  background:transparent;box-shadow:inset 0 0 0 1px var(--line-2,rgba(255,255,255,.16));
+  border:none;color:var(--blue);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  transition:background .3s,box-shadow .3s;
 }
-.mini:active{box-shadow:var(--neu-in)}
+.mini:hover{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.mini:active{background:rgba(255,255,255,.12)}
 
 .res{
   margin-top:auto;padding-top:17px;border-top:1px solid var(--hairline);
@@ -128,7 +137,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .res-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .res-row .k{font-size:13.5px;color:var(--muted);line-height:1.4}
 .res-row .v{
-  background:var(--neu-surface);box-shadow:var(--neu-out-sm);border-radius:10px;
+  background:var(--neu-raised);box-shadow:var(--neu-out-sm);border-radius:10px;
   padding:7px 13px;font-weight:600;min-width:98px;text-align:right;color:var(--blue);
   font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;
 }
@@ -148,11 +157,11 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 /* ============ Diagrams ============ */
 .dg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 .dg-t{
-  font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.07em;margin-bottom:9px;padding-left:9px;border-left:3px solid var(--blue);line-height:1.4;
+  font-size:11.5px;font-weight:500;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:9px;padding-left:9px;border-left:2px solid var(--line-2,rgba(255,255,255,.16));line-height:1.4;
 }
 .dg-box{
-  background:var(--neu-surface);border-radius:15px;box-shadow:var(--neu-out-sm);
+  background:var(--d-sky);border-radius:16px;box-shadow:var(--neu-out-sm);
   padding:11px;overflow:hidden;
 }
 .dg-box svg{width:100%;display:block}
@@ -210,11 +219,11 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .dg-t-onload{fill:#1a1206;font-weight:700}
 /* diagram palette: the dark one, the site's only skin (print sets its own) */
 .calc{
-  --d-sky:#161922;--d-ground:#23283340;--d-line:#4b5563;--d-ink:#cbd5e0;
-  --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#374151;
-  --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#161922;
-  --d-crane:#e0a42e;--d-crane-d:#a97b1f;--d-bld:#262c36;--d-floor:#353d49;
-  --d-dim:#4aa8ff;--d-track:#262b33;--d-mute:#8a99a8;
+  --d-sky:#111114;--d-ground:#2a2a3040;--d-line:#55555c;--d-ink:#d4d4d8;
+  --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#3a3a40;
+  --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#111114;
+  --d-crane:#e0a42e;--d-crane-d:#a97b1f;--d-bld:#26262b;--d-floor:#38383e;
+  --d-dim:#4aa8ff;--d-track:#26262b;--d-mute:#8c8c92;
 }
 .d-sky{fill:var(--d-sky)}
 .d-ground{fill:var(--d-ground)}
@@ -256,7 +265,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d{position:relative}
 .l3d-stage{
   position:relative;height:clamp(380px,62vh,640px);border-radius:16px;overflow:hidden;
-  background:#0f1216;border:1px solid var(--line,#23262a);
+  background:#0f1216;border:1px solid var(--line,rgba(255,255,255,.09));
 }
 .l3d-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}
 .l3d-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
@@ -287,7 +296,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
   position:absolute;right:12px;bottom:12px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;
   max-width:calc(100% - 24px);
 }
-.l3d-seg{display:flex;border-radius:11px;overflow:hidden;background:rgba(12,14,18,.82);border:1px solid rgba(255,255,255,.1);
+.l3d-seg{display:flex;border-radius:12px;overflow:hidden;background:rgba(12,14,18,.82);border:1px solid rgba(255,255,255,.1);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .l3d-seg button{
   font:inherit;font-size:12px;font-weight:600;color:#b6b5b3;background:none;border:0;
@@ -295,8 +304,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-seg button:last-child{border-right:0}
 .l3d-seg button:hover{color:#fff}
-.l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(253,100,26,.24)}
-.l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #FD641A;outline-offset:-2px}
+.l3d-seg button[aria-pressed="true"]{color:#fff;background:rgba(255,255,255,.16)}
+.l3d-seg button:focus-visible,.l3d-chip:focus-visible{outline:2px solid #F5F5F7;outline-offset:-2px}
 .l3d-info{
   position:absolute;right:12px;top:calc(var(--l3d-hud,33px) + 22px);width:min(320px,calc(100% - 24px));z-index:2;
   max-height:clamp(200px,calc(62vh - 120px),520px);overflow:auto;padding:12px 14px 10px;border-radius:13px;
@@ -323,7 +332,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d-msg[hidden],.l3d-warn[hidden],.l3d-info[hidden],.l3d-done[hidden]{display:none}
 /* quiet until engaged: say how, and show that it is */
 .l3d-stage{transition:border-color .2s var(--ease,ease),box-shadow .2s var(--ease,ease)}
-.l3d-stage.l3d-engaged{border-color:rgba(253,100,26,.55);box-shadow:0 0 0 3px rgba(253,100,26,.12)}
+.l3d-stage.l3d-engaged{border-color:rgba(255,255,255,.42);box-shadow:0 0 0 3px rgba(255,255,255,.08)}
 .l3d-hint{
   position:absolute;left:12px;bottom:12px;pointer-events:none;
   font-size:12.5px;font-weight:600;color:#dbe4ec;white-space:nowrap;
@@ -335,8 +344,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .l3d-hint.l3d-nudge{animation:l3dNudge .9s ease}
 @keyframes l3dNudge{0%,100%{opacity:.92;transform:scale(1)}30%{opacity:1;transform:scale(1.08)}}
 .l3d-done{
-  position:absolute;left:12px;bottom:12px;font:inherit;font-size:13px;font-weight:700;color:#0b0d10;
-  background:#FD641A;border:0;border-radius:11px;padding:9px 18px;cursor:pointer;
+  position:absolute;left:12px;bottom:12px;font:inherit;font-size:13px;font-weight:600;color:#000;
+  background:#F5F5F7;border:0;border-radius:999px;padding:9px 18px;cursor:pointer;
 }
 @media(prefers-reduced-motion:reduce){.l3d-hint.l3d-nudge{animation:none}}
 /* where the view buttons take the bottom row, the hint goes under the chips */
@@ -346,7 +355,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-q{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--faint,#767f88);font-weight:600;letter-spacing:.02em}
 .l3d-q output{color:var(--ink,#f2f6f9);font-variant-numeric:tabular-nums}
-.l3d-q input[type=range]{width:100%;accent-color:#FD641A;height:22px;margin:0}
+.l3d-q input[type=range]{width:100%;accent-color:#F5F5F7;height:22px;margin:0}
 .l3d-q input[type=range]:disabled{opacity:.4}
 /* full screen: the real API where there is one, a fixed sheet where there is not */
 .l3d:fullscreen,.l3d.l3d-max{background:#0b0d10;padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -403,7 +412,7 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
     color-scheme:light !important;
     --ink:#000;--muted:#333;--faint:#555;--hairline:#b9bec7;
     --bg:#fff;--bg-alt:#fff;--card:#fff;--link:#000;--blue:#134a8e;
-    --neu-surface:#fff;
+    --neu-surface:#fff;--neu-raised:#fff;--body:#333;--fg:#000;
     --neu-out:none;--neu-out-sm:none;--neu-in:none;--neu-hover:none;
   }
   html,body{background:#fff !important;color:#000 !important}
@@ -420,7 +429,7 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
 
   /* --- strip the screen chrome --- */
-  #nav,footer,.progress,.skip,.no-print,.crumbs,.mini,.f-hint,.caret{display:none !important}
+  #nav,footer,.foot,.overlay,.links-fx,.progress,.skip,.no-print,.crumbs,.mini,.f-hint,.caret{display:none !important}
   .print-only{display:block}
   main{padding-top:0 !important}
   /* style.css puts break-inside:avoid on every section, which would try to hold
@@ -431,7 +440,7 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
   /* --- masthead: title left, what-this-is and where-it-came-from under it --- */
   h1{font-size:16pt !important;margin:0;letter-spacing:-.01em;line-height:1.1}
   /* the intro sells the tool on screen; on paper the title already says it */
-  .eyebrow,.sub{display:none}
+  .eyebrow,.sub,.tool-head .lede,.tool-head .chips{display:none}
   .tool-head{margin:0}
   .print-sub{
     font-size:7.5pt !important;line-height:1.3 !important;color:#333;
@@ -560,7 +569,8 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
      .tool-note.warn out-ranks a bare .tool-note.warn, so printing from dark
      mode left this note orange while its bold runs went black */
   :root .tool-note.warn,:root[data-theme="dark"] .tool-note.warn,
-  :root[data-theme="light"] .tool-note.warn{color:#000}
+  :root[data-theme="light"] .tool-note.warn{color:#000;background:#fff}
+  :root .tool-note.warn b{color:#000}
 
   /* --- diagrams: let the card flow, keep each drawing whole ---
      The drawings are the part of the screen the paper should keep, so they get
@@ -590,7 +600,7 @@ html.l3d-lock,html.l3d-lock body{overflow:hidden}
   .dg-wrap>div:last-child{width:fit-content;max-width:100%;margin:0 auto}
   .dg-wrap>div:last-child .dg-box svg{height:64mm !important}
 
-  /* sign-off strip. Needs !important: style.css sets p{font-size:9.5pt !important},
+  /* sign-off strip. The !important outranks the site's print type sizes,
      which an inline style cannot beat. */
   .print-only{
     font-size:6.8pt !important;line-height:1.5 !important;

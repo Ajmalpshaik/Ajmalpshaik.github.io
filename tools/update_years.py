@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Keep the hardcoded years-of-experience honest.
 
-The VISIBLE "11 years" on every page already computes itself: assets/app.js
+The VISIBLE "11 years" on every page already computes itself: assets/site.js
 fills any [data-yrs] element from a May 2015 start date. That markup reads
 `<span data-yrs>11</span> years`, so the literal string "11 years" never
 appears for it - which is exactly why the regex below cannot touch it.
@@ -27,7 +27,7 @@ import re
 import sys
 from datetime import date
 
-# Ajmal started in Doha in May 2015. The same constant lives in assets/app.js;
+# Ajmal started in Doha in May 2015. The same constant lives in assets/site.js;
 # if one moves the other has to, and --check will not notice because both
 # sides would agree on the wrong number.
 START = date(2015, 5, 1)

@@ -1,203 +1,157 @@
-# ajmalps.com — the design
+# ajmalps.com, the design
 
-What the site is for, the one system it is built from, and the order the pages
-are meant to be read in. Read this before changing any page: the rules here are
-what keep fifteen hand-written HTML files and one React page looking like one
-site.
+What the site is for, the one system it is built from, and where everything
+lives. Read this before changing any page: these rules keep a dozen hand-written
+HTML files looking like one site.
 
-## 1. The problem this solves
+## 1. What it is for
 
-The site was two sites wearing one domain, and it took two passes to fix.
+A portfolio read by someone deciding whether to hire Ajmal, or to use his tools.
+It has to look like the work of a careful professional, get to the point fast,
+and never make a visitor hunt for anything.
 
-**First pass** — the home page was a dark cinematic cover built from
-`landing/`: Kanit 900, `#0C0C0C`, four anchor links and no brand mark. Every
-other page was a light Apple-style layout in the system face with nine flat
-tabs in a capsule. Leaving the cover for `/contact/` landed you somewhere that
-did not look like the same site. That pass unified the type, the navigation and
-the tokens, and gave every page the same bar.
+## 2. The decision (November 2026)
 
-**Second pass** — it was still two sites, because the inner pages still kept a
-light theme and still read as documents: cards, panels, shadows, boxes. And the
-cover was carrying twenty-two generated illustrations, which made the one page
-people see first look like a template rather than like somebody's actual work.
+The site was rebuilt from zero. The old one had nine pages behind three menus
+and read as a template. The new one is:
 
-So: **one skin, one layout language, and no decoration that is not the work.**
-
-## 2. The decision
-
-**Dark, everywhere. Big type. Numbered rows. Nothing else.**
-
-- **There is no light theme and no theme switch.** Two skins is what made the
-  site read as two sites. The one skin is the cover's.
-- **Every page is laid out the same way**: a page header that is mostly a huge
-  headline, then sections that are a kicker, a headline and a list of numbered
-  rows separated by hairlines. That layout is the cover's Services section,
-  which was already the simplest and loudest thing on the old site.
-- **Manrope** (the Heron brand's font) carries everything: 800 for headlines,
-  in sentence case; 500-700 for labels, names and the bar, which stay
-  uppercase; regular weights for prose.
-- **No cards, no glass, no shadows, no gradients behind sections.** A hairline
-  and space do the same job and never fight the text.
-- **The only pictures on the site are the tools in `/toolbox/` and the Heron
-  mark on the three Heron pages** (the product's own logo: the app icon on a
-  phone, the 3D heron beside the title on a wide screen). The four 3D model
-  renders that stood on the cover went in November 2026; the models are
-  still in `landing/src/three/` and `npm run posters` still renders them.
-- **Short beats complete.** Every page is a headline, a few big figures and
-  short numbered rows of one line each. A detail that only some readers need
-  goes behind one `<details>` line (as on `/heron-ai/`), not into the page.
-- **The whole site wears the Heron brand** (November 2026): Heron's Ink,
-  Mist and orange Accent, and its Manrope font, from the Heron brand page
-  (`docs/brand/README.md` in Heron-AI) and nowhere else. Headlines are in
-  sentence case, as Heron writes its name. `assets/heron/heron.css` keeps
-  only what the three Heron pages add: the heron mark and the folded
-  details.
+- **Three tabs and a Contact button**, the same on every page: **About me**,
+  **Tools** (his own tools, not Heron) and **Heron** (the product family).
+  Contact is the footer of every page.
+- **One premium dark skin.** Near-black, calm, generous space, small type.
+  The one light place is the home page's hero: a misty forest in bright grey fog
+  that turns to night as you scroll.
+- **Small, calm type.** Headings are deliberately modest. When in doubt, smaller.
+- **Motion with a job:** the forest and its flock on the home page, a highlight
+  that glides between tabs, figures that count up, smooth scrolling, and linked
+  particles behind the mouse. Nothing starts hidden.
 
 ## 3. The system
 
-### Type
-
-| Role | Face | Size |
-|---|---|---|
-| Cover heading | Manrope 800, sentence case | `12.1–15.1vw` |
-| Page title (`.display`) | Manrope 800, sentence case | `clamp(2.6rem, 9.2vw, 8.4rem)` |
-| Section head (`.head`) | Manrope 800, sentence case | `clamp(1.9rem, 5.2vw, 4.1rem)` |
-| Row number (`.row-n i`) | Manrope 800 | `clamp(2.1rem, 5.4vw, 4.6rem)` |
-| Row name (`.row-t`) | Manrope 500, uppercase | `clamp(1.05rem, 1.9vw, 1.6rem)` |
-| Kicker | Manrope 500, uppercase | `12.5px`, `0.2em` |
-| Lead (`.lede`) | Manrope | `clamp(1.05rem, 1.5vw, 1.4rem)` |
-| Body | Manrope | `~1rem`, line-height 1.6 |
-
-One variable file, `assets/fonts/manrope.woff2` (Latin, ~24 KB, SIL OFL),
-self-hosted and preloaded — no page makes a third-party request for a font.
+Everything shared is in `assets/site.css` and `assets/site.js`.
 
 ### Colour
 
-The Heron brand palette (Heron-AI `docs/brand/README.md`). Greys are Mist over
-Ink at an opacity, which the brand page allows. Every text colour clears WCAG
-AA on both grounds; the tightest pair is `--faint` on `--bg-soft` at 5.0:1.
-
-| Token | Value | On `--bg` |
+| Token | Value | Use |
 |---|---|---|
-| `--bg` | `#0F0F10` Ink | — |
-| `--bg-soft` | `#161617` (Mist 3%) | — |
-| `--ink` | `#F7F5F2` Mist | 17.6:1 |
-| `--body` | `#b6b5b3` (Mist 72%) | 9.4:1 |
-| `--faint` | `#888786` (Mist 52%) | 5.3:1 |
-| `--line` | `#262627` (Mist 10%) | — |
-| `--accent` | `#FD641A` Accent | 6.4:1 |
+| `--bg` | `#050506` | page |
+| `--bg-2`, `--bg-3` | `#0D0D0F`, `#151518` | panels, cards |
+| `--fg` | `#F5F5F7` | headings, main text |
+| `--body` | `#B9B9BE` | running text |
+| `--mute` | `#8C8C92` | labels, notes |
+| `--line` | white at 9% | hairlines |
+| `--heron`, `--heron-light` | `#FD641A`, `#FF9A5C` | Heron things only |
+| `--fog` | `#C6CACE` | the home hero |
 
-Accent is the one highlight: links, figures, the main button (with Ink text —
-white on Accent is only 3.0:1) and the Contact button in the bar. Accent Light
-`#FF9A5C` appears only as the light end of the one gradient (the bar's
-current-section mark, the reading-progress bar, the rule beside a pull quote).
-The Services band on the cover is Mist with Ink text.
+Heron orange appears only on Heron: its tab highlight (only while pointed at or
+selected), its cards, its pages' accents.
+
+### Type
+
+Self-hosted in `assets/fonts/` (SIL OFL). No page asks a third party for a font.
+
+| Role | Face | Size |
+|---|---|---|
+| Page title `.title` | Geist 600 | up to ~4.2rem |
+| Home headline `.hero-heading` | Geist 600 | up to ~3.5rem |
+| Section `.h2` | Geist 600 | up to ~3.3rem |
+| Item `.h3` | Geist 600 | up to ~1.6rem |
+| Lead `.lede` | Geist 400 | up to ~1.25rem |
+| Label `.eyebrow` | Geist Mono, uppercase | 12px |
+| Accent words `<em class="s">` | Instrument Serif italic | one or two words per heading |
 
 ### Components
 
-That is the whole list. If something new is needed, it is probably `.rows`.
-
 ```
-.wrap .sec .sec-soft .sec-foot .sec-tool   layout
-.display .head .kicker .lede .sub .crumbs  type
-.rows .row .row-n .row-t .row-meta .row-go a list of things
-.facts .fact                               a list of plain statements
-.nums                                      a band of figures
-.tags                                      a row of names
-.tl .tl-item                               a timeline
-.ladder                                    an ordered progression
-.quote                                     a pull quote
-.btn .btn-ghost .btn-accent .tlink .btnrow buttons
-.pager .pcard .cta                         the foot of a page
+.wrap .page-head .sec .sec-top .sec-soft          layout
+.title .h2 .h3 .lede .prose .eyebrow em.s          type
+.rows .row (.row-k .row-v)  a.row                  a list of things
+.cards .card (.idx .chips .h3 .more)  .card.heron  things you can open
+.nums                                              a band of figures
+.tl .tl-item                                       a timeline
+.tags  .facts .fact  .faq  details.more-detail     detail
+.steps  .quote                                     a progression, a quote
+.pill .ghost .btns  .pill.heron                    buttons
 ```
 
-### Rhythm
+If something new is needed, it is probably `.rows` or `.cards`.
 
-`.sec` is `clamp(72px, 11vw, 150px)` top and bottom; the first section after a
-page header is tighter, because the header already ends in a lot of air.
-Content tops out at 1180px, prose at ~52ch. One easing pair for everything.
-
-## 4. Navigation
-
-Three menus and a button, the same on every page including the cover:
+## 4. The bar
 
 ```
-[AJ AJMAL P.S]   EXPERIENCE ▾   TOOLS ▾   ABOUT ▾            [CONTACT]
-                 ├ Story        ├ Automation        ├ Skills
-                 ├ Experience   ├ Heron AI          ├ About
-                 └ Work         ├ Heron Tools       └ FAQ
-                                ├ Heron for AutoCAD
-                                └ Toolbox
+[• Ajmal P.S]        [ About me | Tools | Heron ]        [Contact ↗]
 ```
 
-- Each menu is a `<button aria-expanded>` and a `<ul aria-label="…">`. Hover or
-  click opens it; a click closes only what a click opened. Escape closes and
-  returns focus; `↑ ↓` walk the links; Tab out closes it behind you.
-- Under 1000px the three become one sheet with the groups as headings — every
-  page one tap away, all twelve links in one phone sheet. The trigger is inert
-  there, so it leaves the reading order and the list's label names the group.
-- With JavaScript off every menu is simply open. Nothing hides behind a script.
-- The bar is written **once**, in `assets/chrome.css`, which every page loads —
-  the cover included, although the cover has a stylesheet of its own. The cover
-  has no tokens, so each token there carries a fallback equal to the value
-  `style.css` defines.
+- Written once, by `tools/sync_chrome.py`, between `<!-- chrome:nav -->` markers
+  in every page, and the footer between `<!-- chrome:foot -->` markers.
+  `--check` fails CI if any page drifts.
+- One highlight glides to the tab under the pointer and back to the current page.
+  The current page's tab is solid; Heron's is orange.
+- Under 900px the tabs fold into a full-screen sheet behind a menu button.
+  Escape closes it. With JavaScript off the tabs simply stay in the bar.
 
-## 5. The tour
+## 5. The pages
 
-A portfolio is read by someone deciding whether to call. The pages are ordered
-as that decision, and **every page ends by handing over to the next one**.
+| URL | What |
+|---|---|
+| `/` | The forest, the headline, a short story, four figures |
+| `/about/` | Story, experience, selected work, skills, visa and notice, FAQ |
+| `/tools/` | The browser tools and the Revit automation |
+| `/toolbox/*/` | Crane Lift Calculator, AR Viewer, BIM Viewer |
+| `/heron/` | The Heron family |
+| `/heron-ai/`, `/heron-tools/`, `/heron-autocad/` | The Heron products |
 
-1. **Home** — who, and the proof in one screen
-2. **Story** — how it started
-3. **Experience** — eleven years, and where
-4. **Work** — five projects, scope and role
-5. **Automation** — the Revit add-ins and scripts a whole team runs
-6. **Heron AI** — where it is going
-7. **Heron Tools** — the everyday Revit buttons, open source
-8. **Heron for AutoCAD** — Heron AI, inside AutoCAD
-9. **Toolbox** — tools you can use right now, in the browser
-10. **Skills** — the full stack, named
-11. **About** — visa, notice, languages
-12. **FAQ** — the questions before a call
-13. **Contact** — act
+Old addresses (`/story/`, `/experience/`, `/work/`, `/skills/`, `/faq/`,
+`/automation/`, `/toolbox/`, `/contact/`) are small forwarding pages: a canonical
+link, a meta refresh and a script, each pointing at the section that replaced it.
+`assets/site.js` also forwards the old single-page anchors (`/#faq` and so on).
 
-The pager carries the previous and next titles and what is on them, so the
-visitor always knows what they are about to get.
+## 6. The home page
 
-## 6. Non-negotiable
+`assets/home.css` and `assets/home.js`, on top of the shared files.
 
-- Every interactive thing reachable and visible on the keyboard.
-- Body text at or above 4.5:1, large headings at or above 3:1.
-- `prefers-reduced-motion` turns off every entrance. Nothing is conveyed by
-  motion alone.
-- Every image carries `width`/`height`. No layout shift.
-- No render-blocking third-party anything. The only outside request is the
-  analytics counter: `async`, cookie-less, skipped for Do Not Track.
-- Every page readable with JavaScript off.
-- Every page readable on paper — the print sheet flips the whole thing to ink
-  on white.
+- **Forest:** bare trees grown in code from a seed (`makeTree`), instanced, in an
+  exponential fog whose colour is the background's, so far trunks dissolve.
+- **Mist:** sheets of animated noise at several depths, thick near the ground.
+- **Flock:** the three.js GPGPU birds (`webgl_gpgpu_birds`, MIT), stepped on the
+  GPU in the same scene so the fog reaches them. The mouse scares them. Their home
+  drifts, so about once a minute they sweep past close to the camera.
+- **Scroll:** the hero leaves, the story lights up word by word, the fog turns to
+  night, and the page carries on in black.
+- three.js r128 and `GPUComputationRenderer` come from jsDelivr, pinned, with
+  SHA-384 integrity. Without them, or without `home.js`, the hero and the story are
+  plain HTML and the stage does not pin.
 
-## 7. Where things live
+## 7. Non-negotiable
+
+- Every interactive thing reachable and visible on the keyboard. A skip link first.
+- Body text at or above 4.5:1.
+- `prefers-reduced-motion` stops every animation and the smooth scroll.
+- Every page readable with JavaScript off, and on paper.
+- One `<h1>` and one `<main id="main">` per page.
+- Years of experience are never typed as a number: `<span data-yrs>11</span>` or
+  `<span data-yrs-word>Eleven</span>`. `tools/update_years.py` rewrites any literal
+  "N years" in every HTML file every month.
+- No third-party request except three.js on the home page and the tool pages
+  (pinned, fingerprinted) and the analytics counter (GoatCounter: async,
+  cookie-less, skipped for Do Not Track and Global Privacy Control).
+
+## 8. Where things live
 
 ```
-assets/chrome.css     the bar, and nothing else. EVERY page loads it, the
-                      cover included; its fallbacks are style.css's values
-assets/style.css      the whole content-page system — tokens, then components
-assets/fonts/         Kanit 500 and 900, Latin, self-hosted
-assets/app.js         menus, reveals, the year, analytics
-assets/toolbox.css    the tool pages' own controls
-landing/src/          the home page's source. Edit this, never ../index.html
-landing/src/three/    the 3D models, no longer shown. `npm run posters` still
-                      renders them to assets/home/img/model-*.webp
-tools/sync_chrome.py  writes the nav, pager and footer into every page; --check
-tools/check_site.py   static checks
-tools/check_browser.mjs  the pages in a real browser, at four widths, including
-                      the bar on both of its two implementations
-tools/update_heron.py writes the figures and the lists on /heron-ai/ straight
-                      from a Heron-AI checkout; --check fails when they drift
-docs/REDESIGN.md      this file
+assets/site.css         the whole system: tokens, type, bar, components, footer
+assets/site.js          bar, menu, smooth scroll, counters, particles, years,
+                        old-anchor forwards, analytics
+assets/home.css/.js     the home page's forest, mist, flock and scroll story
+assets/heron.css        what the Heron pages add, including the markup
+                        tools/update_heron.py writes
+assets/tool.css         maps the tool pages onto the system
+assets/toolbox.css      the tools' own controls
+assets/fonts/           Geist, Geist Mono, Instrument Serif (OFL)
+tools/sync_chrome.py    writes the bar and footer into every page; --check
+tools/check_site.py     static checks
+tools/check_browser.mjs the pages in a real browser, at four widths
+tools/update_heron.py   writes /heron-ai/'s figures from a Heron-AI checkout
+tools/update_years.py   keeps "N years" current
+docs/REDESIGN.md        this file
 ```
-
-The home page is built: `cd landing && npm install && npm run build` writes
-`../index.html` and `../assets/home/`. CI fails if the committed output is not
-what the source produces.

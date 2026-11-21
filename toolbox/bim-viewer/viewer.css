@@ -1,6 +1,7 @@
 /* BIM Viewer - page-local styles. The page around the viewer follows the site
-   tokens in style.css and toolbox.css, light or dark. The viewer itself is
-   always dark, like a game or a Revit dark theme, so the model reads first. */
+   (assets/site.css, tool.css and toolbox.css). The viewer itself is always dark,
+   like a game or a Revit dark theme, so the model reads first; its view tabs
+   and its Play button borrow the site's white so the two read as one. */
 
 main [hidden]{display:none !important}
 
@@ -8,7 +9,7 @@ main [hidden]{display:none !important}
   display:flex;gap:14px;align-items:flex-start;max-width:760px;margin-top:26px;
   padding:18px 20px;border-radius:16px;background:var(--neu-surface);box-shadow:var(--neu-out-sm);
 }
-.bvp-private svg{flex:0 0 26px;width:26px;height:26px;margin-top:1px;stroke:var(--blue);fill:none;stroke-width:1.9}
+.bvp-private svg{flex:0 0 24px;width:24px;height:24px;margin-top:1px;stroke:var(--body);fill:none;stroke-width:1.7}
 .bvp-private p{font-size:15px;line-height:1.55;color:var(--muted)}
 .bvp-private b{color:var(--ink)}
 .bvp-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}
@@ -17,8 +18,8 @@ main [hidden]{display:none !important}
 .bvp-notes p+p{margin-top:9px}
 .bvp-notes kbd,.bv kbd{
   display:inline-block;min-width:1.7em;padding:1px 6px;margin:0 1px;border-radius:6px;text-align:center;
-  font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  background:var(--neu-surface);box-shadow:var(--neu-out-sm);color:var(--ink);
+  font:500 12px/1.5 var(--mono,ui-monospace),ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--neu-raised,#151518);box-shadow:var(--neu-out-sm);color:var(--ink);
 }
 
 /* ---------------------------------------------------------------- stage */
@@ -27,7 +28,7 @@ main [hidden]{display:none !important}
   --g-blue:#3d8bff;--g-orange:#ff8a2b;--g-hi:rgba(61,139,255,.18);
   position:relative;margin-top:26px;height:clamp(460px,74vh,780px);border-radius:20px;overflow:hidden;
   background:#0b0f16;color:var(--g-ink);isolation:isolate;
-  box-shadow:0 30px 70px -30px rgba(10,20,40,.55),0 0 0 1px rgba(255,255,255,.04);
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.6),0 0 0 1px var(--line,rgba(255,255,255,.09));
   font-size:13.5px;line-height:1.4;user-select:none;-webkit-user-select:none;
 }
 .bv.is-full,.bv:fullscreen{position:fixed;inset:0;z-index:2000;height:100%;width:100%;margin:0;border-radius:0}
@@ -52,8 +53,7 @@ main [hidden]{display:none !important}
   color:var(--g-mute);font-weight:600;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;
 }
 .bv-seg button:hover{color:var(--g-ink)}
-.bv-seg button[aria-selected="true"]{background:linear-gradient(180deg,#4b95ff,#2f74e8);color:#fff;box-shadow:0 6px 18px -6px rgba(61,139,255,.8)}
-.bv[data-mode="walk"] .bv-seg button[aria-selected="true"]{background:linear-gradient(180deg,#ff9a45,#f0701a);box-shadow:0 6px 18px -6px rgba(255,138,43,.8)}
+.bv-seg button[aria-selected="true"]{background:#F5F5F7;color:#000;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 .bv-acts{display:flex;padding:4px;border-radius:13px;gap:2px}
 .bv-ico{
   position:relative;display:flex;align-items:center;justify-content:center;gap:7px;min-width:36px;height:36px;padding:0 9px;
@@ -250,9 +250,9 @@ main [hidden]{display:none !important}
 .bv-card p{color:var(--g-mute);line-height:1.55}
 .bv-kicker{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g-orange) !important}
 .bv-cardbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 10px}
-.bv-primary,.bv-ghost{padding:11px 22px;border-radius:12px;border:0;font-weight:700;cursor:pointer}
-.bv-primary{background:linear-gradient(180deg,#ff9a45,#f0701a);color:#fff;box-shadow:0 10px 24px -8px rgba(255,138,43,.75)}
-.bv-primary:hover{filter:brightness(1.08)}
+.bv-primary,.bv-ghost{padding:12px 22px;border-radius:999px;border:0;font-weight:600;cursor:pointer}
+.bv-primary{background:#F5F5F7;color:#000}
+.bv-primary:hover{background:#fff}
 .bv-ghost{background:rgba(255,255,255,.08);color:var(--g-ink)}
 .bv-ghost:hover{background:rgba(255,255,255,.14)}
 .bv-small{font-size:12px;color:var(--g-mute);margin:8px 16px}
