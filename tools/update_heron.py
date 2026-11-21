@@ -351,7 +351,7 @@ def esc(s):
 def block_numbers(frag, agents, tools, counted):
     total = sum(len(v) for v in frag.values())
     proven = sum(1 for v in frag.values() for _, p in v if p)
-    stamp = (f"Counted on {counted:%-d %B %Y}" if counted
+    stamp = (f"Counted on {counted:%-d %B %Y} from the repository" if counted
              else "Counted from the repository")
     return "\n".join([
         '    <div class="nums reveal">',
@@ -360,9 +360,7 @@ def block_numbers(frag, agents, tools, counted):
         f'      <div><b>{agents}</b><span>agents behind them</span></div>',
         f'      <div><b>{len(tools)}</b><span>tools the chat can call</span></div>',
         '    </div>',
-        f'    <p class="numnote">{stamp}, straight from the '
-        f'repository rather than typed here &mdash; {total - proven} fragments are still draft, '
-        'meaning they have never met a real model. These numbers move as the work moves.</p>',
+        f'    <p class="numnote">{stamp}. {total - proven} fragments are still drafts.</p>',
     ])
 
 

@@ -245,19 +245,32 @@
 <main id="main">
 <header class="page-head heron" id="top">
   <div class="wrap">
+    <img class="heron-3d" src="/assets/heron/heron-3d.webp" width="718" height="720" alt="" aria-hidden="true">
     <img class="heron-mark" src="/assets/heron/heron-icon.webp" width="64" height="64" alt="Heron app icon">
     <div class="eyebrow">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span class="sep" aria-hidden="true">/</span> <span aria-current="page">Heron</span></nav>
-      <span>Revit &middot; AutoCAD &middot; open source</span>
     </div>
     <h1 class="title">One name. <em class="s">Three products.</em></h1>
+    <div class="chips hchips"><span class="chip">Revit</span><span class="chip">AutoCAD</span><span class="chip live">Open source</span></div>
     <p class="lede">An AI that works inside Revit, a set of everyday Revit buttons, and the same AI inside AutoCAD. <strong>Every change is checked and reversible</strong>, and all of it is open source.</p>
     <div class="btns">
       <a class="pill heron" href="#products">See the three <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
-      <a class="ghost" href="#code">Read the code <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
+      <a class="ghost" href="https://github.com/Ajmalpshaik" rel="noopener">Code on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
     </div>
   </div>
 </header>
+
+<section class="sec" id="figures" aria-label="At a glance" data-track="heron-figures">
+  <div class="wrap">
+    <div class="nums">
+      <div><b>17</b><span>Revit buttons in Heron Tools</span></div>
+      <div><b>52</b><span>tools Heron AI can call in Revit</span></div>
+      <div><b>128</b><span>tools Heron AI can call in AutoCAD</span></div>
+      <div><b>8</b><span>Revit releases, 2020&ndash;2027</span></div>
+    </div>
+    <p class="numnote">Counted from the three repositories, 8 November 2026.</p>
+  </div>
+</section>
 
 <section class="sec" id="products" data-track="heron-products">
   <div class="wrap">
@@ -268,25 +281,26 @@
       </div>
     </div>
     <div class="cards">
-      <a class="card heron" href="/heron-ai/">
+      <article class="card heron hcard">
         <div class="chips"><span class="chip dev">In development</span><span class="chip">Version 0.1.0</span></div>
-        <h3 class="h3">Heron AI</h3>
+        <h3 class="h3"><a class="hcard-link" href="/heron-ai/">Heron AI</a></h3>
         <p>Tell Revit what you want in plain words, and Heron AI does the work. Revit 2020 to 2027.</p>
-        <span class="more">Heron AI <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
-      </a>
-      <a class="card heron" href="/heron-tools/">
-        <div class="chips"><span class="chip live">Free &middot; open source</span><span class="chip">Version 1.0.0</span></div>
-        <h3 class="h3">Heron Tools</h3>
-        <p>17 everyday Revit buttons on the Heron tab. One click, one undo. Revit 2020 to 2027.</p>
-        <span class="more">Heron Tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
-      </a>
-      <a class="card heron" href="/heron-autocad/">
+        <div class="hcard-foot"><span class="more" aria-hidden="true">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span><a class="hcode" href="https://github.com/Ajmalpshaik/Heron-AI" rel="noopener" aria-label="Heron AI code on GitHub">Code <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></div>
+      </article>
+      <article class="card heron hcard">
+        <div class="chips"><span class="chip dev">Not released yet</span><span class="chip">Version 1.0.0</span></div>
+        <h3 class="h3"><a class="hcard-link" href="/heron-tools/">Heron Tools</a></h3>
+        <p>17 everyday Revit buttons on the Heron tab. One click, one undo. Free, Revit 2020 to 2027.</p>
+        <div class="hcard-foot"><span class="more" aria-hidden="true">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span><a class="hcode" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener" aria-label="Heron Tools code on GitHub">Code <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></div>
+      </article>
+      <article class="card heron hcard">
         <div class="chips"><span class="chip dev">In development</span><span class="chip">AutoCAD 2021&ndash;2027</span></div>
-        <h3 class="h3">Heron AI for AutoCAD</h3>
+        <h3 class="h3"><a class="hcard-link" href="/heron-autocad/">Heron AI for AutoCAD</a></h3>
         <p>The same chat and padlocks, inside AutoCAD. 128 tools the chat can call. Full AutoCAD, not LT.</p>
-        <span class="more">Heron for AutoCAD <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
-      </a>
+        <div class="hcard-foot"><span class="more" aria-hidden="true">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></span><a class="hcode" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener" aria-label="Heron AI for AutoCAD code on GitHub">Code <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></div>
+      </article>
     </div>
+    <p class="note">Heron AI and Heron AI for AutoCAD are not ready to install yet. I&rsquo;ll announce them here and on LinkedIn. Developers: ideas and corrections are welcome as an Issue.</p>
   </div>
 </section>
 
@@ -295,45 +309,15 @@
     <div class="sec-top">
       <div>
         <p class="eyebrow">Safe on a live model</p>
-        <h2 class="h2">Your model. <em class="s">Your call.</em></h2>
+        <h2 class="h2">Checked. <em class="s">Reversible.</em></h2>
       </div>
-      <p>How Heron AI treats a model you are working on.</p>
+      <p>What every Heron product does with your work.</p>
     </div>
     <ol class="steps">
-      <li><b>Locked until you open it</b><span>A padlock on the ribbon. Closed, Heron can only read.</span></li>
-      <li><b>It shows you first</b><span>&ldquo;This will move 247 ducts up 200&nbsp;mm. Proceed?&rdquo;</span></li>
-      <li><b>One Ctrl+Z</b><span>Everything it changed comes back in a single undo.</span></li>
-      <li><b>Local only</b><span>No open ports. Model files are never uploaded.</span></li>
+      <li><b>One undo</b><span>Every change comes back with a single Ctrl+Z.</span></li>
+      <li><b>Local only</b><span>Runs on your PC. Model files are never uploaded.</span></li>
+      <li><b>Locked until you open it</b><span>Both AIs start read-only. You unlock changes yourself.</span></li>
     </ol>
-  </div>
-</section>
-
-<section class="sec" id="code" data-track="heron-github">
-  <div class="wrap">
-    <div class="sec-top">
-      <div>
-        <p class="eyebrow">Open source</p>
-        <h2 class="h2">Read the code. <em class="s">Follow along.</em></h2>
-      </div>
-    </div>
-    <div class="rows">
-      <a class="row" href="https://github.com/Ajmalpshaik/Heron-AI" rel="noopener">
-        <div class="row-k"><span class="n">01</span><span class="h3">Heron-AI</span></div>
-        <div class="row-v"><p class="meta"><span>Apache 2.0</span><span>GitHub</span></p><p>The AI for Revit: its skills, fragments and the tools the chat can call.</p></div>
-        <span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span>
-      </a>
-      <a class="row" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">
-        <div class="row-k"><span class="n">02</span><span class="h3">Heron-Tools</span></div>
-        <div class="row-v"><p class="meta"><span>Apache 2.0</span><span>GitHub</span></p><p>The 17 everyday buttons on the Heron tab in Revit.</p></div>
-        <span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span>
-      </a>
-      <a class="row" href="https://github.com/Ajmalpshaik/Heron-AutoCAD" rel="noopener">
-        <div class="row-k"><span class="n">03</span><span class="h3">Heron-AutoCAD</span></div>
-        <div class="row-v"><p class="meta"><span>MIT</span><span>GitHub</span></p><p>A plug-in and an MCP server that let a chat work in the AutoCAD you have open.</p></div>
-        <span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span>
-      </a>
-    </div>
-    <p class="note">Heron AI and Heron AI for AutoCAD are not ready to install yet. I&rsquo;ll announce them here and on LinkedIn. Developers: ideas and corrections are welcome as an Issue.</p>
   </div>
 </section>
 </main>
