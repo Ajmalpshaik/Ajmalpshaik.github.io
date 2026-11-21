@@ -34,7 +34,7 @@ export function start() {
     touch: $('bvTouch'), move: $('bvMove'), stick: $('bvStick'), pad: $('bvPad'),
     tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'), tEmote: $('bvTEmote'),
     pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'), exitFull: $('bvExitFull'),
-    settings: $('bvSettings'), setClose: $('bvSetClose'),
+    settings: $('bvSettings'), setClose: $('bvSetClose'), help: $('bvHelp'), helpBtn: $('bvHelpBtn'), helpClose: $('bvHelpClose'),
     loading: $('bvLoading'), loadText: $('bvLoadText'), loadBar: $('bvLoadBar'), drop: $('bvDrop'), fps: $('bvFps'), toast: $('bvToast'),
   };
   ui.needs.hidden = true;
@@ -643,7 +643,8 @@ export function start() {
   const endLook = (e) => lookers.delete(e.pointerId);
   ui.canvas.addEventListener('pointerup', endLook);
   ui.canvas.addEventListener('pointercancel', endLook);
-  ui.tJump.addEventListener('click', () => walk.jump());
+  // on touch, not on click: a click waits for the finger to lift
+  ui.tJump.addEventListener('pointerdown', (e) => { e.preventDefault(); walk.jump(); });
   // first tap shows the pad, second tap goes there
   ui.tPort.addEventListener('click', () => { if (walk.aiming) walk.endAim(true); else walk.startAim(); });
   ui.tRun.addEventListener('click', () => { walk.run = !walk.run; ui.tRun.setAttribute('aria-pressed', walk.run); });
@@ -654,23 +655,34 @@ export function start() {
   ui.treeBtn.addEventListener('click', () => {
     ui.tree.hidden = !ui.tree.hidden;
     ui.treeBtn.setAttribute('aria-expanded', !ui.tree.hidden);
-    if (!ui.tree.hidden && window.innerWidth < 760) { ui.props.hidden = true; ui.settings.hidden = true; }
+    if (!ui.tree.hidden && window.innerWidth < 760) { ui.props.hidden = true; closeSettings(); }
   });
   ui.treeClose.addEventListener('click', () => { ui.tree.hidden = true; ui.treeBtn.setAttribute('aria-expanded', 'false'); });
   if (ui.stage.clientWidth < 760) { ui.tree.hidden = true; ui.treeBtn.setAttribute('aria-expanded', 'false'); }
   ui.propsClose.addEventListener('click', () => hideProps());
-  function closeSettings() { ui.settings.hidden = true; ui.gear.setAttribute('aria-expanded', 'false'); }
-  ui.gear.addEventListener('click', () => {
-    if (!ui.settings.hidden) { closeSettings(); return; }
-    ui.settings.hidden = false;
-    ui.gear.setAttribute('aria-expanded', 'true');
-    // settings need the mouse back, so the walk pauses behind them
+  // Settings and Help share one place on the right; one is open at a time
+  const sideOpen = () => !ui.settings.hidden || !ui.help.hidden;
+  function closeSettings() {
+    ui.settings.hidden = true; ui.gear.setAttribute('aria-expanded', 'false');
+    ui.help.hidden = true; ui.helpBtn.setAttribute('aria-expanded', 'false');
+  }
+  function openSide(panel, btn) {
+    const was = !panel.hidden;
+    closeSettings();
+    if (was) return;
+    panel.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    if (window.innerWidth < 760) { ui.tree.hidden = true; ui.treeBtn.setAttribute('aria-expanded', 'false'); }
+    // these need the mouse back, so the walk pauses behind them
     if (mode === 'walk') {
       if (document.pointerLockElement === ui.canvas) document.exitPointerLock();   // pauses through pointerlockchange
       else showPause(true);
     }
-  });
+  }
+  ui.gear.addEventListener('click', () => openSide(ui.settings, ui.gear));
+  ui.helpBtn.addEventListener('click', () => openSide(ui.help, ui.helpBtn));
   ui.setClose.addEventListener('click', () => { closeSettings(); if (mode === 'walk') showPause(true); });
+  ui.helpClose.addEventListener('click', () => { closeSettings(); if (mode === 'walk') showPause(true); });
 
   // ----------------------------------------------------------- settings
   const S = {
@@ -842,7 +854,7 @@ export function start() {
   function onEscape() {
     if (mode === 'walk') {
       if (walk.aiming) { walk.endAim(false); return true; }
-      if (!ui.settings.hidden) { closeSettings(); showPause(true); return true; }
+      if (sideOpen()) { closeSettings(); showPause(true); return true; }
       if (!ui.props.hidden) { hideProps(); return true; }
       // on whether the walk is running, not on whether the mouse is locked:
       // Chrome takes Esc for the lock and never tells us, Firefox lets it
@@ -856,7 +868,7 @@ export function start() {
       setMode('bim');
       return true;
     }
-    if (!ui.settings.hidden) { closeSettings(); return true; }
+    if (sideOpen()) { closeSettings(); return true; }
     if (bim.measuring) { setMeasure(false); return true; }
     if (model && model.selected != null) { select(null); return true; }
     if (!ui.props.hidden) { hideProps(); return true; }

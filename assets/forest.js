@@ -1,15 +1,15 @@
 /*
  * The forest behind the home page and the About me page: a misty forest with a
  * flock flying between the trees, light snow falling and a few leaves blowing
- * through on the wind. The page opens in bright fog; as you scroll, the fog turns
- * to night and the same forest stays behind everything below it.
+ * through on the wind. The page opens in bright fog; as you scroll, a soft fog
+ * veil comes over the forest and it stays, faint, behind everything below it.
  * Loaded after assets/site.js. three.js r128 and its GPUComputationRenderer come
  * from jsDelivr, pinned and fingerprinted in each page.
  *
  * The page is complete without this file: the fog colour, the headline and the
  * text are plain HTML. This only adds the 3D scene and the scroll choreography.
  * On the home page the story under the hero lights up word by word (#statement);
- * other pages simply go from fog to night under their first screen.
+ * other pages simply fade the forest behind the veil under their first screen.
  */
 (function () {
   'use strict';
@@ -27,9 +27,9 @@
   var shade = document.getElementById('shade');
   if (!stage) return;
   document.documentElement.classList.add('forest-ready');
-  // how dark the night is under the text: the About page reads more, so a little darker
+  // how thick the fog veil is under the text: the About page reads more, so a little thicker
   var sky = document.querySelector('.sky');
-  var END = sky && sky.getAttribute('data-shade') ? parseFloat(sky.getAttribute('data-shade')) : 0.4;
+  var END = sky && sky.getAttribute('data-shade') ? parseFloat(sky.getAttribute('data-shade')) : 0.86;
 
   // ---------- the story: its words light up as you scroll ----------
   var words = [];
@@ -44,45 +44,59 @@
     });
   }
 
-  // ---------- one stage: the hero leaves, the story arrives, the fog turns to night ----------
-  // Home: the story is read in near dark. Then, like eyes getting used to the
-  // night, the dark lifts a little and the same forest is there under the figures
-  // and the footer: night fog, a cold glow behind the trees, the snow still falling.
-  // Other pages: the hero leaves and the fog turns straight to that night.
-  var stageP = 0, endP = 0, night = 0, sceneOn = false;
+  // ---------- one stage: the hero leaves, the story arrives, the fog veil comes in ----------
+  // Home: the story is read on a thick veil of fog. Then it thins a little and the
+  // same forest is there, faint, under the figures and the footer, the snow still
+  // falling. Other pages: the hero leaves and the veil comes straight in.
+  var stageP = 0, endP = 0, sceneOn = false;
   var mistEl = document.getElementById('mist');
   var ease = function (a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  // Each scroll step only reads two cached heights and writes what changed, so it
+  // stays cheap: the page's sizes are measured again only when they change.
+  var total = 1, rest = 1;
+  function measure() {
+    var vh = innerHeight;
+    total = Math.max(1, stage.offsetHeight - vh);
+    rest = Math.max(1, document.documentElement.scrollHeight - vh - total);
+  }
+  var written = new Map();
+  function put(el, prop, value) {
+    if (!el) return;
+    var key = written.get(el) || {};
+    if (key[prop] === value) return;
+    key[prop] = value; written.set(el, key);
+    if (prop.charAt(0) === '-') el.style.setProperty(prop, value); else el.style[prop] = value;
+  }
   function onScroll() {
-    var y = window.scrollY || 0, vh = innerHeight;
-    var total = Math.max(1, stage.offsetHeight - vh);
+    var y = window.scrollY || 0;
     stageP = clamp(y / total, 0, 1);
-    endP = clamp((y - total) / Math.max(1, document.documentElement.scrollHeight - vh - total), 0, 1);
-    if (nav) nav.classList.toggle('light', y < total * (stLayer ? 0.2 : 0.3));
+    endP = clamp((y - total) / rest, 0, 1);
     var out = clamp(stageP / (stLayer ? 0.28 : 0.6), 0, 1);
-    heroCopy.style.opacity = String(1 - out);
-    heroCopy.style.transform = 'translateY(' + (-out * 60) + 'px)';
+    put(heroCopy, 'opacity', (1 - out).toFixed(3));
+    put(heroCopy, 'transform', 'translateY(' + (-out * 60).toFixed(1) + 'px)');
     var inP, dark, lift;
     if (stLayer) {
       inP = clamp((stageP - 0.22) / 0.2, 0, 1);
-      stLayer.style.opacity = String(inP);
+      put(stLayer, 'opacity', inP.toFixed(3));
       var lit = clamp((stageP - 0.3) / 0.55, 0, 1) * words.length;
-      for (var i = 0; i < words.length; i++) words[i].style.setProperty('--o', String(clamp(lit - i, 0.2, 1)));
-      night = ease(0.2, 0.6, stageP);
-      dark = Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26);
+      for (var i = 0; i < words.length; i++) put(words[i], '--o', clamp(lit - i, 0.2, 1).toFixed(2));
+      dark = Math.min(1, inP * 0.86 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.14);
       lift = ease(0.8, 1, stageP);
     } else {
       inP = ease(0.15, 0.75, stageP);
-      night = ease(0.08, 0.75, stageP);
       dark = ease(0.15, 1, stageP);
       lift = inP;
     }
-    if (mistEl) mistEl.style.opacity = String(1 - inP);
-    // without the 3D scene there is no night forest to show: the page goes black
-    shade.style.opacity = String(lerp(dark, END, sceneOn ? lift : 0));
+    put(mistEl, 'opacity', (1 - inP).toFixed(3));
+    // without the 3D scene there is no forest to show through: the veil goes solid
+    put(shade, 'opacity', lerp(dark, END, sceneOn ? lift : 0).toFixed(3));
   }
+  measure();
   onScroll();
   if (lenis) lenis.on('scroll', onScroll); else addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll);
+  addEventListener('resize', function () { measure(); onScroll(); });
+  // fonts and late content change the page's height: measure again when they do
+  if (window.ResizeObserver) new ResizeObserver(function () { measure(); onScroll(); }).observe(document.body);
 
   // ---------- the forest: bare trees in mist, and a flock flying between them ----------
   // The look follows the three.js fog examples (custom_fog_scattering, custom_fog_background):
@@ -96,7 +110,11 @@
     let r;
     try { r = new T.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); } catch (e) { cv.remove(); return; }
     const small = innerWidth < 900 || !fine;
-    r.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 2));
+    // Sharpness gives way to smoothness: if frames run slow, the scene draws at a
+    // lower resolution (see govern() below), never below 0.75 of a CSS pixel.
+    const MAXPR = Math.min(devicePixelRatio || 1, small ? 1.5 : 2), MINPR = Math.min(0.75, MAXPR);
+    let pr = MAXPR;
+    r.setPixelRatio(pr);
     r.outputEncoding = T.sRGBEncoding;
 
     // one colour for the fog and the sky behind it (r128 mixes fog after the
@@ -107,49 +125,12 @@
     scene.fog = new T.FogExp2(FOG, DENSITY);
     const camera = new T.PerspectiveCamera(55, 1, 0.1, Math.sqrt(-Math.log(0.001)) / DENSITY);
     const lin = (h) => new T.Color(h).convertSRGBToLinear();
-    // every shader in the scene reads these two, so the night reaches all of them
-    const fogU = { value: new T.Vector3() }, densU = { value: DENSITY };
+    // every shader in the scene reads these two
+    const fc = new T.Color(FOG);
+    const fogU = { value: new T.Vector3(fc.r, fc.g, fc.b) }, densU = { value: DENSITY };
 
-    const hemi = new T.HemisphereLight(0xdce6ed, 0x292521, 1.3); scene.add(hemi);
+    scene.add(new T.HemisphereLight(0xdce6ed, 0x292521, 1.3));
     const sky = new T.DirectionalLight(0xdce6ed, 1.4); sky.position.set(-3, 8, 5); scene.add(sky);
-
-    // ---- night: the same forest after dark, under the figures and the footer ----
-    // a cold glow hangs behind the trees, so near trunks and branches stand out against it
-    const glowU = { uNight: { value: 0 }, uColor: { value: new T.Vector3(0.44, 0.53, 0.66) } };
-    const glow = new T.Mesh(new T.PlaneGeometry(30, 30), new T.ShaderMaterial({
-      uniforms: glowU, transparent: true, depthWrite: false, blending: T.AdditiveBlending, fog: false,
-      vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-      fragmentShader: `
-        uniform float uNight; uniform vec3 uColor; varying vec2 vUv;
-        void main() {
-          float d = length(vUv - 0.5) * 2.0;
-          float g = pow(max(0.0, 1.0 - d), 2.4) * 0.5 + exp(-d * d * 220.0) * 0.32;
-          gl_FragColor = vec4(uColor * g * uNight, 1.0);
-        }`,
-    }));
-    glow.renderOrder = -1; glow.visible = false;
-    scene.add(glow);
-    const GLOW_AT = new T.Vector3(3.8, 8.5, -19);
-    const C = (h) => new T.Color(h);
-    const DAY = { fog: C(FOG), ground: lin(0x8f9398), hSky: C(0xdce6ed), hGround: C(0x292521), dir: C(0xdce6ed) };
-    const NIGHT = { fog: C(0x141b24), ground: lin(0x0d1116), hSky: C(0x6a7f99), hGround: C(0x07080a), dir: C(0x9db1c9) };
-    const mistDay = new T.Vector3(1, 1, 1), mistNight = new T.Vector3(0.2, 0.25, 0.31);
-    let birdU = null, nightNow = -1;
-    function setNight(n) {
-      nightNow = n;
-      scene.background.copy(DAY.fog).lerp(NIGHT.fog, n);
-      scene.fog.color.copy(scene.background);
-      fogU.value.set(scene.background.r, scene.background.g, scene.background.b);
-      densU.value = scene.fog.density = DENSITY * (1 - 0.18 * n);
-      ground.material.color.copy(DAY.ground).lerp(NIGHT.ground, n);
-      hemi.color.copy(DAY.hSky).lerp(NIGHT.hSky, n); hemi.groundColor.copy(DAY.hGround).lerp(NIGHT.hGround, n);
-      hemi.intensity = lerp(1.3, 0.6, n);
-      sky.color.copy(DAY.dir).lerp(NIGHT.dir, n); sky.intensity = lerp(1.4, 0.55, n);
-      for (const m of mists) m.uniforms.uColor.value.copy(mistDay).lerp(mistNight, n);
-      if (leafU) leafU.uDim.value = 1 - 0.4 * n;
-      if (birdU) birdU.uNight.value = n;
-      glowU.uNight.value = n; glow.visible = n > 0.01;
-    }
 
     // ---- bare trees, grown from a seed: a gnarled trunk, then four levels of branches ----
     const UP = new T.Vector3(0, 1, 0);
@@ -423,7 +404,7 @@
       g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -24); g.lineTo(0, 26); g.stroke();
       const tex = new T.CanvasTexture(cv2);
       const plane = new T.PlaneGeometry(0.1, 0.1);
-      leafU = { uTime: { value: 0 }, uTex: { value: tex }, uDim: { value: 1 }, fogColor: fogU, fogDensity: densU };
+      leafU = { uTime: { value: 0 }, uTex: { value: tex }, fogColor: fogU, fogDensity: densU };
       const layers = [0xFD641A, 0xFF9A5C, 0xC9A14A];
       layers.forEach((hex, li) => {
         const geo = new T.InstancedBufferGeometry();
@@ -470,13 +451,13 @@
               gl_Position = projectionMatrix * mv;
             }`,
           fragmentShader: `
-            uniform sampler2D uTex; uniform vec3 uColor; uniform float uDim; uniform vec3 fogColor; uniform float fogDensity;
+            uniform sampler2D uTex; uniform vec3 uColor; uniform vec3 fogColor; uniform float fogDensity;
             varying vec2 vUv; varying float vShade; varying float vDepth;
             void main() {
               vec4 t = texture2D(uTex, vUv);
               if (t.a < 0.1) discard;
               float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-              vec3 col = uColor * uDim * vShade * (1.0 - (1.0 - t.r) * 0.6);
+              vec3 col = uColor * vShade * (1.0 - (1.0 - t.r) * 0.6);
               gl_FragColor = vec4(mix(col, fogColor, fog * 0.8), t.a * (1.0 - fog * 0.5));
             }`,
         });
@@ -587,14 +568,13 @@
           vColor = vec4(birdColor, 1.0);
           gl_Position = projectionMatrix * mv;
         }`;
-      // dark birds against the bright fog, fogged with the same exponential fog as the trees;
-      // darker still at night, so they show against the glow
+      // dark birds against the bright fog, fogged with the same exponential fog as the trees
       const birdFS = `
-        uniform vec3 fogColor; uniform float fogDensity; uniform float uNight;
+        uniform vec3 fogColor; uniform float fogDensity;
         varying vec4 vColor; varying float vDepth;
         void main() {
           float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-          vec3 c = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5) * (1.0 - 0.6 * uNight);
+          vec3 c = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5);
           gl_FragColor = vec4(mix(c, fogColor, clamp(fog, 0., 1.)), 1.0);
         }`;
       const gpu = new T.GPUComputationRenderer(W, W, r);
@@ -637,9 +617,8 @@
       const bU = {
         texturePosition: { value: null }, textureVelocity: { value: null },
         uScale: { value: SCALE }, uOffset: { value: OFFSET },
-        fogColor: fogU, fogDensity: densU, uNight: { value: 0 },
+        fogColor: fogU, fogDensity: densU,
       };
-      birdU = bU;
       const mesh = new T.Mesh(g, new T.ShaderMaterial({ uniforms: bU, vertexShader: birdVS, fragmentShader: birdFS, side: T.DoubleSide }));
       mesh.rotation.y = Math.PI / 2; mesh.matrixAutoUpdate = false; mesh.updateMatrix(); mesh.frustumCulled = false;
       scene.add(mesh);
@@ -672,27 +651,43 @@
 
     // ---- camera: eye height, a very slow drift, and a walk in as you scroll ----
     // the pointer does not move the view: only the scroll walks you through the forest,
-    // and at the end of the page you look up through the branches at the night glow
+    // and at the end of the page you look up through the branches
     const target = new T.Vector3();
     function size() {
       const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
       r.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-      // on a phone the words fill the screen: the glow sits nearer the middle, higher and fainter
-      const narrow = camera.aspect < 1;
-      GLOW_AT.set(3.8 * clamp(camera.aspect / 1.6, 0.3, 1), narrow ? 10 : 8.5, -19);
-      glowU.uColor.value.set(0.44, 0.53, 0.66).multiplyScalar(narrow ? 0.6 : 1);
       if (snowU) snowU.uScale.value = (h * 0.5 * r.getPixelRatio()) / Math.tan((camera.fov * Math.PI) / 360);
     }
-    let t = 0;
+    // The camera follows the scroll with a little give, so the walk glides even
+    // when the scroll jumps (a key press, a link, a flick on a phone).
+    let t = 0, pS = 0, eS = 0, placed = false;
     function place(dt) {
       if (!reduce) t += dt;
-      const p = reduce ? 0 : stageP, e = reduce ? 0 : endP;
+      const pT = reduce ? 0 : stageP, eT = reduce ? 0 : endP;
+      if (!placed) { pS = pT; eS = eT; placed = true; }
+      const k = 1 - Math.exp(-Math.min(dt, 0.1) * 7);
+      pS += (pT - pS) * k; eS += (eT - eS) * k;
+      const p = pS, e = eS;
       camera.position.set(0.4 + Math.sin(t * 0.05) * 0.35, 1.7 + Math.sin(t * 0.09) * 0.04, 9 - p * 2.6 - e * 0.5);
       target.set(-0.2, 1.9 + p * 0.5 + e * 3, camera.position.z - 17);
       camera.lookAt(target);
-      // the glow is far off: it keeps its place in the sky as you walk
-      glow.position.copy(camera.position).add(GLOW_AT);
-      glow.lookAt(camera.position);
+    }
+
+    // Watches how long frames take, at least a second and a half (and 8 frames)
+    // at a time, and lowers the resolution a step when the middle frame is slower
+    // than about 48 a second. The middle one, not the average, so a one-off hitch
+    // does not count. Not while the welcome draws on top, and never back up in a
+    // visit, so it cannot flip between two sizes.
+    const dts = [];
+    let watchFrom = 0, watched = 0;
+    function govern(now, d) {
+      if (pr <= MINPR || now < watchFrom || document.documentElement.classList.contains('intro-run')) return;
+      dts.push(d); watched += d;
+      if (watched < 1.5 || dts.length < 8) return;
+      dts.sort((a, b) => a - b);
+      const mid = dts[dts.length >> 1];
+      dts.length = 0; watched = 0;
+      if (mid > 1 / 48) { pr = Math.max(MINPR, pr - 0.25); r.setPixelRatio(pr); size(); }
     }
 
     let visible = true, last = performance.now(), started = false;
@@ -705,10 +700,10 @@
       if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
       if (snowU && !reduce) snowU.uTime.value = now / 1000;
       if (leafU && !reduce) leafU.uTime.value = now / 1000;
-      if (Math.abs(night - nightNow) > 0.002) setNight(night);
       place(d);
       r.render(scene, camera);
-      if (!started) { started = true; sceneOn = true; cv.classList.add('on'); onScroll(); }
+      if (!started) { started = true; sceneOn = true; watchFrom = now + 1500; cv.classList.add('on'); onScroll(); }
+      else govern(now, d);
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {

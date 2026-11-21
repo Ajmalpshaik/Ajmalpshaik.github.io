@@ -10,23 +10,20 @@
 /* after a short stage the text follows straight on */
 .forest-ready .stage:has(.stage-spacer.short) + .sec { padding-top: clamp(24px, 4vw, 56px); }
 /* The forest stays behind the whole page once assets/forest.js runs: bright fog
-   at the top, the same forest at night under everything below the hero. Without
-   that script it is not shown, the stage keeps its own fog colour and does not pin. */
+   at the top, the same forest faint behind a fog veil under everything below the
+   hero. Without that script it is not shown, the stage keeps its own fog colour
+   and does not pin. */
 .sky { display: none; }
 .forest-ready .sky { display: block; position: fixed; inset: 0; z-index: 0; background: var(--fog); pointer-events: none; }
 .forest-ready .stage-sticky { background: transparent; }
 .forest-ready main > :not(.sky):not(.story-plain), .forest-ready .foot { position: relative; z-index: 1; }
-.forest-ready .foot { border-top-color: rgba(255,255,255,.07); }
 html:not(.forest-ready) .stage-spacer { display: none; }
-/* a touch brighter than the usual grey, so small text keeps 4.5:1 over the night glow and snow */
-.forest-ready { --mute: #A1A1A7; }
 /* small, calm headings over the forest, the same size on every forest page */
 .forest-ready main .h2 { font-size: clamp(1.4rem, 2.2vw, 2.1rem); }
 .forest-ready main .quote { font-size: clamp(1.25rem, 1.9vw, 1.8rem); }
 .forest-ready main .card .idx { font-size: clamp(2rem, 3vw, 2.8rem); }
-/* panels let the night forest show through a little */
-.forest-ready .tags li, .forest-ready .chip { background: rgba(8,9,11,.55); }
-.forest-ready .card, .forest-ready .steps li { background: linear-gradient(160deg, rgba(21,21,24,.74) 0%, rgba(13,13,15,.7) 55%, rgba(8,8,9,.72) 100%); }
+/* panels let the forest show through a little */
+.forest-ready .card, .forest-ready .steps li { background: rgba(211, 215, 219, .82); }
 #forest { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 2s var(--ease); }
 #forest.on { opacity: 1; }
 /* ground mist under the words, a little haze under the bar */
@@ -37,6 +34,10 @@ html:not(.forest-ready) .stage-spacer { display: none; }
     linear-gradient(180deg, rgba(198,202,206,.7) 0%, rgba(198,202,206,0) 16%);
 }
 .shade { position: absolute; inset: 0; background: var(--bg); opacity: 0; pointer-events: none; }
+/* these change on every scroll step: each gets its own layer, so the browser
+   only blends them instead of painting them again */
+.mist, .shade { will-change: opacity; }
+.hero-copy { will-change: opacity, transform; }
 
 /* the hero is light: dark words on the fog */
 .hero-copy { position: absolute; left: 0; right: 0; bottom: clamp(40px, 9vh, 96px); color: #0F1114; }

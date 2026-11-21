@@ -8,7 +8,7 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/ar-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#d3d7db">
 <meta name="color-scheme" content="dark">
 <meta property="og:title" content="AR Viewer — Revit FBX to USDZ for iPhone AR">
 <meta property="og:description" content="Free AR viewer for Revit models. Turn an FBX export into a USDZ file in your browser and see it at real size on iPhone. Your file never leaves your device.">
@@ -101,7 +101,7 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
   padding:28px 18px;border-radius:16px;background:var(--neu-raised);
   border:1.5px dashed var(--line-2);text-align:center;cursor:pointer;transition:border-color .2s var(--ease),background .2s var(--ease);
 }
-.arv-drop:hover,.arv-drop.over{border-color:rgba(255,255,255,.5);background:#1a1a1e}
+.arv-drop:hover,.arv-drop.over{border-color:rgba(15,17,20,.45);background:#dde0e4}
 .arv-drop:focus-within{outline:2px solid var(--fg);outline-offset:3px}
 .arv-drop.busy{opacity:.55;cursor:progress}
 .arv-drop svg{width:32px;height:32px;margin-bottom:4px;stroke:var(--body);fill:none;stroke-width:1.6}
@@ -135,7 +135,7 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
 /* 3D preview */
 .arv-stage{
   position:relative;height:clamp(300px,56vh,560px);border-radius:16px;overflow:hidden;
-  background:radial-gradient(80% 70% at 50% 35%,#18181c,#0b0b0d 75%);box-shadow:var(--neu-in);
+  background:radial-gradient(80% 70% at 50% 35%,#e6e9ec,#c9cdd1 75%);box-shadow:var(--neu-in);
 }
 .arv-stage canvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;outline:none}
 .arv-empty{
@@ -152,8 +152,8 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
 .arv .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .arv-make{margin-top:4px;align-self:flex-start}
 .arv-out{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px}
-.arv-alt{background:transparent;color:var(--fg);font-weight:500;box-shadow:inset 0 0 0 1px var(--line-2)}
-.arv-alt:hover{background:rgba(255,255,255,.07);color:var(--fg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.arv-alt{background:var(--bg);color:var(--fg);font-weight:500;box-shadow:var(--neu-up-sm)}
+.arv-alt:hover{background:var(--bg);color:var(--fg);box-shadow:var(--neu-in-sm)}
 .arv-ar::before,.arv-alt::before{
   content:"";flex:0 0 20px;width:20px;height:20px;background:currentColor;
   -webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;
