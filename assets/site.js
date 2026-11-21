@@ -31,7 +31,7 @@
   /* ---------- links from older versions of the site land in the right place ---------- */
   var legacy = {
     story: '/about/#story', experience: '/about/#experience', projects: '/about/#work', work: '/about/#work',
-    ajtools: '/tools/#automation', 'aj-tools': '/tools/#automation', brain: '/heron-ai/',
+    ajtools: '/about/#skills', 'aj-tools': '/about/#skills', brain: '/heron-ai/',
     about: '/about/', skills: '/about/#skills', faq: '/about/#faq', contact: '/#contact'
   };
   if (location.hash) {

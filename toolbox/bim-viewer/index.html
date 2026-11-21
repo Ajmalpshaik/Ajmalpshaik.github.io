@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://ajmalps.com/toolbox/bim-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#d3d7db">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
 <meta property="og:title" content="BIM Viewer — open IFC in your browser and walk inside it">
 <meta property="og:description" content="Free IFC viewer for Revit models. See properties, cut sections and measure, then walk inside the building as a robot, game style. Your file never leaves your device.">
 <meta property="og:url" content="https://ajmalps.com/toolbox/bim-viewer/">
@@ -199,7 +199,7 @@
           <button type="button" class="bv-ico" id="bvGear" aria-label="Settings" title="Settings" aria-expanded="false" aria-controls="bvSettings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
           </button>
-          <button type="button" class="bv-ico" id="bvFull" aria-label="Full screen" title="Full screen" aria-pressed="false">
+          <button type="button" class="bv-ico" id="bvFull" aria-label="Full screen" title="Full screen (F)" aria-pressed="false">
             <svg class="ic-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>
             <svg class="ic-out" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>
           </button>
@@ -245,7 +245,7 @@
         <div class="bv-cross" id="bvCross" hidden></div>
         <div class="bv-look" id="bvLook" hidden></div>
         <div class="bv-aim" id="bvAim" hidden></div>
-        <div class="bv-keys" id="bvKeys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move <kbd>Shift</kbd> run <kbd>Space</kbd> jump <kbd>E</kbd> inspect <kbd>T</kbd> teleport <kbd>C</kbd> camera <kbd>Esc</kbd> pause</div>
+        <div class="bv-keys" id="bvKeys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move <kbd>Shift</kbd> sprint <kbd>Space</kbd> jump <kbd>E</kbd> inspect <kbd>V</kbd> camera <kbd>B</kbd> emotes <kbd>F</kbd> full screen <kbd>Esc</kbd> menu</div>
         <div class="bv-emotes" id="bvEmotes" aria-label="Emotes">
           <button type="button" data-emote="Wave" title="Wave (1)">👋<span>1</span></button>
           <button type="button" data-emote="Dance" title="Dance (2)">💃<span>2</span></button>
@@ -298,10 +298,11 @@
           <label class="bv-start">Start at <select id="bvGoLevel" aria-label="Start at"></select></label>
           <div class="bv-cardbtns">
             <button type="button" class="bv-primary" id="bvPlay">Play</button>
+            <button type="button" class="bv-ghost" id="bvControls">Controls</button>
             <button type="button" class="bv-ghost" id="bvExitFull" hidden>Exit full screen</button>
             <button type="button" class="bv-ghost" id="bvBack">Back to BIM view</button>
           </div>
-          <p class="bv-small" id="bvPauseNote">Move the mouse to look. <kbd>Esc</kbd> pauses.</p>
+          <p class="bv-small" id="bvPauseNote">Play opens full screen. <kbd>Esc</kbd> opens and closes this menu, <kbd>F</kbd> leaves full screen.</p>
         </div>
       </div>
 
@@ -360,18 +361,27 @@
             <div><dt>Scroll</dt><dd>Zoom</dd></div>
             <div><dt>Click</dt><dd>Properties</dd></div>
             <div><dt><kbd>H</kbd> <kbd>I</kbd> <kbd>U</kbd></dt><dd>Hide, isolate, show all</dd></div>
-            <div><dt><kbd>X</kbd> <kbd>M</kbd> <kbd>F</kbd></dt><dd>X-ray, measure, fit</dd></div>
+            <div><dt><kbd>X</kbd> <kbd>M</kbd> <kbd>Z</kbd></dt><dd>X-ray, measure, zoom to fit</dd></div>
+            <div><dt><kbd>F</kbd></dt><dd>Full screen on and off</dd></div>
           </dl>
           <h2>Walk view</h2>
           <dl class="bv-keylist">
             <div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Move</dd></div>
-            <div><dt><kbd>Shift</kbd> <kbd>Space</kbd></dt><dd>Run, jump</dd></div>
-            <div><dt><kbd>E</kbd></dt><dd>Inspect</dd></div>
-            <div><dt><kbd>T</kbd></dt><dd>Teleport (hold)</dd></div>
-            <div><dt><kbd>C</kbd> <kbd>Q</kbd></dt><dd>Camera, character</dd></div>
-            <div><dt><kbd>M</kbd> <kbd>H</kbd></dt><dd>Map, hide HUD</dd></div>
-            <div><dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Emotes</dd></div>
-            <div><dt>Phone</dt><dd>Left thumb moves, drag right to look</dd></div>
+            <div><dt>Mouse</dt><dd>Look</dd></div>
+            <div><dt><kbd>Shift</kbd></dt><dd>Sprint (hold)</dd></div>
+            <div><dt><kbd>Space</kbd></dt><dd>Jump</dd></div>
+            <div><dt><kbd>E</kbd></dt><dd>Inspect what the crosshair is on</dd></div>
+            <div><dt>Right mouse</dt><dd>Zoom over the shoulder (hold)</dd></div>
+            <div><dt><kbd>Alt</kbd></dt><dd>Free look (hold)</dd></div>
+            <div><dt><kbd>V</kbd></dt><dd>First or third person</dd></div>
+            <div><dt>Scroll</dt><dd>Camera distance</dd></div>
+            <div><dt><kbd>T</kbd></dt><dd>Teleport (hold, let go to land)</dd></div>
+            <div><dt><kbd>L</kbd> <kbd>M</kbd></dt><dd>Torch, map</dd></div>
+            <div><dt><kbd>F</kbd></dt><dd>Full screen on and off</dd></div>
+            <div><dt><kbd>B</kbd> <kbd>1</kbd>–<kbd>6</kbd></dt><dd>Emotes</dd></div>
+            <div><dt><kbd>H</kbd> <kbd>R</kbd></dt><dd>Hide HUD, back to start</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Menu open and shut (hold Esc to leave full screen)</dd></div>
+            <div><dt>Phone</dt><dd>Left thumb moves, drag right to look; push the stick out to sprint</dd></div>
           </dl>
           <p class="bv-small">Your file is opened in this tab and never uploaded. Built with web-ifc (MPL-2.0) and three.js. Robot by Tomás Laulhé (CC0); Soldier, X Bot and Michelle are Mixamo characters from the three.js examples.</p>
         </div>

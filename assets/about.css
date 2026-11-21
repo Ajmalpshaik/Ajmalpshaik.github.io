@@ -1,30 +1,18 @@
-/* About me page only. Shared parts live in site.css and forest.css. */
+/* About me page only, on top of site.css and forest.css. Layout only: the look
+   is the site's own (soft raised steps, cards and buttons from site.css). */
 
 /* a label over each section heading, the FAQ heading at the summary's size */
 .sec-top .eyebrow { margin-bottom: 18px; }
 .sec-top > .lede { width: min(100%, 46ch); }
-.page-head .nums { margin-top: clamp(44px, 5.5vw, 72px); }
 .gap-t { margin-top: clamp(32px, 4vw, 52px); }
 .faq summary h3 { font: inherit; letter-spacing: inherit; }
 
-/* hero: one soft button on the fog */
+/* hero: the Contact me button under the words */
 .hero-act { margin-top: 26px; animation: fade 1.4s var(--ease) both .6s; }
 @media (max-width: 600px) { .hero-act { margin-top: 18px; } }
 
-/* story: the five steps as soft raised tiles, one row on wide screens, stacked below */
-#story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
-#story .steps li { padding: 22px 20px; border-radius: 22px; box-shadow: var(--neu-up); transition: box-shadow .35s var(--ease); }
-#story .steps li::before {
-  display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 18px;
-  border-radius: 50%; background: var(--bg); color: var(--fg); box-shadow: var(--neu-in-sm);
-}
-#story .steps li:hover { box-shadow: var(--neu-in); }
-@media (max-width: 1000px) {
-  #story .steps { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  #story .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 2px 16px; padding: 16px 18px; }
-  #story .steps li::before { grid-row: span 2; margin: 0; }
-}
-@media (prefers-reduced-motion: reduce) { #story .steps li { transition: none; } }
+/* story: the five steps in one row on wide screens */
+@media (min-width: 1100px) { #story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
 /* selected work: the current project wide on top, then two by two */
 #work .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -36,9 +24,5 @@
 .next .h2 { max-width: 22ch; }
 .next .lede { margin-top: 14px; }
 .next .btns { margin-top: 28px; }
-.next .ghost { font-family: var(--mono); font-size: 13px; letter-spacing: .02em; }
 
-@media print {
-  .hero-act, .next .btns { display: none; }
-  #story .steps li, #story .steps li::before { background: none; box-shadow: none; border: 1px solid #ccc; }
-}
+@media print { .hero-act, .next .btns { display: none; } }
