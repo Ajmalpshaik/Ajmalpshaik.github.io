@@ -37,6 +37,10 @@ html:not(.forest-ready) .stage-spacer { display: none; }
     linear-gradient(180deg, rgba(198,202,206,.7) 0%, rgba(198,202,206,0) 16%);
 }
 .shade { position: absolute; inset: 0; background: var(--bg); opacity: 0; pointer-events: none; }
+/* these change on every scroll step: each gets its own layer, so the browser
+   only blends them instead of painting them again */
+.mist, .shade { will-change: opacity; }
+.hero-copy { will-change: opacity, transform; }
 
 /* the hero is light: dark words on the fog */
 .hero-copy { position: absolute; left: 0; right: 0; bottom: clamp(40px, 9vh, 96px); color: #0F1114; }

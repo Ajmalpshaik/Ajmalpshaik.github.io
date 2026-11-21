@@ -52,21 +52,36 @@
   var stageP = 0, endP = 0, night = 0, sceneOn = false;
   var mistEl = document.getElementById('mist');
   var ease = function (a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  // Each scroll step only reads two cached heights and writes what changed, so it
+  // stays cheap: the page's sizes are measured again only when they change.
+  var total = 1, rest = 1;
+  function measure() {
+    var vh = innerHeight;
+    total = Math.max(1, stage.offsetHeight - vh);
+    rest = Math.max(1, document.documentElement.scrollHeight - vh - total);
+  }
+  var written = new Map();
+  function put(el, prop, value) {
+    if (!el) return;
+    var key = written.get(el) || {};
+    if (key[prop] === value) return;
+    key[prop] = value; written.set(el, key);
+    if (prop.charAt(0) === '-') el.style.setProperty(prop, value); else el.style[prop] = value;
+  }
   function onScroll() {
-    var y = window.scrollY || 0, vh = innerHeight;
-    var total = Math.max(1, stage.offsetHeight - vh);
+    var y = window.scrollY || 0;
     stageP = clamp(y / total, 0, 1);
-    endP = clamp((y - total) / Math.max(1, document.documentElement.scrollHeight - vh - total), 0, 1);
+    endP = clamp((y - total) / rest, 0, 1);
     if (nav) nav.classList.toggle('light', y < total * (stLayer ? 0.2 : 0.3));
     var out = clamp(stageP / (stLayer ? 0.28 : 0.6), 0, 1);
-    heroCopy.style.opacity = String(1 - out);
-    heroCopy.style.transform = 'translateY(' + (-out * 60) + 'px)';
+    put(heroCopy, 'opacity', (1 - out).toFixed(3));
+    put(heroCopy, 'transform', 'translateY(' + (-out * 60).toFixed(1) + 'px)');
     var inP, dark, lift;
     if (stLayer) {
       inP = clamp((stageP - 0.22) / 0.2, 0, 1);
-      stLayer.style.opacity = String(inP);
+      put(stLayer, 'opacity', inP.toFixed(3));
       var lit = clamp((stageP - 0.3) / 0.55, 0, 1) * words.length;
-      for (var i = 0; i < words.length; i++) words[i].style.setProperty('--o', String(clamp(lit - i, 0.2, 1)));
+      for (var i = 0; i < words.length; i++) put(words[i], '--o', clamp(lit - i, 0.2, 1).toFixed(2));
       night = ease(0.2, 0.6, stageP);
       dark = Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26);
       lift = ease(0.8, 1, stageP);
@@ -76,13 +91,16 @@
       dark = ease(0.15, 1, stageP);
       lift = inP;
     }
-    if (mistEl) mistEl.style.opacity = String(1 - inP);
+    put(mistEl, 'opacity', (1 - inP).toFixed(3));
     // without the 3D scene there is no night forest to show: the page goes black
-    shade.style.opacity = String(lerp(dark, END, sceneOn ? lift : 0));
+    put(shade, 'opacity', lerp(dark, END, sceneOn ? lift : 0).toFixed(3));
   }
+  measure();
   onScroll();
   if (lenis) lenis.on('scroll', onScroll); else addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll);
+  addEventListener('resize', function () { measure(); onScroll(); });
+  // fonts and late content change the page's height: measure again when they do
+  if (window.ResizeObserver) new ResizeObserver(function () { measure(); onScroll(); }).observe(document.body);
 
   // ---------- the forest: bare trees in mist, and a flock flying between them ----------
   // The look follows the three.js fog examples (custom_fog_scattering, custom_fog_background):
@@ -96,7 +114,11 @@
     let r;
     try { r = new T.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); } catch (e) { cv.remove(); return; }
     const small = innerWidth < 900 || !fine;
-    r.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 2));
+    // Sharpness gives way to smoothness: if frames run slow, the scene draws at a
+    // lower resolution (see govern() below), never below 0.75 of a CSS pixel.
+    const MAXPR = Math.min(devicePixelRatio || 1, small ? 1.5 : 2), MINPR = Math.min(0.75, MAXPR);
+    let pr = MAXPR;
+    r.setPixelRatio(pr);
     r.outputEncoding = T.sRGBEncoding;
 
     // one colour for the fog and the sky behind it (r128 mixes fog after the
@@ -683,16 +705,38 @@
       glowU.uColor.value.set(0.44, 0.53, 0.66).multiplyScalar(narrow ? 0.6 : 1);
       if (snowU) snowU.uScale.value = (h * 0.5 * r.getPixelRatio()) / Math.tan((camera.fov * Math.PI) / 360);
     }
-    let t = 0;
+    // The camera follows the scroll with a little give, so the walk glides even
+    // when the scroll jumps (a key press, a link, a flick on a phone).
+    let t = 0, pS = 0, eS = 0, placed = false;
     function place(dt) {
       if (!reduce) t += dt;
-      const p = reduce ? 0 : stageP, e = reduce ? 0 : endP;
+      const pT = reduce ? 0 : stageP, eT = reduce ? 0 : endP;
+      if (!placed) { pS = pT; eS = eT; placed = true; }
+      const k = 1 - Math.exp(-Math.min(dt, 0.1) * 7);
+      pS += (pT - pS) * k; eS += (eT - eS) * k;
+      const p = pS, e = eS;
       camera.position.set(0.4 + Math.sin(t * 0.05) * 0.35, 1.7 + Math.sin(t * 0.09) * 0.04, 9 - p * 2.6 - e * 0.5);
       target.set(-0.2, 1.9 + p * 0.5 + e * 3, camera.position.z - 17);
       camera.lookAt(target);
       // the glow is far off: it keeps its place in the sky as you walk
       glow.position.copy(camera.position).add(GLOW_AT);
       glow.lookAt(camera.position);
+    }
+
+    // Watches how long frames take, a second and a half at a time, and lowers the
+    // resolution a step when the middle one is slower than about 48 frames a
+    // second. Not while the welcome draws on top, and never back up in a visit,
+    // so it cannot flip between two sizes.
+    const dts = [];
+    let watchFrom = 0;
+    function govern(now, d) {
+      if (pr <= MINPR || now < watchFrom || d > 0.25 || document.documentElement.classList.contains('intro-run')) return;
+      dts.push(d);
+      if (dts.length < 90) return;
+      dts.sort((a, b) => a - b);
+      const mid = dts[45];
+      dts.length = 0;
+      if (mid > 1 / 48) { pr = Math.max(MINPR, pr - 0.25); r.setPixelRatio(pr); size(); }
     }
 
     let visible = true, last = performance.now(), started = false;
@@ -708,7 +752,8 @@
       if (Math.abs(night - nightNow) > 0.002) setNight(night);
       place(d);
       r.render(scene, camera);
-      if (!started) { started = true; sceneOn = true; cv.classList.add('on'); onScroll(); }
+      if (!started) { started = true; sceneOn = true; watchFrom = now + 1500; cv.classList.add('on'); onScroll(); }
+      else govern(now, d);
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {
