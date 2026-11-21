@@ -352,13 +352,20 @@ a.card:hover .more svg { transform: translateX(4px); }
 .faq { border-top: 1px solid var(--line); }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary {
-  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px;
-  padding: clamp(18px, 2.2vw, 26px) 0; font-size: clamp(1.05rem, 1.4vw, 1.3rem); font-weight: 500; letter-spacing: -0.02em;
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  padding: 15px 0; font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em; transition: color .3s;
 }
+.faq summary h3 { font: inherit; letter-spacing: inherit; }
+.faq summary:hover { color: #fff; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: ""; flex: none; width: 12px; height: 12px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-4px); transition: transform .4s var(--ease); }
+.faq summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--mute); border-bottom: 1.5px solid var(--mute); transform: rotate(45deg) translateY(-3px); transition: transform .4s var(--ease); }
 .faq details[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
-.faq .ans { padding: 0 0 24px; color: var(--body); max-width: 70ch; }
+.faq .ans { padding: 0 0 18px; color: var(--body); font-size: 15px; max-width: 62ch; }
+/* a heading on the left and its list on the right, from 900px up (the FAQ) */
+@media (min-width: 900px) {
+  .wrap.split { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 24px 48px; align-items: start; }
+  .wrap.split > .sec-top { margin-bottom: 0; }
+}
 .faq .ans p + p { margin-top: .7em; }
 
 /* more: a folded block of detail */
