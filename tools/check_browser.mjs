@@ -221,6 +221,21 @@ for (const page of PAGES) {
       return getComputedStyle(i).opacity === '1' && i.getBoundingClientRect().width >= 20 && i.classList.contains('heron');
     }, null, { timeout: 6000 }).then(() => true, () => false);
     if (!glided) fail(`${page}: hovering Heron does not move the orange highlight onto it`);
+
+    // Contact grows into a card in place (no jump to the footer); Escape closes it
+    await p.click('#nav [data-contact]');
+    const opened = await p.waitForFunction(() => {
+      const c = document.getElementById('cbox');
+      const m = c && c.querySelector('.cbox-mail a');
+      return c && !c.hidden && m && m.getBoundingClientRect().width > 50 && c.getAnimations({ subtree: true }).length === 0;
+    }, null, { timeout: 6000 }).then(() => true, () => false);
+    if (!opened) fail(`${page}: the Contact button does not open the contact card`);
+    else {
+      if (await p.evaluate(() => window.scrollY) > 40) fail(`${page}: opening the contact card scrolled the page`);
+      await p.keyboard.press('Escape');
+      const closed = await p.waitForFunction(() => document.getElementById('cbox').hidden, null, { timeout: 4000 }).then(() => true, () => false);
+      if (!closed) fail(`${page}: Escape does not close the contact card`);
+    }
     await ctx.close();
 
     // phone: the tabs fold into a sheet behind the menu button
@@ -242,6 +257,12 @@ for (const page of PAGES) {
     await q.keyboard.press('Escape');
     await q.waitForTimeout(800);
     if (await q.$eval('#overlay', (o) => o.hasAttribute('data-open'))) fail(`${page} at 390px: Escape does not close the menu`);
+    // and from the phone menu, its Contact button grows into the same card
+    await q.click('#burger');
+    await q.waitForTimeout(900);
+    await q.click('#overlay [data-contact]');
+    const phoneCard = await q.waitForFunction(() => !document.getElementById('cbox').hidden && !document.getElementById('overlay').hasAttribute('data-open'), null, { timeout: 5000 }).then(() => true, () => false);
+    if (!phoneCard) fail(`${page} at 390px: the menu's Contact button does not open the contact card`);
     await ph.close();
 
     // no JavaScript on a phone: the tabs stay in the bar, so every page is still reachable

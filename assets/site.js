@@ -134,6 +134,99 @@
     addEventListener('resize', function () { if (innerWidth > 900) closeMenu(); });
   }
 
+  /* ---------- contact: the button grows into a card ----------
+     The card is pinned where it ends, then grown there from the button that
+     was pressed, colour and corners included; closing shrinks it back into the
+     button. With no script the button simply goes to the footer. */
+  var cbox = document.getElementById('cbox');
+  if (cbox) {
+    var card = cbox.querySelector('.cbox-card');
+    var inner = cbox.querySelector('.cbox-in');
+    var bg = cbox.querySelector('.cbox-bg');
+    var EASE = 'cubic-bezier(.2,.9,.25,1)';
+    var source = null, lastFocus = null, busy = false;
+    var KEYS = ['top', 'left', 'right', 'bottom', 'width', 'height'];
+    var clearInline = function () { KEYS.forEach(function (k) { card.style[k] = ''; }); inner.style.width = ''; };
+    var shown = function (el) { if (!el) return null; var r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? r : null; };
+    var pin = function (r) {
+      card.style.top = r.top + 'px'; card.style.left = r.left + 'px'; card.style.right = 'auto'; card.style.bottom = 'auto';
+      card.style.width = r.width + 'px'; card.style.height = r.height + 'px'; inner.style.width = r.width + 'px';
+    };
+    var box = function (r, radius, colour) {
+      return { top: r.top + 'px', left: r.left + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: radius, backgroundColor: colour };
+    };
+    var cancelAll = function () { [card, inner, bg].forEach(function (el) { el.getAnimations().forEach(function (a) { a.cancel(); }); }); };
+
+    var openCard = function (from) {
+      if (!cbox.hidden || busy) return;
+      lastFocus = document.activeElement;
+      var fromRect = shown(from), fromBg = from ? getComputedStyle(from).backgroundColor : '';
+      source = from;
+      closeMenu();
+      cbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+      if (lenis) lenis.stop();
+      var cs = getComputedStyle(card), to = card.getBoundingClientRect();
+      if (!reduce && fromRect && card.animate) {
+        busy = true;
+        pin(to);
+        from.style.visibility = 'hidden';
+        var grow = card.animate([box(fromRect, (fromRect.height / 2) + 'px', fromBg), box(to, cs.borderRadius, cs.backgroundColor)], { duration: 620, easing: EASE });
+        inner.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 0, transform: 'translateY(10px)', offset: 0.35 }, { opacity: 1, transform: 'none' }], { duration: 620, easing: 'ease-out' });
+        bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' });
+        grow.onfinish = function () { clearInline(); busy = false; };
+      }
+      var x = cbox.querySelector('.cbox-x');
+      setTimeout(function () { x.focus({ preventScroll: true }); }, reduce ? 0 : 260);
+    };
+
+    var closeCard = function () {
+      if (cbox.hidden || busy) return;
+      var done = function () {
+        cancelAll(); clearInline();
+        cbox.hidden = true;
+        if (source) source.style.visibility = '';
+        document.body.style.overflow = '';
+        if (lenis) lenis.start();
+        var f = lastFocus && document.contains(lastFocus) && shown(lastFocus) ? lastFocus : shown(source) ? source : null;
+        if (f && f.focus) f.focus({ preventScroll: true });
+        busy = false;
+      };
+      if (reduce || !card.animate) { done(); return; }
+      busy = true;
+      var cs = getComputedStyle(card), r = card.getBoundingClientRect(), to = shown(source);
+      var end;
+      if (to) {
+        pin(r);
+        end = card.animate([box(r, cs.borderRadius, cs.backgroundColor), box(to, (to.height / 2) + 'px', getComputedStyle(source).backgroundColor)], { duration: 480, easing: EASE, fill: 'forwards' });
+        inner.animate([{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }], { duration: 480, fill: 'forwards' });
+      } else {
+        end = card.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(14px) scale(.98)' }], { duration: 280, easing: 'ease-in', fill: 'forwards' });
+      }
+      bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 380, fill: 'forwards' });
+      end.onfinish = done;
+    };
+
+    // capture, so this runs before the smooth-scroll handler that would go to #contact
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest && e.target.closest('[data-contact]');
+      if (!t) return;
+      e.preventDefault(); e.stopPropagation();
+      openCard(t);
+    }, true);
+    cbox.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeCard(); });
+    addEventListener('keydown', function (e) {
+      if (cbox.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeCard(); return; }
+      if (e.key !== 'Tab') return;
+      var f = [].slice.call(card.querySelectorAll('a[href], button'));
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    });
+    addEventListener('resize', function () { if (!cbox.hidden && !busy) clearInline(); });
+  }
+
   /* ---------- copy the email address ---------- */
   [].forEach.call(document.querySelectorAll('[data-copy]'), function (btn) {
     btn.addEventListener('click', function () {

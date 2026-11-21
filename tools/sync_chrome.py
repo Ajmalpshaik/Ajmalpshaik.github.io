@@ -35,9 +35,9 @@ TABS = [
 
 EMAIL = "ajmalnattika@gmail.com"
 SOCIAL = [
-    ("https://www.linkedin.com/in/ajmalps/", "LinkedIn"),
-    ("https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com", "WhatsApp"),
-    ("https://github.com/Ajmalpshaik", "GitHub"),
+    ("https://www.linkedin.com/in/ajmalps/", "LinkedIn", "/in/ajmalps"),
+    ("https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com", "WhatsApp", "+974 3103 3040"),
+    ("https://github.com/Ajmalpshaik", "GitHub", "Ajmalpshaik"),
 ]
 
 # Which tab each page sits under (None: no tab is selected). Redirect stubs for
@@ -62,6 +62,8 @@ BURGER = ('<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-wid
           'aria-hidden="true"><path d="M2 6h14M2 12h14"/></svg>')
 CROSS = ('<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" '
          'aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>')
+GO = ('<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" '
+      'aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>')
 
 
 def render_nav(current):
@@ -88,22 +90,48 @@ def render_nav(current):
 {tabs}
       </ul>
     </nav>
-    <a class="pill magnetic" href="#contact">Contact {ARROW}</a>
+    <a class="pill magnetic" href="#contact" data-contact aria-haspopup="dialog" aria-controls="cbox">Contact {ARROW}</a>
     <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">{BURGER}</button>
   </div>
 </header>
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Menu">
   <button class="burger close" type="button" aria-label="Close menu">{CROSS}</button>
 {sheet}
-  <a class="pill" href="#contact">Contact {ARROW}</a>
+  <a class="pill" href="#contact" data-contact aria-haspopup="dialog" aria-controls="cbox">Contact {ARROW}</a>
 </div>
+{render_card()}
 <!-- /chrome:nav -->"""
+
+
+def render_card():
+    """The contact card the Contact button grows into (assets/site.js). With no
+    script it stays hidden and the button simply goes to the footer."""
+    rows = "\n".join(
+        f'        <li><a href="{href}" target="_blank" rel="noopener"><b>{name}</b><span>{handle}</span>{GO}</a></li>'
+        for href, name, handle in SOCIAL
+    )
+    return f"""<div class="cbox" id="cbox" role="dialog" aria-modal="true" aria-labelledby="cbox-h" hidden>
+  <div class="cbox-bg" data-close></div>
+  <div class="cbox-card">
+    <div class="cbox-in">
+      <button class="cbox-x" type="button" aria-label="Close" data-close>{CROSS}</button>
+      <p class="eyebrow cbox-top"><span>Contact</span><span class="cbox-live"><i aria-hidden="true"></i>Available now</span></p>
+      <h2 class="cbox-h" id="cbox-h">Let&rsquo;s <em class="s">talk.</em></h2>
+      <p class="cbox-say">Hiring, or want a tool built? Email is fastest, and I answer every message myself.</p>
+      <div class="cbox-mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy" type="button" data-copy="{EMAIL}">Copy</button></div>
+      <ul class="cbox-links">
+{rows}
+      </ul>
+      <p class="cbox-note">Doha, Qatar &middot; Transferable QID with NOC, able to join within days.</p>
+    </div>
+  </div>
+</div>"""
 
 
 def render_foot():
     social = "\n".join(
         f'          <a class="ghost" href="{href}" target="_blank" rel="noopener">{name}</a>'
-        for href, name in SOCIAL
+        for href, name, _ in SOCIAL
     )
     links = " ".join(f'<a href="{href}">{label}</a>' for _, href, label in TABS)
     return f"""<!-- chrome:foot -->
