@@ -548,15 +548,15 @@ export class Walk {
       if (!owns() || this.paused) return;      // Esc is the app's, and it is the only key a pause listens to
       const k = e.code;
       // The keys the big PC games share: WASD, Shift sprint, Space jump,
-      // E interact, V first/third person, hold Alt to look around, F light,
-      // M map, B emotes. Alt is held back so the browser does not take it.
+      // E interact, V first/third person, hold Alt to look around, L light,
+      // M map, B emotes; F (full screen) belongs to the app. Alt is held back so the browser does not take it.
       if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltRight'].includes(k)) e.preventDefault();
       if (e.repeat) return;
       this.keys.add(k);
       if (k === 'Space') this.jump();
       else if (k === 'KeyV') { this.setFirstPerson(!this.firstPerson); this.hooks.onCamera && this.hooks.onCamera(this.firstPerson); }
       else if (k === 'AltLeft' || k === 'AltRight') this.startFreeLook();
-      else if (k === 'KeyF') { this.flashlight = !this.flashlight; this.autoLight = false; }
+      else if (k === 'KeyL') { this.flashlight = !this.flashlight; this.autoLight = false; }
       else if (k === 'KeyM') { this.minimap = !this.minimap; this.hooks.onMinimap && this.hooks.onMinimap(this.minimap); }
       else if (k === 'KeyE') this.hooks.onInspect && this.hooks.onInspect(this.lookId);
       else if (k === 'KeyB') this.hooks.onEmotes && this.hooks.onEmotes();
@@ -825,7 +825,13 @@ export class Walk {
       cam.fov += (fovGoal - cam.fov) * (1 - Math.exp(-14 * dt));
       cam.updateProjectionMatrix();
     }
-    const head = v1.set(this.robot.position.x, this.robot.position.y + this.height * 0.92, this.robot.position.z);
+    // The third-person camera follows height a little behind, the way game
+    // cameras do, so a jump lifts the character on screen instead of the whole
+    // world dropping with it. A teleport or a fall snaps it straight there.
+    const ry = this.robot.position.y;
+    if (this._camY === undefined || Math.abs(ry - this._camY) > 2.5) this._camY = ry;
+    else this._camY += (ry - this._camY) * (1 - Math.exp(-5 * dt));
+    const head = v1.set(this.robot.position.x, (this.firstPerson ? ry : this._camY) + this.height * 0.92, this.robot.position.z);
     const fwd = v2.set(Math.sin(this.yaw), 0, Math.cos(this.yaw));
     if (this.firstPerson) {
       cam.position.copy(head).addScaledVector(fwd, 0.12);

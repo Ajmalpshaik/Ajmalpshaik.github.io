@@ -424,7 +424,7 @@ export function start() {
     else if (k === 'u') ui.reset.click();
     else if (k === 'x') ui.xray.click();
     else if (k === 'm') ui.measure.click();
-    else if (k === 'f') { if (model && model.selected != null) bim.zoomTo(model.elements.get(model.selected).box); else bim.view('home'); }
+    else if (k === 'z') { if (model && model.selected != null) bim.zoomTo(model.elements.get(model.selected).box); else bim.view('home'); }
   });
 
   // ------------------------------------------------------------- modes
@@ -485,7 +485,9 @@ export function start() {
   ui.tabBim.addEventListener('click', () => setMode('bim'));
   ui.tabWalk.addEventListener('click', () => setMode('walk'));
 
+  let pausedAt = 0;
   function showPause(on) {
+    if (on && ui.pause.hidden) pausedAt = performance.now();
     ui.pause.hidden = !on;
     ui.pauseNote.hidden = isTouch;
     walk.setPaused(on);              // a pause card that really pauses
@@ -502,9 +504,12 @@ export function start() {
     if (p && p.catch) p.catch(() => toast('Click the view to lock the mouse, or just drag to look.', 2800));
   }
 
+  // Play goes straight to full screen and takes the mouse, the way a browser
+  // game does; F or the corner button brings the page back
   ui.play.addEventListener('click', () => {
     showPause(false);
     ui.canvas.focus({ preventScroll: true });
+    if (!isFull() && !isTouch) enterFull();
     lockPointer();
   });
   ui.back.addEventListener('click', () => setMode('bim'));
@@ -784,8 +789,21 @@ export function start() {
     try { p = req.call(el); } catch { pseudoFull(); return; }
     // the change event normally does this; syncing on the promise too means the
     // button never reads "Full screen" while we are already in it
-    if (p && p.then) p.then(() => { syncFull(); turnSideways(); }, () => pseudoFull());
+    if (p && p.then) p.then(() => { syncFull(); turnSideways(); holdEsc(); }, () => pseudoFull());
     syncFull();
+  }
+  // In full screen, Chrome and Edge let a page keep Esc (the Keyboard Lock API,
+  // as browser games use it): one press opens the menu instead of throwing
+  // you out, and holding Esc still leaves full screen - the browser says so.
+  // Elsewhere Esc leaves full screen as before.
+  function holdEsc() {
+    const kb = navigator.keyboard;
+    if (!kb || !kb.lock || !realFull()) return;
+    try { const p = kb.lock(['Escape']); if (p && p.catch) p.catch(() => {}); } catch { /* not offered here */ }
+  }
+  function releaseEsc() {
+    const kb = navigator.keyboard;
+    if (kb && kb.unlock) try { kb.unlock(); } catch { /* nothing held */ }
   }
   // full screen on a phone means playing: ask for sideways, the way a game
   // does. Android allows it, iOS does not, and neither one is a problem.
@@ -800,6 +818,9 @@ export function start() {
     try { o.unlock(); } catch { /* nothing was locked */ }
   }
   function exitFull() {
+    // let go of Esc first: Chrome ignores a page's request to leave full
+    // screen while the page still holds the key that leaves it
+    releaseEsc();
     if (realFull()) {
       const off = document.exitFullscreen || document.webkitExitFullscreen;
       try { const p = off && off.call(document); if (p && p.catch) p.catch(() => {}); } catch { /* already out */ }
@@ -867,8 +888,14 @@ export function start() {
         if (document.pointerLockElement === ui.canvas) document.exitPointerLock();
         return true;
       }
-      if (isFull()) { exitFull(); return true; }
-      setMode('bim');
+      // Esc opens the menu and Esc closes it again, as in a game. Leaving
+      // full screen is F or the corner button; leaving the walk is the menu's.
+      // (Firefox sends the Esc that gave the mouse back as well: that one
+      // only opened the menu, it does not close it straight away.)
+      if (performance.now() - pausedAt < 400) return true;
+      showPause(false);
+      ui.canvas.focus({ preventScroll: true });
+      lockPointer();
       return true;
     }
     if (sideOpen()) { closeSettings(); return true; }
@@ -882,10 +909,17 @@ export function start() {
   // on the window, because full screen and pointer lock both move focus about.
   // Never preventDefault: the browser's own way out of full screen stays.
   window.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape' && e.key !== 'Esc') return;
     const el = document.activeElement;
     const typing = el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && el.type !== 'range' && el.type !== 'checkbox';
     if (typing) return;
+    // F: full screen on and off, as on YouTube and in browser games
+    if (e.code === 'KeyF' && !e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey &&
+        (isFull() || mode === 'walk' || ui.stage.contains(el) || document.pointerLockElement === ui.canvas)) {
+      e.preventDefault();
+      if (isFull()) exitFull(); else enterFull();
+      return;
+    }
+    if (e.key !== 'Escape' && e.key !== 'Esc') return;
     if (!isFull() && mode !== 'walk' && !ui.stage.contains(el) && document.pointerLockElement !== ui.canvas) return;
     onEscape();
   });
