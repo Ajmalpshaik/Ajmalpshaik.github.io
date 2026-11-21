@@ -59,10 +59,11 @@ export function start() {
     },
     onHud: () => setHud(!hudOn),
     onLevel: (i) => { ui.level.querySelector('span').textContent = i >= 0 && model ? model.storeys[i].name : 'Outside'; },
-    onCamera: (fp) => { settings.cam = fp ? 'first' : 'third'; save(); syncSettingsUI(); ui.cross.hidden = !fp; },
+    onCamera: (fp) => { settings.cam = fp ? 'first' : 'third'; save(); syncSettingsUI(); },
     onMinimap: (on) => { settings.minimap = on; save(); syncSettingsUI(); ui.stage.dataset.minimap = on ? 'on' : 'off'; },
     onCycle: () => { const keys = Object.keys(CHARACTERS); chooseCharacter(keys[(keys.indexOf(settings.char) + 1) % keys.length]); },
-    onEmote: (name) => emote(name),
+    onEmote: (name) => { emote(name); showEmotes(false); },
+    onEmotes: () => showEmotes(ui.stage.dataset.emotes !== 'on'),
     onAim: (aim) => showAim(aim),
   });
 
@@ -335,7 +336,6 @@ export function start() {
 
   function showAim(aim) {
     ui.tPort.setAttribute('aria-pressed', !!aim);
-    ui.cross.hidden = !(aim || walk.firstPerson);
     if (!aim) { ui.aim.hidden = true; return; }
     ui.look.hidden = true;
     ui.aim.hidden = false;
@@ -359,13 +359,13 @@ export function start() {
     const el = model.elements.get(id);
     if (!el) { ui.look.hidden = true; return; }
     ui.look.hidden = false;
-    ui.look.classList.toggle('fp', walk.firstPerson);
     ui.look.innerHTML = '';
+    // a game-style prompt by the crosshair: the key, then what it is
+    const k = document.createElement('kbd');
+    k.textContent = isTouch ? 'Inspect' : 'E';
     const b = document.createElement('b');
     b.textContent = el.cat;
-    const s = document.createElement('span');
-    s.textContent = isTouch ? 'Tap Inspect for its properties' : 'Press E for its properties';
-    ui.look.append(b, s);
+    ui.look.append(k, b);
   }
 
   // ------------------------------------------------------- section cuts
@@ -451,11 +451,12 @@ export function start() {
       loaded();
       if (model.colliderNote) toast(model.colliderNote, 6000);
       world.camera.fov = settings.fov;
+      walk.baseFov = Number(settings.fov);
       world.camera.updateProjectionMatrix();
       ui.props.hidden = true;
       ui.hud.hidden = false;
       ui.touch.hidden = !isTouch;
-      ui.cross.hidden = !walk.firstPerson;
+      ui.cross.hidden = false;
       nudgeKeys();
       showPause(!isTouch);
       // a phone held upright has almost no room left once the thumbs are on it
@@ -507,6 +508,7 @@ export function start() {
     lockPointer();
   });
   ui.back.addEventListener('click', () => setMode('bim'));
+  $('bvControls').addEventListener('click', () => openSide(ui.help, ui.helpBtn));
   function goTo(v) {
     if (!model) return;
     if (v === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(v));
@@ -648,7 +650,7 @@ export function start() {
   // first tap shows the pad, second tap goes there
   ui.tPort.addEventListener('click', () => { if (walk.aiming) walk.endAim(true); else walk.startAim(); });
   ui.tRun.addEventListener('click', () => { walk.run = !walk.run; ui.tRun.setAttribute('aria-pressed', walk.run); });
-  ui.tCam.addEventListener('click', () => { walk.setFirstPerson(!walk.firstPerson); settings.cam = walk.firstPerson ? 'first' : 'third'; ui.cross.hidden = !walk.firstPerson; save(); syncSettingsUI(); });
+  ui.tCam.addEventListener('click', () => { walk.setFirstPerson(!walk.firstPerson); settings.cam = walk.firstPerson ? 'first' : 'third'; save(); syncSettingsUI(); });
   ui.tLook.addEventListener('click', () => walk.hooks.onInspect(walk.lookId));   // same toggle as E
 
   // ---------------------------------------------------------- panels
@@ -720,7 +722,8 @@ export function start() {
     walk.autoLight = settings.torch;
     ui.stage.dataset.minimap = settings.minimap ? 'on' : 'off';
     ui.fps.hidden = !settings.fps;
-    if (mode === 'walk') { world.camera.fov = settings.fov; world.camera.updateProjectionMatrix(); ui.cross.hidden = !walk.firstPerson; }
+    walk.baseFov = Number(settings.fov);
+    if (mode === 'walk') { world.camera.fov = settings.fov; world.camera.updateProjectionMatrix(); }
     if (mode === 'bim') fitShadowToModel();
   }
 

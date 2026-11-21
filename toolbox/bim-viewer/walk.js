@@ -473,6 +473,9 @@ export class Walk {
     this.run = false;
     this.velocity.set(0, 0, 0);
     this._jumpWant = 0;
+    this.zoom = false;
+    this.freeLook = null;
+    this._lookBack = null;
     this.endAim(false);
   }
 
@@ -544,31 +547,37 @@ export class Walk {
     window.addEventListener('keydown', (e) => {
       if (!owns() || this.paused) return;      // Esc is the app's, and it is the only key a pause listens to
       const k = e.code;
-      if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight'].includes(k)) e.preventDefault();
+      // The keys the big PC games share: WASD, Shift sprint, Space jump,
+      // E interact, V first/third person, hold Alt to look around, F light,
+      // M map, B emotes. Alt is held back so the browser does not take it.
+      if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltRight'].includes(k)) e.preventDefault();
       if (e.repeat) return;
       this.keys.add(k);
       if (k === 'Space') this.jump();
-      else if (k === 'KeyC' || k === 'KeyV') { this.setFirstPerson(!this.firstPerson); this.hooks.onCamera && this.hooks.onCamera(this.firstPerson); }
+      else if (k === 'KeyV') { this.setFirstPerson(!this.firstPerson); this.hooks.onCamera && this.hooks.onCamera(this.firstPerson); }
+      else if (k === 'AltLeft' || k === 'AltRight') this.startFreeLook();
       else if (k === 'KeyF') { this.flashlight = !this.flashlight; this.autoLight = false; }
       else if (k === 'KeyM') { this.minimap = !this.minimap; this.hooks.onMinimap && this.hooks.onMinimap(this.minimap); }
       else if (k === 'KeyE') this.hooks.onInspect && this.hooks.onInspect(this.lookId);
+      else if (k === 'KeyB') this.hooks.onEmotes && this.hooks.onEmotes();
       else if (k === 'KeyH') this.hooks.onHud && this.hooks.onHud();
       else if (k === 'KeyR') this.spawnOutside();
-      else if (k === 'KeyQ') this.hooks.onCycle && this.hooks.onCycle();
       else if (k === 'KeyT') this.startAim();
       else if (EMOTE_KEYS[e.key]) this.hooks.onEmote ? this.hooks.onEmote(EMOTE_KEYS[e.key]) : this.playEmote(EMOTE_KEYS[e.key]);
     });
     window.addEventListener('keyup', (e) => {
       this.keys.delete(e.code);
       if (e.code === 'KeyT' && this.aiming) this.endAim(true);
+      if (e.code === 'AltLeft' || e.code === 'AltRight') { e.preventDefault(); this.endFreeLook(); }
     });
-    window.addEventListener('blur', () => this.keys.clear());
+    window.addEventListener('blur', () => { this.keys.clear(); this.zoom = false; this.endFreeLook(); });
 
     // mouse look: pointer lock when the browser allows it, plain drag when not
     let drag = null;
     c.addEventListener('pointerdown', (e) => {
       if (!this.active || this.paused || e.pointerType === 'touch') return;
       if (this.aiming && e.button === 2) { this.endAim(false); return; }      // right-click: never mind
+      if (e.button === 2) this.zoom = true;      // hold the right button: closer over the shoulder, like aiming
       if (document.pointerLockElement !== c && c.requestPointerLock) {
         try {
           const p = c.requestPointerLock();
@@ -577,7 +586,7 @@ export class Walk {
       }
       drag = { x: e.clientX, y: e.clientY };
     });
-    window.addEventListener('pointerup', () => { drag = null; });
+    window.addEventListener('pointerup', (e) => { drag = null; if (e.button === 2) this.zoom = false; });
     window.addEventListener('pointermove', (e) => {
       if (!this.active || this.paused || e.pointerType === 'touch') return;
       if (document.pointerLockElement === c) {
@@ -602,7 +611,24 @@ export class Walk {
     c.addEventListener('contextmenu', (e) => { if (this.active) e.preventDefault(); });
   }
 
+  // Hold Alt to look around without changing where you walk; let go and the
+  // view swings back behind you, the way PUBG does it
+  startFreeLook() {
+    if (this.freeLook) return;
+    this.freeLook = { yaw: this.yaw, pitch: this.pitch };
+    this._lookBack = null;
+  }
+  endFreeLook() {
+    if (!this.freeLook) return;
+    this._lookBack = this.freeLook;
+    this.freeLook = null;
+  }
+  get moveYaw() { return this.freeLook ? this.freeLook.yaw : this.yaw; }
+
   look(dx, dy) {
+    // a real move of the mouse takes over from the swing back; the zero-size
+    // moves some browsers send on their own do not
+    if (Math.abs(dx) + Math.abs(dy) > 3) this._lookBack = null;
     const s = 0.0023 * this.sensitivity;
     this.yaw -= dx * s;
     this.pitch = THREE.MathUtils.clamp(this.pitch - dy * s * (this.invertY ? -1 : 1), -1.25, 1.2);
@@ -657,7 +683,7 @@ export class Walk {
 
   _step(dt) {
     const { f, r, running, amount } = this._input();
-    const fwd = v1.set(Math.sin(this.yaw), 0, Math.cos(this.yaw));
+    const fwd = v1.set(Math.sin(this.moveYaw), 0, Math.cos(this.moveYaw));
     const right = v2.set(-fwd.z, 0, fwd.x);
     const want = v3.set(0, 0, 0).addScaledVector(fwd, f).addScaledVector(right, r);
     if (want.lengthSq() > 1) want.normalize();
@@ -743,11 +769,11 @@ export class Walk {
     const hs = Math.hypot(this.velocity.x, this.velocity.z);
     if (hs > 0.15) {
       // face where we are going (or where the camera looks, in first person)
-      const target = this.firstPerson ? this.yaw : Math.atan2(this.velocity.x, this.velocity.z);
+      const target = this.firstPerson ? this.moveYaw : Math.atan2(this.velocity.x, this.velocity.z);
       let d = target - body.rotation.y;
       d = Math.atan2(Math.sin(d), Math.cos(d));
       body.rotation.y += d * (1 - Math.exp(-12 * dt));
-    } else if (this.firstPerson) body.rotation.y = this.yaw;
+    } else if (this.firstPerson) body.rotation.y = this.moveYaw;
 
     const ch = this.char, A = ch.actions;
     let next;
@@ -785,6 +811,20 @@ export class Walk {
 
   _camera(dt) {
     const cam = this.world.camera;
+    // the view swinging back after a free look
+    if (this._lookBack) {
+      const b = this._lookBack, k = 1 - Math.exp(-12 * dt);
+      let d = b.yaw - this.yaw; d = Math.atan2(Math.sin(d), Math.cos(d));
+      this.yaw += d * k;
+      this.pitch += (b.pitch - this.pitch) * k;
+      if (Math.abs(d) < 0.002 && Math.abs(b.pitch - this.pitch) < 0.002) this._lookBack = null;
+    }
+    // right button held: a narrower view, like aiming down sights
+    const fovGoal = (this.baseFov || cam.fov) * (this.zoom ? 0.7 : 1);
+    if (this.baseFov && Math.abs(cam.fov - fovGoal) > 0.05) {
+      cam.fov += (fovGoal - cam.fov) * (1 - Math.exp(-14 * dt));
+      cam.updateProjectionMatrix();
+    }
     const head = v1.set(this.robot.position.x, this.robot.position.y + this.height * 0.92, this.robot.position.z);
     const fwd = v2.set(Math.sin(this.yaw), 0, Math.cos(this.yaw));
     if (this.firstPerson) {
@@ -795,14 +835,18 @@ export class Walk {
     }
     // aiming a teleport swings the camera over the right shoulder, so the
     // pad at the crosshair is never hidden behind the character
-    this._shoulder = (this._shoulder || 0) + ((this.aiming ? 0.85 : 0) - (this._shoulder || 0)) * (1 - Math.exp(-10 * dt));
+    // The camera rides over the right shoulder, as in Fortnite or PUBG, so
+    // the crosshair in the middle is never hidden behind the character;
+    // aiming a teleport or holding the right button moves it closer in.
+    const close = this.aiming || this.zoom;
+    this._shoulder = (this._shoulder ?? 0.7) + ((close ? 0.85 : 0.7) - (this._shoulder ?? 0.7)) * (1 - Math.exp(-10 * dt));
     head.addScaledVector(v3.set(-fwd.z, 0, fwd.x), this._shoulder);
     head.y += this._shoulder * 0.35;
     // a spring arm behind the shoulder, pulled in when a wall is in the way
     const elev = THREE.MathUtils.clamp(-this.pitch + 0.18, -0.35, 1.25);
     const dir = v3.copy(fwd).multiplyScalar(-Math.cos(elev)).addScaledVector(up, Math.sin(elev)).normalize();
     // a tall, narrow phone screen sees less to the sides: stand further back
-    let dist = this.distance * THREE.MathUtils.clamp(0.9 / cam.aspect, 1, 1.5);
+    let dist = this.distance * THREE.MathUtils.clamp(0.9 / cam.aspect, 1, 1.5) * (this.zoom ? 0.5 : 1);
     if (this.octree) {
       ray.set(head, dir);
       const hit = this.octree.rayIntersect(ray);
@@ -830,11 +874,19 @@ export class Walk {
     this.lookTimer -= dt;
     if (this.lookTimer > 0) return;
     this.lookTimer = 0.15;
-    // aim from the robot's eyes along the camera's line of sight
+    // along the crosshair: from the eyes in first person, from the camera,
+    // past the character, in third, so the prompt names what is under it
     const cam = this.world.camera;
-    const eye = v1.set(this.robot.position.x, this.robot.position.y + this.height * 0.92, this.robot.position.z);
-    this.raycaster.set(eye, cam.getWorldDirection(v2));
-    this.raycaster.near = this.firstPerson ? 0 : 0.35;
+    if (this.firstPerson) {
+      this.raycaster.set(v1.set(this.robot.position.x, this.robot.position.y + this.height * 0.92, this.robot.position.z), cam.getWorldDirection(v2));
+      this.raycaster.near = 0;
+      this.raycaster.far = 9;
+    } else {
+      const past = cam.position.distanceTo(this.robot.position);
+      this.raycaster.set(cam.position, cam.getWorldDirection(v2));
+      this.raycaster.near = Math.max(0, past - 0.6);
+      this.raycaster.far = past + 9;
+    }
     const hit = this.raycaster.intersectObjects(this.model.meshes(), false)[0];
     const id = hit ? this.model.idAt(hit) : null;
     if (id !== this.lookId) { this.lookId = id; this.hooks.onLook && this.hooks.onLook(id); }
