@@ -27,7 +27,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // checks stayed red for as long as such a page was on the site.
 //
 // Serving over HTTP is not a workaround for that, it is the more faithful test.
-// Root-relative paths (/favicon.svg), fetch, and response codes all behave the
+// Root-relative paths (/assets/site.css), fetch, and response codes all behave the
 // way they will on ajmalps.com, and none of them can be exercised over file://.
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',

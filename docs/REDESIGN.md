@@ -166,6 +166,8 @@ assets/heron.css        what the Heron pages add, including the markup
 assets/tool.css         maps the tool pages onto the system
 assets/toolbox.css      the tools' own controls
 assets/fonts/           Geist, Geist Mono, Instrument Serif (OFL)
+favicon.ico, assets/heron/favicon-64.png, apple-touch-180.png
+                        the site icon on every page: the Heron mark
 tools/sync_chrome.py    writes the bar and footer into every page; --check
 tools/check_site.py     static checks
 tools/check_browser.mjs the pages in a real browser, at four widths
