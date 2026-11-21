@@ -129,29 +129,19 @@ def render_card():
 
 
 def render_foot():
-    social = "\n".join(
-        f'          <a class="ghost" href="{href}" target="_blank" rel="noopener">{name}</a>'
-        for href, name, _ in SOCIAL
+    """A slim footer. The Contact button's card carries the full contact
+    details now; this line keeps them reachable without a script too."""
+    contact = " ".join(
+        [f'<a href="mailto:{EMAIL}">Email</a>']
+        + [f'<a href="{href}" target="_blank" rel="noopener">{name}</a>' for href, name, _ in SOCIAL]
     )
     links = " ".join(f'<a href="{href}">{label}</a>' for _, href, label in TABS)
     return f"""<!-- chrome:foot -->
 <footer class="foot" id="contact">
-  <div class="wrap">
-    <p class="eyebrow">Contact</p>
-    <h2 class="foot-h">Let&rsquo;s <em class="s">talk.</em></h2>
-    <div class="foot-grid">
-      <div>
-        <div class="mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy" type="button" data-copy="{EMAIL}">Copy</button></div>
-        <p class="say">Hiring, or want a tool built? Email is fastest, and I answer every message myself. Transferable QID with NOC, able to join within days.</p>
-        <div class="socials">
-{social}
-        </div>
-      </div>
-    </div>
-    <div class="legal">
-      <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
-      <nav aria-label="Footer">{links} <a href="#main">Back to top &uarr;</a></nav>
-    </div>
+  <div class="wrap foot-in">
+    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+    <nav aria-label="Contact">{contact}</nav>
+    <nav aria-label="Footer">{links} <a href="#main">Back to top &uarr;</a></nav>
   </div>
 </footer>
 <!-- /chrome:foot -->"""
