@@ -7,11 +7,9 @@
  * links do. The in-progress card sits pressed into the page from the start.
  */
 
-/* layout this page needs: four cards in one row on wide screens, room above
-   the second heading in a section, the Heron line at the end */
-@media (min-width: 1240px) { #browser-tools .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.sec-top.sub { margin-top: clamp(56px, 7vw, 100px); }
-.endline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding-top: clamp(24px, 3vw, 36px); border-top: 1px solid var(--line); }
+/* four cards in one row on wide screens, two on tablets */
+.cards.neu { grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+@media (min-width: 1100px) { .cards.neu { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* ---------- soft tool cards ---------- */
 .cards.neu {
@@ -19,10 +17,14 @@
   --neu-up: 10px 10px 24px rgba(0, 0, 0, .7), -6px -6px 16px rgba(255, 255, 255, .035),
     inset 1px 1px 0 rgba(255, 255, 255, .07), inset -1px -1px 0 rgba(0, 0, 0, .5);
   --neu-in: inset 6px 6px 14px rgba(0, 0, 0, .7), inset -5px -5px 12px rgba(255, 255, 255, .035);
-  gap: clamp(18px, 2vw, 28px);
+  gap: clamp(14px, 1.6vw, 22px);
 }
+/* short and calm: smaller title and text than the site's default card */
+.cards.neu .card .h3 { margin-top: 6px; font-size: 1.12rem; }
+.cards.neu .card p { font-size: 14px; line-height: 1.55; }
+.cards.neu .card .more { font-size: 13.5px; margin-top: auto; padding-top: 4px; }
 .cards.neu .card {
-  border: 0; border-radius: 26px;
+  gap: 10px; padding: clamp(18px, 1.8vw, 24px); border-radius: 22px; border: 0;
   background: var(--neu); box-shadow: var(--neu-up);
   transition: box-shadow .45s var(--ease), transform .6s var(--ease);
 }
@@ -33,16 +35,32 @@
 .cards.neu a.card:active { transform: scale(.99); }
 .cards.neu a.card:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
 
-/* the number reads as cut into the surface, not drawn on it */
-.cards.neu .card .idx { -webkit-text-stroke: 0; color: #121317; text-shadow: 1px 1px 0 rgba(255, 255, 255, .07), -1px -1px 1px rgba(0, 0, 0, .8); }
-
 /* chips: small pressed pills */
 .cards.neu .chip { border: 0; background: var(--neu); box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .65), inset -2px -2px 4px rgba(255, 255, 255, .04); }
 
 /* still to come: pressed into the page */
 .cards.neu .card.soon { background: #121317; box-shadow: var(--neu-in); }
 .cards.neu .card.soon::after { display: none; }
-.cards.neu .card.soon .idx { color: #101114; }
+
+/* ---------- Revit automation: four languages side by side ----------
+   Not links, so not cards: open columns split by hairlines. */
+.langs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.langs li { min-width: 0; padding: clamp(20px, 2.4vw, 30px) clamp(16px, 2vw, 26px) clamp(20px, 2.4vw, 30px) 0; }
+.langs li + li { padding-left: clamp(16px, 2vw, 26px); border-left: 1px solid var(--line); }
+.lang-k { display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-bottom: 14px; }
+.langs .h3 { font-size: 1.12rem; margin-bottom: 6px; }
+.langs p { color: var(--mute); font-size: 14px; line-height: 1.55; }
+@media (max-width: 900px) {
+  .langs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .langs li:nth-child(3) { padding-left: 0; border-left: 0; }
+  .langs li:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 520px) {
+  .langs { grid-template-columns: minmax(0, 1fr); }
+  .langs li, .langs li + li { padding-left: 0; padding-right: 0; border-left: 0; }
+  .langs li + li { border-top: 1px solid var(--line); }
+}
+#automation .note { margin-top: clamp(20px, 2.4vw, 28px); }
 
 @media (prefers-reduced-motion: reduce) {
   .cards.neu .card { transition: none; }
@@ -51,5 +69,4 @@
 @media print {
   .cards.neu .card, .cards.neu .card.soon { background: none; box-shadow: none; border: 1px solid #ccc; }
   .cards.neu .chip { box-shadow: none; border: 1px solid #ccc; }
-  .cards.neu .card .idx { color: #999; text-shadow: none; }
 }

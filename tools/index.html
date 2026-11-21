@@ -258,10 +258,6 @@
       <p class="eyebrow"><span>Tools</span></p>
       <h1 class="title">Built for real <em class="s">project work.</em></h1>
       <p class="lede">Tools I built because I needed them on real projects. The browser tools are free and <strong>run on your own device.</strong> Nothing is uploaded or tracked, and they work with no signal on site.</p>
-      <div class="btns">
-        <a class="pill" href="#browser-tools">Browser tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
-        <a class="ghost" href="#automation">Revit automation</a>
-      </div>
     </div>
   </header>
 
@@ -273,31 +269,27 @@
       </div>
       <div class="cards neu">
         <a class="card" href="/toolbox/crane-lift-calculator/" style="--tint: #c9a14a">
-          <span class="idx" aria-hidden="true">01</span>
           <div class="chips"><span class="chip">Lifting &middot; BS&nbsp;7121</span></div>
           <h3 class="h3">Crane Lift Calculator</h3>
-          <p>Sling tension on the BS&nbsp;7121 two-leg rule, ground bearing pressure, wind speed and boom length, with a printable record sheet.</p>
+          <p>Sling tension, ground pressure, wind speed and boom length, with a printable record sheet.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <a class="card" href="/toolbox/ar-viewer/" style="--tint: #20b8a6">
-          <span class="idx" aria-hidden="true">02</span>
           <div class="chips"><span class="chip">Revit &middot; AR &middot; USDZ</span></div>
           <h3 class="h3">AR Viewer</h3>
-          <p>Turn a Revit FBX export into a USDZ file and see the model at real size on an iPhone or iPad. The model never leaves your device.</p>
+          <p>Revit FBX to USDZ. See the model at real size on iPhone or iPad.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <a class="card" href="/toolbox/bim-viewer/" style="--tint: #3a6bff">
-          <span class="idx" aria-hidden="true">03</span>
           <div class="chips"><span class="chip">IFC &middot; Walkthrough</span></div>
           <h3 class="h3">BIM Viewer</h3>
-          <p>Open a Revit IFC export, check properties, cut plans and sections, and measure. Then walk through the building, game style.</p>
+          <p>Open a Revit IFC, cut sections, measure, then walk through it.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <div class="card soon">
-          <span class="idx" aria-hidden="true">04</span>
           <div class="chips"><span class="chip">In progress</span></div>
           <h3 class="h3">More on the way</h3>
-          <p>Duct and pipe sizing, drainage fixture units, an MEP unit converter and an ISO&nbsp;19650 file name builder. Each goes up when I trust the numbers.</p>
+          <p>Duct and pipe sizing, drainage fixture units, an MEP unit converter, ISO&nbsp;19650 file names.</p>
         </div>
       </div>
     </div>
@@ -309,35 +301,12 @@
         <h2 class="h2">Revit automation, <em class="s">in four languages.</em></h2>
         <p class="lede">The repeat work goes to the tools. <strong>The team&rsquo;s hours go to coordination.</strong></p>
       </div>
-      <ul class="rows">
-        <li class="row">
-          <div class="row-k"><span class="n">01</span><h3 class="h3">C# add-ins</h3></div>
-          <div class="row-v"><p>Ribbon tools on the Revit API. One codebase for every Revit release.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">02</span><h3 class="h3">pyRevit and Python</h3></div>
-          <div class="row-v"><p>The fast path for a tool needed this week.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">03</span><h3 class="h3">Dynamo</h3></div>
-          <div class="row-v"><p>Bulk parameters, take-offs and checks a modeller can adjust.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">04</span><h3 class="h3">AutoLISP</h3></div>
-          <div class="row-v"><p>Where it all started, and still right for a DWG office.</p></div>
-        </li>
+      <ul class="langs">
+        <li><span class="lang-k">C#</span><h3 class="h3">Revit add-ins</h3><p>Ribbon tools on the Revit API. One codebase for every Revit release.</p></li>
+        <li><span class="lang-k">Python</span><h3 class="h3">pyRevit tools</h3><p>The fast path for a tool needed this week.</p></li>
+        <li><span class="lang-k">Dynamo</span><h3 class="h3">Dynamo graphs</h3><p>Bulk parameters, take-offs and checks a modeller can adjust.</p></li>
+        <li><span class="lang-k">AutoLISP</span><h3 class="h3">AutoCAD routines</h3><p>Where it all started, and still right for a DWG office.</p></li>
       </ul>
-
-      <div class="sec-top sub">
-        <h3 class="h2">Tools a team <em class="s">can rely on.</em></h3>
-        <p class="eyebrow">How they ship</p>
-      </div>
-      <ol class="steps">
-        <li><b>An installer, not an email</b><span>The whole team runs the same version.</span></li>
-        <li><b>Every Revit release</b><span>One codebase, no project left behind.</span></li>
-        <li><b>Your standard</b><span>Built around your templates and naming.</span></li>
-        <li><b>One undo</b><span>Every change is one step back.</span></li>
-      </ol>
       <p class="note">Want one built? <a href="#contact">Tell me the job</a> you are tired of doing. Remote, scoped up front, handed over with documentation. If it is not worth building, I will say so.</p>
     </div>
   </section>
@@ -355,14 +324,6 @@
     </div>
   </section>
 
-  <section class="sec" id="heron-note" data-track="heron-note">
-    <div class="wrap">
-      <div class="endline">
-        <p class="lede">Looking for Heron Tools or Heron AI? Heron has its own tab.</p>
-        <a class="ghost" href="/heron/">Go to Heron <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-      </div>
-    </div>
-  </section>
 </main>
 <!-- chrome:foot -->
 <footer class="foot" id="contact">
