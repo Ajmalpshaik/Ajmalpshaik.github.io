@@ -338,11 +338,22 @@ for (const page of PAGES) {
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, intro: true });
   await localThree(ctx);
+  // The welcome is what this checks, so the forest under it is left out. Here it
+  // is drawn in software, a frame can hold the page for over a second, and the
+  // polling below then missed a welcome that did play (CI, 2026-11-21). The
+  // welcome does not need assets/forest.js; it is also noted the moment it
+  // starts, so a slow poll cannot miss it.
+  await ctx.route(/\/assets\/forest\.js$/, (route) => route.abort());
+  await ctx.addInitScript(() => {
+    new MutationObserver(() => { if (document.documentElement && document.documentElement.classList.contains('intro-run')) window.__introSeen = true; })
+      .observe(document, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  });
   const p = await ctx.newPage();
   p.on('pageerror', (e) => fail(`welcome: uncaught script error — ${e.message}`));
-  await p.goto(url('index.html'));
-  const shown = await p.waitForFunction(() => document.documentElement.classList.contains('intro-run'), null, { timeout: 6000 }).then(() => true, () => false);
+  await p.goto(url('index.html'), { waitUntil: 'commit' });
+  const shown = await p.waitForFunction(() => window.__introSeen === true, null, { timeout: 12000 }).then(() => true, () => false);
   if (!shown) fail('welcome: a first visit to the home page does not play it');
+  else if (!(await p.$('#introSkip'))) fail('welcome: it ended before Skip could be tried');
   else {
     await p.click('#introSkip');
     const gone = await p.waitForFunction(() => !document.getElementById('welcome') && document.body.style.overflow === '', null, { timeout: 6000 }).then(() => true, () => false);
