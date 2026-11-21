@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
+import { retargetClip } from 'three/addons/utils/SkeletonUtils.js';
 
 const RADIUS = 0.3;
 const GRAVITY = 24;
@@ -40,6 +41,15 @@ export const CHARACTERS = {
     integrity: 'sha384-kOkReSPjTiovmkL/eXerDILZPs35SVd7LbTVhffcQ5gm+fpyBqFYV/f1QYlr9GgB',
     clips: { idle: 'idle', walk: 'walk', run: 'run' },
     additive: { Yes: 'agree', No: 'headShake' },     // layered over whatever it is doing
+  },
+  // Michelle comes with a dance and nothing else, so she borrows X Bot's
+  // idle, walk and run: both are Mixamo rigs, and retargeting copies the
+  // moves bone by bone, the way three.js's retargeting example does
+  michelle: {
+    name: 'Michelle', url: THREE_MODELS + 'Michelle.glb', height: 1.7, turn: 0,
+    integrity: 'sha384-MFuf7YYakJ9ipl3IDTmfNtuwyS8RgJOxi/PNEv2/trVAIlxjqlMHsayuHlGkf4LF',
+    borrow: 'xbot', clips: { idle: 'idle', walk: 'walk', run: 'run' },
+    emotes: { Dance: 'SambaDance' },
   },
 };
 
@@ -330,15 +340,65 @@ export class Walk {
 
   hasEmote(name) { return !!(this.char && (this.char.emotes[name] || this.char.additive[name])); }
 
-  async _loadCharacter(def) {
+  // a fresh copy each time: a character's scene is moved into the rig, so
+  // another character borrowing its moves needs its own untouched one
+  async _fetchGltf(def) {
     const loader = new GLTFLoader();
-    let gltf;
-    if (def.integrity) {
-      const res = await fetch(def.url, { integrity: def.integrity });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      gltf = await loader.parseAsync(await res.arrayBuffer(), '');
-    } else {
-      gltf = await loader.loadAsync(def.url);
+    if (!def.integrity) return loader.loadAsync(def.url);
+    const res = await fetch(def.url, { integrity: def.integrity });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return loader.parseAsync(await res.arrayBuffer(), '');
+  }
+
+  async _loadCharacter(def) {
+    const gltf = await this._fetchGltf(def);
+    let animRoot = gltf.scene;
+    if (def.borrow) {
+      const src = await this._fetchGltf(CHARACTERS[def.borrow]);
+      const skin = (root) => { let m = null; root.traverse((o) => { if (!m && o.isSkinnedMesh) m = o; }); return m; };
+      const target = skin(gltf.scene), source = skin(src.scene);
+      if (!target || !source) throw new Error('no skeleton to copy moves onto');
+      // the source is its whole scene, not just its skeleton: retargetClip
+      // poses it frame by frame and only a scene updates its bones' matrices
+      src.scene.skeleton = source.skeleton;
+      // and both sides are their whole scenes, so the moves are copied in the
+      // same upright frame, whatever each file does inside it
+      gltf.scene.skeleton = target.skeleton;
+      gltf.scene.updateMatrixWorld(true);
+      src.scene.updateMatrixWorld(true);
+      const want = new Set(Object.values(def.clips));
+      // same rig, same bone names: each bone copies the one called the same
+      // (retargetClip needs the map spelled out, or it copies nothing)
+      const names = Object.fromEntries(target.skeleton.bones.map((b) => [b.name, b.name]));
+      // The two files point their bones differently, so copying a bone's
+      // turn as it is would bend her the wrong way. In the rest pose, each
+      // pair of bones differs by a fixed turn; adding it back keeps her own rest
+      // pose as the starting point and copies only X Bot's movement.
+      // (measured as the files load, in their rest pose: Skeleton.pose() would
+      // stack the armature's own turn onto the root bone a second time)
+      gltf.scene.updateMatrixWorld(true); src.scene.updateMatrixWorld(true);
+      const localOffsets = {};
+      const qs = new THREE.Quaternion(), qt = new THREE.Quaternion();
+      for (const b of target.skeleton.bones) {
+        const sb = source.skeleton.getBoneByName(b.name);
+        if (!sb) continue;
+        sb.getWorldQuaternion(qs); b.getWorldQuaternion(qt);
+        localOffsets[b.name] = new THREE.Matrix4().makeRotationFromQuaternion(qs.invert().multiply(qt));
+      }
+      for (const clip of src.animations) {
+        if (!want.has(clip.name)) continue;
+        const c = retargetClip(gltf.scene, src.scene, clip, { hip: 'mixamorigHips', hipInfluence: new THREE.Vector3(0, 1, 0), names, localOffsets });
+        c.name = clip.name;
+        gltf.animations.push(c);
+      }
+      // retargeted clips drive the skinned mesh's bones directly
+      animRoot = target;
+      for (const c of gltf.animations) {
+        if (want.has(c.name)) continue;
+        // the model's own clips are written against the scene: rename their
+        // tracks so they find the same bones from the skinned mesh
+        c.tracks.forEach((t) => { const [node, prop] = [t.name.slice(0, t.name.lastIndexOf('.')), t.name.slice(t.name.lastIndexOf('.') + 1)]; t.name = `.bones[${node}].${prop}`; });
+      }
     }
     const model = gltf.scene;
     model.rotation.y = def.turn;      // every character faces +Z once in the rig
@@ -360,7 +420,7 @@ export class Walk {
       }
     });
 
-    const mixer = new THREE.AnimationMixer(model);
+    const mixer = new THREE.AnimationMixer(def.borrow ? animRoot : model);
     const clips = Object.fromEntries(gltf.animations.map((c) => [c.name, c]));
     const action = (name, once) => {
       if (!clips[name]) return null;
@@ -412,6 +472,7 @@ export class Walk {
     this.stick.set(0, 0);
     this.run = false;
     this.velocity.set(0, 0, 0);
+    this._jumpWant = 0;
     this.endAim(false);
   }
 
@@ -547,8 +608,18 @@ export class Walk {
     this.pitch = THREE.MathUtils.clamp(this.pitch - dy * s * (this.invertY ? -1 : 1), -1.25, 1.2);
   }
 
+  // A press counts for a short while, the way games do it: pressed just
+  // before landing it jumps on landing, and just after stepping off a stair
+  // or a kerb it still jumps. Without this, walking over anything uneven
+  // swallows the press, because the feet leave the floor for a frame.
   jump() {
-    if (!this.active || !this.onFloor) return;
+    if (!this.active) return;
+    this._jumpWant = 0.18;
+  }
+
+  _doJump() {
+    this._jumpWant = 0;
+    this._coyote = 0;
     this.velocity.y = JUMP;
     this.onFloor = false;
     this.airTime = 0.2;
@@ -600,8 +671,13 @@ export class Walk {
     if (this.onFloor && this.velocity.y <= 0) this.velocity.y = -2;   // stay stuck to stairs going down
     else this.velocity.y -= GRAVITY * dt;
 
+    if (this._jumpWant > 0) {
+      if (this.onFloor || this._coyote > 0) this._doJump();
+      else this._jumpWant -= dt;
+    }
     this.collider.translate(v1.copy(this.velocity).multiplyScalar(dt));
     this._collide();
+    this._coyote = this.onFloor ? 0.14 : Math.max(0, (this._coyote || 0) - dt);
     if (this._blocked && this.onFloor && amount > 0) this._stepUp(want);
     if (!this.onFloor) this.airTime += dt; else this.airTime = 0;
 
