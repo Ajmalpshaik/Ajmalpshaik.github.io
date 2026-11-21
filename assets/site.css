@@ -123,46 +123,61 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .mark { font-weight: 600; font-size: 17px; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 10px; justify-self: start; }
 .mark i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .nav .pill { justify-self: end; }
+/* Contact in the bar: the same soft raised pill as the selected tab, pressed in
+   under the pointer. A solid colour, so the card it grows into (assets/site.js)
+   starts from it. */
+.nav .pill {
+  background: #1f2024; color: var(--fg);
+  box-shadow: 4px 4px 10px rgba(0,0,0,.65), -3px -3px 8px rgba(255,255,255,.06), inset 1px 1px 0 rgba(255,255,255,.07);
+  transition: transform .4s var(--ease), background .3s, box-shadow .3s var(--ease);
+}
+.nav .pill:hover { background: #1f2024; box-shadow: inset 3px 3px 7px rgba(0,0,0,.7), inset -3px -3px 7px rgba(255,255,255,.05); }
 
-/* tabs: a glass capsule, and one highlight that glides to the tab under the pointer */
+/* tabs: a soft, neumorphic capsule pressed into the bar, and one raised
+   highlight that glides to the tab under the pointer (assets/site.js) */
 .tabs {
-  position: relative; display: flex; gap: 2px; padding: 4px; border-radius: 999px;
-  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 10px 30px rgba(0,0,0,.18);
-  transition: background .5s var(--ease), border-color .5s var(--ease), box-shadow .5s var(--ease);
+  position: relative; display: flex; gap: 2px; padding: 5px; border-radius: 999px;
+  background: #121316; border: 0;
+  box-shadow: inset 3px 3px 7px rgba(0,0,0,.7), inset -3px -3px 7px rgba(255,255,255,.045), 0 0 0 1px rgba(255,255,255,.03);
+  transition: background .5s var(--ease), box-shadow .5s var(--ease);
 }
 .tabs li { position: relative; z-index: 1; }
 .tabs li.tab-ind {
-  position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 0; width: 0; border-radius: 999px; pointer-events: none;
-  background: rgba(255,255,255,.12); opacity: 0;
+  position: absolute; z-index: 0; top: 5px; bottom: 5px; left: 0; width: 0; border-radius: 999px; pointer-events: none;
+  background: #18191d; box-shadow: 3px 3px 7px rgba(0,0,0,.55), -2px -2px 6px rgba(255,255,255,.04); opacity: 0;
   transition: transform .55s cubic-bezier(.2, .9, .25, 1), width .55s cubic-bezier(.2, .9, .25, 1), background .35s ease, box-shadow .35s ease, opacity .25s ease;
 }
 .tabs li.tab-ind.instant { transition: background .35s ease, box-shadow .35s ease, opacity .25s ease; }
-.tabs a { display: inline-flex; align-items: center; padding: 9px 18px; border-radius: 999px; font-size: 14.5px; font-weight: 500; letter-spacing: -0.005em; color: rgba(245,245,247,.72); transition: color .35s ease; }
+.tabs a { display: inline-flex; align-items: center; padding: 9px 18px; border-radius: 999px; font-size: 14.5px; font-weight: 500; letter-spacing: -0.005em; color: rgba(245,245,247,.66); transition: color .35s ease; }
 .tabs a.lit { color: var(--fg); }
-.tabs .tab-ind[data-mode="sel"] { background: var(--fg); box-shadow: 0 6px 18px rgba(0,0,0,.25); }
-.tabs .tab-ind[data-mode="sel"] ~ li a.lit { color: #000; }
+.tabs .tab-ind[data-mode="sel"] {
+  background: linear-gradient(145deg, #25262b 0%, #1a1b1f 100%);
+  box-shadow: 4px 4px 10px rgba(0,0,0,.65), -3px -3px 8px rgba(255,255,255,.06), inset 1px 1px 0 rgba(255,255,255,.07);
+}
 /* with no script, the current page still reads as selected */
-.no-js .tabs a[aria-current="page"] { background: var(--fg); color: #000; }
+.no-js .tabs a[aria-current="page"] { background: linear-gradient(145deg, #25262b 0%, #1a1b1f 100%); box-shadow: 4px 4px 10px rgba(0,0,0,.65), -3px -3px 8px rgba(255,255,255,.06); color: var(--fg); }
 
-/* the light bar, over the home page's fog */
+/* the light bar, over the fog: the same soft shapes in fog grey */
 .nav.light { color: #0F1114; }
-.nav.light .tabs { background: rgba(255,255,255,.34); border-color: rgba(15,17,20,.1); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 10px 30px rgba(15,17,20,.08); }
-.nav.light .tabs a { color: rgba(15,17,20,.66); }
+.nav.light .tabs { background: #c9cdd1; box-shadow: inset 3px 3px 7px rgba(118,124,131,.5), inset -3px -3px 7px rgba(255,255,255,.75), 0 0 0 1px rgba(255,255,255,.25); }
+.nav.light .tabs a { color: rgba(15,17,20,.62); }
 .nav.light .tabs a.lit { color: #0F1114; }
-.nav.light .tabs .tab-ind { background: rgba(15,17,20,.08); }
-.nav.light .tabs .tab-ind[data-mode="sel"] { background: #0F1114; box-shadow: 0 6px 18px rgba(15,17,20,.2); }
-.nav.light .tabs .tab-ind[data-mode="sel"] ~ li a.lit { color: #fff; }
-.nav.light .pill { background: #0F1114; color: #fff; }
+.nav.light .tabs .tab-ind { background: #cfd3d7; box-shadow: 3px 3px 7px rgba(118,124,131,.42), -3px -3px 7px rgba(255,255,255,.7); }
+.nav.light .tabs .tab-ind[data-mode="sel"] { background: linear-gradient(145deg, #dde1e5 0%, #c9cdd1 100%); box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85); }
+/* over the fog Contact is a fog-light pill, and the card it grows into is light too (.cbox.light) */
+.nav.light .pill { background: #d3d7db; color: #0F1114; box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85), inset 1px 1px 0 rgba(255,255,255,.6); }
+.nav.light .pill:hover { background: #d3d7db; box-shadow: inset 3px 3px 7px rgba(118,124,131,.5), inset -3px -3px 7px rgba(255,255,255,.75); }
 .nav.light .burger { color: #0F1114; border-color: rgba(15,17,20,.16); background: rgba(255,255,255,.3); }
 .nav.light.solid { background: rgba(206,209,212,.6); border-color: rgba(15,17,20,.08); }
 .nav.light :focus-visible { outline-color: #0F1114; }
 
-/* Heron wears its own colours, only while it is pointed at or selected */
+/* Heron wears its own colours, only while it is pointed at or selected: a raised orange pill */
 .tabs .tab-ind.heron, .nav.light .tabs .tab-ind.heron, .nav.light .tabs .tab-ind.heron[data-mode="sel"] {
   background: linear-gradient(135deg, var(--heron) 0%, var(--heron-light) 100%);
-  box-shadow: 0 8px 26px rgba(253,100,26,.42), inset 0 1px 0 rgba(255,255,255,.35);
+  box-shadow: 4px 4px 12px rgba(0,0,0,.5), -3px -3px 8px rgba(255,255,255,.06), 0 6px 22px rgba(253,100,26,.35), inset 1px 1px 0 rgba(255,255,255,.35);
+}
+.nav.light .tabs .tab-ind.heron, .nav.light .tabs .tab-ind.heron[data-mode="sel"] {
+  box-shadow: 4px 4px 10px rgba(108,114,121,.45), -4px -4px 10px rgba(255,255,255,.8), 0 6px 20px rgba(253,100,26,.3), inset 1px 1px 0 rgba(255,255,255,.35);
 }
 .tabs .tab-ind.heron ~ li a.lit, .nav.light .tabs .tab-ind.heron ~ li a.lit, .nav.light .tabs .tab-ind.heron[data-mode="sel"] ~ li a.lit { color: #0F0F10; }
 .no-js .tabs a[data-tab="heron"][aria-current="page"] { background: linear-gradient(135deg, var(--heron), var(--heron-light)); color: #0F0F10; }
@@ -185,6 +200,9 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .overlay a.big[aria-current="page"] small { color: currentColor; }
 .overlay a.big.heron:hover, .overlay a.big.heron[aria-current="page"] { color: var(--heron); }
 .overlay .pill { margin-top: auto; align-self: flex-start; }
+/* the phone menu's Contact: the same dark raised pill, so the card grows out of a dark shape */
+.overlay .pill { background: #1f2024; color: var(--fg); box-shadow: 4px 4px 10px rgba(0,0,0,.65), -3px -3px 8px rgba(255,255,255,.06), inset 1px 1px 0 rgba(255,255,255,.07); }
+.overlay .pill:hover { background: #1f2024; }
 .overlay .close { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 13px); right: max(20px, env(safe-area-inset-right, 0px)); display: inline-flex; }
 @media (max-width: 900px) {
   .nav-tabs, .nav .pill { display: none; }
@@ -198,23 +216,31 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
   .no-js .burger { display: none; }
 }
 
-/* the contact card: the Contact button grows into it (assets/site.js) */
-.cbox { position: fixed; inset: 0; z-index: 85; }
+/* the contact card: the Contact button grows into it (assets/site.js).
+   Soft, neumorphic: one surface colour, raised parts lit from the top left and
+   shaded to the bottom right, pressed parts the other way round. */
+.cbox {
+  position: fixed; inset: 0; z-index: 85;
+  --neu: #1b1c20;
+  --neu-up: 6px 6px 14px rgba(0, 0, 0, .62), -5px -5px 12px rgba(255, 255, 255, .045);
+  --neu-in: inset 4px 4px 10px rgba(0, 0, 0, .62), inset -4px -4px 9px rgba(255, 255, 255, .04);
+}
 .cbox[hidden] { display: none; }
 .cbox-bg { position: absolute; inset: 0; background: rgba(5, 5, 6, .46); -webkit-backdrop-filter: blur(10px) saturate(1.2); backdrop-filter: blur(10px) saturate(1.2); }
 .cbox-card {
   position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(48px, env(safe-area-inset-right, 0px));
-  width: min(376px, calc(100vw - 32px)); overflow: hidden; border-radius: 24px;
-  background: #131316; border: 1px solid var(--line-2);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .06);
+  width: min(376px, calc(100vw - 32px)); overflow: hidden; border-radius: 28px;
+  background: var(--neu);
+  box-shadow: 24px 24px 56px rgba(0, 0, 0, .66), -14px -14px 40px rgba(255, 255, 255, .035),
+    inset 1px 1px 0 rgba(255, 255, 255, .07), inset -1px -1px 0 rgba(0, 0, 0, .45);
 }
-.cbox-in { position: relative; padding: 24px 24px 20px; }
+.cbox-in { position: relative; padding: 24px 24px 20px; max-height: calc(100vh - 24px); max-height: calc(100svh - 24px); overflow-y: auto; overscroll-behavior: contain; }
 .cbox-x {
-  position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%;
-  border: 1px solid var(--line-2); background: rgba(255, 255, 255, .04); color: var(--fg); display: grid; place-items: center; cursor: pointer;
-  transition: background .3s, transform .4s var(--ease);
+  position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%;
+  border: 0; background: var(--neu); box-shadow: var(--neu-up); color: var(--fg); display: grid; place-items: center; cursor: pointer;
+  transition: box-shadow .3s var(--ease), transform .4s var(--ease);
 }
-.cbox-x:hover { background: rgba(255, 255, 255, .1); transform: rotate(90deg); }
+.cbox-x:hover { box-shadow: var(--neu-in); transform: rotate(90deg); }
 .cbox-x svg { width: 14px; height: 14px; }
 .cbox-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-right: 48px; }
 .cbox-live { display: inline-flex; align-items: center; gap: 8px; color: #c9f2d8; }
@@ -222,24 +248,48 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .cbox-h { font-size: clamp(1.7rem, 2.6vw, 2.15rem); line-height: 1; letter-spacing: -0.045em; margin-top: 14px; }
 .cbox-h em.s { font-size: 1.05em; }
 .cbox-say { color: var(--mute); font-size: 14px; margin-top: 10px; max-width: 34ch; }
+/* the address sits in a pressed well, its Copy button raised out of it */
 .cbox-mail {
-  margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
-  padding: 9px 9px 9px 14px; border-radius: 14px; background: rgba(255, 255, 255, .04); border: 1px solid var(--line);
+  margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 8px 8px 8px 16px; border-radius: 16px; background: var(--neu); box-shadow: var(--neu-in);
   font-size: .95rem; font-weight: 500; letter-spacing: -0.02em;
 }
 .cbox-mail a { overflow-wrap: anywhere; text-decoration: none; }
-.cbox-links { margin-top: 6px; }
+.cbox .copy { border: 0; background: var(--neu); box-shadow: var(--neu-up); padding: 9px 14px; transition: box-shadow .25s var(--ease); }
+.cbox .copy:hover { background: var(--neu); box-shadow: 3px 3px 8px rgba(0, 0, 0, .6), -3px -3px 7px rgba(255, 255, 255, .045); }
+.cbox .copy:active { box-shadow: var(--neu-in); }
+/* each link a raised tile that presses in under the pointer */
+.cbox-links { margin-top: 18px; display: grid; gap: 10px; }
 .cbox-links a {
   display: grid; grid-template-columns: minmax(0, 1fr) auto 16px; align-items: center; gap: 12px;
-  padding: 11px 4px; border-bottom: 1px solid var(--line); text-decoration: none; font-size: 15px; transition: padding .35s var(--ease), color .3s;
+  padding: 12px 14px; border-radius: 16px; background: var(--neu); box-shadow: var(--neu-up);
+  text-decoration: none; font-size: 15px; transition: box-shadow .3s var(--ease), color .3s;
 }
-.cbox-links li:last-child a { border-bottom: 0; }
-.cbox-links a:hover { padding-left: 10px; }
+.cbox-links a:hover { box-shadow: var(--neu-in); }
 .cbox-links b { font-weight: 500; }
 .cbox-links span { font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; color: var(--mute); }
 .cbox-links svg { width: 14px; height: 14px; color: var(--mute); transition: transform .35s var(--ease), color .3s; }
 .cbox-links a:hover svg { color: var(--fg); transform: translate(2px, -2px); }
-.cbox-note { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--mute); font-size: 12.5px; }
+.cbox-note { margin-top: 18px; color: var(--mute); font-size: 12.5px; }
+/* opened from the light bar over the fog: the same card in fog greys, so it
+   grows light out of the light Contact pill (assets/site.js sets .light) */
+.cbox.light {
+  --neu: #d3d7db;
+  --neu-up: 6px 6px 14px rgba(108, 114, 121, .5), -5px -5px 12px rgba(255, 255, 255, .85);
+  --neu-in: inset 4px 4px 10px rgba(108, 114, 121, .5), inset -4px -4px 9px rgba(255, 255, 255, .8);
+}
+.cbox.light .cbox-bg { background: rgba(198, 202, 206, .3); }
+.cbox.light .cbox-card {
+  color: #0F1114;
+  box-shadow: 24px 24px 56px rgba(40, 46, 52, .35), -14px -14px 40px rgba(255, 255, 255, .45),
+    inset 1px 1px 0 rgba(255, 255, 255, .7), inset -1px -1px 0 rgba(108, 114, 121, .25);
+}
+.cbox.light .eyebrow, .cbox.light .cbox-links span, .cbox.light .cbox-links svg, .cbox.light .cbox-note { color: #4A4F55; }
+.cbox.light .cbox-say { color: #3B4046; }
+.cbox.light .cbox-live { color: #0F6B39; }
+.cbox.light .cbox-x, .cbox.light .copy, .cbox.light .cbox-links a:hover svg { color: #0F1114; }
+.cbox.light .copy:hover { box-shadow: 3px 3px 8px rgba(108, 114, 121, .45), -3px -3px 7px rgba(255, 255, 255, .8); }
+.cbox.light :focus-visible { outline-color: #0F1114; }
 @media (max-width: 900px) {
   .cbox-card { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); width: auto; border-radius: 26px; }
   .cbox-in { padding: 22px 18px 16px; }
@@ -352,13 +402,20 @@ a.card:hover .more svg { transform: translateX(4px); }
 .faq { border-top: 1px solid var(--line); }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary {
-  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px;
-  padding: clamp(18px, 2.2vw, 26px) 0; font-size: clamp(1.05rem, 1.4vw, 1.3rem); font-weight: 500; letter-spacing: -0.02em;
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  padding: 15px 0; font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em; transition: color .3s;
 }
+.faq summary h3 { font: inherit; letter-spacing: inherit; }
+.faq summary:hover { color: #fff; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: ""; flex: none; width: 12px; height: 12px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-4px); transition: transform .4s var(--ease); }
+.faq summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--mute); border-bottom: 1.5px solid var(--mute); transform: rotate(45deg) translateY(-3px); transition: transform .4s var(--ease); }
 .faq details[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
-.faq .ans { padding: 0 0 24px; color: var(--body); max-width: 70ch; }
+.faq .ans { padding: 0 0 18px; color: var(--body); font-size: 15px; max-width: 62ch; }
+/* a heading on the left and its list on the right, from 900px up (the FAQ) */
+@media (min-width: 900px) {
+  .wrap.split { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 24px 48px; align-items: start; }
+  .wrap.split > .sec-top { margin-bottom: 0; }
+}
 .faq .ans p + p { margin-top: .7em; }
 
 /* more: a folded block of detail */

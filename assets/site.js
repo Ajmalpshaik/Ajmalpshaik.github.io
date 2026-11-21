@@ -162,6 +162,8 @@
       lastFocus = document.activeElement;
       var fromRect = shown(from), fromBg = from ? getComputedStyle(from).backgroundColor : '';
       source = from;
+      // from the light bar over the fog the card is light too, so it grows out of the pill in one colour
+      cbox.classList.toggle('light', !!(from && from.closest && from.closest('.nav.light')));
       closeMenu();
       cbox.hidden = false;
       document.body.style.overflow = 'hidden';
