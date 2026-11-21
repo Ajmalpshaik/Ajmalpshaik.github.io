@@ -1,6 +1,6 @@
 /* ajmalps.com - the browser tools' controls. Loaded by every tool page, after
-   assets/site.css and assets/tool.css, so the tools wear the site's one dark
-   look: panels on #0D0D0F and #151518, hairline edges, white for what matters.
+   assets/site.css and assets/tool.css, so the tools wear the site's one light
+   look: soft raised fog panels, pressed fields, dark ink for what matters.
 
    Surface tokens. The names are older than the look; the values are the
    site.css panels. A card is --neu-surface, the field or value box inside it
@@ -9,15 +9,15 @@
 :root{
   --muted:var(--body,#B9B9BE);
   --hairline:var(--line,rgba(255,255,255,.09));
-  --blue:var(--fg,#F5F5F7);   /* the tools' accent: white, like the rest of the site (the name is historical) */
-  --glass:var(--bg-2,#0D0D0F);
-  --glass-border:var(--line,rgba(255,255,255,.09));
-  --neu-surface:var(--bg-2,#0D0D0F);
-  --neu-raised:var(--bg-3,#151518);
-  --neu-out:0 0 0 1px var(--line,rgba(255,255,255,.09));
-  --neu-out-sm:0 0 0 1px var(--line,rgba(255,255,255,.09));
-  --neu-hover:0 0 0 1px var(--line-2,rgba(255,255,255,.16)),0 18px 40px rgba(0,0,0,.5);
-  --neu-in:inset 0 0 0 1px var(--line,rgba(255,255,255,.09));
+  --blue:var(--fg,#0F1114);   /* the tools' accent: the site's ink (the name is historical) */
+  --glass:var(--bg,#d3d7db);
+  --glass-border:transparent;
+  --neu-surface:var(--bg,#d3d7db);
+  --neu-raised:var(--bg,#d3d7db);
+  --neu-out:8px 8px 20px rgba(108,114,121,.4),-6px -6px 16px rgba(255,255,255,.8);
+  --neu-out-sm:3px 3px 7px rgba(108,114,121,.4),-3px -3px 7px rgba(255,255,255,.75);
+  --neu-hover:12px 12px 26px rgba(108,114,121,.45),-8px -8px 20px rgba(255,255,255,.85);
+  --neu-in:inset 3px 3px 7px rgba(118,124,131,.45),inset -3px -3px 7px rgba(255,255,255,.72);
 }
 
 /* ============ Toolbox landing ============ */
@@ -58,7 +58,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .tool-note.warn b{color:#F6D58E}
 
 /* ============ Calculator ============ */
-.calc{--c-ok:#4ade80;--c-bad:#f87171;--c-warn:#fbbf24}
+/* pass, fail and caution, dark enough to read on the fog */
+.calc{--c-ok:#0d5f32;--c-bad:#9b1c14;--c-warn:#774600}
 
 .calc-grid{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
@@ -123,12 +124,11 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .f-flag{font-size:11.5px;font-weight:600;color:var(--blue);margin:6px 0 0 3px;line-height:1.45}
 .mini{
   width:100%;margin-top:7px;padding:8px;border-radius:999px;
-  background:transparent;box-shadow:inset 0 0 0 1px var(--line-2,rgba(255,255,255,.16));
+  background:var(--bg,#d3d7db);box-shadow:var(--neu-out-sm);
   border:none;color:var(--blue);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
   transition:background .3s,box-shadow .3s;
 }
-.mini:hover{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
-.mini:active{background:rgba(255,255,255,.12)}
+.mini:hover,.mini:active{box-shadow:var(--neu-in)}
 
 .res{
   margin-top:auto;padding-top:17px;border-top:1px solid var(--hairline);
@@ -217,13 +217,13 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 .dg-t-strong{fill:var(--d-ink);font-weight:700;paint-order:stroke;stroke:var(--d-halo);stroke-width:3px}
 .dg-t-big{fill:var(--d-dim);font-weight:700}
 .dg-t-onload{fill:#1a1206;font-weight:700}
-/* diagram palette: the dark one, the site's only skin (print sets its own) */
+/* diagram palette: the light one, in the site's fog greys (print sets its own) */
 .calc{
-  --d-sky:#111114;--d-ground:#2a2a3040;--d-line:#55555c;--d-ink:#d4d4d8;
-  --d-steel:#6b7280;--d-steel-d:#9ca3af;--d-steel-l:#4b5563;--d-pale:#3a3a40;
-  --d-load:#d98a3d;--d-load-s:#f6ad55;--d-glass:#3b5878;--d-halo:#111114;
-  --d-crane:#e0a42e;--d-crane-d:#a97b1f;--d-bld:#26262b;--d-floor:#38383e;
-  --d-dim:#4aa8ff;--d-track:#26262b;--d-mute:#8c8c92;
+  --d-sky:#e2e5e8;--d-ground:#b9bfc640;--d-line:#7c838f;--d-ink:#1b1f24;
+  --d-steel:#4a5568;--d-steel-d:#2d3748;--d-steel-l:#6b7280;--d-pale:#c9ced6;
+  --d-load:#f0b46a;--d-load-s:#8a4b12;--d-glass:#b9cde2;--d-halo:#e2e5e8;
+  --d-crane:#e0a42e;--d-crane-d:#9a6d14;--d-bld:#eef0f3;--d-floor:#c9ced6;
+  --d-dim:#134a8e;--d-track:#c9ced6;--d-mute:#4f555b;
 }
 .d-sky{fill:var(--d-sky)}
 .d-ground{fill:var(--d-ground)}
@@ -260,8 +260,8 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 
 /* ============ 3D lift view (crane-3d.js) ============
-   A dark stage whatever the page does, because the scene is lit for one. The
-   labels, chips and panels sit over the canvas and never move the layout. */
+   A dark stage on the light page, like a screen, because the scene is lit for
+   one. The labels, chips and panels sit over the canvas and never move the layout. */
 .l3d{position:relative}
 .l3d-stage{
   position:relative;height:clamp(380px,62vh,640px);border-radius:16px;overflow:hidden;
@@ -355,7 +355,7 @@ a.tb-card:hover{box-shadow:var(--neu-hover);transform:translateY(-3px)}
 }
 .l3d-q{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--faint,#767f88);font-weight:600;letter-spacing:.02em}
 .l3d-q output{color:var(--ink,#f2f6f9);font-variant-numeric:tabular-nums}
-.l3d-q input[type=range]{width:100%;accent-color:#F5F5F7;height:22px;margin:0}
+.l3d-q input[type=range]{width:100%;accent-color:var(--fg,#0F1114);height:22px;margin:0}
 .l3d-q input[type=range]:disabled{opacity:.4}
 /* full screen: the real API where there is one, a fixed sheet where there is not */
 .l3d:fullscreen,.l3d.l3d-max{background:#0b0d10;padding:12px;display:flex;flex-direction:column;gap:10px}
