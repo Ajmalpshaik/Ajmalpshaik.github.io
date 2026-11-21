@@ -68,21 +68,31 @@ const PAGES = [
   'toolbox/crane-lift-calculator/index.html', 'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
 ];
 
-// The viewers load three.js from jsDelivr. When node_modules has the same
-// release (npm i --no-save three@0.186.1), serve it from there instead, so the
-// checks run without a network. The import map's SHA-384 fingerprints still
-// apply, so a local copy that differs from the release fails just the same.
-const LOCAL_THREE = join(ROOT, 'node_modules', 'three');
+// The tool pages load three.js 0.186.1 and the home page 0.128.0, all from
+// jsDelivr. When node_modules has the same release, serve it from there instead,
+// so the checks run without a network:
+//   npm i --no-save three@0.186.1 three-r128@npm:three@0.128.0
+// Any folder in node_modules whose package.json says "name": "three" counts.
+// The SHA-384 fingerprints still apply, so a local copy that differs from the
+// release fails just the same.
 async function localThree(ctx) {
-  if (!existsSync(join(LOCAL_THREE, 'package.json'))) return;
-  const version = JSON.parse(await readFile(join(LOCAL_THREE, 'package.json'), 'utf8')).version;
-  await ctx.route(new RegExp(`^https://cdn\\.jsdelivr\\.net/npm/three@${version.replace(/\./g, '\\.')}/`), async (route) => {
-    const rel = route.request().url().split(`three@${version}/`)[1];
-    try {
-      const body = await readFile(join(LOCAL_THREE, normalize(rel)));
-      await route.fulfill({ status: 200, body, headers: { 'content-type': 'text/javascript', 'access-control-allow-origin': '*' } });
-    } catch { await route.continue(); }
-  });
+  const nm = join(ROOT, 'node_modules');
+  if (!existsSync(nm)) return;
+  const { readdir } = await import('fs/promises');
+  for (const dir of await readdir(nm)) {
+    const pkg = join(nm, dir, 'package.json');
+    if (!dir.startsWith('three') || !existsSync(pkg)) continue;
+    const meta = JSON.parse(await readFile(pkg, 'utf8'));
+    if (meta.name !== 'three') continue;
+    const version = meta.version, base = join(nm, dir);
+    await ctx.route(new RegExp(`^https://cdn\\.jsdelivr\\.net/npm/three@${version.replace(/\./g, '\\.')}/`), async (route) => {
+      const rel = route.request().url().split(`three@${version}/`)[1];
+      try {
+        const body = await readFile(join(base, normalize(rel)));
+        await route.fulfill({ status: 200, body, headers: { 'content-type': 'text/javascript', 'access-control-allow-origin': '*' } });
+      } catch { await route.continue(); }
+    });
+  }
 }
 const WIDTHS = [1440, 1280, 834, 390];
 
