@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-Writes the navigation, the foot-of-page pager and the footer into every page.
+Writes the bar, the phone menu and the footer into every page.
 
-The site has no build step: fourteen hand-written HTML files each carry their
-own copy of the chrome. That is fine until one of them drifts - a link added to
-eight pages and forgotten on the ninth is invisible until somebody lands on the
-ninth. This is the one place the chrome is written, and `--check` fails the
-build if any page no longer matches it.
+The site has no build step: each page is a hand-written HTML file that carries
+its own copy of the chrome. That is fine until one copy drifts. This is the one
+place the chrome is written, and `--check` fails the build if any page no
+longer matches it.
 
-Run:    python3 tools/sync_chrome.py          rewrite every page
-        python3 tools/sync_chrome.py --check  fail if any page is out of date
+Each page marks the two places with comments:
+
+    <!-- chrome:nav -->   ...   <!-- /chrome:nav -->
+    <!-- chrome:foot -->  ...   <!-- /chrome:foot -->
+
+Run:    python3 tools/sync_chrome.py                 rewrite every page
+        python3 tools/sync_chrome.py about/index.html  rewrite only these pages
+        python3 tools/sync_chrome.py --check         fail if any page is out of date
 Exit:   0 all good, 1 something is out of date (or wrong)
 """
 
@@ -19,287 +24,167 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# --------------------------------------------------------------- the content
+# ------------------------------------------------------------------ content
 
-BRAND_SVG = (
-    '<svg viewBox="0 0 64 64" aria-hidden="true">'
-    '<rect x="3" y="3" width="58" height="58" rx="15" fill="none" stroke="currentColor" stroke-width="4"/>'
-    '<text x="32" y="42" font-family="Manrope,-apple-system,Segoe UI,Arial,sans-serif" font-size="24" '
-    'font-weight="700" fill="currentColor" text-anchor="middle">AJ</text></svg>'
-)
-
-# Three menus and a button. Each entry is (href, label, the one line under it).
-GROUPS = [
-    ("Experience", [
-        ("/story/", "Story", "How it started"),
-        ("/experience/", "Experience", "Eleven years, and where"),
-        ("/work/", "Selected work", "Five projects in Qatar"),
-    ]),
-    ("Tools", [
-        ("/automation/", "Automation", "The Revit tools I build"),
-        ("/heron-ai/", "Heron AI", "An AI that works inside Revit"),
-        ("/heron-tools/", "Heron Tools", "Everyday buttons on the Revit ribbon"),
-        ("/heron-autocad/", "Heron for AutoCAD", "Heron AI, inside AutoCAD"),
-        ("/toolbox/", "Toolbox", "Tools you can use in the browser"),
-    ]),
-    ("About", [
-        ("/skills/", "Skills", "The full stack, named"),
-        ("/about/", "About", "Visa, notice, languages"),
-        ("/faq/", "FAQ", "The questions before a call"),
-    ]),
-]
-CTA = ("/contact/", "Contact")
-
-# The order the site is meant to be read in - see docs/REDESIGN.md. Every page
-# in it ends by handing over to the next one, so no page is a dead end.
-TOUR = [
-    ("/", "Home", "Who, and the proof in one screen"),
-    ("/story/", "Story", "How it started"),
-    ("/experience/", "Experience", "Eleven years, and where"),
-    ("/work/", "Selected work", "Five projects in Qatar"),
-    ("/automation/", "Automation", "The Revit tools I build"),
-    ("/heron-ai/", "Heron AI", "An AI that works inside Revit"),
-    ("/heron-tools/", "Heron Tools", "Everyday buttons on the Revit ribbon"),
-    ("/heron-autocad/", "Heron for AutoCAD", "Heron AI, inside AutoCAD"),
-    ("/toolbox/", "Toolbox", "Tools you can use in the browser"),
-    ("/skills/", "Skills", "The full stack, named"),
-    ("/about/", "About", "Visa, notice, languages"),
-    ("/faq/", "FAQ", "The questions before a call"),
-    ("/contact/", "Contact", "Email, WhatsApp, LinkedIn"),
+# Three tabs and a button. (key, href, label)
+TABS = [
+    ("about", "/about/", "About me"),
+    ("tools", "/tools/", "Tools"),
+    ("heron", "/heron/", "Heron"),
 ]
 
+EMAIL = "ajmalnattika@gmail.com"
 SOCIAL = [
     ("https://www.linkedin.com/in/ajmalps/", "LinkedIn"),
-    ("https://github.com/Ajmalpshaik", "GitHub"),
     ("https://wa.me/97431033040?text=Hi%20Ajmal%2C%20I%20found%20you%20on%20ajmalps.com", "WhatsApp"),
-    ("mailto:ajmalnattika@gmail.com", "Email"),
+    ("https://github.com/Ajmalpshaik", "GitHub"),
 ]
 
-# Which page is which. Keys are repo-relative paths; the value is
-# (the bar link to mark as current, this page's own place on the tour).
-#
-# The two are not always the same. A tool page is not on the tour - a pager
-# reading "next: Skills" under a crane calculator would be nonsense - but it is
-# still inside the Toolbox, so the bar marks Toolbox while the page shows no
-# pager. Giving both jobs to one value is how those three pages lost their
-# current-page marking when this script took the nav over.
+# Which tab each page sits under (None: no tab is selected). Redirect stubs for
+# old addresses are not here: they carry no chrome, only a forward.
 PAGES = {
-    "404.html": (None, None),
-    "story/index.html": ("/story/", "/story/"),
-    "experience/index.html": ("/experience/", "/experience/"),
-    "work/index.html": ("/work/", "/work/"),
-    "automation/index.html": ("/automation/", "/automation/"),
-    "heron-ai/index.html": ("/heron-ai/", "/heron-ai/"),
-    "heron-tools/index.html": ("/heron-tools/", "/heron-tools/"),
-    "heron-autocad/index.html": ("/heron-autocad/", "/heron-autocad/"),
-    "about/index.html": ("/about/", "/about/"),
-    "skills/index.html": ("/skills/", "/skills/"),
-    "faq/index.html": ("/faq/", "/faq/"),
-    "contact/index.html": ("/contact/", "/contact/"),
-    "toolbox/index.html": ("/toolbox/", "/toolbox/"),
-    "toolbox/crane-lift-calculator/index.html": ("/toolbox/", None),
-    "toolbox/ar-viewer/index.html": ("/toolbox/", None),
-    "toolbox/bim-viewer/index.html": ("/toolbox/", None),
+    "index.html": None,
+    "404.html": None,
+    "about/index.html": "about",
+    "tools/index.html": "tools",
+    "toolbox/crane-lift-calculator/index.html": "tools",
+    "toolbox/ar-viewer/index.html": "tools",
+    "toolbox/bim-viewer/index.html": "tools",
+    "heron/index.html": "heron",
+    "heron-ai/index.html": "heron",
+    "heron-tools/index.html": "heron",
+    "heron-autocad/index.html": "heron",
 }
 
-CHEV_L = '<span class="chev" aria-hidden="true">&lsaquo;</span>'
-CHEV_R = '<span class="chev" aria-hidden="true">&rsaquo;</span>'
+ARROW = ('<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" '
+         'aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>')
+BURGER = ('<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" '
+          'aria-hidden="true"><path d="M2 6h14M2 12h14"/></svg>')
+CROSS = ('<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" '
+         'aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>')
 
 
-# ------------------------------------------------------------------ builders
+def render_nav(current):
+    def cur(key):
+        return ' aria-current="page"' if key == current else ""
 
-def nav_html(current):
-    """The bar. `current` is the site path of the page, or None."""
-    out = [
-        '<nav id="nav" aria-label="Main">',
-        '  <div class="navin">',
-        f'    <a class="brand" href="/" aria-label="Ajmal P.S &mdash; home">{BRAND_SVG} Ajmal P.S</a>',
-        '',
-        '    <div class="navlinks" id="navLinks">',
-    ]
-    for name, items in GROUPS:
-        gid = "nm-" + name.lower()
-        here = ' data-current' if any(h == current for h, _, _ in items) else ''
-        out += [
-            f'      <div class="navgroup"{here}>',
-            f'        <button type="button" class="navtrig" aria-expanded="false" aria-controls="{gid}">{name}'
-            '<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" '
-            'aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>',
-            # A real list, named. Under 1000px the trigger above becomes an
-            # inert heading and assets/app.js takes it out of the reading
-            # order; this label is then the only thing naming the group, so it
-            # is not decoration.
-            f'        <ul class="navmenu" id="{gid}" aria-label="{name}">',
-        ]
-        for href, label, note in items:
-            mark = ' aria-current="page"' if href == current else ''
-            out.append(f'          <li><a href="{href}"{mark}><b>{label}</b><span>{note}</span></a></li>')
-        out += ['        </ul>', '      </div>']
-    mark = ' aria-current="page"' if CTA[0] == current else ''
-    out += [
-        f'      <a class="navcta" href="{CTA[0]}"{mark}>{CTA[1]}</a>',
-        '    </div>',
-        '',
-        '    <div class="navend">',
-        # The theme switch is gone with the light theme: the site has one skin
-        # now, the cover's, and two was what made it read as two sites.
-        '      <button id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">'
-        '<span></span></button>',
-        '    </div>',
-        '  </div>',
-        '</nav>',
-    ]
-    return "\n".join(out)
-
-
-def foot_html(current):
-    """The pager and the closing call to action, for a page that is on the tour."""
-    paths = [p for p, _, _ in TOUR]
-    if current not in paths:
-        return None
-    i = paths.index(current)
-    prev = TOUR[i - 1] if i > 0 else None
-    # The last page hands back to the start rather than stopping dead.
-    nxt = TOUR[i + 1] if i + 1 < len(TOUR) else TOUR[0]
-
-    cards = []
-    if prev:
-        cards.append(
-            f'      <a class="pcard prev" href="{prev[0]}"><small>Previous</small>'
-            f'<b>{CHEV_L} {prev[1]}</b><span>{prev[2]}</span></a>'
-        )
-    label = "Back to the start" if nxt[0] == "/" else "Next"
-    cards.append(
-        f'      <a class="pcard next" href="{nxt[0]}"><small>{label}</small>'
-        f'<b>{nxt[1]} {CHEV_R}</b><span>{nxt[2]}</span></a>'
+    tabs = "\n".join(
+        f'          <li><a href="{href}" data-tab="{key}"{cur(key)}>{label}</a></li>'
+        for key, href, label in TABS
     )
-    # On /contact/ the whole page is the call to action; a band repeating it
-    # under the pager would be the third "get in touch" on one screen.
-    band = [] if current == "/contact/" else [
-        '    <div class="cta reveal">',
-        '      <h2>Looking for an MEP BIM Coordinator?</h2>',
-        '      <p>Doha, Qatar &middot; transferable QID with NOC &middot; able to join within days.</p>',
-        '      <div class="btnrow">',
-        '        <a class="btn" href="/contact/">Get in touch</a>',
-        '        <a class="tlink" href="/faq/">Read the FAQ '
-        '<span class="chev" aria-hidden="true">&rsaquo;</span></a>',
-        '      </div>',
-        '    </div>',
-    ]
-
-    return "\n".join([
-        '<section class="sec-foot">',
-        '  <div class="wrap">',
-        '    <nav class="pager" aria-label="More of the site">',
-        *cards,
-        '    </nav>',
-        *band,
-        '  </div>',
-        '</section>',
-    ])
-
-
-def footer_html():
-    """Short on purpose: the bar already lists every page, so the footer only
-    says who, how to reach me, and Contact."""
-    socials = "\n".join(
-        '        <li><a href="%s"%s>%s</a></li>'
-        % (h, ' rel="me"' if h.startswith("https") else "", label)
-        for h, label in SOCIAL
+    sheet = "\n".join(
+        f'  <a class="big{" heron" if key == "heron" else ""}" href="{href}" data-tab="{key}"{cur(key)}>'
+        f'{label} <small>0{i}</small></a>'
+        for i, (key, href, label) in enumerate(TABS, 1)
     )
-    return "\n".join([
-        '<footer>',
-        '  <div class="fgrid">',
-        '    <div>',
-        f'      <div class="fbrand">{BRAND_SVG} Ajmal P.S</div>',
-        '      <p class="fabout">MEP BIM Coordinator in Doha, Qatar.</p>',
-        '    </div>',
-        '    <div class="fend">',
-        '      <ul class="fsocial" aria-label="Elsewhere">',
-        socials,
-        '      </ul>',
-        f'      <a class="btn fcta" href="{CTA[0]}">{CTA[1]}</a>',
-        '    </div>',
-        '  </div>',
-        '  <div class="foot">',
-        '    <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Designed and built in Doha, Qatar.</span>',
-        '    <span><a href="/">ajmalps.com</a></span>',
-        '  </div>',
-        '</footer>',
-    ])
+    return f"""<!-- chrome:nav -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="/" aria-label="Ajmal P.S, home"><i aria-hidden="true"></i>Ajmal P.S</a>
+    <nav class="nav-tabs" aria-label="Main">
+      <ul class="tabs" id="tabs">
+        <li class="tab-ind" aria-hidden="true"></li>
+{tabs}
+      </ul>
+    </nav>
+    <a class="pill magnetic" href="#contact">Contact {ARROW}</a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">{BURGER}</button>
+  </div>
+</header>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="burger close" type="button" aria-label="Close menu">{CROSS}</button>
+{sheet}
+  <a class="pill" href="#contact">Contact {ARROW}</a>
+</div>
+<!-- /chrome:nav -->"""
 
 
-# -------------------------------------------------------------------- rewrite
+def render_foot():
+    social = "\n".join(
+        f'          <a class="ghost" href="{href}" target="_blank" rel="noopener">{name}</a>'
+        for href, name in SOCIAL
+    )
+    links = " ".join(f'<a href="{href}">{label}</a>' for _, href, label in TABS)
+    return f"""<!-- chrome:foot -->
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <h2 class="foot-h">Let&rsquo;s <em class="s">talk.</em></h2>
+    <div class="foot-grid">
+      <div>
+        <div class="mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy" type="button" data-copy="{EMAIL}">Copy</button></div>
+        <p class="say">Hiring, or want a tool built? Email is fastest, and I answer every message myself. Transferable QID with NOC, able to join within days.</p>
+        <div class="socials">
+{social}
+        </div>
+      </div>
+      <a class="magnet magnetic" href="mailto:{EMAIL}">Get in<br>touch</a>
+    </div>
+    <div class="legal">
+      <span>&copy; <span id="yr">2026</span> Ajmal P.S &middot; Doha, Qatar</span>
+      <nav aria-label="Footer">{links} <a href="#main">Back to top &uarr;</a></nav>
+    </div>
+  </div>
+</footer>
+<!-- /chrome:foot -->"""
 
-NAV_RE = re.compile(r'<nav id="nav".*?</nav>', re.S)
-FOOTER_RE = re.compile(r"<footer>.*?</footer>", re.S)
-FOOT_RE = re.compile(r"<!-- foot:start -->.*?<!-- foot:end -->", re.S)
+
+# ------------------------------------------------------------------ machinery
+
+NAV_RE = re.compile(r"<!-- chrome:nav -->.*?<!-- /chrome:nav -->", re.S)
+FOOT_RE = re.compile(r"<!-- chrome:foot -->.*?<!-- /chrome:foot -->", re.S)
 
 
-def rewrite(page, src):
-    current, tour = PAGES[page]
+def render_page(path, html):
+    current = PAGES[path]
     problems = []
-
-    if not NAV_RE.search(src):
-        problems.append(f"{page}: no <nav id=\"nav\"> to replace")
-    else:
-        src = NAV_RE.sub(lambda _: nav_html(current), src, count=1)
-
-    if not FOOTER_RE.search(src):
-        problems.append(f"{page}: no <footer> to replace")
-    else:
-        src = FOOTER_RE.sub(lambda _: footer_html(), src, count=1)
-
-    foot = foot_html(tour)
-    if foot is not None:
-        block = f"<!-- foot:start -->\n{foot}\n<!-- foot:end -->"
-        if FOOT_RE.search(src):
-            src = FOOT_RE.sub(lambda _: block, src, count=1)
-        elif "</main>" in src:
-            src = src.replace("</main>", block + "\n</main>", 1)
-        else:
-            problems.append(f"{page}: nowhere to put the pager (no </main>)")
-    elif FOOT_RE.search(src):
-        # A page taken off the tour keeps its pager otherwise, pointing at
-        # neighbours it no longer has, and --check stays green about it.
-        src = FOOT_RE.sub("", src, count=1).replace("\n\n</main>", "\n</main>")
-
-    return src, problems
+    if not NAV_RE.search(html):
+        problems.append("no <!-- chrome:nav --> block")
+    if not FOOT_RE.search(html):
+        problems.append("no <!-- chrome:foot --> block")
+    out = NAV_RE.sub(lambda m: render_nav(current), html, count=1)
+    out = FOOT_RE.sub(lambda m: render_foot(), out, count=1)
+    return out, problems
 
 
-def main():
-    check = "--check" in sys.argv
-    stale, problems = [], []
-    for page in PAGES:
-        path = os.path.join(ROOT, page)
-        if not os.path.exists(path):
-            problems.append(f"missing page: {page}")
-            continue
-        with open(path, encoding="utf-8") as fh:
-            before = fh.read()
-        after, errs = rewrite(page, before)
-        problems += errs
-        if after == before:
-            continue
-        stale.append(page)
-        if not check:
-            with open(path, "w", encoding="utf-8") as fh:
-                fh.write(after)
-
-    for p in problems:
-        print(f"ERROR:   {p}")
-    if check:
-        for page in stale:
-            print(f"ERROR:   {page} is out of date with tools/sync_chrome.py")
-        if stale or problems:
-            print("\nRun: python3 tools/sync_chrome.py")
+def main(argv):
+    check = "--check" in argv
+    only = [a.replace("\\", "/").lstrip("./") for a in argv if not a.startswith("--")]
+    for p in only:
+        if p not in PAGES:
+            print(f"error: {p} is not in PAGES")
             return 1
-        print("Chrome is in sync on every page.")
-        return 0
-
-    print(f"Rewrote {len(stale)} page(s)." if stale else "Every page was already in sync.")
-    return 1 if problems else 0
+    targets = only or list(PAGES)
+    bad = 0
+    for rel in targets:
+        full = os.path.join(ROOT, rel)
+        if not os.path.exists(full):
+            print(f"missing: {rel}")
+            bad += 1
+            continue
+        with open(full, encoding="utf-8") as f:
+            html = f.read()
+        out, problems = render_page(rel, html)
+        for msg in problems:
+            print(f"{rel}: {msg}")
+            bad += 1
+        if problems:
+            continue
+        if out != html:
+            if check:
+                print(f"out of date: {rel}  (run: python3 tools/sync_chrome.py)")
+                bad += 1
+            else:
+                with open(full, "w", encoding="utf-8") as f:
+                    f.write(out)
+                print(f"updated: {rel}")
+    if bad:
+        return 1
+    if check:
+        print(f"chrome in sync on {len(targets)} pages")
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

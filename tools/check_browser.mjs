@@ -63,17 +63,9 @@ const ORIGIN = `http://127.0.0.1:${server.address().port}`;
 const url = (p) => `${ORIGIN}/${p}`;
 const PAGES = [
   'index.html', '404.html',
-  'story/index.html', 'experience/index.html', 'work/index.html',
-  'automation/index.html', 'heron-ai/index.html',
-  'heron-tools/index.html', 'heron-autocad/index.html',
-  'about/index.html',
-  'skills/index.html', 'faq/index.html', 'contact/index.html',
-  // Added 2026-09-20. These two shipped on 2026-08-12 and were never in this
-  // list, so for five weeks the only thing checking them was check_site.py,
-  // which reads the file and never renders it - a page that threw on load or
-  // scrolled sideways would have looked exactly like a passing one.
-  'toolbox/index.html', 'toolbox/crane-lift-calculator/index.html',
-  'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
+  'about/index.html', 'tools/index.html',
+  'heron/index.html', 'heron-ai/index.html', 'heron-tools/index.html', 'heron-autocad/index.html',
+  'toolbox/crane-lift-calculator/index.html', 'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
 ];
 
 // The viewers load three.js from jsDelivr. When node_modules has the same
@@ -166,11 +158,10 @@ for (const page of PAGES) {
   if (!skip.cls.includes('skip')) fail(`first tab stop is ".${skip.cls}", expected the skip link`);
   else if (skip.top < 0) fail('skip link stays off-screen when focused');
 
-  // The home page is built from landing/ and arrives as finished HTML that
-  // React then attaches to. It marks <html data-ready> when it has; a bundle
-  // that failed to load or threw on the way would leave that unset.
+  // assets/site.js marks <html data-ready> when it has run; a script that failed
+  // to load or threw on the way would leave that unset.
   if (!(await p.evaluate(() => document.documentElement.hasAttribute('data-ready')))) {
-    fail('index.html: the page script never attached (no data-ready on <html>)');
+    fail('index.html: the site script never ran (no data-ready on <html>)');
   }
 
   // The hero name is one line that must not be cut. It sits in an
@@ -189,190 +180,99 @@ for (const page of PAGES) {
   await ctx.close();
 }
 
-// ---- the bar, on both halves of the site -----------------------------------
-// The bar is written twice - tools/sync_chrome.py for the content pages,
-// landing/src/components/SiteNav.tsx for the cover - over one stylesheet. It is
-// the one thing on the site with two implementations, so it is the one thing
-// most likely to drift. These run against both.
+// ---- the bar ------------------------------------------------------------------
+// Written once by tools/sync_chrome.py into every page: three tabs, a Contact
+// button, and a full-screen sheet on phones. Checked on a page with no current
+// tab, on About me, and on a Heron page (whose highlight is Heron orange).
 {
-  const EXPECTED = [
-    '/story/', '/experience/', '/work/',
-    '/automation/', '/heron-ai/', '/heron-tools/', '/heron-autocad/', '/toolbox/',
-    '/skills/', '/about/', '/faq/',
-  ];
-
-  for (const page of ['index.html', 'about/index.html']) {
-    const where = page === 'index.html' ? 'the cover' : 'a content page';
-
-    // ---- desktop: each menu opens, and Escape closes it ----
-    {
-      const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-      const p = await ctx.newPage();
-      await p.goto(url(page));
-      await p.waitForTimeout(900);
-
-      const triggers = await p.$$('#nav .navtrig');
-      if (triggers.length !== 3) fail(`${where}: ${triggers.length} menu(s) in the bar, expected 3`);
-
-      // The menu fades, so wait for the state rather than for a stopwatch -
-      // a fixed sleep here is how a check starts failing on a slow runner and
-      // passing on a fast one.
-      const settle = (id, want) => p.waitForFunction(
-        ([sel, open]) => {
-          const s = getComputedStyle(document.getElementById(sel));
-          const shown = s.visibility !== 'hidden' && s.opacity !== '0';
-          return shown === open;
-        },
-        [id, want],
-        { timeout: 3000 },
-      ).then(() => true, () => false);
-
-      for (const trigger of triggers) {
-        const name = (await trigger.textContent()).trim();
-        const id = await trigger.getAttribute('aria-controls');
-        if (!(await p.$(`#${id}`))) { fail(`${where}: the "${name}" menu has no panel (#${id})`); continue; }
-
-        await trigger.click();
-        if (!(await settle(id, true))) fail(`${where}: clicking "${name}" does not open its menu`);
-        // Tools carries the three Heron products beside Automation and the
-        // Toolbox; the other two menus hold three each.
-        const want = name === 'Tools' ? 5 : 3;
-        const links = await p.$$eval(`#${id} a`, (as) => as.length);
-        if (links !== want) fail(`${where}: the "${name}" menu holds ${links} links, expected ${want}`);
-
-        await p.keyboard.press('Escape');
-        if (!(await settle(id, false))) fail(`${where}: Escape does not close the "${name}" menu`);
-      }
-
-      // ---- the keyboard, which is the whole reason these are buttons ----
-      {
-        const trigger = triggers[0];
-        const id = await trigger.getAttribute('aria-controls');
-        await trigger.focus();
-        await p.keyboard.press('ArrowDown');
-        await settle(id, true);
-        const landed = await p.evaluate((sel) => {
-          const first = document.querySelector(`#${sel} a`);
-          return document.activeElement === first;
-        }, id);
-        // One press, not two: the panel opens and the caret is on its first
-        // link. On the cover this took two, because the focus call ran while
-        // the panel was still visibility:hidden.
-        if (!landed) fail(`${where}: ArrowDown on a closed menu does not reach its first link`);
-
-        // Tab off the end and the panel closes behind you, rather than
-        // hanging over the page until Escape.
-        for (let i = 0; i < 3; i++) await p.keyboard.press('Tab');
-        if (!(await settle(id, false))) fail(`${where}: tabbing out of a menu leaves it open`);
-      }
-
-      // ---- the sheet's headings are inert, so they may not claim to be menus ----
-      await p.setViewportSize({ width: 390, height: 844 });
-      await p.waitForTimeout(400);
-      const claims = await p.$$eval('#nav .navtrig', (ts) =>
-        ts.filter((t) => t.hasAttribute('aria-expanded') || t.tabIndex >= 0).length);
-      if (claims) fail(`${where}: ${claims} inert menu heading(s) still read as a menu button at 390px`);
-      await p.setViewportSize({ width: 1280, height: 900 });
-      await p.waitForTimeout(400);
-
-      // every page the bar promises must be in it, and must be a real page
-      const hrefs = await p.$$eval('#nav .navmenu a', (as) => as.map((a) => new URL(a.href).pathname));
-      for (const want of EXPECTED) {
-        if (!hrefs.includes(want)) fail(`${where}: the bar has no link to ${want}`);
-      }
-      if (!(await p.$('#nav .navcta'))) fail(`${where}: the bar has no Contact button`);
-      if (!(await p.$('#nav .brand'))) fail(`${where}: the bar has no brand mark`);
-      await ctx.close();
-    }
-
-    // ---- phone: one sheet, every page one tap away ----
-    {
-      const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
-      const p = await ctx.newPage();
-      await p.goto(url(page));
-      await p.waitForTimeout(900);
-
-      // A closed sheet is laid out, just hidden, so a bounding box is not the
-      // question - checkVisibility is, with visibility and opacity counted.
-      const seen = (a) => a.checkVisibility({ visibilityProperty: true, opacityProperty: true });
-      const before = await p.$$eval('#navLinks a', (as, fn) =>
-        as.filter(new Function('a', `return (${fn})(a)`)).length, seen.toString());
-      if (before) fail(`${where}: ${before} bar link(s) are on screen before the menu is opened at 390px`);
-
-      await p.click('#menuBtn');
-      await p.waitForFunction(
-        () => document.getElementById('navLinks').classList.contains('open'),
-        null, { timeout: 3000 },
-      ).catch(() => fail(`${where}: the menu button does not open the sheet at 390px`));
-      await p.waitForTimeout(450);
-      const after = await p.$$eval('#navLinks a', (as, fn) =>
-        as.filter(new Function('a', `return (${fn})(a)`)).map((a) => new URL(a.href).pathname), seen.toString());
-      for (const want of [...EXPECTED, '/contact/']) {
-        if (!after.includes(want)) fail(`${where}: ${want} is not reachable from the phone menu`);
-      }
-      await ctx.close();
-    }
-  }
-
-  // ---- no JavaScript: the menus are simply open, nothing is hidden ----
-  for (const page of ['index.html', 'about/index.html']) {
-    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, javaScriptEnabled: false });
+  const EXPECTED = ['/about/', '/tools/', '/heron/'];
+  for (const [page, current] of [['index.html', null], ['about/index.html', 'about'], ['heron-ai/index.html', 'heron']]) {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const p = await ctx.newPage();
     await p.goto(url(page));
-    const hidden = await p.$$eval('#nav .navmenu a', (as) =>
-      as.filter((a) => !a.checkVisibility({ visibilityProperty: true, opacityProperty: true })).length);
-    if (hidden) fail(`${page}: ${hidden} bar link(s) stay hidden with JavaScript off`);
+    await p.waitForTimeout(700);
+    const bar = await p.evaluate(() => ({
+      hrefs: [...document.querySelectorAll('#tabs a[data-tab]')].map((a) => a.getAttribute('href')),
+      cur: [...document.querySelectorAll('#tabs a[aria-current="page"]')].map((a) => a.dataset.tab),
+      contact: !!document.querySelector('#nav .pill[href="#contact"]') && !!document.getElementById('contact'),
+      mark: !!document.querySelector('#nav .mark[href="/"]'),
+    }));
+    if (JSON.stringify(bar.hrefs) !== JSON.stringify(EXPECTED)) fail(`${page}: the bar's tabs are ${bar.hrefs.join(', ')}, expected ${EXPECTED.join(', ')}`);
+    if (JSON.stringify(bar.cur) !== JSON.stringify(current ? [current] : [])) fail(`${page}: the current tab is [${bar.cur}], expected [${current || ''}]`);
+    if (!bar.contact) fail(`${page}: the Contact button or the #contact footer is missing`);
+    if (!bar.mark) fail(`${page}: the name in the bar does not link home`);
+
+    // the highlight glides to the tab under the pointer; Heron's turns orange
+    await p.hover('#tabs a[data-tab="heron"]');
+    await p.waitForTimeout(700);
+    const ind = await p.evaluate(() => {
+      const i = document.querySelector('#tabs .tab-ind');
+      return { op: getComputedStyle(i).opacity, w: i.getBoundingClientRect().width, heron: i.classList.contains('heron') };
+    });
+    if (ind.op !== '1' || ind.w < 20 || !ind.heron) fail(`${page}: hovering Heron does not move the orange highlight onto it`);
     await ctx.close();
+
+    // phone: the tabs fold into a sheet behind the menu button
+    const ph = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const q = await ph.newPage();
+    await q.goto(url(page));
+    await q.waitForTimeout(600);
+    const tabsShown = await q.$eval('#nav .nav-tabs', (n) => getComputedStyle(n).display !== 'none');
+    if (tabsShown) fail(`${page} at 390px: the tabs should be in the menu, not the bar`);
+    await q.click('#burger');
+    await q.waitForTimeout(900);
+    const sheet = await q.evaluate(() => {
+      const o = document.getElementById('overlay');
+      const vis = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
+      return { open: o.hasAttribute('data-open'), links: [...o.querySelectorAll('a')].filter(vis).map((a) => a.getAttribute('href')), exp: document.getElementById('burger').getAttribute('aria-expanded') };
+    });
+    if (!sheet.open || sheet.exp !== 'true') fail(`${page} at 390px: the menu button does not open the sheet`);
+    for (const h of [...EXPECTED, '#contact']) if (!sheet.links.includes(h)) fail(`${page} at 390px: the open menu does not show ${h}`);
+    await q.keyboard.press('Escape');
+    await q.waitForTimeout(800);
+    if (await q.$eval('#overlay', (o) => o.hasAttribute('data-open'))) fail(`${page} at 390px: Escape does not close the menu`);
+    await ph.close();
+
+    // no JavaScript on a phone: the tabs stay in the bar, so every page is still reachable
+    const nj = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const r = await nj.newPage();
+    await r.goto(url(page));
+    await r.waitForTimeout(300);
+    const njTabs = await r.$$eval('#tabs a[data-tab]', (as) => as.filter((a) => a.getBoundingClientRect().width > 0).length);
+    if (njTabs !== 3) fail(`${page}: with no JavaScript at 390px only ${njTabs} of 3 tabs are visible`);
+    await nj.close();
   }
 }
 
-// ---- script never arrives: the failsafe must show the page ------------------
-// Every section on the home page fades in when its script runs. If the script
-// is blocked or the network drops it, an inline timer in index.html shows
-// everything after 4s instead of leaving a dark, empty page.
+// ---- the home page without its 3D script --------------------------------------
+// assets/home.js adds the forest and pins the story to the scroll. Blocked (or
+// three.js unreachable), the hero and the story must still read as plain HTML.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const p = await ctx.newPage();
-  await p.route(/\/assets\/home\/.*\.js$/, (route) => route.abort());
+  await p.route(/\/assets\/home\.js$/, (route) => route.abort());
+  await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.128\.0\//, (route) => route.abort());
   await p.goto(url('index.html'));
-  await p.waitForTimeout(4600);
-  const hidden = await p.$$eval('.fade-in, .enter', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-  if (hidden) fail(`script blocked: ${hidden} element(s) on index.html stay invisible`);
+  await p.waitForTimeout(2400);
+  const st = await p.evaluate(() => {
+    const s = document.querySelector('.story-plain');
+    const r = s.getBoundingClientRect();
+    return { story: r.width > 100 && r.height > 20, heading: getComputedStyle(document.querySelector('.hero-heading .ln > span')).transform };
+  });
+  if (!st.story) fail('index.html with assets/home.js blocked: the story is not on screen');
+  if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/home.js blocked: the headline never finished arriving');
   await ctx.close();
 }
 
-// ---- every entrance on the home page actually plays -------------------------
-// Each .fade-in waits to be scrolled into view. One that can never count as in
-// view - clipped by its own box, say, which is what the hero name did on a
-// 320px phone - would stay invisible for good, with nothing in the console.
-// Scroll the whole page at a few sizes and require every one to have arrived.
-{
-  for (const [w, h] of [[1440, 900], [390, 844], [320, 640]]) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
-    const p = await ctx.newPage();
-    await p.goto(url('index.html'));
-    await p.waitForTimeout(600);
-    const total = await p.evaluate(() => document.documentElement.scrollHeight);
-    for (let y = 0; y <= total; y += Math.round(h * 0.6)) {
-      await p.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), y);
-      await p.waitForTimeout(120);
-    }
-    await p.waitForTimeout(1600);
-    const stuck = await p.$$eval('.fade-in, .enter', (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-    if (stuck) fail(`index.html at ${w}px: ${stuck} element(s) never faded in after scrolling the whole page`);
-    await ctx.close();
-  }
-}
-
-// ---- reduced motion: nothing may stay hidden -------------------------------
+// ---- reduced motion: nothing may stay hidden or half-arrived ---------------------
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const p = await ctx.newPage();
   await p.goto(url('index.html'));
   await p.waitForTimeout(900);
-  const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in, .enter',
-    (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-  if (hidden) fail(`reduced motion: ${hidden} element(s) stay invisible`);
+  const moved = await p.$$eval('.hero-heading .ln > span, .hero-sub',
+    (els) => els.filter((e) => getComputedStyle(e).opacity !== '1' || (getComputedStyle(e).transform !== 'none' && getComputedStyle(e).transform !== 'matrix(1, 0, 0, 1, 0, 0)')).length);
+  if (moved) fail(`reduced motion: ${moved} element(s) on the home page are still mid-entrance`);
   await ctx.close();
 }
 
@@ -501,8 +401,8 @@ for (const page of PAGES) {
     await p.evaluate(() => Promise.all(document.getAnimations()
       .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
       .map((a) => a.finished.catch(() => {}))));
-    const hidden = await p.$$eval('.reveal, .rvt .ln > i, .ladder li, .fade-in, .enter',
-      (els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
+    const hidden = await p.$$eval('main *',
+      (els) => els.filter((e) => e.textContent.trim() && getComputedStyle(e).opacity === '0' && !e.closest('[aria-hidden="true"]')).length);
     if (hidden) fail(`no JavaScript: ${page}: ${hidden} element(s) stay invisible`);
     // heron-ai used to sit at 20 here: it was one statement on purpose - a name,
     // a status and a single link - so the shared floor would have failed it for
@@ -523,7 +423,7 @@ for (const page of PAGES) {
   await p.goto(url('index.html'));
   await p.emulateMedia({ media: 'print' });
   await p.waitForTimeout(600);
-  const invisible = await p.$$eval('.grad-text, .ch-idx, .hero-heading',
+  const invisible = await p.$$eval('.nums b, .card .idx, .hero-heading',
     (els) => els.filter((e) => {
       const f = getComputedStyle(e).webkitTextFillColor;
       return f === 'rgba(0, 0, 0, 0)' || f === 'transparent';
