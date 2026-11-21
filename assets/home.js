@@ -1,5 +1,6 @@
 /*
- * The home page: a misty forest with a flock flying between the trees.
+ * The home page: a misty forest with a flock flying between the trees, light
+ * snow falling and a few leaves blowing through on the wind.
  * Loaded only by index.html, after assets/site.js. three.js r128 and its
  * GPUComputationRenderer come from jsDelivr, pinned and fingerprinted in index.html.
  *
@@ -244,6 +245,184 @@
       });
     }
 
+    // ---- snow: point sprites drifting through the mist ----
+    // After the three.js example webgl_points_sprites: thousands of textured
+    // points, five snowflake shapes (drawn here in code), falling slowly, swaying
+    // and spinning. Near flakes are larger; far ones melt into the same fog.
+    let snowU = null;
+    function snow() {
+      const N = small ? 1800 : 4200, CELL = 128;
+      const atlas = document.createElement('canvas');
+      atlas.width = CELL * 5; atlas.height = CELL;
+      const g = atlas.getContext('2d');
+      g.strokeStyle = '#fff'; g.fillStyle = '#fff'; g.lineCap = 'round';
+      g.shadowColor = 'rgba(255,255,255,.9)'; g.shadowBlur = 6;
+      const flake = (cx, cy, R, v) => {
+        g.save(); g.translate(cx, cy);
+        if (v === 4) { // a soft round flake
+          const rg = g.createRadialGradient(0, 0, 0, 0, 0, R * 0.55);
+          rg.addColorStop(0, 'rgba(255,255,255,1)'); rg.addColorStop(1, 'rgba(255,255,255,0)');
+          g.fillStyle = rg; g.beginPath(); g.arc(0, 0, R * 0.55, 0, Math.PI * 2); g.fill(); g.restore(); return;
+        }
+        if (g.strokeStyle === '#ffffff') g.lineWidth = [5, 4, 6, 3.5][v];
+        for (let a = 0; a < 6; a++) {
+          g.save(); g.rotate((a * Math.PI) / 3);
+          g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -R); g.stroke();
+          const branches = [[0.45, 0.32], [0.3, 0.22, 0.65, 0.3], [0.55, 0.42], [0.25, 0.18, 0.5, 0.26, 0.75, 0.2]][v];
+          for (let b = 0; b < branches.length; b += 2) {
+            const y = -R * branches[b], len = R * branches[b + 1];
+            g.beginPath(); g.moveTo(0, y); g.lineTo(-len * 0.8, y - len * 0.6); g.moveTo(0, y); g.lineTo(len * 0.8, y - len * 0.6); g.stroke();
+          }
+          g.restore();
+        }
+        g.beginPath(); g.arc(0, 0, R * 0.09, 0, Math.PI * 2); g.fill();
+        g.restore();
+      };
+      // a soft grey edge first, then the white flake: it reads against bright fog
+      g.save(); g.strokeStyle = 'rgba(70,76,84,.42)'; g.fillStyle = 'rgba(70,76,84,.42)'; g.shadowColor = 'rgba(70,76,84,.5)'; g.shadowBlur = 8;
+      for (let v = 0; v < 5; v++) { g.lineWidth = 9; flake(v * CELL + CELL / 2, CELL / 2, CELL * 0.4, v); }
+      g.restore();
+      for (let v = 0; v < 5; v++) flake(v * CELL + CELL / 2, CELL / 2, CELL * 0.4, v);
+      const tex = new T.CanvasTexture(atlas);
+
+      const pos = new Float32Array(N * 3), aVar = new Float32Array(N), aSize = new Float32Array(N), aSpeed = new Float32Array(N), aPhase = new Float32Array(N), aSpin = new Float32Array(N);
+      for (let i = 0; i < N; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 20;
+        pos[i * 3 + 1] = Math.random() * 9 - 0.5;
+        pos[i * 3 + 2] = -14 + Math.random() * 22;
+        aVar[i] = Math.floor(Math.random() * 5);
+        aSize[i] = 0.022 + Math.random() * 0.045;
+        aSpeed[i] = 0.22 + Math.random() * 0.38;
+        aPhase[i] = Math.random() * Math.PI * 2;
+        aSpin[i] = (Math.random() - 0.5) * 1.6;
+      }
+      const geo = new T.BufferGeometry();
+      geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+      geo.setAttribute('aVar', new T.BufferAttribute(aVar, 1));
+      geo.setAttribute('aSize', new T.BufferAttribute(aSize, 1));
+      geo.setAttribute('aSpeed', new T.BufferAttribute(aSpeed, 1));
+      geo.setAttribute('aPhase', new T.BufferAttribute(aPhase, 1));
+      geo.setAttribute('aSpin', new T.BufferAttribute(aSpin, 1));
+      const fc = new T.Color(FOG);
+      snowU = {
+        uTime: { value: 0 }, uTex: { value: tex }, uScale: { value: 800 },
+        fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY },
+      };
+      const mat = new T.ShaderMaterial({
+        uniforms: snowU, transparent: true, depthWrite: false,
+        vertexShader: `
+          uniform float uTime; uniform float uScale;
+          attribute float aVar; attribute float aSize; attribute float aSpeed; attribute float aPhase; attribute float aSpin;
+          varying float vVar; varying float vRot; varying float vDepth;
+          void main() {
+            float y = -0.5 + mod(position.y + 0.5 - uTime * aSpeed, 9.0);
+            vec3 p = vec3(position.x + sin(uTime * 0.6 + aPhase) * 0.35, y, position.z + cos(uTime * 0.45 + aPhase) * 0.25);
+            vec4 mv = modelViewMatrix * vec4(p, 1.0);
+            vDepth = -mv.z;
+            gl_PointSize = min(24.0, aSize * uScale / max(vDepth, 0.1));
+            vVar = aVar; vRot = aPhase + uTime * aSpin;
+            gl_Position = projectionMatrix * mv;
+          }`,
+        fragmentShader: `
+          uniform sampler2D uTex; uniform vec3 fogColor; uniform float fogDensity;
+          varying float vVar; varying float vRot; varying float vDepth;
+          void main() {
+            vec2 c = gl_PointCoord - 0.5;
+            float s = sin(vRot), co = cos(vRot);
+            c = mat2(co, -s, s, co) * c + 0.5;
+            if (c.x < 0. || c.y < 0. || c.x > 1. || c.y > 1.) discard;
+            vec4 t = texture2D(uTex, vec2((vVar + c.x) / 5.0, 1.0 - c.y));
+            float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
+            float a = t.a * (1.0 - fog * 0.88);
+            if (a < 0.02) discard;
+            gl_FragColor = vec4(mix(vec3(1.0), fogColor, fog * 0.8), a);
+          }`,
+      });
+      const pts = new T.Points(geo, mat);
+      pts.frustumCulled = false;
+      scene.add(pts);
+    }
+
+    // ---- leaves on the wind: three layers of them, tumbling through the trees ----
+    // After the three.js example webgpu_layers: thousands of small sprites in three
+    // colours, each on its own layer, blowing diagonally across and turning over
+    // as they go. Here they are leaves in the site's warm colours, drawn in code.
+    let leafU = null;
+    function leaves() {
+      const per = small ? 200 : 460;
+      const cv2 = document.createElement('canvas'); cv2.width = 64; cv2.height = 64;
+      const g = cv2.getContext('2d');
+      g.translate(32, 32); g.rotate(-0.6);
+      g.fillStyle = '#fff';
+      g.beginPath(); g.moveTo(0, -28); g.bezierCurveTo(18, -16, 18, 14, 0, 28); g.bezierCurveTo(-18, 14, -18, -16, 0, -28); g.fill();
+      g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -24); g.lineTo(0, 26); g.stroke();
+      const tex = new T.CanvasTexture(cv2);
+      const plane = new T.PlaneGeometry(0.1, 0.1);
+      const fc = new T.Color(FOG);
+      leafU = { uTime: { value: 0 }, uTex: { value: tex }, fogColor: { value: new T.Vector3(fc.r, fc.g, fc.b) }, fogDensity: { value: DENSITY } };
+      const layers = [0xFD641A, 0xFF9A5C, 0xC9A14A];
+      layers.forEach((hex, li) => {
+        const geo = new T.InstancedBufferGeometry();
+        geo.index = plane.index;
+        geo.setAttribute('position', plane.attributes.position);
+        geo.setAttribute('uv', plane.attributes.uv);
+        geo.instanceCount = per;
+        const start = new Float32Array(per * 3), rot = new Float32Array(per * 3), dir = new Float32Array(per * 3), off = new Float32Array(per);
+        const v = new T.Vector3();
+        for (let i = 0; i < per; i++) {
+          start[i * 3] = -20 + Math.random() * 5;
+          start[i * 3 + 1] = 0 + Math.random() * 12;
+          start[i * 3 + 2] = -7 + Math.random() * 13;
+          v.set(0.75 + Math.random() * 0.2, -0.3 + Math.random() * 0.14, (Math.random() - 0.5) * 0.2).normalize();
+          dir[i * 3] = v.x; dir[i * 3 + 1] = v.y; dir[i * 3 + 2] = v.z;
+          rot[i * 3] = Math.random(); rot[i * 3 + 1] = Math.random(); rot[i * 3 + 2] = Math.random();
+          off[i] = i / per;
+        }
+        geo.setAttribute('aStart', new T.InstancedBufferAttribute(start, 3));
+        geo.setAttribute('aRot', new T.InstancedBufferAttribute(rot, 3));
+        geo.setAttribute('aDir', new T.InstancedBufferAttribute(dir, 3));
+        geo.setAttribute('aOff', new T.InstancedBufferAttribute(off, 1));
+        const c = new T.Color(hex);
+        const mat = new T.ShaderMaterial({
+          uniforms: Object.assign({ uColor: { value: new T.Vector3(c.r, c.g, c.b) } }, leafU),
+          side: T.DoubleSide, transparent: true, depthWrite: false,
+          vertexShader: `
+            uniform float uTime;
+            attribute vec3 aStart; attribute vec3 aRot; attribute vec3 aDir; attribute float aOff;
+            varying vec2 vUv; varying float vShade; varying float vDepth;
+            mat3 rx(float a) { float s = sin(a), c = cos(a); return mat3(1., 0., 0., 0., c, s, 0., -s, c); }
+            mat3 ry(float a) { float s = sin(a), c = cos(a); return mat3(c, 0., -s, 0., 1., 0., s, 0., c); }
+            mat3 rz(float a) { float s = sin(a), c = cos(a); return mat3(c, s, 0., -s, c, 0., 0., 0., 1.); }
+            void main() {
+              float t = fract(aOff + uTime * 0.014);
+              vec3 ang = aRot * t * 20.0;
+              mat3 R = rz(ang.z) * ry(ang.y) * rx(ang.x);
+              vec3 p = aStart + R * position + aDir * t * 34.0;
+              p.y += sin(uTime * 0.8 + aOff * 40.0) * 0.25;
+              vec4 mv = modelViewMatrix * vec4(p, 1.0);
+              vDepth = -mv.z;
+              vShade = 0.55 + 0.45 * abs(normalize(normalMatrix * (R * vec3(0., 0., 1.))).z);
+              vUv = uv;
+              gl_Position = projectionMatrix * mv;
+            }`,
+          fragmentShader: `
+            uniform sampler2D uTex; uniform vec3 uColor; uniform vec3 fogColor; uniform float fogDensity;
+            varying vec2 vUv; varying float vShade; varying float vDepth;
+            void main() {
+              vec4 t = texture2D(uTex, vUv);
+              if (t.a < 0.1) discard;
+              float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
+              vec3 col = uColor * vShade * (1.0 - (1.0 - t.r) * 0.6);
+              gl_FragColor = vec4(mix(col, fogColor, fog * 0.8), t.a * (1.0 - fog * 0.5));
+            }`,
+        });
+        const mesh = new T.Mesh(geo, mat);
+        mesh.frustumCulled = false;
+        mesh.layers.set(0);
+        scene.add(mesh);
+      });
+    }
+
     // ---- the flock ----
     let flock = null;
     function birds() {
@@ -432,6 +611,7 @@
     function size() {
       const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
       r.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      if (snowU) snowU.uScale.value = (h * 0.5 * r.getPixelRatio()) / Math.tan((camera.fov * Math.PI) / 360);
     }
     let t = 0;
     function place(dt) {
@@ -450,13 +630,15 @@
       if (!visible || document.hidden) return;
       if (flock) flock(now, d);
       if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
+      if (snowU && !reduce) snowU.uTime.value = now / 1000;
+      if (leafU && !reduce) leafU.uTime.value = now / 1000;
       place(d);
       r.render(scene, camera);
       if (!started) { started = true; cv.classList.add('on'); }
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {
-      grow(); mist(); birds(); size(); addEventListener('resize', size);
+      grow(); mist(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
       last = performance.now(); requestAnimationFrame(frame);
     }, 30);
   })();

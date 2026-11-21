@@ -118,6 +118,11 @@ link, a meta refresh and a script, each pointing at the section that replaced it
   drifts, so about once a minute they sweep past close to the camera.
 - **Scroll:** the hero leaves, the story lights up word by word, the fog turns to
   night, and the page carries on in black.
+- **Snow:** light point-sprite snow (after `webgl_points_sprites`): five
+  snowflake shapes drawn in code, small, falling, swaying and spinning, fogged
+  like the trees.
+- **Leaves:** three layers of small leaves in Heron orange, light orange and gold
+  (after `webgpu_layers`), drawn in code, blowing left to right and tumbling.
 - **Welcome** (`assets/intro.js`), once per visit: "Ajmal P.S" in 3D Geist,
   cut into triangles by `TessellateModifier` (after `webgl_modifier_tessellation`),
   assembles left to right in the site's colours, breathes, then flies apart as
