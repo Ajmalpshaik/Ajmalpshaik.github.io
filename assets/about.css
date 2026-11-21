@@ -7,27 +7,18 @@
 .gap-t { margin-top: clamp(32px, 4vw, 52px); }
 .faq summary h3 { font: inherit; letter-spacing: inherit; }
 
-/* hero: one dark button on the light fog */
+/* hero: one soft button on the fog */
 .hero-act { margin-top: 26px; animation: fade 1.4s var(--ease) both .6s; }
-.hero-copy .pill { background: #0F1114; color: #F5F5F7; }
-.hero-copy .pill:hover { background: #24272C; }
 @media (max-width: 600px) { .hero-act { margin-top: 18px; } }
 
-/* story: the five steps as soft raised neumorphic tiles, one row on wide screens, stacked below */
+/* story: the five steps as soft raised tiles, one row on wide screens, stacked below */
 #story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
-#story .steps li {
-  padding: 22px 20px; border: 0; border-radius: 22px; background: #1b1c20;
-  box-shadow: 7px 7px 16px rgba(0,0,0,.62), -5px -5px 13px rgba(255,255,255,.045),
-    inset 1px 1px 0 rgba(255,255,255,.06), inset -1px -1px 0 rgba(0,0,0,.4);
-  transition: box-shadow .35s var(--ease), transform .35s var(--ease);
-}
+#story .steps li { padding: 22px 20px; border-radius: 22px; box-shadow: var(--neu-up); transition: box-shadow .35s var(--ease); }
 #story .steps li::before {
   display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 18px;
-  border-radius: 50%; background: #1b1c20; color: var(--fg);
-  box-shadow: inset 3px 3px 7px rgba(0,0,0,.62), inset -3px -3px 6px rgba(255,255,255,.045);
+  border-radius: 50%; background: var(--bg); color: var(--fg); box-shadow: var(--neu-in-sm);
 }
-#story .steps li span { color: #A1A1A7; }
-#story .steps li:hover { box-shadow: inset 4px 4px 10px rgba(0,0,0,.62), inset -4px -4px 9px rgba(255,255,255,.04); }
+#story .steps li:hover { box-shadow: var(--neu-in); }
 @media (max-width: 1000px) {
   #story .steps { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   #story .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 2px 16px; padding: 16px 18px; }
