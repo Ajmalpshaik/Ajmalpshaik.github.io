@@ -162,8 +162,6 @@
       lastFocus = document.activeElement;
       var fromRect = shown(from), fromBg = from ? getComputedStyle(from).backgroundColor : '';
       source = from;
-      // from the light bar over the fog the card is light too, so it grows out of the pill in one colour
-      cbox.classList.toggle('light', !!(from && from.closest && from.closest('.nav.light')));
       closeMenu();
       cbox.hidden = false;
       document.body.style.overflow = 'hidden';
@@ -315,9 +313,9 @@
         p.x += p.vx * dt; p.y += p.vy * dt;
       }
       ctx.clearRect(0, 0, W, H);
-      var onLight = nav && nav.classList.contains('light');
-      ctx.globalCompositeOperation = onLight ? 'source-over' : 'lighter';
-      var L = onLight ? 42 : 62, S = onLight ? 80 : 95, n = P.length;
+      // the site is light all over: darker, saturated lines, normal blending
+      ctx.globalCompositeOperation = 'source-over';
+      var L = 42, S = 80, n = P.length;
       ctx.lineWidth = 1;
       for (i = 0; i < n; i++) {
         var a2 = P[i], d1 = 1e9, d2 = 1e9, j1 = -1, j2 = -1;
@@ -330,14 +328,14 @@
         for (var q = 0; q < 2; q++) {
           var jj = pair[q][0];
           if (jj < 0 || pair[q][1] > 25600) continue;
-          var o = Math.pow(Math.max(0, Math.min(a2.life, P[jj].life)), 0.8) * (onLight ? 0.55 : 0.7);
+          var o = Math.pow(Math.max(0, Math.min(a2.life, P[jj].life)), 0.8) * 0.55;
           ctx.strokeStyle = 'hsla(' + h + ',' + S + '%,' + L + '%,' + o + ')';
           ctx.beginPath(); ctx.moveTo(a2.x, a2.y); ctx.lineTo(P[jj].x, P[jj].y); ctx.stroke();
         }
       }
       for (i = 0; i < n; i++) {
         var pp = P[i], pulse = 1 + 0.6 * Math.max(0, Math.sin(pp.id * 1.7 + t * Math.PI));
-        ctx.fillStyle = 'hsla(' + hue(pp.id) + ',' + S + '%,' + (onLight ? L : 70) + '%,' + Math.pow(pp.life, 1.2) + ')';
+        ctx.fillStyle = 'hsla(' + hue(pp.id) + ',' + S + '%,' + L + '%,' + Math.pow(pp.life, 1.2) + ')';
         ctx.beginPath(); ctx.arc(pp.x, pp.y, pp.r * pulse, 0, Math.PI * 2); ctx.fill();
       }
       if (P.length || moved) rafId = requestAnimationFrame(tick);

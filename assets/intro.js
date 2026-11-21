@@ -5,7 +5,7 @@
  * in Geist (assets/fonts/geist-600.typeface.json, made from the site's own font),
  * cut into small triangles by TessellateModifier. Each triangle starts scattered
  * and spinning, flies home left to right, the name breathes a moment, then the
- * shards fly apart toward you while the dark lifts off the forest.
+ * shards fly apart toward you while the fog screen lifts off the forest.
  *
  * It plays once per visit. The inline script in index.html decides that before
  * first paint (html.intro-on shows the dark screen at once, so nothing flashes),
@@ -73,8 +73,9 @@
     var n = pos.length / 9;
     var A = function (k) { return new Float32Array(n * 3 * k); };
     var aCenter = A(3), aDir = A(3), aAxis = A(3), aColor = A(3), aSpin = A(1), aDelay = A(1);
-    var faceCols = ['#F5F5F7', '#F5F5F7', '#F5F5F7', '#ECECEF', '#E2E3E6'];
-    var sideCols = ['#C6CACE', '#B9B9BE', '#9A9AA0', '#D5D7DA'];
+    // dark letters on the light fog screen, their sides in fog greys
+    var faceCols = ['#15171B', '#15171B', '#15171B', '#22252A', '#2C3036'];
+    var sideCols = ['#5B6168', '#6D737A', '#4A4F55', '#80868D'];
     var spark = ['#FD641A', '#FF9A5C'];
     var col = new T.Color(), v = new T.Vector3(), ax = new T.Vector3();
     for (var f = 0; f < n; f++) {
