@@ -68,10 +68,11 @@ const PAGES = [
   'toolbox/crane-lift-calculator/index.html', 'toolbox/ar-viewer/index.html', 'toolbox/bim-viewer/index.html',
 ];
 
-// The tool pages load three.js 0.186.1 and the home page 0.128.0, all from
-// jsDelivr. When node_modules has the same release, serve it from there instead,
-// so the checks run without a network:
-//   npm i --no-save three@0.186.1 three-r128@npm:three@0.128.0
+// The tool pages load three.js 0.186.1 and the home and About pages 0.128.0,
+// all from jsDelivr. package.json pins both releases as dev dependencies, so
+// `npm install` puts them in node_modules and they are served from there: the
+// checks never wait on the network. That matters: the welcome gives up after
+// 5 s without three.js, so a slow CDN once failed its check in CI.
 // Any folder in node_modules whose package.json says "name": "three" counts.
 // The SHA-384 fingerprints still apply, so a local copy that differs from the
 // release fails just the same.
