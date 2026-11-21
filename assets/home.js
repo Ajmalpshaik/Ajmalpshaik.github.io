@@ -251,7 +251,7 @@
     // and spinning. Near flakes are larger; far ones melt into the same fog.
     let snowU = null;
     function snow() {
-      const N = small ? 1800 : 4200, CELL = 128;
+      const N = small ? 900 : 2100, CELL = 128;
       const atlas = document.createElement('canvas');
       atlas.width = CELL * 5; atlas.height = CELL;
       const g = atlas.getContext('2d');
@@ -349,7 +349,7 @@
     // as they go. Here they are leaves in the site's warm colours, drawn in code.
     let leafU = null;
     function leaves() {
-      const per = small ? 200 : 460;
+      const per = small ? 100 : 230;
       const cv2 = document.createElement('canvas'); cv2.width = 64; cv2.height = 64;
       const g = cv2.getContext('2d');
       g.translate(32, 32); g.rotate(-0.6);
