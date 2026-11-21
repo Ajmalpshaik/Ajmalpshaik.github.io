@@ -11,35 +11,27 @@
 .cards.neu { grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
 @media (min-width: 1100px) { .cards.neu { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-/* ---------- soft tool cards ---------- */
-.cards.neu {
-  --neu: #16171b;
-  --neu-up: 10px 10px 24px rgba(0, 0, 0, .7), -6px -6px 16px rgba(255, 255, 255, .035),
-    inset 1px 1px 0 rgba(255, 255, 255, .07), inset -1px -1px 0 rgba(0, 0, 0, .5);
-  --neu-in: inset 6px 6px 14px rgba(0, 0, 0, .7), inset -5px -5px 12px rgba(255, 255, 255, .035);
-  gap: clamp(14px, 1.6vw, 22px);
+/* ---------- soft tool cards ----------
+   Built on the site's light neumorphic tokens (assets/site.css): the card is
+   the page colour, raised by the site's card shadow; pointing at it presses
+   it in with --neu-in. Chips already come pressed from site.css. */
+.cards.neu { gap: clamp(14px, 1.6vw, 22px); }
+.cards.neu .card {
+  gap: 10px; padding: clamp(18px, 1.8vw, 24px); border-radius: 22px;
+  transition: box-shadow .45s var(--ease), transform .6s var(--ease);
 }
 /* short and calm: smaller title and text than the site's default card */
 .cards.neu .card .h3 { margin-top: 6px; font-size: 1.12rem; }
 .cards.neu .card p { font-size: 14px; line-height: 1.55; }
 .cards.neu .card .more { font-size: 13.5px; margin-top: auto; padding-top: 4px; }
-.cards.neu .card {
-  gap: 10px; padding: clamp(18px, 1.8vw, 24px); border-radius: 22px; border: 0;
-  background: var(--neu); box-shadow: var(--neu-up);
-  transition: box-shadow .45s var(--ease), transform .6s var(--ease);
-}
 /* the tool's colour, kept as a faint glow in the corner */
-.cards.neu .card::after { opacity: .12; }
+.cards.neu .card::after { opacity: .14; }
 .cards.neu a.card:hover { transform: none; box-shadow: var(--neu-in); }
-.cards.neu a.card:hover::after { opacity: .18; }
 .cards.neu a.card:active { transform: scale(.99); }
 .cards.neu a.card:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
 
-/* chips: small pressed pills */
-.cards.neu .chip { border: 0; background: var(--neu); box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .65), inset -2px -2px 4px rgba(255, 255, 255, .04); }
-
 /* still to come: pressed into the page */
-.cards.neu .card.soon { background: #121317; box-shadow: var(--neu-in); }
+.cards.neu .card.soon { box-shadow: var(--neu-in); }
 .cards.neu .card.soon::after { display: none; }
 
 /* the one safety line under the cards */
@@ -51,5 +43,4 @@
 
 @media print {
   .cards.neu .card, .cards.neu .card.soon { background: none; box-shadow: none; border: 1px solid #ccc; }
-  .cards.neu .chip { box-shadow: none; border: 1px solid #ccc; }
 }
