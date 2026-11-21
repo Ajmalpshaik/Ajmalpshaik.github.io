@@ -1,0 +1,28 @@
+/* About me page only, on top of site.css and forest.css. Layout only: the look
+   is the site's own (soft raised steps, cards and buttons from site.css). */
+
+/* a label over each section heading, the FAQ heading at the summary's size */
+.sec-top .eyebrow { margin-bottom: 18px; }
+.sec-top > .lede { width: min(100%, 46ch); }
+.gap-t { margin-top: clamp(32px, 4vw, 52px); }
+.faq summary h3 { font: inherit; letter-spacing: inherit; }
+
+/* hero: the Contact me button under the words */
+.hero-act { margin-top: 26px; animation: fade 1.4s var(--ease) both .6s; }
+@media (max-width: 600px) { .hero-act { margin-top: 18px; } }
+
+/* story: the five steps in one row on wide screens */
+@media (min-width: 1100px) { #story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* selected work: the current project wide on top, then two by two */
+#work .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#work .card:first-child { grid-column: 1 / -1; }
+@media (max-width: 760px) { #work .cards { grid-template-columns: minmax(0, 1fr); } }
+
+/* closing: the next step */
+.next .eyebrow { margin-bottom: 18px; }
+.next .h2 { max-width: 22ch; }
+.next .lede { margin-top: 14px; }
+.next .btns { margin-top: 28px; }
+
+@media print { .hero-act, .next .btns { display: none; } }

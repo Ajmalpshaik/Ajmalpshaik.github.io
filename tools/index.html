@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tools by Ajmal P.S: Revit automation and browser tools</title>
-  <meta name="description" content="Free browser tools for MEP and BIM site work, and the Revit add-ins Ajmal P.S builds in C#, pyRevit, Dynamo and AutoLISP. Nothing to sign up for or upload.">
+  <title>Tools by Ajmal P.S: free browser tools for MEP and BIM</title>
+  <meta name="description" content="Free browser tools for MEP and BIM site work by Ajmal P.S: a crane lift calculator, an AR viewer and an IFC viewer. Nothing to sign up for or upload.">
   <meta name="author" content="Ajmal P.S">
   <link rel="canonical" href="https://ajmalps.com/tools/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#d3d7db">
-  <meta name="color-scheme" content="dark">
-  <meta property="og:title" content="Tools by Ajmal P.S: Revit automation and browser tools">
-  <meta property="og:description" content="Free browser tools for MEP and BIM site work, and the Revit add-ins Ajmal P.S builds in C#, pyRevit, Dynamo and AutoLISP. Nothing to sign up for or upload.">
+  <meta name="color-scheme" content="light">
+  <meta property="og:title" content="Tools by Ajmal P.S: free browser tools for MEP and BIM">
+  <meta property="og:description" content="Free browser tools for MEP and BIM site work by Ajmal P.S: a crane lift calculator, an AR viewer and an IFC viewer. Nothing to sign up for or upload.">
   <meta property="og:url" content="https://ajmalps.com/tools/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ajmalps.com">
@@ -21,20 +21,14 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Ajmal P.S, MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tools by Ajmal P.S: Revit automation and browser tools">
-  <meta name="twitter:description" content="Free browser tools for MEP and BIM site work, and Revit add-ins in C#, pyRevit, Dynamo and AutoLISP. No sign-up, nothing uploaded.">
+  <meta name="twitter:title" content="Tools by Ajmal P.S: free browser tools for MEP and BIM">
+  <meta name="twitter:description" content="Free browser tools for MEP and BIM site work: crane lifts, AR and IFC. No sign-up, nothing uploaded.">
   <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
   <link rel="icon" type="image/png" sizes="64x64" href="/assets/heron/favicon-64.png">
   <link rel="apple-touch-icon" href="/assets/heron/apple-touch-180.png">
   <link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/site.css">
-  <style>
-    /* this page only: four cards in one row on wide screens, room above the second heading in a section, the in-progress card, the Heron line */
-    @media (min-width: 1240px) { #browser-tools .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-    .sec-top.sub { margin-top: clamp(56px, 7vw, 100px); }
-    .card.soon { background: transparent; border-style: dashed; border-color: var(--line-2); }
-    .endline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding-top: clamp(24px, 3vw, 36px); border-top: 1px solid var(--line); }
-  </style>
+  <link rel="stylesheet" href="/assets/tools.css">
   <script>(function(d){d.className=d.className.replace('no-js','js');setTimeout(function(){if(!d.hasAttribute('data-ready'))d.className=d.className.replace(/\bjs\b/,'no-js')},3000)})(document.documentElement)</script>
   <script type="application/ld+json">
 {
@@ -140,7 +134,7 @@
       "@id": "https://ajmalps.com/tools/#webpage",
       "url": "https://ajmalps.com/tools/",
       "name": "Tools",
-      "description": "Free browser tools for MEP and BIM site work, and Revit automation in C#, pyRevit, Dynamo and AutoLISP, by Ajmal P.S.",
+      "description": "Free browser tools for MEP and BIM site work by Ajmal P.S.",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://ajmalps.com/#website"
@@ -186,7 +180,7 @@
           {
             "@type": "ListItem",
             "position": 3,
-            "name": "BIM Viewer",
+            "name": "IFC Viewer",
             "url": "https://ajmalps.com/toolbox/bim-viewer/"
           }
         ]
@@ -264,10 +258,6 @@
       <p class="eyebrow"><span>Tools</span></p>
       <h1 class="title">Built for real <em class="s">project work.</em></h1>
       <p class="lede">Tools I built because I needed them on real projects. The browser tools are free and <strong>run on your own device.</strong> Nothing is uploaded or tracked, and they work with no signal on site.</p>
-      <div class="btns">
-        <a class="pill" href="#browser-tools">Browser tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
-        <a class="ghost" href="#automation">Revit automation</a>
-      </div>
     </div>
   </header>
 
@@ -279,96 +269,34 @@
       </div>
       <div class="cards">
         <a class="card" href="/toolbox/crane-lift-calculator/" style="--tint: #c9a14a">
-          <span class="idx" aria-hidden="true">01</span>
           <div class="chips"><span class="chip">Lifting &middot; BS&nbsp;7121</span></div>
           <h3 class="h3">Crane Lift Calculator</h3>
-          <p>Sling tension on the BS&nbsp;7121 two-leg rule, ground bearing pressure, wind speed and boom length, with a printable record sheet.</p>
+          <p>Sling tension, ground pressure, wind speed and boom length, with a printable record sheet.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <a class="card" href="/toolbox/ar-viewer/" style="--tint: #20b8a6">
-          <span class="idx" aria-hidden="true">02</span>
           <div class="chips"><span class="chip">Revit &middot; AR &middot; USDZ</span></div>
           <h3 class="h3">AR Viewer</h3>
-          <p>Turn a Revit FBX export into a USDZ file and see the model at real size on an iPhone or iPad. The model never leaves your device.</p>
+          <p>Revit FBX to USDZ. See the model at real size on iPhone or iPad.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <a class="card" href="/toolbox/bim-viewer/" style="--tint: #3a6bff">
-          <span class="idx" aria-hidden="true">03</span>
-          <div class="chips"><span class="chip">IFC &middot; Walkthrough</span></div>
-          <h3 class="h3">BIM Viewer</h3>
-          <p>Open a Revit IFC export, check properties, cut plans and sections, and measure. Then walk through the building, game style.</p>
+          <div class="chips"><span class="chip">Sections &middot; Walkthrough</span></div>
+          <h3 class="h3">IFC Viewer</h3>
+          <p>Open a Revit IFC, cut sections, measure, then walk through it.</p>
           <span class="more">Open <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>
         <div class="card soon">
-          <span class="idx" aria-hidden="true">04</span>
           <div class="chips"><span class="chip">In progress</span></div>
           <h3 class="h3">More on the way</h3>
-          <p>Duct and pipe sizing, drainage fixture units, an MEP unit converter and an ISO&nbsp;19650 file name builder. Each goes up when I trust the numbers.</p>
+          <p>Duct and pipe sizing, drainage fixture units, an MEP unit converter, ISO&nbsp;19650 file names.</p>
         </div>
       </div>
+      <p class="note limits">Each tool says on its own page which standard it follows and what it leaves out. <strong>None replaces a competent person or a signed calculation.</strong> Found a mistake, or want a tool? <a href="#contact">Tell me</a>.</p>
     </div>
   </section>
 
-  <section class="sec" id="automation" data-track="automation">
-    <div class="wrap">
-      <div class="sec-top">
-        <h2 class="h2">Revit automation, <em class="s">in four languages.</em></h2>
-        <p class="lede">The repeat work goes to the tools. <strong>The team&rsquo;s hours go to coordination.</strong></p>
-      </div>
-      <ul class="rows">
-        <li class="row">
-          <div class="row-k"><span class="n">01</span><h3 class="h3">C# add-ins</h3></div>
-          <div class="row-v"><p>Ribbon tools on the Revit API. One codebase for every Revit release.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">02</span><h3 class="h3">pyRevit and Python</h3></div>
-          <div class="row-v"><p>The fast path for a tool needed this week.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">03</span><h3 class="h3">Dynamo</h3></div>
-          <div class="row-v"><p>Bulk parameters, take-offs and checks a modeller can adjust.</p></div>
-        </li>
-        <li class="row">
-          <div class="row-k"><span class="n">04</span><h3 class="h3">AutoLISP</h3></div>
-          <div class="row-v"><p>Where it all started, and still right for a DWG office.</p></div>
-        </li>
-      </ul>
 
-      <div class="sec-top sub">
-        <h3 class="h2">Tools a team <em class="s">can rely on.</em></h3>
-        <p class="eyebrow">How they ship</p>
-      </div>
-      <ol class="steps">
-        <li><b>An installer, not an email</b><span>The whole team runs the same version.</span></li>
-        <li><b>Every Revit release</b><span>One codebase, no project left behind.</span></li>
-        <li><b>Your standard</b><span>Built around your templates and naming.</span></li>
-        <li><b>One undo</b><span>Every change is one step back.</span></li>
-      </ol>
-      <p class="note">Want one built? <a href="#contact">Tell me the job</a> you are tired of doing. Remote, scoped up front, handed over with documentation. If it is not worth building, I will say so.</p>
-    </div>
-  </section>
-
-  <section class="sec" id="limits" data-track="limits">
-    <div class="wrap">
-      <div class="sec-top">
-        <h2 class="h2">What each one <em class="s">leaves out.</em></h2>
-        <p class="eyebrow">How I treat these</p>
-      </div>
-      <div class="prose">
-        <p>Every tool says which standard it follows and what it leaves out, on the tool&rsquo;s own page. <strong>None of them replace a competent person, a manufacturer&rsquo;s chart or a signed calculation.</strong></p>
-        <p>If you find something wrong, <a href="#contact">tell me</a> and I will fix it and say what changed. If there is a tool you want, ask. It might be next.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec" id="heron-note" data-track="heron-note">
-    <div class="wrap">
-      <div class="endline">
-        <p class="lede">Looking for Heron Tools or Heron AI? Heron has its own tab.</p>
-        <a class="ghost" href="/heron/">Go to Heron <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-      </div>
-    </div>
-  </section>
 </main>
 <!-- chrome:foot -->
 <footer class="foot" id="contact">

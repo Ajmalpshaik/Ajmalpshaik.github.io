@@ -35,7 +35,7 @@ STUBS = {
     "work/index.html": "/about/#work",
     "skills/index.html": "/about/#skills",
     "faq/index.html": "/about/#faq",
-    "automation/index.html": "/tools/#automation",
+    "automation/index.html": "/about/#skills",
     "toolbox/index.html": "/tools/#browser-tools",
     "contact/index.html": "/#contact",
 }
