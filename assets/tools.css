@@ -42,30 +42,8 @@
 .cards.neu .card.soon { background: #121317; box-shadow: var(--neu-in); }
 .cards.neu .card.soon::after { display: none; }
 
-/* ---------- Revit automation: four languages, soft tiles ----------
-   The same raised surface as the tool cards, but with no hover: they are
-   not links. The language sits in a small pressed pill. */
-.langs {
-  --neu: #16171b;
-  list-style: none; margin: 0; padding: 0; display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px);
-}
-.langs li {
-  min-width: 0; padding: clamp(18px, 1.8vw, 24px); border-radius: 22px;
-  background: var(--neu);
-  box-shadow: 10px 10px 24px rgba(0, 0, 0, .7), -6px -6px 16px rgba(255, 255, 255, .035),
-    inset 1px 1px 0 rgba(255, 255, 255, .07), inset -1px -1px 0 rgba(0, 0, 0, .5);
-}
-.lang-k {
-  display: inline-block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase;
-  color: #c8c8cd; padding: 6px 10px; border-radius: 999px; margin-bottom: 14px; background: var(--neu);
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .65), inset -2px -2px 4px rgba(255, 255, 255, .04);
-}
-.langs .h3 { font-size: 1.12rem; margin-bottom: 6px; }
-.langs p { color: var(--mute); font-size: 14px; line-height: 1.55; }
-@media (max-width: 1000px) { .langs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .langs { grid-template-columns: minmax(0, 1fr); } }
-#automation .note { margin-top: clamp(20px, 2.4vw, 28px); }
+/* the one safety line under the cards */
+.note.limits { margin-top: clamp(20px, 2.4vw, 30px); max-width: 72ch; }
 
 @media (prefers-reduced-motion: reduce) {
   .cards.neu .card { transition: none; }
@@ -73,6 +51,5 @@
 
 @media print {
   .cards.neu .card, .cards.neu .card.soon { background: none; box-shadow: none; border: 1px solid #ccc; }
-  .cards.neu .chip, .lang-k { box-shadow: none; border: 1px solid #ccc; }
-  .langs li { background: none; box-shadow: none; border: 1px solid #ccc; }
+  .cards.neu .chip { box-shadow: none; border: 1px solid #ccc; }
 }
