@@ -155,7 +155,7 @@
       <span aria-current="page">BIM Viewer</span>
     </nav>
     <h1 class="title">BIM Viewer</h1>
-    <p class="lede">Open a Revit model as IFC. Check every element's properties, levels and categories, cut a plan or a section, and measure. Then switch to the walk view and walk through the building as a robot, a soldier or X Bot, like a game.</p>
+    <p class="lede">Open a Revit IFC export. Check properties, cut plans and sections, measure, then walk through the building like a game.</p>
     <ul class="chips" aria-label="About this tool">
       <li class="chip">Free tool</li>
       <li class="chip">Runs in your browser</li>
@@ -169,7 +169,7 @@
 
     <div class="bvp-private" role="note">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      <p><b>Your file stays on your device.</b> The IFC is opened inside this browser tab. Nothing is uploaded, stored or shared, and there is no server and no API key behind it.</p>
+      <p><b>Your file stays on your device.</b> It opens in this tab. Nothing is uploaded.</p>
     </div>
 
     <p class="tool-note" id="bvNeeds">The BIM Viewer needs JavaScript and a browser with WebGL 2: a current Chrome, Edge, Firefox or Safari.</p>
@@ -237,7 +237,7 @@
           <button type="button" id="bvReset" title="Show what was hidden or isolated (U)">Show all</button>
         </div>
         <div class="bv-tgroup">
-          <label class="bv-cut" title="Cut the model at a height, like a plan view"><input type="checkbox" id="bvCutOn"><span>Plan cut</span><input type="range" id="bvCut" min="0" max="1000" value="1000" aria-label="Plan cut height"></label>
+          <label class="bv-cut" title="Cut the model at a height, like a plan view"><input type="checkbox" id="bvCutOn"><span>Plan</span><input type="range" id="bvCut" min="0" max="1000" value="1000" aria-label="Plan cut height"></label>
           <label class="bv-cut" title="Cut the model north to south, like a section"><input type="checkbox" id="bvSecOn"><span>Section</span><input type="range" id="bvSec" min="0" max="1000" value="500" aria-label="Section position"></label>
         </div>
       </div>
@@ -247,10 +247,7 @@
         <div class="bv-cross" id="bvCross" hidden></div>
         <div class="bv-look" id="bvLook" hidden></div>
         <div class="bv-aim" id="bvAim" hidden></div>
-        <div class="bv-keys" id="bvKeys">
-          <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Shift</kbd> run &nbsp; <kbd>Space</kbd> jump &nbsp; hold <kbd>T</kbd> teleport</p>
-          <p><kbd>C</kbd> camera &nbsp; <kbd>Q</kbd> character &nbsp; <kbd>E</kbd> inspect on/off &nbsp; <kbd>F</kbd> torch &nbsp; <kbd>M</kbd> map &nbsp; <kbd>H</kbd> hide this &nbsp; <kbd>R</kbd> restart &nbsp; <kbd>Esc</kbd> pause</p>
-        </div>
+        <div class="bv-keys" id="bvKeys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move <kbd>Shift</kbd> run <kbd>Space</kbd> jump <kbd>E</kbd> inspect <kbd>T</kbd> teleport <kbd>C</kbd> camera <kbd>Esc</kbd> pause</div>
         <div class="bv-emotes" id="bvEmotes" aria-label="Emotes">
           <button type="button" data-emote="Wave" title="Wave (1)">👋<span>1</span></button>
           <button type="button" data-emote="Dance" title="Dance (2)">💃<span>2</span></button>
@@ -260,10 +257,6 @@
           <button type="button" data-emote="Punch" title="Punch (6)">🥊<span>6</span></button>
         </div>
         <div class="bv-mini" id="bvMini"><span aria-hidden="true">N</span></div>
-        <label class="bv-go">Go to <select id="bvGoLevel" aria-label="Go to level"></select></label>
-        <label class="bv-go bv-who">Play as <select id="bvChar" aria-label="Character">
-          <option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option>
-        </select></label>
       </div>
 
       <!-- Phone controls, laid out like a mobile game: the left of the screen
@@ -296,20 +289,20 @@
 
       <div class="bv-pause" id="bvPause" hidden>
         <div class="bv-card">
-          <p class="bv-kicker">Walk view</p>
-          <h2>Walk through the model</h2>
-          <p>Steer your character through the building. Doors let you through, walls do not. Look at any element and press <kbd>E</kbd> to see what it is.</p>
+          <h2>Walk view</h2>
+          <p>Walls block you, doors let you through.</p>
           <div class="bv-chars" id="bvChars" role="radiogroup" aria-label="Character">
             <button type="button" role="radio" data-char="robot" aria-checked="true"><b aria-hidden="true">🤖</b><span>Robot</span></button>
             <button type="button" role="radio" data-char="soldier" aria-checked="false"><b aria-hidden="true">🪖</b><span>Soldier</span></button>
             <button type="button" role="radio" data-char="xbot" aria-checked="false"><b aria-hidden="true">🦾</b><span>X Bot</span></button>
           </div>
+          <label class="bv-start">Start at <select id="bvGoLevel" aria-label="Start at"></select></label>
           <div class="bv-cardbtns">
             <button type="button" class="bv-primary" id="bvPlay">Play</button>
             <button type="button" class="bv-ghost" id="bvExitFull" hidden>Exit full screen</button>
             <button type="button" class="bv-ghost" id="bvBack">Back to BIM view</button>
           </div>
-          <p class="bv-small" id="bvPauseNote">Click Play, then move the mouse to look around. <kbd>Esc</kbd> pauses, again leaves full screen, again goes back to the BIM view.</p>
+          <p class="bv-small" id="bvPauseNote">Move the mouse to look. <kbd>Esc</kbd> pauses.</p>
         </div>
       </div>
 
@@ -363,29 +356,31 @@
     </div>
 
     <div class="bvp-cols">
-      <div class="tool-note bvp-notes">
-        <p><b>From Revit to here</b></p>
-        <p><b>1.</b> In Revit, open a 3D view and use <b>File › Export › IFC</b>. IFC 2x3 Coordination View 2.0 or IFC4 Reference View both work.</p>
-        <p><b>2.</b> Tick <b>Export only elements visible in view</b> to keep the file small. For a phone, export one level or one zone at a time.</p>
-        <p><b>3.</b> Drop the .ifc file on the viewer above, or press Open IFC. A browser cannot read a .rvt file, so it has to be IFC.</p>
+      <div class="bvp-notes">
+        <h2 class="eyebrow">From Revit</h2>
+        <ol>
+          <li>Open a 3D view, then <b>File › Export › IFC</b> (IFC 2x3 or IFC4).</li>
+          <li>Tick <b>Export only elements visible in view</b> to keep it small.</li>
+          <li>Drop the .ifc on the viewer, or press <b>Open IFC</b>.</li>
+        </ol>
       </div>
-      <div class="tool-note bvp-notes">
-        <p><b>Controls</b></p>
-        <p><b>BIM view.</b> Drag to turn, right-drag or middle-drag to pan, scroll to zoom at the cursor. Click an element for its properties, double-click to zoom to it. Keys: <kbd>H</kbd> hide, <kbd>I</kbd> isolate, <kbd>U</kbd> show all, <kbd>X</kbd> x-ray, <kbd>M</kbd> measure, <kbd>F</kbd> fit, <kbd>Esc</kbd> clear.</p>
-        <p><b>Walk view.</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, mouse to look, <kbd>Shift</kbd> to run, <kbd>Space</kbd> to jump, hold <kbd>T</kbd> to aim a teleport and let go to land there, <kbd>C</kbd> to swap first and third person, <kbd>Q</kbd> to change character, <kbd>E</kbd> to open an element's properties and <kbd>E</kbd> again to close them, <kbd>H</kbd> to clear the whole HUD, <kbd>1</kbd>–<kbd>6</kbd> for emotes.</p>
-        <p><b>On a phone.</b> Hold it sideways. Put your left thumb anywhere on the left of the view and the stick comes to it, so you never have to look down for it; push it right out to run. Drag on the right to look. The round buttons under your right thumb are Jump, Run, Teleport, Inspect, View and Emote. Tap Teleport once to aim and again to go. Level and character are in Settings, so nothing sits over the controls.</p>
-        <p><b>Full screen and Esc.</b> <kbd>Esc</kbd> always steps back out, one step at a time: it closes whatever is open, then pauses, then leaves full screen, then returns to the BIM view. The top-right button leaves full screen too, and says so while you are in it.</p>
+      <div class="bvp-notes">
+        <h2 class="eyebrow">Keys</h2>
+        <dl class="bvp-keys">
+          <div><dt>BIM view</dt><dd>Drag turn · right-drag pan · scroll zoom · click select · double-click zoom to</dd></div>
+          <div><dt></dt><dd><kbd>H</kbd> hide <kbd>I</kbd> isolate <kbd>U</kbd> show all <kbd>X</kbd> x-ray <kbd>M</kbd> measure <kbd>F</kbd> fit</dd></div>
+          <div><dt>Walk view</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move <kbd>Shift</kbd> run <kbd>Space</kbd> jump <kbd>E</kbd> inspect <kbd>T</kbd> teleport</dd></div>
+          <div><dt></dt><dd><kbd>C</kbd> camera <kbd>Q</kbd> character <kbd>F</kbd> torch <kbd>M</kbd> map <kbd>H</kbd> hide HUD <kbd>1</kbd>–<kbd>6</kbd> emotes</dd></div>
+          <div><dt>Phone</dt><dd>Left thumb moves, drag on the right to look.</dd></div>
+        </dl>
       </div>
     </div>
 
-    <div class="tool-note bvp-notes" style="margin-top:22px">
-      <p><b>What this does, and what it does not.</b></p>
-      <p><b>Properties.</b> Everything shown comes from the IFC: names, types, property sets and quantities, as the exporter wrote them. Revit's own parameter groups, like Identity Data and Dimensions, appear when the export includes them.</p>
-      <p><b>Walls and doors.</b> In the walk view you collide with what is visible. Doors and rooms are left out, so doorways are open. Hide a category in the BIM view and it stops blocking you too. Very large models collide with walls, floors, roofs and stairs only, to stay smooth.</p>
-      <p><b>Position.</b> The model is moved near the origin when it opens, so georeferenced exports far from 0,0,0 still draw cleanly. The sun is not set to the site's real north or location.</p>
-      <p><b>Size.</b> Everything runs on your device, so a big model needs a big device. If a file struggles, export less of it, or lower the Quality setting.</p>
-      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 by That Open Company (MPL-2.0), served from this site, and three.js 0.186.1 from jsDelivr. The robot is RobotExpressive by Tomás Laulhé, with changes by Don McCurdy, released as CC0. The soldier and X Bot are Adobe Mixamo characters from the three.js examples; they load from three.js's own copy on jsDelivr when you pick them and are not stored on this site. The sample villa was made for this page. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="#contact">Tell me</a> and I will fix it.</p>
-    </div>
+    <details class="bvp-more">
+      <summary>Notes and credits</summary>
+      <p>Properties are read from the IFC as exported. Doors and rooms do not block you in the walk view; very large models collide with walls, floors, roofs and stairs only. Everything runs on your device, so for a big model export less of it or lower the Quality setting.</p>
+      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 (MPL-2.0) and three.js 0.186.1. Robot: RobotExpressive by Tomás Laulhé (CC0). Soldier and X Bot: Mixamo characters from the three.js examples, loaded from jsDelivr. Found a problem? <a href="#contact">Tell me</a>.</p>
+    </details>
 
   </div>
 </section>

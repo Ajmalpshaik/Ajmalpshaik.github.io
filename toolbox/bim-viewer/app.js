@@ -4,7 +4,7 @@
 
 import * as THREE from 'three';
 import { World, QUALITY } from './world.js';
-import { Model } from './model.js';
+import { Model, HIDDEN_BY_DEFAULT } from './model.js';
 import { Bim } from './bim.js';
 import { Walk, CHARACTERS } from './walk.js';
 
@@ -30,7 +30,7 @@ export function start() {
     tools: $('bvTools'), measure: $('bvMeasure'), xray: $('bvXray'), hide: $('bvHide'), isolate: $('bvIsolate'), reset: $('bvReset'),
     cutOn: $('bvCutOn'), cut: $('bvCut'), secOn: $('bvSecOn'), sec: $('bvSec'),
     hud: $('bvHud'), level: $('bvLevel'), cross: $('bvCross'), look: $('bvLook'), keys: $('bvKeys'), emotes: $('bvEmotes'),
-    mini: $('bvMini'), goLevel: $('bvGoLevel'), sGo: $('sGoLevel'), who: $('bvChar'), chars: $('bvChars'),
+    mini: $('bvMini'), goLevel: $('bvGoLevel'), sGo: $('sGoLevel'), chars: $('bvChars'),
     touch: $('bvTouch'), move: $('bvMove'), stick: $('bvStick'), pad: $('bvPad'),
     tJump: $('bvTJump'), tPort: $('bvTPort'), aim: $('bvAim'), tRun: $('bvTRun'), tCam: $('bvTCam'), tLook: $('bvTLook'), tEmote: $('bvTEmote'),
     pause: $('bvPause'), play: $('bvPlay'), back: $('bvBack'), pauseNote: $('bvPauseNote'), exitFull: $('bvExitFull'),
@@ -197,7 +197,7 @@ export function start() {
       cb.checked = !model.hiddenStoreys.has(i);
       cb.addEventListener('change', () => {
         if (cb.checked) model.hiddenStoreys.delete(i); else model.hiddenStoreys.add(i);
-        model.applyVisibility();
+        visChanged();
       });
       const name = document.createElement('span');
       name.textContent = s.name;
@@ -210,7 +210,7 @@ export function start() {
       only.addEventListener('click', () => {
         model.storeys.forEach((_, j) => { if (j === i) model.hiddenStoreys.delete(j); else model.hiddenStoreys.add(j); });
         ui.levels.querySelectorAll('input').forEach((c, j) => { c.checked = j === i; });
-        model.applyVisibility();
+        visChanged();
         bim.view('home', model.visibleBox());
       });
       li.append(label, only);
@@ -227,13 +227,14 @@ export function start() {
       cb.checked = !model.hiddenCats.has(cat);
       cb.addEventListener('change', () => {
         if (cb.checked) model.hiddenCats.delete(cat); else model.hiddenCats.add(cat);
-        model.applyVisibility();
+        visChanged();
       });
       const name = document.createElement('span');
       name.textContent = cat;
       const n = document.createElement('em');
       n.textContent = count;
       label.append(cb, name, n);
+      cb.dataset.cat = cat;
       li.append(label);
       ui.cats.appendChild(li);
     }
@@ -248,9 +249,24 @@ export function start() {
   }
 
   // ---------------------------------------------------------- selection
+  // after any change to what is shown: a selection that was just hidden goes,
+  // and its properties with it
+  function visChanged() {
+    model.applyVisibility();
+    if (model.selected == null && !ui.props.hidden) hideProps();
+    syncSelTools();
+  }
+  // Hide and Isolate only mean something with an element selected
+  function syncSelTools() {
+    const none = !model || model.selected == null;
+    ui.hide.disabled = none;
+    ui.isolate.disabled = none;
+  }
+
   function select(id) {
     if (!model) return;
     model.select(id);
+    syncSelTools();
     if (id == null) { hideProps(); return; }
     const el = model.elements.get(id);
     ui.props.hidden = false;
@@ -264,6 +280,7 @@ export function start() {
   function hideProps() {
     ui.props.hidden = true;
     if (model && model.selected != null) model.select(null);
+    syncSelTools();
     refreshLook();
     syncPanel();
     if (mode === 'walk') ui.canvas.focus({ preventScroll: true });
@@ -342,6 +359,7 @@ export function start() {
     const el = model.elements.get(id);
     if (!el) { ui.look.hidden = true; return; }
     ui.look.hidden = false;
+    ui.look.classList.toggle('fp', walk.firstPerson);
     ui.look.innerHTML = '';
     const b = document.createElement('b');
     b.textContent = el.cat;
@@ -378,13 +396,23 @@ export function start() {
 
   // -------------------------------------------------------------- tools
   ui.tools.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => bim.view(b.dataset.view)));
-  const setMeasure = (on) => { bim.setMeasuring(on); ui.measure.setAttribute('aria-pressed', on); if (!on) bim.clearMeasures(); else toast('Click two points to measure. Esc to stop.'); };
+  const setMeasure = (on) => { bim.setMeasuring(on); ui.measure.setAttribute('aria-pressed', on); if (!on) bim.clearMeasures(); else { select(null); toast(isTouch ? 'Tap two points to measure.' : 'Click two points to measure. Esc to stop.'); } };
   const setXray = (on) => { model && model.setXray(on); ui.xray.setAttribute('aria-pressed', on); if (world.gtao) world.gtao.enabled = !on; };
   ui.measure.addEventListener('click', () => setMeasure(ui.measure.getAttribute('aria-pressed') !== 'true'));
   ui.xray.addEventListener('click', () => setXray(ui.xray.getAttribute('aria-pressed') !== 'true'));
-  ui.hide.addEventListener('click', () => { if (!model || model.selected == null) return toast('Select an element first.'); model.hideSelected(); hideProps(); });
-  ui.isolate.addEventListener('click', () => { if (!model || model.selected == null) return toast('Select an element first.'); const box = model.elements.get(model.selected).box; model.isolateSelected(); bim.zoomTo(box); });
-  ui.reset.addEventListener('click', () => { if (model) model.resetTemporary(); });
+  ui.hide.addEventListener('click', () => { if (!model || model.selected == null) return; model.hideSelected(); hideProps(); });
+  ui.isolate.addEventListener('click', () => { if (!model || model.selected == null) return; const box = model.elements.get(model.selected).box; model.isolateSelected(); bim.zoomTo(box); });
+  // Show all: back to how the model opened - every level, the usual categories,
+  // nothing hidden or isolated by hand
+  ui.reset.addEventListener('click', () => {
+    if (!model) return;
+    model.hiddenStoreys.clear();
+    model.hiddenCats = new Set(HIDDEN_BY_DEFAULT);
+    ui.levels.querySelectorAll('input').forEach((c) => { c.checked = true; });
+    ui.cats.querySelectorAll('input').forEach((c) => { c.checked = !model.hiddenCats.has(c.dataset.cat); });
+    model.resetTemporary();
+    visChanged();
+  });
 
   ui.canvas.addEventListener('pointerdown', () => ui.canvas.focus({ preventScroll: true }));
   ui.stage.addEventListener('keydown', (e) => {
@@ -484,7 +512,6 @@ export function start() {
     if (v === 'out') walk.spawnOutside(); else walk.spawnOnLevel(Number(v));
     ui.goLevel.value = v;
     ui.sGo.value = v;
-    ui.canvas.focus({ preventScroll: true });
   }
   ui.goLevel.addEventListener('change', () => goTo(ui.goLevel.value));
   ui.sGo.addEventListener('change', () => goTo(ui.sGo.value));
@@ -528,7 +555,6 @@ export function start() {
   }
 
   function syncCharacterUI() {
-    ui.who.value = settings.char;
     S.char.value = settings.char;
     ui.chars.querySelectorAll('[data-char]').forEach((b) => b.setAttribute('aria-checked', b.dataset.char === settings.char));
     ui.emotes.querySelectorAll('[data-emote]').forEach((b) => b.classList.toggle('off', walk.ready && !walk.hasEmote(b.dataset.emote)));
@@ -538,7 +564,6 @@ export function start() {
     if (!walk.playEmote(name)) toast(`${CHARACTERS[walk.charKey].name} does not know that move. Try the robot.`, 2600);
   }
 
-  ui.who.addEventListener('change', () => { chooseCharacter(ui.who.value); ui.canvas.focus({ preventScroll: true }); });
   ui.chars.querySelectorAll('[data-char]').forEach((b) => b.addEventListener('click', () => chooseCharacter(b.dataset.char)));
 
   // --------------------------------------------------------- touch input
@@ -862,6 +887,7 @@ export function start() {
   function resize() {
     const w = ui.stage.clientWidth, h = ui.stage.clientHeight;
     world.resize(w, h);
+    ui.stage.style.setProperty('--tools-h', `${ui.tools.offsetHeight || 46}px`);
   }
   new ResizeObserver(resize).observe(ui.stage);
 
@@ -924,6 +950,7 @@ export function start() {
   ui.stage.dataset.hud = 'on';
   showEmotes(false);
   syncPanel();
+  syncSelTools();
   syncSettingsUI();
   applySettings();
   resize();
