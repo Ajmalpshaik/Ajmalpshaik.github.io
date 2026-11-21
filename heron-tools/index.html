@@ -249,7 +249,7 @@
     </div>
     <h1 class="title">Heron <em class="s">Tools</em></h1>
     <div class="chips hchips"><span class="chip dev">Not released yet</span><span class="chip">Version 1.0.0</span><span class="chip">Revit add-in</span><span class="chip live">Free &middot; open source</span></div>
-    <p class="lede">Everyday Revit tools for BIM modellers. <strong>One click. One undo.</strong></p>
+    <p class="lede">Everyday Revit buttons. <strong>One click. One undo.</strong></p>
     <div class="btns">
       <a class="pill heron" href="#tools">See what it does <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
       <a class="ghost" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">Code on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
@@ -277,42 +277,44 @@
         <h2 class="h2">17 tools. <em class="s">Zero fuss.</em></h2>
       </div>
     </div>
-    <div class="pgrp">
-      <h3><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="2"/></svg>Views and visibility <i>6</i></h3>
-      <ul class="tlist">
-      <li><b>Filter Pro</b><span>One view filter per value, named for you.</span></li>
-      <li><b>Colorize</b><span>Colour elements by value. Restore in one click.</span></li>
-      <li><b>View Crop</b><span>Crop views tight around their elements.</span></li>
-      <li><b>Unhide All</b><span>Everything hidden in the view, back on.</span></li>
-      <li><b>Highlight</b><span>Selection red, the rest grey. Click again to reset.</span></li>
-      <li><b>3D Views by Workset</b><span>One 3D view per workset, in one click.</span></li>
-      </ul>
-    </div>
-    <div class="pgrp">
-      <h3><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5h12M2 8h12M2 11.5h12"/><circle cx="2" cy="4.5" r=".6"/></svg>Levels and grids <i>4</i></h3>
-      <ul class="tlist">
-      <li><b>Reset Datums to 3D</b><span>Grid and level ends back to their 3D extents.</span></li>
-      <li><b>Level Extents</b><span>Match levels, or stretch them to the section box.</span></li>
-      <li><b>Flip Bubbles</b><span>Swap the bubble end of grids and levels.</span></li>
-      <li><b>Reassign Level</b><span>New reference level. Nothing moves.</span></li>
-      </ul>
-    </div>
-    <div class="pgrp">
-      <h3><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2.5 12.5 7 8.3 8.3 7 12.5Z"/></svg>Elements and selection <i>5</i></h3>
-      <ul class="tlist">
-      <li><b>Match Elevation</b><span>Line up MEP at centre, top or bottom.</span></li>
-      <li><b>Pin / Unpin</b><span>Pin whole groups at once.</span></li>
-      <li><b>Smart Selection</b><span>Window-select, keep one category.</span></li>
-      <li><b>Element ID</b><span>Find any element by ID, in links too.</span></li>
-      <li><b>Quick Menu</b><span>Your favourite tools in a wheel at the cursor.</span></li>
-      </ul>
-    </div>
-    <div class="pgrp">
-      <h3><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 9.5 9.5 6.5M7 4.5l1.2-1.2a2.6 2.6 0 0 1 3.7 3.7L10.7 8.2M9 11.5l-1.2 1.2a2.6 2.6 0 0 1-3.7-3.7L5.3 7.8"/></svg>Links and worksets <i>2</i></h3>
-      <ul class="tlist">
-      <li><b>Toggle Links</b><span>Revit links off or on in one click.</span></li>
-      <li><b>Link Workset</b><span>Put links and CAD imports on a workset.</span></li>
-      </ul>
+    <div class="tgroups">
+      <details class="xcard tgroup">
+        <summary><span class="tg-head"><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="2"/></svg><b>Views and visibility</b><i class="cnt">6</i><span class="x" aria-hidden="true"></span></span><span class="tg-names"><i>Filter Pro</i><i>Colorize</i><i>View Crop</i><i>Unhide All</i><i>Highlight</i><i>3D Views by Workset</i></span></summary>
+        <ul class="tg-list">
+          <li><b>Filter Pro</b><span>One view filter per value, named for you.</span></li>
+          <li><b>Colorize</b><span>Colour elements by value. Restore in one click.</span></li>
+          <li><b>View Crop</b><span>Crop views tight around their elements.</span></li>
+          <li><b>Unhide All</b><span>Everything hidden in the view, back on.</span></li>
+          <li><b>Highlight</b><span>Selection red, the rest grey. Click again to reset.</span></li>
+          <li><b>3D Views by Workset</b><span>One 3D view per workset, in one click.</span></li>
+        </ul>
+      </details>
+      <details class="xcard tgroup">
+        <summary><span class="tg-head"><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5h12M2 8h12M2 11.5h12"/><circle cx="2" cy="4.5" r=".6"/></svg><b>Levels and grids</b><i class="cnt">4</i><span class="x" aria-hidden="true"></span></span><span class="tg-names"><i>Reset Datums to 3D</i><i>Level Extents</i><i>Flip Bubbles</i><i>Reassign Level</i></span></summary>
+        <ul class="tg-list">
+          <li><b>Reset Datums to 3D</b><span>Grid and level ends back to their 3D extents.</span></li>
+          <li><b>Level Extents</b><span>Match levels, or stretch them to the section box.</span></li>
+          <li><b>Flip Bubbles</b><span>Swap the bubble end of grids and levels.</span></li>
+          <li><b>Reassign Level</b><span>New reference level. Nothing moves.</span></li>
+        </ul>
+      </details>
+      <details class="xcard tgroup">
+        <summary><span class="tg-head"><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2.5 12.5 7 8.3 8.3 7 12.5Z"/></svg><b>Elements and selection</b><i class="cnt">5</i><span class="x" aria-hidden="true"></span></span><span class="tg-names"><i>Match Elevation</i><i>Pin / Unpin</i><i>Smart Selection</i><i>Element ID</i><i>Quick Menu</i></span></summary>
+        <ul class="tg-list">
+          <li><b>Match Elevation</b><span>Line up MEP at centre, top or bottom.</span></li>
+          <li><b>Pin / Unpin</b><span>Pin whole groups at once.</span></li>
+          <li><b>Smart Selection</b><span>Window-select, keep one category.</span></li>
+          <li><b>Element ID</b><span>Find any element by ID, in links too.</span></li>
+          <li><b>Quick Menu</b><span>Your favourite tools in a wheel at the cursor.</span></li>
+        </ul>
+      </details>
+      <details class="xcard tgroup">
+        <summary><span class="tg-head"><svg class="gico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 9.5 9.5 6.5M7 4.5l1.2-1.2a2.6 2.6 0 0 1 3.7 3.7L10.7 8.2M9 11.5l-1.2 1.2a2.6 2.6 0 0 1-3.7-3.7L5.3 7.8"/></svg><b>Links and worksets</b><i class="cnt">2</i><span class="x" aria-hidden="true"></span></span><span class="tg-names"><i>Toggle Links</i><i>Link Workset</i></span></summary>
+        <ul class="tg-list">
+          <li><b>Toggle Links</b><span>Revit links off or on in one click.</span></li>
+          <li><b>Link Workset</b><span>Put links and CAD imports on a workset.</span></li>
+        </ul>
+      </details>
     </div>
   </div>
 </section>
@@ -325,11 +327,11 @@
         <h2 class="h2">One file. <em class="s">Done.</em></h2>
       </div>
     </div>
-    <ol class="steps">
-      <li><b>One installer</b><span>Finds every Revit 2020&ndash;2027 on your PC. Tick, install.</span></li>
-      <li><b>No admin rights</b><span>Installs for your Windows user only.</span></li>
-      <li><b>Never closes Revit</b><span>If Revit is open, it waits.</span></li>
-    </ol>
+    <div class="xcards">
+      <details class="xcard"><summary><b>One installer</b><span class="x" aria-hidden="true"></span></summary><p>Finds every Revit 2020&ndash;2027 on your PC. Tick, install.</p></details>
+      <details class="xcard"><summary><b>No admin rights</b><span class="x" aria-hidden="true"></span></summary><p>Installs for your Windows user only.</p></details>
+      <details class="xcard"><summary><b>Never closes Revit</b><span class="x" aria-hidden="true"></span></summary><p>If Revit is open, it waits.</p></details>
+    </div>
   </div>
 </section>
 
@@ -341,19 +343,10 @@
         <h2 class="h2">If it fails, <em class="s">nothing changes.</em></h2>
       </div>
     </div>
-    <div class="rows">
-      <div class="row">
-        <div class="row-k"><span class="n">01</span><h3 class="h3">One undo per click</h3></div>
-        <div class="row-v"><p>Every click is one named Undo step.</p></div>
-      </div>
-      <div class="row">
-        <div class="row-k"><span class="n">02</span><h3 class="h3">All or nothing</h3></div>
-        <div class="row-v"><p>Any error rolls the whole run back, and it tells you.</p></div>
-      </div>
-      <div class="row">
-        <div class="row-k"><span class="n">03</span><h3 class="h3">Works with Heron AI</h3></div>
-        <div class="row-v"><p>Same Heron tab. Neither needs the other. <a href="/heron-ai/">About Heron AI</a></p></div>
-      </div>
+    <div class="xcards">
+      <details class="xcard"><summary><b>One undo per click</b><span class="x" aria-hidden="true"></span></summary><p>Every click is one named Undo step.</p></details>
+      <details class="xcard"><summary><b>All or nothing</b><span class="x" aria-hidden="true"></span></summary><p>Any error rolls the whole run back, and it tells you.</p></details>
+      <details class="xcard"><summary><b>Works with Heron AI</b><span class="x" aria-hidden="true"></span></summary><p>Same Heron tab. Neither needs the other. <a href="/heron-ai/">About Heron AI</a></p></details>
     </div>
   </div>
 </section>
@@ -362,7 +355,7 @@
   <div class="wrap">
     <p class="eyebrow">Version 1.0.0 &middot; not released yet</p>
     <h2 class="h2">Free. <em class="s">Follow it on GitHub.</em></h2>
-    <p class="lede">Waiting for its final test inside Revit. I&rsquo;ll announce it here and on LinkedIn when it&rsquo;s ready.</p>
+    <p class="lede">Waiting for its final test in Revit. Follow it for news.</p>
     <div class="btns">
       <a class="pill heron" href="https://github.com/Ajmalpshaik/Heron-Tools" rel="noopener">Follow on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a>
       <a class="ghost" href="/heron/">All of Heron <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
