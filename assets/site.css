@@ -164,10 +164,9 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .nav.light .tabs a.lit { color: #0F1114; }
 .nav.light .tabs .tab-ind { background: #cfd3d7; box-shadow: 3px 3px 7px rgba(118,124,131,.42), -3px -3px 7px rgba(255,255,255,.7); }
 .nav.light .tabs .tab-ind[data-mode="sel"] { background: linear-gradient(145deg, #dde1e5 0%, #c9cdd1 100%); box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85); }
-/* over the fog Contact stays the dark pill, raised off the fog: the card it
-   grows into is dark, so it never starts light and turns black */
-.nav.light .pill { background: #1f2024; color: var(--fg); box-shadow: 4px 4px 10px rgba(108,114,121,.5), -4px -4px 10px rgba(255,255,255,.8), inset 1px 1px 0 rgba(255,255,255,.08); }
-.nav.light .pill:hover { background: #1f2024; box-shadow: inset 3px 3px 7px rgba(0,0,0,.7), inset -3px -3px 7px rgba(255,255,255,.06), 2px 2px 6px rgba(108,114,121,.35), -2px -2px 6px rgba(255,255,255,.6); }
+/* over the fog Contact is a fog-light pill, and the card it grows into is light too (.cbox.light) */
+.nav.light .pill { background: #d3d7db; color: #0F1114; box-shadow: 4px 4px 10px rgba(108,114,121,.48), -4px -4px 10px rgba(255,255,255,.85), inset 1px 1px 0 rgba(255,255,255,.6); }
+.nav.light .pill:hover { background: #d3d7db; box-shadow: inset 3px 3px 7px rgba(118,124,131,.5), inset -3px -3px 7px rgba(255,255,255,.75); }
 .nav.light .burger { color: #0F1114; border-color: rgba(15,17,20,.16); background: rgba(255,255,255,.3); }
 .nav.light.solid { background: rgba(206,209,212,.6); border-color: rgba(15,17,20,.08); }
 .nav.light :focus-visible { outline-color: #0F1114; }
@@ -272,6 +271,25 @@ em.s, .s { font-family: var(--serif); font-style: italic; font-weight: 400; lett
 .cbox-links svg { width: 14px; height: 14px; color: var(--mute); transition: transform .35s var(--ease), color .3s; }
 .cbox-links a:hover svg { color: var(--fg); transform: translate(2px, -2px); }
 .cbox-note { margin-top: 18px; color: var(--mute); font-size: 12.5px; }
+/* opened from the light bar over the fog: the same card in fog greys, so it
+   grows light out of the light Contact pill (assets/site.js sets .light) */
+.cbox.light {
+  --neu: #d3d7db;
+  --neu-up: 6px 6px 14px rgba(108, 114, 121, .5), -5px -5px 12px rgba(255, 255, 255, .85);
+  --neu-in: inset 4px 4px 10px rgba(108, 114, 121, .5), inset -4px -4px 9px rgba(255, 255, 255, .8);
+}
+.cbox.light .cbox-bg { background: rgba(198, 202, 206, .3); }
+.cbox.light .cbox-card {
+  color: #0F1114;
+  box-shadow: 24px 24px 56px rgba(40, 46, 52, .35), -14px -14px 40px rgba(255, 255, 255, .45),
+    inset 1px 1px 0 rgba(255, 255, 255, .7), inset -1px -1px 0 rgba(108, 114, 121, .25);
+}
+.cbox.light .eyebrow, .cbox.light .cbox-links span, .cbox.light .cbox-links svg, .cbox.light .cbox-note { color: #4A4F55; }
+.cbox.light .cbox-say { color: #3B4046; }
+.cbox.light .cbox-live { color: #0F6B39; }
+.cbox.light .cbox-x, .cbox.light .copy, .cbox.light .cbox-links a:hover svg { color: #0F1114; }
+.cbox.light .copy:hover { box-shadow: 3px 3px 8px rgba(108, 114, 121, .45), -3px -3px 7px rgba(255, 255, 255, .8); }
+.cbox.light :focus-visible { outline-color: #0F1114; }
 @media (max-width: 900px) {
   .cbox-card { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); width: auto; border-radius: 26px; }
   .cbox-in { padding: 22px 18px 16px; }
