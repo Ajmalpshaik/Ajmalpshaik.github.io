@@ -202,14 +202,15 @@ for (const page of PAGES) {
     if (!bar.contact) fail(`${page}: the Contact button or the #contact footer is missing`);
     if (!bar.mark) fail(`${page}: the name in the bar does not link home`);
 
-    // the highlight glides to the tab under the pointer; Heron's turns orange
+    // the highlight glides to the tab under the pointer; Heron's turns orange.
+    // Waited for, not slept on: on the home page the forest is drawn in software
+    // here, which slows every frame, so the fade can take longer than on a phone.
     await p.hover('#tabs a[data-tab="heron"]');
-    await p.waitForTimeout(700);
-    const ind = await p.evaluate(() => {
+    const glided = await p.waitForFunction(() => {
       const i = document.querySelector('#tabs .tab-ind');
-      return { op: getComputedStyle(i).opacity, w: i.getBoundingClientRect().width, heron: i.classList.contains('heron') };
-    });
-    if (ind.op !== '1' || ind.w < 20 || !ind.heron) fail(`${page}: hovering Heron does not move the orange highlight onto it`);
+      return getComputedStyle(i).opacity === '1' && i.getBoundingClientRect().width >= 20 && i.classList.contains('heron');
+    }, null, { timeout: 6000 }).then(() => true, () => false);
+    if (!glided) fail(`${page}: hovering Heron does not move the orange highlight onto it`);
     await ctx.close();
 
     // phone: the tabs fold into a sheet behind the menu button

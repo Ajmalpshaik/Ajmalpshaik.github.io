@@ -12,6 +12,7 @@
 .crumbs { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
 .crumbs [aria-current] { color: var(--fg); }
 .crumbs .sep { color: var(--mute); opacity: .6; }
+.page-head .eyebrow > .crumbs ~ span { color: #ffd2b8; }
 .heron-pg .page-head .title { max-width: 18ch; }
 
 /* ---------- accents ---------- */
