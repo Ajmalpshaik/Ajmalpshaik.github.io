@@ -63,7 +63,7 @@ export class Walk {
     this.firstPerson = false;
     this.yaw = Math.PI;
     this.pitch = -0.12;
-    this.distance = 3.6;
+    this.distance = 4.6;
     this.sensitivity = 1;
     this.invertY = false;
     this.speedScale = 1;
@@ -105,7 +105,7 @@ export class Walk {
     this.miniCam.layers.enable(1);
     const arrow = new THREE.Mesh(
       new THREE.ConeGeometry(0.55, 1.4, 3).rotateX(Math.PI / 2),
-      new THREE.MeshBasicMaterial({ color: 0xff7a1a, depthTest: false, fog: false }));
+      new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false, fog: false }));
     arrow.layers.set(1);
     arrow.renderOrder = 10;
     this.marker = arrow;
@@ -519,15 +519,23 @@ export class Walk {
     window.addEventListener('pointerup', () => { drag = null; });
     window.addEventListener('pointermove', (e) => {
       if (!this.active || this.paused || e.pointerType === 'touch') return;
-      if (document.pointerLockElement === c) this.look(e.movementX, e.movementY);
+      if (document.pointerLockElement === c) {
+        // the first moves after the lock starts can carry the whole jump from
+        // where the cursor was, and some browsers send one wild spike now and
+        // then: both would flick the camera, so they are dropped
+        if (this._settle > 0) { this._settle--; return; }
+        if (Math.abs(e.movementX) > 250 || Math.abs(e.movementY) > 250) return;
+        this.look(e.movementX, e.movementY);
+      }
       else if (drag) { this.look(e.clientX - drag.x, e.clientY - drag.y); drag = { x: e.clientX, y: e.clientY }; }
     });
     c.addEventListener('wheel', (e) => {
       if (!this.active || this.paused || this.firstPerson) return;
       e.preventDefault();
-      this.distance = THREE.MathUtils.clamp(this.distance * (1 + Math.sign(e.deltaY) * 0.12), 1.4, 9);
+      this.distance = THREE.MathUtils.clamp(this.distance * (1 + Math.sign(e.deltaY) * 0.12), 1.4, 10);
     }, { passive: false });
     document.addEventListener('pointerlockchange', () => {
+      if (document.pointerLockElement === c) this._settle = 2;
       if (this.active && document.pointerLockElement !== c) { this.endAim(false); this.hooks.onPause && this.hooks.onPause(); }
     });
     c.addEventListener('contextmenu', (e) => { if (this.active) e.preventDefault(); });
@@ -729,7 +737,7 @@ export class Walk {
     // ease out, but snap in, so walls never come between camera and robot
     const near = cam.position.distanceTo(head) > dist + 0.05;
     cam.position.lerp(goal, near ? 1 : 1 - Math.exp(-10 * dt));
-    cam.lookAt(head.x, head.y - 0.1, head.z);
+    cam.lookAt(head.x, head.y + 0.35, head.z);
   }
 
   _lights() {
