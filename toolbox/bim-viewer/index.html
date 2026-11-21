@@ -8,7 +8,7 @@
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/bim-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#d3d7db">
 <meta name="color-scheme" content="dark">
 <meta property="og:title" content="BIM Viewer — open IFC in your browser and walk inside it">
 <meta property="og:description" content="Free IFC viewer for Revit models. See properties, cut sections and measure, then walk inside the building as a robot, game style. Your file never leaves your device.">
@@ -155,22 +155,17 @@
       <span aria-current="page">BIM Viewer</span>
     </nav>
     <h1 class="title">BIM Viewer</h1>
-    <p class="lede">Open a Revit IFC export. Check properties, cut plans and sections, measure, then walk through the building like a game.</p>
+    <p class="lede">Open an IFC from Revit. Inspect it, then walk inside.</p>
     <ul class="chips" aria-label="About this tool">
       <li class="chip">Free tool</li>
       <li class="chip">Runs in your browser</li>
-      <li class="chip">No API key</li>
+      <li class="chip">File stays on your device</li>
     </ul>
   </div>
 </header>
 
 <section class="sec-tool">
   <div class="wrap">
-
-    <div class="bvp-private" role="note">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      <p><b>Your file stays on your device.</b> It opens in this tab. Nothing is uploaded.</p>
-    </div>
 
     <p class="tool-note" id="bvNeeds">The BIM Viewer needs JavaScript and a browser with WebGL 2: a current Chrome, Edge, Firefox or Safari.</p>
 
@@ -197,6 +192,9 @@
           </label>
           <button type="button" class="bv-ico" id="bvShot" aria-label="Save a screenshot" title="Save a screenshot">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <button type="button" class="bv-ico" id="bvHelpBtn" aria-label="Help" title="Help" aria-expanded="false" aria-controls="bvHelp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>
           </button>
           <button type="button" class="bv-ico" id="bvGear" aria-label="Settings" title="Settings" aria-expanded="false" aria-controls="bvSettings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -295,6 +293,7 @@
             <button type="button" role="radio" data-char="robot" aria-checked="true"><b aria-hidden="true">🤖</b><span>Robot</span></button>
             <button type="button" role="radio" data-char="soldier" aria-checked="false"><b aria-hidden="true">🪖</b><span>Soldier</span></button>
             <button type="button" role="radio" data-char="xbot" aria-checked="false"><b aria-hidden="true">🦾</b><span>X Bot</span></button>
+            <button type="button" role="radio" data-char="michelle" aria-checked="false"><b aria-hidden="true">👩</b><span>Michelle</span></button>
           </div>
           <label class="bv-start">Start at <select id="bvGoLevel" aria-label="Start at"></select></label>
           <div class="bv-cardbtns">
@@ -325,7 +324,7 @@
           <p class="bv-small">Ambient occlusion and bloom need High or Ultra quality.</p>
           <h2>Walk view</h2>
           <label class="bv-row">Character
-            <select id="sChar"><option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option></select>
+            <select id="sChar"><option value="robot">Robot</option><option value="soldier">Soldier</option><option value="xbot">X Bot</option><option value="michelle">Michelle</option></select>
           </label>
           <label class="bv-row">Go to level
             <select id="sGoLevel" aria-label="Go to level"></select>
@@ -345,6 +344,39 @@
         </div>
       </div>
 
+      <div class="bv-panel bv-settings bv-help" id="bvHelp" hidden>
+        <div class="bv-ph"><b>Help</b><button type="button" class="bv-x" id="bvHelpClose" aria-label="Close help">×</button></div>
+        <div class="bv-sbody">
+          <h2>From Revit</h2>
+          <ol class="bv-steps">
+            <li>3D view, then <b>File › Export › IFC</b></li>
+            <li>Tick <b>Export only elements visible in view</b></li>
+            <li>Drop the .ifc here, or press <b>Open IFC</b></li>
+          </ol>
+          <h2>BIM view</h2>
+          <dl class="bv-keylist">
+            <div><dt>Drag</dt><dd>Turn</dd></div>
+            <div><dt>Right-drag</dt><dd>Pan</dd></div>
+            <div><dt>Scroll</dt><dd>Zoom</dd></div>
+            <div><dt>Click</dt><dd>Properties</dd></div>
+            <div><dt><kbd>H</kbd> <kbd>I</kbd> <kbd>U</kbd></dt><dd>Hide, isolate, show all</dd></div>
+            <div><dt><kbd>X</kbd> <kbd>M</kbd> <kbd>F</kbd></dt><dd>X-ray, measure, fit</dd></div>
+          </dl>
+          <h2>Walk view</h2>
+          <dl class="bv-keylist">
+            <div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Move</dd></div>
+            <div><dt><kbd>Shift</kbd> <kbd>Space</kbd></dt><dd>Run, jump</dd></div>
+            <div><dt><kbd>E</kbd></dt><dd>Inspect</dd></div>
+            <div><dt><kbd>T</kbd></dt><dd>Teleport (hold)</dd></div>
+            <div><dt><kbd>C</kbd> <kbd>Q</kbd></dt><dd>Camera, character</dd></div>
+            <div><dt><kbd>M</kbd> <kbd>H</kbd></dt><dd>Map, hide HUD</dd></div>
+            <div><dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Emotes</dd></div>
+            <div><dt>Phone</dt><dd>Left thumb moves, drag right to look</dd></div>
+          </dl>
+          <p class="bv-small">Your file is opened in this tab and never uploaded. Built with web-ifc (MPL-2.0) and three.js. Robot by Tomás Laulhé (CC0); Soldier, X Bot and Michelle are Mixamo characters from the three.js examples.</p>
+        </div>
+      </div>
+
       <div class="bv-loading" id="bvLoading">
         <div class="bv-spin" aria-hidden="true"></div>
         <p id="bvLoadText" role="status" aria-live="polite">Starting…</p>
@@ -354,33 +386,6 @@
       <div class="bv-fps" id="bvFps" hidden></div>
       <div class="bv-toast" id="bvToast" role="status" aria-live="polite"></div>
     </div>
-
-    <div class="bvp-cols">
-      <div class="bvp-notes">
-        <h2 class="eyebrow">From Revit</h2>
-        <ol>
-          <li>Open a 3D view, then <b>File › Export › IFC</b> (IFC 2x3 or IFC4).</li>
-          <li>Tick <b>Export only elements visible in view</b> to keep it small.</li>
-          <li>Drop the .ifc on the viewer, or press <b>Open IFC</b>.</li>
-        </ol>
-      </div>
-      <div class="bvp-notes">
-        <h2 class="eyebrow">Keys</h2>
-        <dl class="bvp-keys">
-          <div><dt>BIM view</dt><dd>Drag turn · right-drag pan · scroll zoom · click select · double-click zoom to</dd></div>
-          <div><dt></dt><dd><kbd>H</kbd> hide <kbd>I</kbd> isolate <kbd>U</kbd> show all <kbd>X</kbd> x-ray <kbd>M</kbd> measure <kbd>F</kbd> fit</dd></div>
-          <div><dt>Walk view</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move <kbd>Shift</kbd> run <kbd>Space</kbd> jump <kbd>E</kbd> inspect <kbd>T</kbd> teleport</dd></div>
-          <div><dt></dt><dd><kbd>C</kbd> camera <kbd>Q</kbd> character <kbd>F</kbd> torch <kbd>M</kbd> map <kbd>H</kbd> hide HUD <kbd>1</kbd>–<kbd>6</kbd> emotes</dd></div>
-          <div><dt>Phone</dt><dd>Left thumb moves, drag on the right to look.</dd></div>
-        </dl>
-      </div>
-    </div>
-
-    <details class="bvp-more">
-      <summary>Notes and credits</summary>
-      <p>Properties are read from the IFC as exported. Doors and rooms do not block you in the walk view; very large models collide with walls, floors, roofs and stairs only. Everything runs on your device, so for a big model export less of it or lower the Quality setting.</p>
-      <p>Built with <a href="https://github.com/ThatOpen/engine_web-ifc">web-ifc</a> 0.0.78 (MPL-2.0) and three.js 0.186.1. Robot: RobotExpressive by Tomás Laulhé (CC0). Soldier and X Bot: Mixamo characters from the three.js examples, loaded from jsDelivr. Found a problem? <a href="#contact">Tell me</a>.</p>
-    </details>
 
   </div>
 </section>
