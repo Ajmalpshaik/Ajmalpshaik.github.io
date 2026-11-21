@@ -286,13 +286,14 @@ for (const page of PAGES) {
   }
 }
 
-// ---- the home page without its 3D script --------------------------------------
-// assets/home.js adds the forest and pins the story to the scroll. Blocked (or
-// three.js unreachable), the hero and the story must still read as plain HTML.
+// ---- the forest pages without their 3D script ------------------------------------
+// assets/forest.js adds the forest and pins the hero to the scroll (and, on the
+// home page, the story). Blocked (or three.js unreachable), the hero and the
+// text must still read as plain HTML.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const p = await ctx.newPage();
-  await p.route(/\/assets\/home\.js$/, (route) => route.abort());
+  await p.route(/\/assets\/forest\.js$/, (route) => route.abort());
   await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.128\.0\//, (route) => route.abort());
   await p.goto(url('index.html'));
   await p.waitForTimeout(2400);
@@ -301,8 +302,34 @@ for (const page of PAGES) {
     const r = s.getBoundingClientRect();
     return { story: r.width > 100 && r.height > 20, heading: getComputedStyle(document.querySelector('.hero-heading .ln > span')).transform };
   });
-  if (!st.story) fail('index.html with assets/home.js blocked: the story is not on screen');
-  if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/home.js blocked: the headline never finished arriving');
+  if (!st.story) fail('index.html with assets/forest.js blocked: the story is not on screen');
+  if (st.heading !== 'none' && !st.heading.startsWith('matrix(1, 0, 0, 1, 0, 0')) fail('index.html with assets/forest.js blocked: the headline never finished arriving');
+  await p.goto(url('about/index.html'));
+  await p.waitForTimeout(1200);
+  const ab = await p.evaluate(() => ({
+    pinned: getComputedStyle(document.querySelector('.stage-spacer')).display !== 'none',
+    story: document.getElementById('story').getBoundingClientRect().top < innerHeight * 1.2,
+  }));
+  if (ab.pinned) fail('about/index.html with assets/forest.js blocked: the hero still pins to the scroll');
+  if (!ab.story) fail('about/index.html with assets/forest.js blocked: the text does not follow the hero');
+  await ctx.close();
+}
+
+// ---- three.js unreachable: no night forest, so the page under the hero is black ----
+// assets/forest.js still runs and pins the hero, but there is no scene to turn to
+// night; the shade must go all the way to black or light text sits on the fog.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await ctx.newPage();
+  await p.route(/cdn\.jsdelivr\.net\/npm\/three@0\.128\.0\//, (route) => route.abort());
+  for (const page of ['index.html', 'about/index.html']) {
+    await p.goto(url(page));
+    await p.waitForTimeout(800);
+    await p.evaluate(() => { const l = window.__aj && window.__aj.lenis; const y = document.documentElement.scrollHeight; if (l) l.scrollTo(y, { immediate: true }); else scrollTo(0, y); });
+    await p.waitForTimeout(600);
+    const o = await p.evaluate(() => parseFloat(getComputedStyle(document.getElementById('shade')).opacity));
+    if (o < 0.99) fail(`${page} without three.js: the page under the hero is not black (shade ${o.toFixed(2)})`);
+  }
   await ctx.close();
 }
 

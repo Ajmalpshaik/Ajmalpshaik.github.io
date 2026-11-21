@@ -1,11 +1,15 @@
 /*
- * The home page: a misty forest with a flock flying between the trees, light
- * snow falling and a few leaves blowing through on the wind.
- * Loaded only by index.html, after assets/site.js. three.js r128 and its
- * GPUComputationRenderer come from jsDelivr, pinned and fingerprinted in index.html.
+ * The forest behind the home page and the About me page: a misty forest with a
+ * flock flying between the trees, light snow falling and a few leaves blowing
+ * through on the wind. The page opens in bright fog; as you scroll, the fog turns
+ * to night and the same forest stays behind everything below it.
+ * Loaded after assets/site.js. three.js r128 and its GPUComputationRenderer come
+ * from jsDelivr, pinned and fingerprinted in each page.
  *
  * The page is complete without this file: the fog colour, the headline and the
- * story are plain HTML. This only adds the 3D scene and the scroll choreography.
+ * text are plain HTML. This only adds the 3D scene and the scroll choreography.
+ * On the home page the story under the hero lights up word by word (#statement);
+ * other pages simply go from fog to night under their first screen.
  */
 (function () {
   'use strict';
@@ -22,7 +26,10 @@
   var src = document.getElementById('statementText');
   var shade = document.getElementById('shade');
   if (!stage) return;
-  document.documentElement.classList.add('home-ready');
+  document.documentElement.classList.add('forest-ready');
+  // how dark the night is under the text: the About page reads more, so a little darker
+  var sky = document.querySelector('.sky');
+  var END = sky && sky.getAttribute('data-shade') ? parseFloat(sky.getAttribute('data-shade')) : 0.4;
 
   // ---------- the story: its words light up as you scroll ----------
   var words = [];
@@ -38,9 +45,10 @@
   }
 
   // ---------- one stage: the hero leaves, the story arrives, the fog turns to night ----------
-  // The story is read in near dark. Then, like eyes getting used to the night, the
-  // dark lifts a little and the same forest is there under the figures and the
-  // footer: night fog, a cold glow behind the trees, the snow still falling.
+  // Home: the story is read in near dark. Then, like eyes getting used to the
+  // night, the dark lifts a little and the same forest is there under the figures
+  // and the footer: night fog, a cold glow behind the trees, the snow still falling.
+  // Other pages: the hero leaves and the fog turns straight to that night.
   var stageP = 0, endP = 0, night = 0, sceneOn = false;
   var mistEl = document.getElementById('mist');
   var ease = function (a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -49,20 +57,28 @@
     var total = Math.max(1, stage.offsetHeight - vh);
     stageP = clamp(y / total, 0, 1);
     endP = clamp((y - total) / Math.max(1, document.documentElement.scrollHeight - vh - total), 0, 1);
-    if (nav) nav.classList.toggle('light', y < total * 0.2);
-    var out = clamp(stageP / 0.28, 0, 1);
+    if (nav) nav.classList.toggle('light', y < total * (stLayer ? 0.2 : 0.3));
+    var out = clamp(stageP / (stLayer ? 0.28 : 0.6), 0, 1);
     heroCopy.style.opacity = String(1 - out);
     heroCopy.style.transform = 'translateY(' + (-out * 60) + 'px)';
-    var inP = clamp((stageP - 0.22) / 0.2, 0, 1);
-    stLayer.style.opacity = String(inP);
+    var inP, dark, lift;
+    if (stLayer) {
+      inP = clamp((stageP - 0.22) / 0.2, 0, 1);
+      stLayer.style.opacity = String(inP);
+      var lit = clamp((stageP - 0.3) / 0.55, 0, 1) * words.length;
+      for (var i = 0; i < words.length; i++) words[i].style.setProperty('--o', String(clamp(lit - i, 0.2, 1)));
+      night = ease(0.2, 0.6, stageP);
+      dark = Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26);
+      lift = ease(0.8, 1, stageP);
+    } else {
+      inP = ease(0.15, 0.75, stageP);
+      night = ease(0.08, 0.75, stageP);
+      dark = ease(0.15, 1, stageP);
+      lift = inP;
+    }
     if (mistEl) mistEl.style.opacity = String(1 - inP);
-    var lit = clamp((stageP - 0.3) / 0.55, 0, 1) * words.length;
-    for (var i = 0; i < words.length; i++) words[i].style.setProperty('--o', String(clamp(lit - i, 0.2, 1)));
-    night = ease(0.2, 0.6, stageP);
     // without the 3D scene there is no night forest to show: the page goes black
-    var lift = sceneOn ? ease(0.8, 1, stageP) : 0;
-    var dark = Math.min(1, inP * 0.74 + clamp((stageP - 0.78) / 0.22, 0, 1) * 0.26);
-    shade.style.opacity = String(lerp(dark, 0.4, lift));
+    shade.style.opacity = String(lerp(dark, END, sceneOn ? lift : 0));
   }
   onScroll();
   if (lenis) lenis.on('scroll', onScroll); else addEventListener('scroll', onScroll, { passive: true });

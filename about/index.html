@@ -28,6 +28,7 @@
   <link rel="apple-touch-icon" href="/assets/heron/apple-touch-180.png">
   <link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/forest.css">
   <style>
     /* about page only: a label over each section heading, the figures under the header, the FAQ heading at the summary's size */
     .sec-top .eyebrow { margin-bottom: 18px; }
@@ -216,14 +217,6 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Are you available for BIM roles in Qatar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. I am in Doha on a transferable QID with NOC and can join within days, for BIM Coordinator, BIM Modeller and MEP BIM Specialist roles anywhere in Qatar."
-          }
-        },
-        {
-          "@type": "Question",
           "name": "How do you run clash detection and get clashes actually closed?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -313,26 +306,26 @@
 </div>
 <!-- /chrome:nav -->
 <main id="main">
-  <header class="page-head">
-    <div class="wrap">
-      <p class="eyebrow"><span>About me</span><span>MEP BIM Coordinator</span><span>Doha, Qatar</span></p>
-      <h1 class="title"><span data-yrs-word>Eleven</span> years in Doha. <em class="s">The model is the job.</em></h1>
-      <p class="lede">Concept to as-built across villas, towers, schools, an operating airport terminal and a petrochemical plant. <strong>And the Revit automation that goes with it.</strong></p>
-      <nav class="btns" aria-label="On this page">
-        <a class="ghost" href="#story">Story</a>
-        <a class="ghost" href="#experience">Experience</a>
-        <a class="ghost" href="#work">Work</a>
-        <a class="ghost" href="#skills">Skills</a>
-        <a class="ghost" href="#practical">Visa and notice</a>
-        <a class="ghost" href="#faq">FAQ</a>
-      </nav>
-      <div class="nums three">
-        <div><b data-yrs-count>11</b><span>years in MEP, all of them in Doha</span></div>
-        <div><b data-count="2">2</b><span>sides of the table, consultant and contractor</span></div>
-        <div><b data-count="20" data-suffix="%">20%</b><span>less project time for the team, by estimate, from my Revit tools</span></div>
-      </div>
+  <div class="sky" data-shade="0.58" aria-hidden="true">
+    <canvas id="forest"></canvas>
+    <div class="shade" id="shade"></div>
+  </div>
+  <section class="stage" id="stage" aria-label="About me">
+    <div class="stage-sticky">
+      <div class="mist" id="mist" aria-hidden="true"></div>
+      <header class="hero-copy" id="heroCopy">
+        <div class="wrap">
+          <p class="eyebrow"><span>About me</span><span>MEP BIM Coordinator</span><span>Doha, Qatar</span></p>
+          <h1 class="hero-heading wide">
+            <span class="ln"><span><span data-yrs-word>Eleven</span> years in Doha.</span></span>
+            <span class="ln"><span><em class="s">The model</em> is the job.</span></span>
+          </h1>
+          <p class="hero-sub keep">Concept to as-built across villas, towers, schools, an operating airport terminal and a petrochemical plant. <strong>And the Revit automation that goes with it.</strong></p>
+        </div>
+      </header>
     </div>
-  </header>
+    <div class="stage-spacer short"></div>
+  </section>
 
   <section class="sec" id="story" data-track="story">
     <div class="wrap">
@@ -344,9 +337,6 @@
         <p class="lede">Tag a duct. Fix a level. Renumber the sheets. A thousand times a project. Those were my first years in Doha, in AutoCAD and then Revit.</p>
       </div>
       <p class="quote">The work I was paid for was thinking. The work I actually did was typing.</p>
-      <div class="prose gap-t">
-        <p>So I stopped doing it by hand. I started building tools to do the repeat work, and kept the judgement for myself. Each step covered more ground than the last.</p>
-      </div>
       <ol class="steps gap-t">
         <li><b>AutoLISP</b><span>Small routines inside AutoCAD.</span></li>
         <li><b>Dynamo</b><span>Visual scripts on the Revit model.</span></li>
@@ -373,7 +363,6 @@
             <h3 class="h3">BIM Modeller / MEP Draftsman</h3>
             <p class="where">Powermech &middot; Stream &middot; Roots Energy &middot; Mekdam &middot; TEM-AC &middot; Doha</p>
             <p>Villas, towers, malls, hotels and airport works. Shop, coordination and as-built drawings. Where my AutoLISP and Dynamo started.</p>
-            <p class="stake">At stake: learning exactly where models break</p>
           </div>
         </div>
         <div class="tl-item">
@@ -382,7 +371,6 @@
             <h3 class="h3">BIM Modeller</h3>
             <p class="where">Arab Engineering Bureau &middot; Qatar Private Schools Programme, PPP Package 2 &middot; consultant side</p>
             <p>Revit MEP for fourteen school buildings, on ACC, with Navisworks clash detection.</p>
-            <p class="stake">At stake: get the standard right once, or fix it fourteen times</p>
           </div>
         </div>
         <div class="tl-item">
@@ -391,7 +379,6 @@
             <h3 class="h3">BIM Specialist &amp; MEP BIM Coordinator</h3>
             <p class="where">Trags &middot; Polyethylene Plant, Ras Laffan &middot; contractor side</p>
             <p>Leading HVAC BIM on a live production plant. My Revit tools cut the team&rsquo;s project time by an estimated 20%.</p>
-            <p class="stake">At stake: shutdown risk, not rework risk</p>
           </div>
         </div>
       </div>
@@ -405,7 +392,7 @@
           <p class="eyebrow">Selected work</p>
           <h2 class="h2">Five projects, <em class="s">all in Qatar.</em></h2>
         </div>
-        <p class="lede">Industrial, schools, aviation, mixed-use, residential. <strong>The models belong to the clients, so here is the scope and the hard part.</strong></p>
+        <p class="lede">The models belong to the clients, so here is the scope and the hard part.</p>
       </div>
       <div class="cards">
         <article class="card" style="--tint:#3a6bff">
@@ -438,12 +425,6 @@
           <h3 class="h3">Union Residential Tower</h3>
           <p>Full MEP in Revit: risers, builder&rsquo;s work openings and as-builts to handover.</p>
         </article>
-        <a class="card" href="/tools/">
-          <ul class="chips"><li class="chip">My own work</li></ul>
-          <h3 class="h3">The tools I build</h3>
-          <p>Revit automation in C# and pyRevit, and tools you can use in the browser.</p>
-          <span class="more">See the tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span>
-        </a>
       </div>
     </div>
   </section>
@@ -455,7 +436,7 @@
           <p class="eyebrow">Skills</p>
           <h2 class="h2">What I <em class="s">work with.</em></h2>
         </div>
-        <p class="lede">Coordination, modelling, automation and drawing production. <strong>And the software I use every week.</strong></p>
+        <p class="lede">Coordination, modelling, automation and drawings, and the software for them.</p>
       </div>
       <div class="rows">
         <div class="row">
@@ -510,21 +491,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="row-k"><span class="n">05</span><h3 class="h3">Day to day</h3></div>
+          <div class="row-k"><span class="n">05</span><h3 class="h3">Software</h3></div>
           <div class="row-v">
             <ul class="tags">
               <li>Revit</li>
               <li>Navisworks</li>
               <li>AutoCAD</li>
-              <li>BIM 360</li>
-              <li>ACC</li>
-              <li>Dynamo</li>
-              <li>pyRevit</li>
               <li>diRoots</li>
               <li>Visual Studio</li>
-              <li>C#</li>
-              <li>Python</li>
-              <li>AutoLISP</li>
             </ul>
           </div>
         </div>
@@ -539,17 +513,13 @@
           <p class="eyebrow">The practical part</p>
           <h2 class="h2">Before <em class="s">the first call.</em></h2>
         </div>
-        <p class="lede">Doha, Qatar. <strong>Transferable QID with NOC. Able to join within days.</strong></p>
       </div>
       <dl class="facts">
         <div class="fact"><dt>Based in</dt><dd>Doha, Qatar &middot; GMT+3 &middot; on site</dd></div>
         <div class="fact"><dt>Status</dt><dd>Transferable QID with NOC, no visa to arrange</dd></div>
         <div class="fact"><dt>Notice</dt><dd>Able to join within days</dd></div>
-        <div class="fact"><dt>Now</dt><dd>BIM Specialist and MEP BIM Coordinator, Trags &middot; Polyethylene Plant, Ras Laffan</dd></div>
-        <div class="fact"><dt>Experience</dt><dd><span data-yrs>11</span> years since May 2015 &middot; consultant and contractor side</dd></div>
-        <div class="fact"><dt>Sectors</dt><dd>Villas, towers, malls, hotels, 14 schools, an airport, a petrochemical plant</dd></div>
         <div class="fact"><dt>Languages</dt><dd>English, Malayalam, Tamil, Hindi &middot; conversational Arabic</dd></div>
-        <div class="fact"><dt>Open to</dt><dd>BIM Coordinator, BIM Modeller and MEP BIM Specialist roles in Qatar &middot; remote automation work</dd></div>
+        <div class="fact"><dt>Open to</dt><dd>BIM Coordinator, BIM Modeller and MEP BIM Specialist roles in Qatar</dd></div>
       </dl>
     </div>
   </section>
@@ -561,10 +531,8 @@
           <p class="eyebrow">Questions</p>
           <h2 class="h2">Straight <em class="s">answers.</em></h2>
         </div>
-        <p class="lede">The six things people ask first.</p>
       </div>
       <div class="faq">
-        <details><summary><h3>Are you available for BIM roles in Qatar?</h3></summary><div class="ans"><p>Yes. I am in Doha on a transferable QID with NOC and can join within days, for BIM Coordinator, BIM Modeller and MEP BIM Specialist roles anywhere in Qatar.</p></div></details>
         <details><summary><h3>How do you run clash detection and get clashes actually closed?</h3></summary><div class="ans"><p>Rule-based Navisworks tests per discipline pair, noise filtered out, issues grouped with an owner and a date in BIM 360 or ACC, and re-run every milestone until they are closed.</p></div></details>
         <details><summary><h3>Can you set up BIM standards and a BEP for a new project?</h3></summary><div class="ans"><p>Yes: template, shared parameters, worksets, ISO 19650 naming and an LOD matrix per milestone, plus model audits that catch drift before submission week.</p></div></details>
         <details><summary><h3>How do you take over a model somebody else started?</h3></summary><div class="ans"><p>Audit first, then fix. A short report of what is wrong and what it costs, then the fixes in order, structural problems first.</p></div></details>
@@ -585,5 +553,8 @@
 <!-- /chrome:foot -->
 <script src="/vendor/lenis.min.js" defer></script>
 <script src="/assets/site.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/misc/GPUComputationRenderer.js" integrity="sha384-PUoswFxS+yEqG3jAAm9Ka/qT9luIailK2ZhxG9/2zPOybWlTejQiZdBE4q9IP8fK" crossorigin="anonymous" defer></script>
+<script src="/assets/forest.js" defer></script>
 </body>
 </html>
