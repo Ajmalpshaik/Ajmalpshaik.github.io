@@ -1,5 +1,6 @@
-/* About me page only, on top of site.css and forest.css. Layout only: the look
-   is the site's own (soft raised steps, cards and buttons from site.css). */
+/* About me page only, on top of site.css and forest.css. Mostly layout; the
+   look is the site's own, on its light tokens. The one look of its own: the story
+   steps as neumorphic tiles (asked for by the owner). */
 
 /* a label over each section heading, the FAQ heading at the summary's size */
 .sec-top .eyebrow { margin-bottom: 18px; }
@@ -11,8 +12,21 @@
 .hero-act { margin-top: 26px; animation: fade 1.4s var(--ease) both .6s; }
 @media (max-width: 600px) { .hero-act { margin-top: 18px; } }
 
-/* story: the five steps in one row on wide screens */
-@media (min-width: 1100px) { #story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+/* story: the five steps as neumorphic tiles, one row on wide screens, raised strips below.
+   The number sits in a pressed-in circle; a tile presses in under the pointer. */
+#story .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+#story .steps li { padding: 22px 20px; border-radius: 22px; box-shadow: var(--neu-up); transition: box-shadow .35s var(--ease); }
+#story .steps li::before {
+  display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 18px;
+  border-radius: 50%; background: var(--bg); color: var(--fg); box-shadow: var(--neu-in-sm);
+}
+#story .steps li:hover { box-shadow: var(--neu-in); }
+@media (max-width: 1099px) {
+  #story .steps { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  #story .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 2px 16px; padding: 16px 18px; }
+  #story .steps li::before { grid-row: span 2; margin: 0; }
+}
+@media (prefers-reduced-motion: reduce) { #story .steps li { transition: none; } }
 
 /* selected work: the current project wide on top, then two by two */
 #work .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -25,4 +39,7 @@
 .next .lede { margin-top: 14px; }
 .next .btns { margin-top: 28px; }
 
-@media print { .hero-act, .next .btns { display: none; } }
+@media print {
+  .hero-act, .next .btns { display: none; }
+  #story .steps li, #story .steps li::before { background: none; box-shadow: none; border: 1px solid #ccc; }
+}
