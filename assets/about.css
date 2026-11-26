@@ -1,6 +1,6 @@
 /* About me page only, on top of site.css and forest.css. Mostly layout; the
-   look is the site's own, on its light tokens. The one look of its own: the story
-   steps as neumorphic tiles (asked for by the owner). */
+   look is the site's own, on its light tokens. Its own look: the story steps and
+   the three jobs as neumorphic tiles (asked for by the owner). */
 
 /* a label over each section heading, the FAQ heading at the summary's size */
 .sec-top .eyebrow { margin-bottom: 18px; }
@@ -28,6 +28,25 @@
 }
 @media (prefers-reduced-motion: reduce) { #story .steps li { transition: none; } }
 
+/* experience: the three jobs as the same soft tiles, newest first, one row on wide
+   screens and stacked below. The dates sit in a pressed-in pill. */
+#experience .tl { border-top: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); align-items: stretch; }
+#experience .tl-item {
+  display: flex; flex-direction: column; gap: 14px; padding: 22px 22px 24px; border: 0; border-radius: 22px;
+  background: var(--bg); box-shadow: var(--neu-up); transition: box-shadow .35s var(--ease);
+}
+.forest-ready #experience .tl-item { background: rgba(211, 215, 219, .82); }
+#experience .tl-item:hover { box-shadow: var(--neu-in); }
+#experience .tl-when {
+  align-self: flex-start; padding: 6px 12px; border-radius: 999px; font-size: 11.5px;
+  background: var(--bg); box-shadow: var(--neu-in-sm);
+}
+#experience .tl-what .h3 { font-size: 1.15rem; margin-bottom: 8px; }
+#experience .tl-what .where { font-size: 14px; margin-bottom: 10px; }
+#experience .tl-what p { font-size: 14.5px; }
+@media (max-width: 1099px) { #experience .tl { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
+@media (prefers-reduced-motion: reduce) { #experience .tl-item { transition: none; } }
+
 /* selected work: the current project wide on top, then two by two */
 #work .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 #work .card:first-child { grid-column: 1 / -1; }
@@ -41,5 +60,5 @@
 
 @media print {
   .hero-act, .next .btns { display: none; }
-  #story .steps li, #story .steps li::before { background: none; box-shadow: none; border: 1px solid #ccc; }
+  #story .steps li, #story .steps li::before, #experience .tl-item, #experience .tl-when { background: none; box-shadow: none; border: 1px solid #ccc; }
 }
