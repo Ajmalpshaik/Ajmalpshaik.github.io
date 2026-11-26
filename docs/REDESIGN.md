@@ -121,7 +121,7 @@ are small (`.forest-ready main .h2`).
 
 - **Forest:** bare trees grown in code from a seed (`makeTree`), instanced, in an
   exponential fog whose colour is the background's, so far trunks dissolve.
-- **Mist:** sheets of animated noise at several depths, thick near the ground.
+- **Fog:** one exponential fog only, no drifting mist clouds on top, so the trees stay clear.
 - **Flock:** the three.js GPGPU birds (`webgl_gpgpu_birds`, MIT), stepped on the
   GPU in the same scene so the fog reaches them. The mouse scares them. Their home
   drifts, so about once a minute they sweep past close to the camera.

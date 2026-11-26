@@ -1,5 +1,5 @@
 /*
- * The forest behind the home page and the About me page: a misty forest with a
+ * The forest behind the home page and the About me page: a foggy forest with a
  * flock flying between the trees, light snow falling and a few leaves blowing
  * through on the wind. The page opens in bright fog; as you scroll, a soft fog
  * veil comes over the forest and it stays, faint, behind everything below it.
@@ -98,7 +98,7 @@
   // fonts and late content change the page's height: measure again when they do
   if (window.ResizeObserver) new ResizeObserver(function () { measure(); onScroll(); }).observe(document.body);
 
-  // ---------- the forest: bare trees in mist, and a flock flying between them ----------
+  // ---------- the forest: bare trees in fog, and a flock flying between them ----------
   // The look follows the three.js fog examples (custom_fog_scattering, custom_fog_background):
   // bare trees, and a fog whose colour is the background's, so far trunks and far birds
   // dissolve into it. The birds are the three.js GPGPU flock (webgl_gpgpu_birds, MIT):
@@ -210,54 +210,6 @@
     const ground = new T.Mesh(new T.PlaneGeometry(600, 600).rotateX(-Math.PI / 2), new T.MeshBasicMaterial({ color: lin(0x8f9398) }));
     scene.add(ground);
 
-    // ---- drifting mist: soft noise clouds hung between the trees, always moving ----
-    // After the moving cloud fog of the three.js example webgpu_postprocessing_fog:
-    // here as sheets of animated noise at several depths, thick near the ground.
-    const mists = [];
-    function mist() {
-      const vs = `
-        varying vec2 vUv; varying float vDepth;
-        void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vDepth = -mv.z; gl_Position = projectionMatrix * mv; }`;
-      const fs = `
-        uniform float uTime; uniform vec3 uColor; uniform float uOpacity; uniform vec2 uSpeed; uniform float uSeed;
-        uniform vec3 fogColor; uniform float fogDensity;
-        varying vec2 vUv; varying float vDepth;
-        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-        float noise(vec2 p) {
-          vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
-          return mix(mix(hash(i), hash(i + vec2(1., 0.)), f.x), mix(hash(i + vec2(0., 1.)), hash(i + vec2(1., 1.)), f.x), f.y);
-        }
-        float fbm(vec2 p) { float v = 0., a = .5; for (int i = 0; i < OCT; i++) { v += a * noise(p); p = p * 2.03 + 17.1; a *= .5; } return v; }
-        void main() {
-          vec2 p = vUv * vec2(4.0, 1.4) + uSeed;
-          vec2 q = vec2(fbm(p + uTime * 0.02), fbm(p + 5.2 - uTime * 0.015));
-          float n = fbm(p + 1.6 * q + uSpeed * uTime);
-          float edge = smoothstep(0., .22, vUv.x) * smoothstep(1., .78, vUv.x) * smoothstep(0., .25, vUv.y) * smoothstep(1., .3, vUv.y);
-          float a = smoothstep(.3, .74, n) * edge * uOpacity;
-          a *= smoothstep(0.6, 3.0, vDepth); // the nearest sheet thins as you walk through it
-          float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-          gl_FragColor = vec4(mix(uColor, fogColor, fog * 0.6), a);
-        }`;
-      const layers = small
-        ? [[5.5, 0.58], [1, 0.66], [-4, 0.7], [-9, 0.68]]
-        : [[6.5, 0.5], [3, 0.62], [-0.5, 0.68], [-4, 0.7], [-8, 0.7], [-12, 0.66]];
-      layers.forEach(([z, op], i) => {
-        const m = new T.ShaderMaterial({
-          uniforms: {
-            uTime: { value: 0 }, uColor: { value: new T.Vector3(1.0, 1.0, 1.0) }, uOpacity: { value: op },
-            uSpeed: { value: new T.Vector2(0.035 + i * 0.007, 0.004) }, uSeed: { value: i * 7.3 },
-            fogColor: fogU, fogDensity: densU,
-          },
-          vertexShader: vs, fragmentShader: fs, transparent: true, depthWrite: false, defines: { OCT: small ? 3 : 5 },
-        });
-        const w = 26 + i * 4, h = 5.5 + i * 0.5;
-        const plane = new T.Mesh(new T.PlaneGeometry(w, h), m);
-        plane.position.set((i % 2 ? -1 : 1) * 0.8, h / 2 - 0.4, z);
-        plane.renderOrder = 2;
-        scene.add(plane); mists.push(m);
-      });
-    }
-
     function grow() {
       const VARIANTS = small ? 6 : 10;
       const variants = [];
@@ -292,7 +244,7 @@
       });
     }
 
-    // ---- snow: point sprites drifting through the mist ----
+    // ---- snow: point sprites drifting through the fog ----
     // After the three.js example webgl_points_sprites: thousands of textured
     // points, five snowflake shapes (drawn here in code), falling slowly, swaying
     // and spinning. Near flakes are larger; far ones melt into the same fog.
@@ -704,7 +656,6 @@
       let d = (now - last) / 1000; if (d > 1) d = 1; last = now;
       if (!visible || document.hidden) return;
       if (flock) flock(now, d);
-      if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
       if (snowU && !reduce) snowU.uTime.value = now / 1000;
       if (leafU && !reduce) leafU.uTime.value = now / 1000;
       place(d);
@@ -714,7 +665,7 @@
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {
-      grow(); mist(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
+      grow(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
       last = performance.now(); requestAnimationFrame(frame);
     }, 30);
   })();
