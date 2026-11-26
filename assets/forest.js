@@ -298,7 +298,7 @@
     // and spinning. Near flakes are larger; far ones melt into the same fog.
     let snowU = null;
     function snow() {
-      const N = small ? 600 : 1400, CELL = 128;
+      const N = small ? 420 : 1000, CELL = 128;
       const atlas = document.createElement('canvas');
       atlas.width = CELL * 5; atlas.height = CELL;
       const g = atlas.getContext('2d');
@@ -338,7 +338,7 @@
         pos[i * 3 + 1] = Math.random() * 9 - 0.5;
         pos[i * 3 + 2] = -14 + Math.random() * 22;
         aVar[i] = Math.floor(Math.random() * 5);
-        aSize[i] = 0.022 + Math.random() * 0.045;
+        aSize[i] = 0.018 + Math.random() * 0.036;
         aSpeed[i] = 0.22 + Math.random() * 0.38;
         aPhase[i] = Math.random() * Math.PI * 2;
         aSpin[i] = (Math.random() - 0.5) * 1.6;
@@ -365,7 +365,7 @@
             vec3 p = vec3(position.x + sin(uTime * 0.6 + aPhase) * 0.35, y, position.z + cos(uTime * 0.45 + aPhase) * 0.25);
             vec4 mv = modelViewMatrix * vec4(p, 1.0);
             vDepth = -mv.z;
-            gl_PointSize = min(24.0, aSize * uScale / max(vDepth, 0.1));
+            gl_PointSize = min(20.0, aSize * uScale / max(vDepth, 0.1));
             vVar = aVar; vRot = aPhase + uTime * aSpin;
             gl_Position = projectionMatrix * mv;
           }`,
