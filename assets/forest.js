@@ -319,10 +319,14 @@
     }
     function parrotsStep(now, d) {
       const t = now / 1000;
+      // the loops are drawn for a wide screen; on a narrow one (a phone held upright)
+      // they shrink sideways towards the middle of the view, so the parrots stay in it
+      const k = Math.min(1, Math.max(0.32, camera.aspect / 1.6));
       for (const f of parrotsFly) {
         const p = f.pth, a = p.w * t + p.ph, a2 = p.w * (t + 0.2) + p.ph;
-        f.m.position.set(p.c[0] + p.rx * Math.cos(a), p.c[1] + p.bob * Math.sin(a * 2.3), p.c[2] + p.rz * Math.sin(a));
-        f.nx.set(p.c[0] + p.rx * Math.cos(a2), p.c[1] + p.bob * Math.sin(a2 * 2.3), p.c[2] + p.rz * Math.sin(a2));
+        const cx = 0.4 + (p.c[0] - 0.4) * k, rx = p.rx * k;
+        f.m.position.set(cx + rx * Math.cos(a), p.c[1] + p.bob * Math.sin(a * 2.3), p.c[2] + p.rz * Math.sin(a));
+        f.nx.set(cx + rx * Math.cos(a2), p.c[1] + p.bob * Math.sin(a2 * 2.3), p.c[2] + p.rz * Math.sin(a2));
         f.m.lookAt(f.nx);
         f.mixer.update(d);
       }
