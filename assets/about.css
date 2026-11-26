@@ -2,6 +2,16 @@
    look is the site's own, on its light tokens. Its own look: the story steps and
    the three jobs as neumorphic tiles (asked for by the owner). */
 
+/* tighter rhythm: less empty space between and inside the sections */
+main > .sec { padding-bottom: clamp(48px, 5.5vw, 80px); }
+.sec-top { margin-bottom: clamp(22px, 2.8vw, 36px); }
+#skills .row { padding: clamp(14px, 1.6vw, 20px) 0; }
+#practical .fact { padding: 14px 0; }
+#practical .fact:last-child:nth-child(odd) { grid-column: 1 / -1; } /* the last fact alone on its row spans it */
+#work .card { gap: 10px; padding: clamp(18px, 1.8vw, 24px); }
+#work .card .idx { font-size: clamp(1.6rem, 2.2vw, 2.1rem); }
+.faq summary { padding: 13px 0; }
+
 /* a label over each section heading, the FAQ heading at the summary's size */
 .sec-top .eyebrow { margin-bottom: 18px; }
 .sec-top > .lede { width: min(100%, 46ch); }
