@@ -405,7 +405,8 @@
       const tex = new T.CanvasTexture(cv2);
       const plane = new T.PlaneGeometry(0.1, 0.1);
       leafU = { uTime: { value: 0 }, uTex: { value: tex }, fogColor: fogU, fogDensity: densU };
-      const layers = [0xFD641A, 0xFF9A5C, 0xC9A14A];
+      // sage, olive and moss: no orange, so the few Heron-orange birds are the only orange in the forest
+      const layers = [0x8C9A70, 0x6E7B52, 0x55604A];
       layers.forEach((hex, li) => {
         const geo = new T.InstancedBufferGeometry();
         geo.index = plane.index;

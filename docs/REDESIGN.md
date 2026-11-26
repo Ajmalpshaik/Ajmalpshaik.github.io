@@ -133,8 +133,9 @@ are small (`.forest-ready main .h2`).
 - **Snow:** light point-sprite snow (after `webgl_points_sprites`): five
   snowflake shapes drawn in code, small, falling, swaying and spinning, fogged
   like the trees.
-- **Leaves:** three layers of small leaves in Heron orange, light orange and gold
-  (after `webgpu_layers`), drawn in code, blowing left to right and tumbling.
+- **Leaves:** three layers of small leaves in sage, olive and moss (after
+  `webgpu_layers`), drawn in code, blowing left to right and tumbling. No orange:
+  one bird in twenty is Heron orange, and it should be the only orange in the forest.
 - **Welcome** (`assets/intro.js`), once per visit: "Ajmal P.S" in 3D Geist,
   cut into triangles by `TessellateModifier` (after `webgl_modifier_tessellation`),
   assembles left to right in the site's colours, breathes, then flies apart as
