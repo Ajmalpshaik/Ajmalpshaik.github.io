@@ -120,7 +120,10 @@ a little thicker than home's 0.86, for longer reading). Headings over the forest
 are small (`.forest-ready main .h2`).
 
 - **Forest:** bare trees grown in code from a seed (`makeTree`), instanced, in an
-  exponential fog whose colour is the background's, so far trunks dissolve.
+  exponential fog whose colour is the background's, so far trunks dissolve. The
+  bark is drawn in the shader on the thick parts only: long furrows, a little pale
+  lichen low down, and snow settled on the tops of the branches; twigs stay plain
+  dark lines. Branch pieces overlap a little, so no light shows through the joints.
 - **Mist:** sheets of animated noise at several depths, thick near the ground.
 - **Flock:** the three.js GPGPU birds (`webgl_gpgpu_birds`, MIT), stepped on the
   GPU in the same scene so the fog reaches them. The mouse scares them. Their home
