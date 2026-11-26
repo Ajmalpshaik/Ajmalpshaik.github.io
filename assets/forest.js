@@ -1,10 +1,11 @@
 /*
  * The forest behind the home page and the About me page: a misty forest with a
- * flock flying between the trees, light snow falling and a few leaves blowing
- * through on the wind. The page opens in bright fog; as you scroll, a soft fog
- * veil comes over the forest and it stays, faint, behind everything below it.
- * Loaded after assets/site.js. three.js r128 and its GPUComputationRenderer come
- * from jsDelivr, pinned and fingerprinted in each page.
+ * flock flying between the trees, three parrots, light snow falling and a few
+ * leaves blowing through on the wind. The page opens in bright fog; as you
+ * scroll, a soft fog veil comes over the forest and it stays, faint, behind
+ * everything below it. Loaded after assets/site.js. three.js r128, its
+ * GPUComputationRenderer and its GLTFLoader come from jsDelivr, pinned and
+ * fingerprinted in each page.
  *
  * The page is complete without this file: the fog colour, the headline and the
  * text are plain HTML. This only adds the 3D scene and the scroll choreography.
@@ -285,6 +286,46 @@
         plane.renderOrder = 2;
         scene.add(plane); mists.push(m);
       });
+    }
+
+    // ---- three parrots: the three.js example Parrot (glTF, model by Mirada for ROME,
+    // see assets/models/README.md), flapping by its own morph targets, flying slow
+    // loops between the trees in front of the camera. Loaded after the trees; if the
+    // loader or the file is missing, the forest simply has no parrots. ----
+    const parrotsFly = [];
+    const PARROT_PATHS = [
+      { c: [0.6, 2.55, 5.0], rx: 2.6, rz: 1.4, w: 0.42, ph: 0.4, bob: 0.18 },
+      { c: [-0.4, 2.85, 3.4], rx: 3.2, rz: 1.8, w: -0.34, ph: 2.4, bob: 0.22 },
+      { c: [1.0, 2.35, 1.6], rx: 3.6, rz: 1.6, w: 0.28, ph: 4.4, bob: 0.16 },
+    ];
+    function parrots() {
+      if (!T.GLTFLoader) return;
+      new T.GLTFLoader().load('/assets/models/parrot.glb', (gltf) => {
+        const src = gltf.scene.children[0], clip = gltf.animations[0];
+        if (!src || !clip) return;
+        const sz = new T.Box3().setFromObject(src).getSize(new T.Vector3());
+        const scale = 0.5 / Math.max(sz.x, sz.y, sz.z);
+        PARROT_PATHS.forEach((pth, i) => {
+          const m = src.clone();
+          m.scale.setScalar(scale);
+          const mixer = new T.AnimationMixer(m);
+          mixer.clipAction(clip).setDuration(0.9 + i * 0.12).play();
+          mixer.update(i * 0.3);
+          scene.add(m);
+          parrotsFly.push({ m, mixer, pth, nx: new T.Vector3() });
+        });
+        parrotsStep(reduce ? 0 : performance.now(), 0); // with reduced motion they hold still
+      }, undefined, () => {});
+    }
+    function parrotsStep(now, d) {
+      const t = now / 1000;
+      for (const f of parrotsFly) {
+        const p = f.pth, a = p.w * t + p.ph, a2 = p.w * (t + 0.2) + p.ph;
+        f.m.position.set(p.c[0] + p.rx * Math.cos(a), p.c[1] + p.bob * Math.sin(a * 2.3), p.c[2] + p.rz * Math.sin(a));
+        f.nx.set(p.c[0] + p.rx * Math.cos(a2), p.c[1] + p.bob * Math.sin(a2 * 2.3), p.c[2] + p.rz * Math.sin(a2));
+        f.m.lookAt(f.nx);
+        f.mixer.update(d);
+      }
     }
 
     function grow() {
@@ -733,6 +774,7 @@
       let d = (now - last) / 1000; if (d > 1) d = 1; last = now;
       if (!visible || document.hidden) return;
       if (flock) flock(now, d);
+      if (!reduce && parrotsFly.length) parrotsStep(now, d);
       if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
       if (snowU && !reduce) snowU.uTime.value = now / 1000;
       if (leafU && !reduce) leafU.uTime.value = now / 1000;
@@ -743,7 +785,7 @@
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {
-      grow(); mist(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
+      grow(); mist(); snow(); leaves(); birds(); parrots(); size(); addEventListener('resize', size);
       last = performance.now(); requestAnimationFrame(frame);
     }, 30);
   })();
