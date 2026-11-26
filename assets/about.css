@@ -52,6 +52,15 @@
 #work .card:first-child { grid-column: 1 / -1; }
 @media (max-width: 760px) { #work .cards { grid-template-columns: minmax(0, 1fr); } }
 
+/* skills, the practical facts and the FAQ: one soft panel each, like the tiles, so
+   their words never sit straight on the branches. The spacing around them is unchanged. */
+#skills .rows, #practical .facts, #faq .faq {
+  border-top: 0; border-radius: 22px; padding: 4px clamp(18px, 2.4vw, 32px);
+  background: var(--bg); box-shadow: var(--neu-up);
+}
+.forest-ready #skills .rows, .forest-ready #practical .facts, .forest-ready #faq .faq { background: rgba(211, 215, 219, .82); }
+#skills .row:last-child, #practical .fact:last-child, #faq details:last-child { border-bottom: 0; }
+
 /* closing: the next step */
 .next .eyebrow { margin-bottom: 18px; }
 .next .h2 { max-width: 22ch; }
@@ -61,4 +70,5 @@
 @media print {
   .hero-act, .next .btns { display: none; }
   #story .steps li, #story .steps li::before, #experience .tl-item, #experience .tl-when { background: none; box-shadow: none; border: 1px solid #ccc; }
+  #skills .rows, #practical .facts, #faq .faq { background: none; box-shadow: none; padding: 0; border-radius: 0; }
 }
