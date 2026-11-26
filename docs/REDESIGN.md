@@ -138,7 +138,11 @@ are small (`.forest-ready main .h2`).
   like the trees.
 - **Leaves:** three layers of small leaves in sage, olive and moss (after
   `webgpu_layers`), drawn in code, blowing left to right and tumbling. No orange:
-  one bird in twenty is Heron orange, and it should be the only orange in the forest.
+  one bird in twenty is Heron orange, and only the birds carry colour.
+- **Parrots:** three red macaws, the three.js example Parrot (glTF, flapping by
+  its own morph targets; credit and licence note in `assets/models/README.md`),
+  fly slow loops between the near trees. Loaded after the trees with the pinned
+  `GLTFLoader`; without it, or without the file, there are simply no parrots.
 - **Welcome** (`assets/intro.js`), once per visit: "Ajmal P.S" in 3D Geist,
   cut into triangles by `TessellateModifier` (after `webgl_modifier_tessellation`),
   assembles left to right in the site's colours, breathes, then flies apart as
@@ -179,6 +183,7 @@ assets/heron.css        what the Heron pages add, including the markup
 assets/tool.css         maps the tool pages onto the system
 assets/toolbox.css      the tools' own controls
 assets/fonts/           Geist, Geist Mono, Instrument Serif (OFL)
+assets/models/          parrot.glb (three.js example, by Mirada for ROME) and its README
 favicon.ico, assets/heron/favicon-64.png, apple-touch-180.png
                         the site icon on every page: the Heron mark
 tools/sync_chrome.py    writes the bar and footer into every page; --check
