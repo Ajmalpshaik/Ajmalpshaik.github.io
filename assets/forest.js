@@ -544,10 +544,10 @@
           gl_FragColor = vec4(velocity, 1.0);
         }`;
       const birdVS = `
-        attribute vec2 reference; attribute float birdVertex; attribute vec3 birdColor;
+        attribute vec2 reference; attribute float birdVertex; attribute vec3 birdColor; attribute float aHeron;
         uniform sampler2D texturePosition; uniform sampler2D textureVelocity;
         uniform float uScale; uniform vec3 uOffset;
-        varying vec4 vColor; varying float vDepth;
+        varying vec4 vColor; varying float vDepth; varying float vHeron;
         void main() {
           vec4 tmpPos = texture2D(texturePosition, reference);
           vec3 pos = tmpPos.xyz;
@@ -566,15 +566,19 @@
           vec4 mv = viewMatrix * vec4(newPosition * uScale + uOffset, 1.0);
           vDepth = -mv.z;
           vColor = vec4(birdColor, 1.0);
+          vHeron = aHeron;
           gl_Position = projectionMatrix * mv;
         }`;
-      // dark birds against the bright fog, fogged with the same exponential fog as the trees
+      // dark birds against the bright fog, fogged with the same exponential fog as the trees;
+      // one bird in twenty is Heron orange
       const birdFS = `
         uniform vec3 fogColor; uniform float fogDensity;
-        varying vec4 vColor; varying float vDepth;
+        varying vec4 vColor; varying float vDepth; varying float vHeron;
         void main() {
           float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
-          vec3 c = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5);
+          vec3 dark = vec3(0.10, 0.11, 0.12) * (0.8 + vColor.x * 0.5);
+          vec3 heron = vec3(0.99, 0.39, 0.10) * (0.78 + vColor.x * 0.3);
+          vec3 c = mix(dark, heron, vHeron);
           gl_FragColor = vec4(mix(c, fogColor, clamp(fog, 0., 1.)), 1.0);
         }`;
       const gpu = new T.GPUComputationRenderer(W, W, r);
@@ -598,7 +602,7 @@
 
       const tris = N * 3, pts = tris * 3;
       const g = new T.BufferGeometry();
-      const vtx = new Float32Array(pts * 3), col = new Float32Array(pts * 3), ref = new Float32Array(pts * 2), bv = new Float32Array(pts);
+      const vtx = new Float32Array(pts * 3), col = new Float32Array(pts * 3), ref = new Float32Array(pts * 2), bv = new Float32Array(pts), hr = new Float32Array(pts);
       let v = 0;
       const push = (...a) => { for (const n of a) vtx[v++] = n; };
       for (let f = 0; f < N; f++) { push(0, 0, -20, 0, 4, -20, 0, 0, 30); push(0, 0, -15, -20, 0, 0, 0, 0, 15); push(0, 0, 15, 20, 0, 0, 0, 0, -15); }
@@ -608,11 +612,13 @@
         col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
         ref[i * 2] = (bird % W) / W; ref[i * 2 + 1] = ~~(bird / W) / W;
         bv[i] = i % 9;
+        hr[i] = bird % 20 === 7 ? 1 : 0; // 5 birds in every 100 wear Heron orange
       }
       g.setAttribute('position', new T.BufferAttribute(vtx, 3));
       g.setAttribute('birdColor', new T.BufferAttribute(col, 3));
       g.setAttribute('reference', new T.BufferAttribute(ref, 2));
       g.setAttribute('birdVertex', new T.BufferAttribute(bv, 1));
+      g.setAttribute('aHeron', new T.BufferAttribute(hr, 1));
       g.scale(0.2, 0.2, 0.2);
       const bU = {
         texturePosition: { value: null }, textureVelocity: { value: null },
