@@ -138,33 +138,31 @@
     function merge(list) {
       let verts = 0, idx = 0;
       for (const g of list) { verts += g.attributes.position.count; idx += g.index ? g.index.count : g.attributes.position.count; }
-      const pos = new Float32Array(verts * 3), nor = new Float32Array(verts * 3), rad = new Float32Array(verts), index = new Uint32Array(idx);
+      const pos = new Float32Array(verts * 3), nor = new Float32Array(verts * 3), index = new Uint32Array(idx);
       let v = 0, k = 0;
       for (const g of list) {
         const c = g.attributes.position.count;
-        pos.set(g.attributes.position.array, v * 3); nor.set(g.attributes.normal.array, v * 3); rad.set(g.attributes.aR.array, v);
+        pos.set(g.attributes.position.array, v * 3); nor.set(g.attributes.normal.array, v * 3);
         if (g.index) { const a = g.index.array; for (let i = 0; i < a.length; i++) index[k++] = a[i] + v; } else for (let i = 0; i < c; i++) index[k++] = v + i;
         v += c; g.dispose();
       }
       const out = new T.BufferGeometry();
       out.setAttribute('position', new T.BufferAttribute(pos, 3));
       out.setAttribute('normal', new T.BufferAttribute(nor, 3));
-      out.setAttribute('aR', new T.BufferAttribute(rad, 1));
       out.setIndex(new T.BufferAttribute(index, 1));
       out.computeBoundingSphere();
       return out;
     }
     const ANG = [62, 46, 38, 32].map((d) => (d * Math.PI) / 180);
     const GNARL = [0.045, 0.13, 0.2, 0.26, 0.3];
-    const RADIAL = [10, 6, 5, 3, 3];
+    const RADIAL = [7, 6, 5, 3, 3];
     function makeTree(seed, o) {
       const rand = rng(seed);
       const parts = [];
       const q = new T.Quaternion(), m = new T.Matrix4(), one = new T.Vector3(1, 1, 1), mid = new T.Vector3(), d = new T.Vector3();
       const seg = (a, b, r0, r1, lvl) => {
         d.subVectors(b, a); const len = d.length(); if (len < 1e-4) return;
-        const g = new T.CylinderGeometry(r1, r0, len + r0 * 1.6, RADIAL[lvl], 1, true);
-        g.setAttribute('aR', new T.BufferAttribute(new Float32Array(g.attributes.position.count).fill((r0 + r1) / 2), 1));
+        const g = new T.CylinderGeometry(r1, r0, len, RADIAL[lvl], 1, true);
         q.setFromUnitVectors(UP, d.normalize());
         g.applyMatrix4(m.compose(mid.addVectors(a, b).multiplyScalar(0.5), q, one));
         parts.push(g);
@@ -200,54 +198,14 @@
         }
       };
       branch(new T.Vector3(), new T.Vector3((rand() - 0.5) * 0.08, 1, (rand() - 0.5) * 0.08).normalize(), o.trunk, o.radius, 0);
-      // roots: four or five short buttresses that hug the foot of the trunk and dip into the ground
-      const roots = 4 + Math.floor(rand() * 2);
-      for (let k = 0; k < roots; k++) {
-        const a = ((k + rand() * 0.6) / roots) * Math.PI * 2;
-        const rd = new T.Vector3(Math.cos(a), -1.25, Math.sin(a)).normalize();
-        let rp = new T.Vector3(Math.cos(a) * o.radius * 0.6, 0.3 + rand() * 0.1, Math.sin(a) * o.radius * 0.6), rr = o.radius * 0.75;
-        for (let i = 0; i < 3; i++) {
-          const nx = rp.clone().addScaledVector(rd, 0.16), nr = rr * 0.7;
-          seg(rp, nx, rr, nr, 1); rp = nx; rr = nr;
-          rd.y -= 0.25; rd.normalize();
-        }
-      }
       return merge(parts);
     }
 
-    // Bark, drawn in the shader: long furrows up the trunk, pale lichen low down,
-    // snow settled on the tops of the branches, darker where the trunk meets the ground.
-    // Each tree also takes a slightly different tint (setColorAt in grow()).
-    const glsl = (h) => { const c = lin(h); return `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`; };
-    const bark = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1, metalness: 0 });
+    const bark = new T.MeshStandardMaterial({ color: lin(0x302c28), roughness: 1, metalness: 0 });
+    // darker where the trunk meets the ground, as in the example
     bark.onBeforeCompile = (sh) => {
-      sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', '#include <common>\nattribute float aR; varying vec3 vP; varying vec3 vWN; varying float vR;')
-        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvP = position; vR = aR;')
-        .replace('#include <defaultnormal_vertex>', `#include <defaultnormal_vertex>
-          #ifdef USE_INSTANCING
-            vWN = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal);
-          #else
-            vWN = normalize(mat3(modelMatrix) * objectNormal);
-          #endif`);
-      sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', `#include <common>
-          varying vec3 vP; varying vec3 vWN; varying float vR;
-          float bh(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
-          float bn(vec3 p) {
-            vec3 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
-            return mix(mix(mix(bh(i), bh(i + vec3(1., 0., 0.)), f.x), mix(bh(i + vec3(0., 1., 0.)), bh(i + vec3(1., 1., 0.)), f.x), f.y),
-                       mix(mix(bh(i + vec3(0., 0., 1.)), bh(i + vec3(1., 0., 1.)), f.x), mix(bh(i + vec3(0., 1., 1.)), bh(i + vec3(1., 1., 1.)), f.x), f.y), f.z);
-          }`)
-        .replace('#include <color_fragment>', `#include <color_fragment>
-          float thick = smoothstep(0.008, 0.03, vR);
-          float furrow = bn(vP * vec3(34.0, 2.6, 34.0)) * 0.7 + bn(vP * vec3(80.0, 11.0, 80.0)) * 0.3;
-          vec3 col = mix(${glsl(0x302c28)}, mix(${glsl(0x1f1c19)}, ${glsl(0x4c463f)}, smoothstep(0.25, 0.8, furrow)), thick);
-          float lichen = smoothstep(0.6, 0.8, bn(vP * 4.5 + 3.1)) * smoothstep(2.2, 0.3, vP.y) * thick;
-          col = mix(col, ${glsl(0x6c7466)}, lichen * 0.55);
-          col *= diffuseColor.rgb * smoothstep(0.0, 0.5, vP.y);
-          float frost = smoothstep(0.55, 0.9, vWN.y) * smoothstep(0.3, 0.65, bn(vP * 12.0)) * thick;
-          diffuseColor.rgb = mix(col, ${glsl(0xdfe4e8)}, frost * 0.7);`);
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = position.y;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= smoothstep(0.0, 0.5, vH);');
     };
     const ground = new T.Mesh(new T.PlaneGeometry(600, 600).rotateX(-Math.PI / 2), new T.MeshBasicMaterial({ color: lin(0x8f9398) }));
     scene.add(ground);
@@ -328,12 +286,7 @@
       });
       variants.forEach((g, v) => {
         const mesh = new T.InstancedMesh(g, bark, lists[v].length);
-        const tint = new T.Color();
-        lists[v].forEach((mx, k) => {
-          mesh.setMatrixAt(k, mx);
-          const l = 0.82 + rand() * 0.34, w = (rand() - 0.5) * 0.12;
-          mesh.setColorAt(k, tint.setRGB(l * (1 + w), l, l * (1 - w)));
-        });
+        lists[v].forEach((mx, k) => mesh.setMatrixAt(k, mx));
         mesh.instanceMatrix.needsUpdate = true; mesh.frustumCulled = false;
         scene.add(mesh);
       });
