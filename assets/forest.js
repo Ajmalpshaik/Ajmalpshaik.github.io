@@ -1,5 +1,5 @@
 /*
- * The forest behind the home page and the About me page: a foggy forest with a
+ * The forest behind the home page and the About me page: a misty forest with a
  * flock flying between the trees, light snow falling and a few leaves blowing
  * through on the wind. The page opens in bright fog; as you scroll, a soft fog
  * veil comes over the forest and it stays, faint, behind everything below it.
@@ -98,7 +98,7 @@
   // fonts and late content change the page's height: measure again when they do
   if (window.ResizeObserver) new ResizeObserver(function () { measure(); onScroll(); }).observe(document.body);
 
-  // ---------- the forest: bare trees in fog, and a flock flying between them ----------
+  // ---------- the forest: bare trees in mist, and a flock flying between them ----------
   // The look follows the three.js fog examples (custom_fog_scattering, custom_fog_background):
   // bare trees, and a fog whose colour is the background's, so far trunks and far birds
   // dissolve into it. The birds are the three.js GPGPU flock (webgl_gpgpu_birds, MIT):
@@ -138,31 +138,33 @@
     function merge(list) {
       let verts = 0, idx = 0;
       for (const g of list) { verts += g.attributes.position.count; idx += g.index ? g.index.count : g.attributes.position.count; }
-      const pos = new Float32Array(verts * 3), nor = new Float32Array(verts * 3), index = new Uint32Array(idx);
+      const pos = new Float32Array(verts * 3), nor = new Float32Array(verts * 3), rad = new Float32Array(verts), index = new Uint32Array(idx);
       let v = 0, k = 0;
       for (const g of list) {
         const c = g.attributes.position.count;
-        pos.set(g.attributes.position.array, v * 3); nor.set(g.attributes.normal.array, v * 3);
+        pos.set(g.attributes.position.array, v * 3); nor.set(g.attributes.normal.array, v * 3); rad.set(g.attributes.aR.array, v);
         if (g.index) { const a = g.index.array; for (let i = 0; i < a.length; i++) index[k++] = a[i] + v; } else for (let i = 0; i < c; i++) index[k++] = v + i;
         v += c; g.dispose();
       }
       const out = new T.BufferGeometry();
       out.setAttribute('position', new T.BufferAttribute(pos, 3));
       out.setAttribute('normal', new T.BufferAttribute(nor, 3));
+      out.setAttribute('aR', new T.BufferAttribute(rad, 1));
       out.setIndex(new T.BufferAttribute(index, 1));
       out.computeBoundingSphere();
       return out;
     }
     const ANG = [62, 46, 38, 32].map((d) => (d * Math.PI) / 180);
     const GNARL = [0.045, 0.13, 0.2, 0.26, 0.3];
-    const RADIAL = [7, 6, 5, 3, 3];
+    const RADIAL = [10, 6, 5, 3, 3];
     function makeTree(seed, o) {
       const rand = rng(seed);
       const parts = [];
       const q = new T.Quaternion(), m = new T.Matrix4(), one = new T.Vector3(1, 1, 1), mid = new T.Vector3(), d = new T.Vector3();
       const seg = (a, b, r0, r1, lvl) => {
         d.subVectors(b, a); const len = d.length(); if (len < 1e-4) return;
-        const g = new T.CylinderGeometry(r1, r0, len, RADIAL[lvl], 1, true);
+        const g = new T.CylinderGeometry(r1, r0, len + r0 * 1.6, RADIAL[lvl], 1, true);
+        g.setAttribute('aR', new T.BufferAttribute(new Float32Array(g.attributes.position.count).fill((r0 + r1) / 2), 1));
         q.setFromUnitVectors(UP, d.normalize());
         g.applyMatrix4(m.compose(mid.addVectors(a, b).multiplyScalar(0.5), q, one));
         parts.push(g);
@@ -198,17 +200,105 @@
         }
       };
       branch(new T.Vector3(), new T.Vector3((rand() - 0.5) * 0.08, 1, (rand() - 0.5) * 0.08).normalize(), o.trunk, o.radius, 0);
+      // roots: four or five short buttresses that hug the foot of the trunk and dip into the ground
+      const roots = 4 + Math.floor(rand() * 2);
+      for (let k = 0; k < roots; k++) {
+        const a = ((k + rand() * 0.6) / roots) * Math.PI * 2;
+        const rd = new T.Vector3(Math.cos(a), -1.25, Math.sin(a)).normalize();
+        let rp = new T.Vector3(Math.cos(a) * o.radius * 0.6, 0.3 + rand() * 0.1, Math.sin(a) * o.radius * 0.6), rr = o.radius * 0.75;
+        for (let i = 0; i < 3; i++) {
+          const nx = rp.clone().addScaledVector(rd, 0.16), nr = rr * 0.7;
+          seg(rp, nx, rr, nr, 1); rp = nx; rr = nr;
+          rd.y -= 0.25; rd.normalize();
+        }
+      }
       return merge(parts);
     }
 
-    const bark = new T.MeshStandardMaterial({ color: lin(0x302c28), roughness: 1, metalness: 0 });
-    // darker where the trunk meets the ground, as in the example
+    // Bark, drawn in the shader: long furrows up the trunk, pale lichen low down,
+    // snow settled on the tops of the branches, darker where the trunk meets the ground.
+    // Each tree also takes a slightly different tint (setColorAt in grow()).
+    const glsl = (h) => { const c = lin(h); return `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`; };
+    const bark = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1, metalness: 0 });
     bark.onBeforeCompile = (sh) => {
-      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = position.y;');
-      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= smoothstep(0.0, 0.5, vH);');
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', '#include <common>\nattribute float aR; varying vec3 vP; varying vec3 vWN; varying float vR;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvP = position; vR = aR;')
+        .replace('#include <defaultnormal_vertex>', `#include <defaultnormal_vertex>
+          #ifdef USE_INSTANCING
+            vWN = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal);
+          #else
+            vWN = normalize(mat3(modelMatrix) * objectNormal);
+          #endif`);
+      sh.fragmentShader = sh.fragmentShader
+        .replace('#include <common>', `#include <common>
+          varying vec3 vP; varying vec3 vWN; varying float vR;
+          float bh(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+          float bn(vec3 p) {
+            vec3 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+            return mix(mix(mix(bh(i), bh(i + vec3(1., 0., 0.)), f.x), mix(bh(i + vec3(0., 1., 0.)), bh(i + vec3(1., 1., 0.)), f.x), f.y),
+                       mix(mix(bh(i + vec3(0., 0., 1.)), bh(i + vec3(1., 0., 1.)), f.x), mix(bh(i + vec3(0., 1., 1.)), bh(i + vec3(1., 1., 1.)), f.x), f.y), f.z);
+          }`)
+        .replace('#include <color_fragment>', `#include <color_fragment>
+          float thick = smoothstep(0.008, 0.03, vR);
+          float furrow = bn(vP * vec3(34.0, 2.6, 34.0)) * 0.7 + bn(vP * vec3(80.0, 11.0, 80.0)) * 0.3;
+          vec3 col = mix(${glsl(0x302c28)}, mix(${glsl(0x1f1c19)}, ${glsl(0x4c463f)}, smoothstep(0.25, 0.8, furrow)), thick);
+          float lichen = smoothstep(0.6, 0.8, bn(vP * 4.5 + 3.1)) * smoothstep(2.2, 0.3, vP.y) * thick;
+          col = mix(col, ${glsl(0x6c7466)}, lichen * 0.55);
+          col *= diffuseColor.rgb * smoothstep(0.0, 0.5, vP.y);
+          float frost = smoothstep(0.55, 0.9, vWN.y) * smoothstep(0.3, 0.65, bn(vP * 12.0)) * thick;
+          diffuseColor.rgb = mix(col, ${glsl(0xdfe4e8)}, frost * 0.7);`);
     };
     const ground = new T.Mesh(new T.PlaneGeometry(600, 600).rotateX(-Math.PI / 2), new T.MeshBasicMaterial({ color: lin(0x8f9398) }));
     scene.add(ground);
+
+    // ---- drifting mist: soft noise clouds hung between the trees, always moving ----
+    // After the moving cloud fog of the three.js example webgpu_postprocessing_fog:
+    // here as sheets of animated noise at several depths, thick near the ground.
+    const mists = [];
+    function mist() {
+      const vs = `
+        varying vec2 vUv; varying float vDepth;
+        void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vDepth = -mv.z; gl_Position = projectionMatrix * mv; }`;
+      const fs = `
+        uniform float uTime; uniform vec3 uColor; uniform float uOpacity; uniform vec2 uSpeed; uniform float uSeed;
+        uniform vec3 fogColor; uniform float fogDensity;
+        varying vec2 vUv; varying float vDepth;
+        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float noise(vec2 p) {
+          vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+          return mix(mix(hash(i), hash(i + vec2(1., 0.)), f.x), mix(hash(i + vec2(0., 1.)), hash(i + vec2(1., 1.)), f.x), f.y);
+        }
+        float fbm(vec2 p) { float v = 0., a = .5; for (int i = 0; i < OCT; i++) { v += a * noise(p); p = p * 2.03 + 17.1; a *= .5; } return v; }
+        void main() {
+          vec2 p = vUv * vec2(4.0, 1.4) + uSeed;
+          vec2 q = vec2(fbm(p + uTime * 0.02), fbm(p + 5.2 - uTime * 0.015));
+          float n = fbm(p + 1.6 * q + uSpeed * uTime);
+          float edge = smoothstep(0., .22, vUv.x) * smoothstep(1., .78, vUv.x) * smoothstep(0., .25, vUv.y) * smoothstep(1., .3, vUv.y);
+          float a = smoothstep(.3, .74, n) * edge * uOpacity;
+          a *= smoothstep(0.6, 3.0, vDepth); // the nearest sheet thins as you walk through it
+          float fog = 1.0 - exp(-fogDensity * fogDensity * vDepth * vDepth);
+          gl_FragColor = vec4(mix(uColor, fogColor, fog * 0.6), a);
+        }`;
+      const layers = small
+        ? [[5.5, 0.58], [1, 0.66], [-4, 0.7], [-9, 0.68]]
+        : [[6.5, 0.5], [3, 0.62], [-0.5, 0.68], [-4, 0.7], [-8, 0.7], [-12, 0.66]];
+      layers.forEach(([z, op], i) => {
+        const m = new T.ShaderMaterial({
+          uniforms: {
+            uTime: { value: 0 }, uColor: { value: new T.Vector3(1.0, 1.0, 1.0) }, uOpacity: { value: op },
+            uSpeed: { value: new T.Vector2(0.035 + i * 0.007, 0.004) }, uSeed: { value: i * 7.3 },
+            fogColor: fogU, fogDensity: densU,
+          },
+          vertexShader: vs, fragmentShader: fs, transparent: true, depthWrite: false, defines: { OCT: small ? 3 : 5 },
+        });
+        const w = 26 + i * 4, h = 5.5 + i * 0.5;
+        const plane = new T.Mesh(new T.PlaneGeometry(w, h), m);
+        plane.position.set((i % 2 ? -1 : 1) * 0.8, h / 2 - 0.4, z);
+        plane.renderOrder = 2;
+        scene.add(plane); mists.push(m);
+      });
+    }
 
     function grow() {
       const VARIANTS = small ? 6 : 10;
@@ -238,13 +328,18 @@
       });
       variants.forEach((g, v) => {
         const mesh = new T.InstancedMesh(g, bark, lists[v].length);
-        lists[v].forEach((mx, k) => mesh.setMatrixAt(k, mx));
+        const tint = new T.Color();
+        lists[v].forEach((mx, k) => {
+          mesh.setMatrixAt(k, mx);
+          const l = 0.82 + rand() * 0.34, w = (rand() - 0.5) * 0.12;
+          mesh.setColorAt(k, tint.setRGB(l * (1 + w), l, l * (1 - w)));
+        });
         mesh.instanceMatrix.needsUpdate = true; mesh.frustumCulled = false;
         scene.add(mesh);
       });
     }
 
-    // ---- snow: point sprites drifting through the fog ----
+    // ---- snow: point sprites drifting through the mist ----
     // After the three.js example webgl_points_sprites: thousands of textured
     // points, five snowflake shapes (drawn here in code), falling slowly, swaying
     // and spinning. Near flakes are larger; far ones melt into the same fog.
@@ -656,6 +751,7 @@
       let d = (now - last) / 1000; if (d > 1) d = 1; last = now;
       if (!visible || document.hidden) return;
       if (flock) flock(now, d);
+      if (!reduce) for (const m of mists) m.uniforms.uTime.value = now / 1000;
       if (snowU && !reduce) snowU.uTime.value = now / 1000;
       if (leafU && !reduce) leafU.uTime.value = now / 1000;
       place(d);
@@ -665,7 +761,7 @@
     }
     // grow the trees after first paint, so the page never waits on them
     setTimeout(() => {
-      grow(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
+      grow(); mist(); snow(); leaves(); birds(); size(); addEventListener('resize', size);
       last = performance.now(); requestAnimationFrame(frame);
     }, 30);
   })();
