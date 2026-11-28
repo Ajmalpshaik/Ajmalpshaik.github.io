@@ -34,10 +34,12 @@
   try { delete window.XRWebGLBinding; } catch { /* ignore */ }
   window.XRWebGLBinding = undefined;
   window.XRWebGLLayer = class {
-    constructor(session, gl) {
-      this.framebuffer = null;   // the canvas itself
-      this.framebufferWidth = gl.drawingBufferWidth;
-      this.framebufferHeight = gl.drawingBufferHeight;
+    constructor() {
+      // the canvas itself, at a phone camera's size rather than the page's, so the
+      // check can tell whether the preview gets its own size back afterwards
+      this.framebuffer = null;
+      this.framebufferWidth = Math.round(innerWidth * 3);
+      this.framebufferHeight = Math.round(innerHeight * 3);
       this.ignoreDepthValues = false;
     }
     getViewport() { return { x: 0, y: 0, width: this.framebufferWidth, height: this.framebufferHeight }; }
@@ -52,7 +54,7 @@
     phone: { p: { x: 0, y: 1.5, z: 0 }, q: { x: Math.sin(tilt), y: 0, z: 0, w: Math.cos(tilt) } },
     floor: { x: 0, y: 0, z: -1.5 },        // null: no surface found yet
     tracking: true,
-    features: ['local', 'viewer', 'hit-test', 'anchors', 'dom-overlay'],
+    features: ['local', 'viewer', 'hit-test', 'anchors', 'dom-overlay'],   // what the next session grants
     session: null, anchors: 0, ended: 0, requested: null,
   };
   const projection = () => {
@@ -61,12 +63,13 @@
   };
 
   class Space { constructor(kind, anchor) { this.kind = kind; this.anchor = anchor; } }
+  const live = new Set();
   class Anchor {
-    constructor(t) { this.t = t; this.anchorSpace = new Space('anchor', this); this.gone = false; state.anchors++; }
-    delete() { if (!this.gone) { this.gone = true; state.anchors--; } }
+    constructor(t) { this.t = t; this.anchorSpace = new Space('anchor', this); this.gone = false; state.anchors++; live.add(this); }
+    delete() { if (!this.gone) { this.gone = true; state.anchors--; live.delete(this); } }
   }
   class Frame {
-    constructor() { this.active = true; this.trackedAnchors = undefined; }
+    constructor() { this.active = true; this.trackedAnchors = new Set(live); }
     getViewerPose() {
       if (!state.tracking) return null;
       const t = new RigidTransform(state.phone.p, state.phone.q);
@@ -115,7 +118,8 @@
     }
     cancelAnimationFrame(id) { window.cancelAnimationFrame(this.ids.get(id)); }
     end() {
-      if (this.over) return Promise.resolve();
+      // as in Chrome: ending a session twice is an error
+      if (this.over) return Promise.reject(new DOMException('session has already ended', 'InvalidStateError'));
       this.over = true;
       state.session = null;
       state.ended++;

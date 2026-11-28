@@ -509,7 +509,7 @@ for (const page of PAGES) {
   };
   for (const [phone, userAgent] of Object.entries(PHONES)) {
     const tag = `ar-viewer on ${phone}`;
-    const ctx = await gpu.newContext({ viewport: { width: 412, height: 860 }, hasTouch: true, isMobile: true, userAgent });
+    const ctx = await gpu.newContext({ viewport: { width: 412, height: 860 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, userAgent });
     await localThree(ctx);
     if (phone === 'android') await ctx.addInitScript({ path: join(ROOT, 'tools', 'xr_mock.js') });
     const p = await ctx.newPage();
@@ -581,22 +581,32 @@ for (const page of PAGES) {
         if (!(await text('#arxScale')).startsWith('Scale 1:')) fail(`${tag}: the AR scale reads "${await text('#arxScale')}"`);
         await p.click('#arxMove');
         await state('moving');
-        // a drag and a two-finger twist on the camera view, then the turn buttons
-        await p.evaluate(async () => {
+        // a drag, a two-finger twist and the turn buttons must each move the model.
+        // The mock draws the AR view into the preview's canvas, so a moved model is a
+        // changed picture. Two pictures with nothing changed must match first.
+        const view = async () => { await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); return p.locator('#arvStage').screenshot(); };
+        const still = await view();
+        const steady = still.equals(await view());
+        if (!steady) console.log(`note: ${tag}: the AR picture changes on its own here, so moving it was not compared`);
+        const moved = async (what, act) => {
+          const before = await view();
+          await act();
+          if (steady && before.equals(await view())) fail(`${tag}: ${what} did not move the model`);
+        };
+        const touch = (moves) => p.evaluate(async (ms) => {
           const el = document.getElementById('arx');
           const fire = (type, pts) => {
             const touches = pts.map((q, i) => new Touch({ identifier: i, target: el, clientX: q[0], clientY: q[1] }));
             el.dispatchEvent(new TouchEvent(type, { touches, targetTouches: touches, changedTouches: touches, bubbles: true, cancelable: true }));
           };
-          const wait = () => new Promise((r) => requestAnimationFrame(() => r()));
-          fire('touchstart', [[200, 500]]); await wait();
-          fire('touchmove', [[240, 470]]); await wait();
-          fire('touchend', []); await wait();
-          fire('touchstart', [[150, 500], [260, 500]]); await wait();
-          fire('touchmove', [[150, 470], [260, 540]]); await wait();
-          fire('touchend', []); await wait();
-        });
-        await p.click('#arxLeft');
+          for (const [type, pts] of ms) {
+            fire(type, pts);
+            await new Promise((r) => requestAnimationFrame(() => r()));
+          }
+        }, moves);
+        await moved('a one-finger drag', () => touch([['touchstart', [[200, 430]]], ['touchmove', [[260, 400]]], ['touchend', []]]));
+        await moved('a two-finger twist', () => touch([['touchstart', [[150, 430], [260, 430]]], ['touchmove', [[160, 380], [250, 480]]], ['touchend', []]]));
+        await moved('the turn-left button', () => p.click('#arxLeft'));
         await p.click('#arxRight');
         await p.click('#arxMove');
         await state('placed');
@@ -611,12 +621,26 @@ for (const page of PAGES) {
       const back = await p.evaluate(() => {
         const st = document.getElementById('arvStage'), cv = document.getElementById('arvCanvas');
         return { ended: window.__xr.state.ended, xr: !document.getElementById('arvXR').disabled, file: !document.getElementById('arvFile').disabled,
-          sized: cv.width === Math.round(st.clientWidth * Math.min(devicePixelRatio || 1, 2)), empty: !document.getElementById('arvEmpty').hidden };
+          width: cv.width, want: Math.round(st.clientWidth * Math.min(devicePixelRatio || 1, 2)), model: st.dataset.model };
       });
       if (back.ended !== 1) fail(`${tag}: the AR session ended ${back.ended} times, expected once`);
       if (!back.xr || !back.file) fail(`${tag}: the page stayed busy after AR`);
-      if (!back.sized) fail(`${tag}: the preview did not get its size back after AR`);
-      if (back.empty) fail(`${tag}: the model did not come back to the preview after AR`);
+      if (back.width !== back.want) fail(`${tag}: the preview canvas is ${back.width} px wide after AR, expected ${back.want}`);
+      if (back.model !== 'preview') fail(`${tag}: the model did not come back to the preview after AR (${back.model})`);
+
+      // a phone with no floor detection and no anchors: Place puts the model at a guessed spot
+      await p.evaluate(() => { window.__xr.state.features = ['local', 'viewer', 'dom-overlay']; });
+      await p.click('#arvXR');
+      if (await state('looking')) {
+        await p.waitForFunction(() => !document.getElementById('arxPlace').disabled, null, { timeout: 10000 }).catch(() => fail(`${tag}: without floor detection, Place never became available`));
+        await p.click('#arxPlace');
+        if (await state('placed')) {
+          if (!(await text('#arxMsg')).includes('guessed')) fail(`${tag}: without floor detection, the message does not say the floor is a guess`);
+          if (await p.evaluate(() => window.__xr.state.anchors) !== 0) fail(`${tag}: an anchor was made although the phone offers none`);
+        }
+        await p.click('#arxExit');
+        await p.waitForFunction(() => document.getElementById('arx').hidden, null, { timeout: 10000 }).catch(() => fail(`${tag}: the second AR session did not close`));
+      }
     }
     await ctx.close();
   }

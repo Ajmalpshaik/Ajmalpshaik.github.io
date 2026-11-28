@@ -662,7 +662,8 @@ function start() {
   //   27.6 MB Revit FBX the USDZ fell from 212 MB to 84 MB.
   // - Every element is baked into a few big meshes, one per material. A Revit FBX holds
   //   thousands of small objects, and a phone draws a few big meshes far faster. Large
-  //   geometry that Revit shares between several copies stays shared, so the file does not balloon.
+  //   geometry that Revit shares between several copies stays shared, so the phone holds
+  //   it once (the USDZ also writes it once when it has a single material).
   // - Mirrored elements (a negative scale, the way Revit writes a mirrored family) are
   //   baked with their faces turned back the right way. USDZ has no negative scales, so
   //   left as they were they showed inside out in AR Quick Look.
@@ -722,6 +723,10 @@ function start() {
       if (!g.attributes.normal) g.computeVertexNormals();
       gi.g = mergeVertices(g);
       g.dispose();
+      // dispose() only frees the graphics card; drop the arrays too, so a big Revit
+      // model is not held in memory twice while it is baked
+      for (const n of Object.keys(g.attributes)) g.deleteAttribute(n);
+      g.setIndex(null);
       most = Math.max(most, gi.g.attributes.position.count);
     }
     // Shared geometry that is small is baked as well: a thousand copies of a small
@@ -767,7 +772,8 @@ function start() {
         : [{ start: 0, count: g.index.count, mat: mats[0] }];
       for (const r of ranges) if (r.mat && r.count >= 3) tris += Math.floor(r.count / 3);
       if (gi.users > 1 && !gi.bake && world.determinant() > 0) {
-        const copy = new THREE.Mesh(g, mesh.material);
+        // several materials and no groups would draw nothing: use the first, as the baked path does
+        const copy = new THREE.Mesh(g, Array.isArray(mesh.material) && !g.groups.length ? mats[0] : mesh.material);
         copy.name = mesh.name;
         copy.matrixAutoUpdate = false;
         copy.matrix.copy(world);
@@ -986,6 +992,7 @@ function start() {
         if (current && current !== obj) scene.remove(current);
         current = obj;
         scene.add(obj);
+        ui.stage.dataset.model = 'preview';
         ui.empty.hidden = true;
         ui.reset.disabled = false;
         redraw();
@@ -994,6 +1001,7 @@ function start() {
         if (current) scene.remove(current);
         current = null;
         last = null;
+        delete ui.stage.dataset.model;
         dropGrid();
         ui.grid.textContent = '';
         ui.empty.hidden = false;
@@ -1150,6 +1158,7 @@ function start() {
     xr.reticle.visible = false;
     xr.reticle.renderOrder = 10;
     xr.placement.add(model);
+    ui.stage.dataset.model = 'ar';
     view.scene.add(xr.placement, xr.reticle);
     view.setGrid(false);
     const { renderer } = view;
@@ -1157,21 +1166,27 @@ function start() {
       renderer.xr.enabled = true;
       renderer.xr.setReferenceSpaceType('local');
       await renderer.xr.setSession(session);
+      if (renderer.xr.getSession() !== session) throw new Error('the AR session ended while it was starting');
+      // three.js added its own 'end' listener inside setSession, so this one runs after it
+      // and the renderer has its size back before the preview returns
+      session.addEventListener('end', endXR);
       xr.ref = renderer.xr.getReferenceSpace();
       if (has('hit-test') && typeof session.requestHitTestSource === 'function') {
         try {
           const space = await session.requestReferenceSpace('viewer');
-          xr.hitSource = await session.requestHitTestSource({ space });
-        } catch (err) { xr.hitSource = null; }
+          const source = await session.requestHitTestSource({ space });
+          if (xr && xr.session === session) xr.hitSource = source; else source.cancel();
+        } catch (err) { /* no floor detection: Place puts the model at a guessed spot */ }
       }
     } catch (err) {
-      xr.failed = xrError(err);
-      try { await session.end(); } catch (e) { /* already ended */ }
-      endXR();
+      if (xr && xr.session === session) {
+        xr.failed = xrError(err);
+        try { await session.end(); } catch (e) { /* already ended */ }
+        endXR();
+      }
       return;
     }
-    // after three.js's own listener, so the renderer has its size back before the preview returns
-    session.addEventListener('end', endXR);
+    if (!xr || xr.session !== session) return;   // it ended while it was starting; endXR has tidied up
     session.addEventListener('select', onXRSelect);
     renderer.setAnimationLoop(xrFrame);
     say(ui.makeStatus, '', '');
@@ -1371,6 +1386,8 @@ function start() {
     view.setGrid(true);
     ui.xrUI.hidden = true;
     setBusy(false);
+    // three.js puts back the pixel ratio it saved at the start; a start that failed early saved none
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     view.resize();
     say(ui.makeStatus, s.failed ? 'error' : '', s.failed || '');
   }
