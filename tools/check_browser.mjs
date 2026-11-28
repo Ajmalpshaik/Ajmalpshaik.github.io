@@ -14,7 +14,7 @@ import { chromium } from 'playwright';
 import { createServer } from 'http';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, extname, join, normalize } from 'path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -488,6 +488,136 @@ for (const page of PAGES) {
     await p.evaluate(() => document.pointerLockElement && document.exitPointerLock());
     await p.click('#bvTabBim', { timeout: 10000 }).catch(() => {});
     if (await p.$eval('#bv', (e) => e.dataset.mode) !== 'bim') fail(`${tag}: could not get back to the BIM view`);
+    await ctx.close();
+  }
+  await gpu.close();
+}
+
+// ---- the AR Viewer: the sample model, its USDZ, and AR on Android --------------
+// The sample is a plant room written the way a Revit FBX arrives (made by
+// tools/make_sample_fbx.py): feet, Z up, far from the origin, a wall with two
+// materials and a mirrored air handling unit. The USDZ must carry no negative
+// scale, which AR Quick Look shows inside out. Android AR runs against
+// tools/xr_mock.js, a scripted stand-in for a phone: it proves the page starts,
+// places, moves and ends an AR session cleanly, not how AR looks on a phone.
+{
+  const { unzipSync, strFromU8 } = await import(pathToFileURL(join(ROOT, 'node_modules', 'three', 'examples', 'jsm', 'libs', 'fflate.module.js')));
+  const gpu = await launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const PHONES = {
+    android: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36',
+    iphone: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+  };
+  for (const [phone, userAgent] of Object.entries(PHONES)) {
+    const tag = `ar-viewer on ${phone}`;
+    const ctx = await gpu.newContext({ viewport: { width: 412, height: 860 }, hasTouch: true, isMobile: true, userAgent });
+    await localThree(ctx);
+    if (phone === 'android') await ctx.addInitScript({ path: join(ROOT, 'tools', 'xr_mock.js') });
+    const p = await ctx.newPage();
+    p.on('pageerror', (e) => fail(`${tag}: uncaught script error — ${e.message}`));
+    p.on('console', (m) => {
+      if (m.type() === 'error' || (m.type() === 'warning' && /USDZExporter/.test(m.text()))) fail(`${tag}: console ${m.type()} — ${m.text()}`);
+    });
+    const text = (sel) => p.$eval(sel, (e) => e.textContent.trim());
+    const settled = (id) => p.waitForFunction((i) => /\b(ok|error|warn)\b/.test(document.getElementById(i).className), id, { timeout: 60000 });
+    await p.goto(url('toolbox/ar-viewer/index.html'));
+
+    await p.click('#arvSample');
+    await settled('arvStatus');
+    if (!(await p.$eval('#arvStatus', (e) => e.classList.contains('ok')))) {
+      fail(`${tag}: the sample did not open — ${await text('#arvStatus')}`);
+      await ctx.close();
+      continue;
+    }
+    const sizes = [await text('#arvX'), await text('#arvY'), await text('#arvH')].join(' / ');
+    if (sizes !== '8.40 m / 6.40 m / 3.45 m') fail(`${tag}: the sample measures ${sizes}, expected 8.40 m / 6.40 m / 3.45 m`);
+
+    // a 1:100 USDZ: no negative scale anywhere, the shared unit written once, scale on the root
+    await p.selectOption('#arvScale', '100');
+    if (!(await text('#arvScaleNote')).includes('1:100')) fail(`${tag}: the size note does not show 1:100`);
+    await p.click('#arvMake');
+    await settled('arvMakeStatus');
+    if (!(await p.$eval('#arvMakeStatus', (e) => e.classList.contains('ok')))) {
+      fail(`${tag}: the USDZ was not made — ${await text('#arvMakeStatus')}`);
+    } else {
+      const bytes = await p.evaluate(async () => Array.from(new Uint8Array(await (await fetch(document.getElementById('arvDL').href)).arrayBuffer())));
+      const files = unzipSync(new Uint8Array(bytes));
+      const usda = strFromU8(files['model.usda']);
+      const mirrored = [...usda.matchAll(/matrix4d xformOp:transform = \( \(([^)]*)\), \(([^)]*)\), \(([^)]*)\)/g)].filter((m) => {
+        const [a, b, c] = [m[1], m[2], m[3]].map((r) => r.split(',').map(Number));
+        return a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0]) < 0;
+      }).length;
+      if (mirrored) fail(`${tag}: the USDZ has ${mirrored} mirrored transform(s); AR Quick Look shows those inside out`);
+      const parts = (usda.match(/prepend references/g) || []).length;
+      if (parts !== 6) fail(`${tag}: the USDZ has ${parts} meshes, expected 6 (one per material)`);
+      if (!usda.includes('0.003048')) fail(`${tag}: the USDZ is not at 1:100 (no 0.003048 scale on the model)`);
+      if (!/\.usdz$/.test(await p.$eval('#arvDL', (e) => e.download))) fail(`${tag}: the download is not named .usdz`);
+    }
+    const shown = (sel) => p.$eval(sel, (e) => !e.hidden && getComputedStyle(e).display !== 'none');
+
+    if (phone === 'iphone') {
+      if (!(await shown('#arvAR'))) fail(`${tag}: no View in AR link for Quick Look`);
+      if (await shown('#arvXR')) fail(`${tag}: the Android AR button shows on an iPhone`);
+      await ctx.close();
+      continue;
+    }
+
+    // Android: AR in Chrome, against the scripted phone
+    if (await shown('#arvAR')) fail(`${tag}: the Quick Look link shows on Android`);
+    await p.waitForFunction(() => !document.getElementById('arvXR').hidden, null, { timeout: 5000 }).catch(() => fail(`${tag}: no View in AR button`));
+    await p.selectOption('#arvScale', 'fit');
+    await p.click('#arvXR');
+    const state = (s) => p.waitForFunction((v) => document.getElementById('arx').dataset.state === v, s, { timeout: 10000 })
+      .then(() => true, () => { fail(`${tag}: AR never reached "${s}"`); return false; });
+    if (await state('looking')) {
+      const asked = await p.evaluate(() => window.__xr.state.requested);
+      if (!asked || asked.mode !== 'immersive-ar' || !asked.opts.overlay || !asked.opts.optionalFeatures.includes('hit-test')) {
+        fail(`${tag}: AR was asked for as ${JSON.stringify(asked)}`);
+      }
+      if (!(await shown('#arx'))) fail(`${tag}: the AR buttons are not on screen`);
+      await p.waitForFunction(() => !document.getElementById('arxPlace').disabled, null, { timeout: 10000 }).catch(() => fail(`${tag}: Place never became available over the floor`));
+      await p.click('#arxPlace');
+      if (await state('placed')) {
+        await p.waitForFunction(() => window.__xr.state.anchors === 1, null, { timeout: 5000 }).catch(() => fail(`${tag}: no anchor was made at the placed point`));
+        if (!(await text('#arxScale')).startsWith('Scale 1:')) fail(`${tag}: the AR scale reads "${await text('#arxScale')}"`);
+        await p.click('#arxMove');
+        await state('moving');
+        // a drag and a two-finger twist on the camera view, then the turn buttons
+        await p.evaluate(async () => {
+          const el = document.getElementById('arx');
+          const fire = (type, pts) => {
+            const touches = pts.map((q, i) => new Touch({ identifier: i, target: el, clientX: q[0], clientY: q[1] }));
+            el.dispatchEvent(new TouchEvent(type, { touches, targetTouches: touches, changedTouches: touches, bubbles: true, cancelable: true }));
+          };
+          const wait = () => new Promise((r) => requestAnimationFrame(() => r()));
+          fire('touchstart', [[200, 500]]); await wait();
+          fire('touchmove', [[240, 470]]); await wait();
+          fire('touchend', []); await wait();
+          fire('touchstart', [[150, 500], [260, 500]]); await wait();
+          fire('touchmove', [[150, 470], [260, 540]]); await wait();
+          fire('touchend', []); await wait();
+        });
+        await p.click('#arxLeft');
+        await p.click('#arxRight');
+        await p.click('#arxMove');
+        await state('placed');
+        await p.click('#arxAgain');
+        await state('looking');
+        if (await p.evaluate(() => window.__xr.state.anchors) !== 0) fail(`${tag}: Place again left the old anchor behind`);
+        await p.evaluate(() => window.__xr.tap());   // a tap on the camera view places it too
+        await state('placed');
+      }
+      await p.click('#arxExit');
+      await p.waitForFunction(() => document.getElementById('arx').hidden, null, { timeout: 10000 }).catch(() => fail(`${tag}: the AR buttons stayed up after Exit`));
+      const back = await p.evaluate(() => {
+        const st = document.getElementById('arvStage'), cv = document.getElementById('arvCanvas');
+        return { ended: window.__xr.state.ended, xr: !document.getElementById('arvXR').disabled, file: !document.getElementById('arvFile').disabled,
+          sized: cv.width === Math.round(st.clientWidth * Math.min(devicePixelRatio || 1, 2)), empty: !document.getElementById('arvEmpty').hidden };
+      });
+      if (back.ended !== 1) fail(`${tag}: the AR session ended ${back.ended} times, expected once`);
+      if (!back.xr || !back.file) fail(`${tag}: the page stayed busy after AR`);
+      if (!back.sized) fail(`${tag}: the preview did not get its size back after AR`);
+      if (back.empty) fail(`${tag}: the model did not come back to the preview after AR`);
+    }
     await ctx.close();
   }
   await gpu.close();

@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AR Viewer — Revit FBX to USDZ for iPhone AR</title>
-<meta name="description" content="Free AR viewer for Revit models. Turn an FBX export into a USDZ file in your browser and see it at real size on iPhone. Your file never leaves your device.">
+<title>AR Viewer — Revit FBX in AR on iPhone and Android</title>
+<meta name="description" content="Free AR viewer for Revit models. Open an FBX export in your browser and see it at real size or as a table model on iPhone or Android. The file stays on your device.">
 <meta name="author" content="Ajmal P.S">
 <link rel="canonical" href="https://ajmalps.com/toolbox/ar-viewer/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#d3d7db">
 <meta name="color-scheme" content="light">
-<meta property="og:title" content="AR Viewer — Revit FBX to USDZ for iPhone AR">
-<meta property="og:description" content="Free AR viewer for Revit models. Turn an FBX export into a USDZ file in your browser and see it at real size on iPhone. Your file never leaves your device.">
+<meta property="og:title" content="AR Viewer — Revit FBX in AR on iPhone and Android">
+<meta property="og:description" content="Free AR viewer for Revit models. Open an FBX export in your browser and see it at real size or as a table model on iPhone or Android. The file stays on your device.">
 <meta property="og:url" content="https://ajmalps.com/toolbox/ar-viewer/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ajmalps.com">
@@ -21,8 +21,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ajmal P.S — MEP BIM Coordinator and Revit automation developer, Doha, Qatar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AR Viewer — Revit FBX to USDZ for iPhone AR">
-<meta name="twitter:description" content="Turn a Revit FBX export into a USDZ file in your browser and see it at real size in AR on iPhone. The file never leaves your device.">
+<meta name="twitter:title" content="AR Viewer — Revit FBX in AR on iPhone and Android">
+<meta name="twitter:description" content="Open a Revit FBX export in your browser and see it in AR at real size or table size, on iPhone or Android. The file never leaves your device.">
 <meta name="twitter:image" content="https://ajmalps.com/og-cover.png">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/heron/favicon-64.png">
 <link rel="apple-touch-icon" href="/assets/heron/apple-touch-180.png">
@@ -63,9 +63,9 @@
       "name": "AR Viewer",
       "url": "https://ajmalps.com/toolbox/ar-viewer/",
       "applicationCategory": "EngineeringApplication",
-      "operatingSystem": "Any browser. AR view on iPhone and iPad with iOS 16.4 or newer.",
+      "operatingSystem": "Any browser. AR on iPhone and iPad with iOS 16.4 or newer, and on Android phones in Chrome with Google Play Services for AR.",
       "browserRequirements": "Requires JavaScript",
-      "description": "Converts a Revit FBX export to a USDZ file in the browser and opens it in AR Quick Look on iPhone and iPad. Runs entirely on the user's device; the file is never uploaded.",
+      "description": "Opens a Revit FBX export in the browser and shows it in AR at real size or as a scale model: in AR Quick Look on iPhone and iPad through a USDZ file, and with WebXR in Chrome on Android. Runs entirely on the user's device; the file is never uploaded.",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "author": { "@id": "https://ajmalps.com/#person" },
       "isAccessibleForFree": true
@@ -150,7 +150,16 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
 /* create + AR */
 .arv .btn{border:0}
 .arv .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
-.arv-make{margin-top:4px;align-self:flex-start}
+.arv-go{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:6px}
+.arv-size{max-width:560px}
+.arv-scale-note{color:var(--body);font-weight:500}
+.arv-scale-note:empty{display:none}
+.arv-sample{
+  display:inline-block;margin:10px 0 0 3px;padding:4px 0;border:0;background:none;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:500;color:var(--fg);text-decoration:underline;text-underline-offset:3px;
+}
+.arv-sample:hover{color:var(--body)}
+.arv-sample:disabled{opacity:.5;cursor:progress}
 .arv-out{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px}
 .arv-alt{background:var(--bg);color:var(--fg);font-weight:500;box-shadow:var(--neu-up-sm)}
 .arv-alt:hover{background:var(--bg);color:var(--fg);box-shadow:var(--neu-in-sm)}
@@ -167,8 +176,37 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
 
 .arv-notes p+p{margin-top:9px}
 
+/* AR on Android. Chrome lifts #arx over the camera picture while AR runs (the
+   WebXR DOM overlay) and matches it with :xr-overlay. Outside AR, for the moment
+   the camera permission is asked, it dims the page instead. */
+.arx{
+  position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;justify-content:space-between;gap:12px;
+  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  background:rgba(15,17,20,.45);color:#fff;touch-action:none;-webkit-user-select:none;user-select:none;
+}
+.arx:xr-overlay{background:transparent}
+.arx-top{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+.arx-msg,.arx-scale{
+  margin:0;padding:10px 14px;border-radius:16px;background:rgba(15,17,20,.66);
+  font-size:15px;font-weight:500;line-height:1.35;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.arx-msg{flex:1 1 220px}
+.arx-scale{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em}
+.arx-scale:empty{display:none}
+.arx-bot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}
+.arx button{
+  min-width:48px;min-height:48px;padding:0 20px;border:0;border-radius:999px;cursor:pointer;
+  background:rgba(15,17,20,.7);color:#fff;font:inherit;font-size:15px;font-weight:600;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.arx .arx-main{background:#fff;color:#0f1114}
+.arx .arx-ic{display:inline-flex;align-items:center;justify-content:center;padding:0;width:52px}
+.arx button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.arx button:disabled{opacity:.45;cursor:default}
+.arx button[hidden]{display:none}
+
 @media(max-width:520px){
-  .arv-out .btn,.arv-make{width:100%;align-self:stretch}
+  .arv-out .btn,.arv-go .btn{width:100%;align-self:stretch}
   .arv-drop{padding:24px 14px}
 }
 </style>
@@ -227,7 +265,7 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
       <span aria-current="page">AR Viewer</span>
     </nav>
     <h1 class="title">AR Viewer</h1>
-    <p class="lede">See a Revit model at real size in AR on your iPhone. Choose an FBX export, check the size, create the USDZ file, then tap View in AR.</p>
+    <p class="lede">See a Revit model in AR on your phone, at real size or as a table model. Choose an FBX export, check the size, then view it in AR: straight from Chrome on Android, or through a USDZ file on iPhone and iPad.</p>
     <ul class="chips" aria-label="About this tool">
       <li class="chip">Free tool</li>
       <li class="chip">Runs in your browser</li>
@@ -244,7 +282,7 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
       <p><b>Your file stays on your device.</b> It is opened and converted inside this browser tab. Nothing is uploaded, stored or shared, and this page runs no analytics.</p>
     </div>
 
-    <p class="tool-note" id="arvNeeds">The AR Viewer needs JavaScript and a recent browser: Safari on iOS 16.4 or newer, or a current Chrome, Edge, Firefox or Safari on a computer.</p>
+    <p class="tool-note" id="arvNeeds">The AR Viewer needs JavaScript and a recent browser: Safari on iOS 16.4 or newer, Chrome on Android, or a current Chrome, Edge, Firefox or Safari on a computer.</p>
 
     <div class="calc arv" id="arvTool" hidden>
       <div class="calc-grid">
@@ -258,6 +296,7 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
             <span>or drop it here</span>
           </label>
           <p class="f-hint">In Revit, open a 3D view and use File › Export › FBX. For a phone, export one level or zone at a time.</p>
+          <button type="button" class="arv-sample" id="arvSample" data-src="/toolbox/ar-viewer/sample-plant-room.fbx">No FBX to hand? Try the sample plant room</button>
           <div class="res" id="arvInfo" hidden>
             <div class="res-row"><span class="k">File</span><div class="v dim wrap" id="arvName">—</div></div>
             <div class="res-row"><span class="k">Size</span><div class="v dim" id="arvSize">—</div></div>
@@ -307,16 +346,35 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
         </div>
 
         <div class="calc-card full">
-          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="m12 7 4 2.2v4.6L12 16l-4-2.2V9.2zM8 9.2l4 2.2 4-2.2M12 11.4V16"/></svg></span>4. Create USDZ and view in AR</h2>
-          <p class="f-hint" style="margin:0 0 16px 3px">Makes the AR file from the model above: real size in metres, centred, with its lowest point on the floor.</p>
-          <button type="button" class="btn arv-make" id="arvMake" disabled>Create USDZ</button>
+          <h2><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="m12 7 4 2.2v4.6L12 16l-4-2.2V9.2zM8 9.2l4 2.2 4-2.2M12 11.4V16"/></svg></span>4. View in AR</h2>
+          <div class="f arv-size">
+            <label for="arvScale">Size in AR</label>
+            <div class="f-in">
+              <select id="arvScale">
+                <option value="1" selected>Real size (1:1)</option>
+                <option value="fit">Table size (fits in 60 cm)</option>
+                <option value="20">1:20</option>
+                <option value="50">1:50</option>
+                <option value="100">1:100</option>
+                <option value="200">1:200</option>
+                <option value="500">1:500</option>
+              </select>
+              <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <p class="f-hint">Real size stands the model in the room. A table size makes a scale model to walk round on a desk. Either way it is centred, with its lowest point on the floor.</p>
+            <p class="f-hint arv-scale-note" id="arvScaleNote"></p>
+          </div>
+          <div class="arv-go">
+            <button type="button" class="btn arv-ar" id="arvXR" hidden disabled>View in AR</button>
+            <button type="button" class="btn arv-make" id="arvMake" disabled>Create USDZ</button>
+          </div>
           <p class="arv-status" id="arvMakeStatus" role="status" aria-live="polite"></p>
           <div class="arv-out" id="arvOut" hidden>
             <a class="btn arv-ar" id="arvAR" rel="ar" href="#" download="model.usdz"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" width="1" height="1">View in AR</a>
             <a class="btn arv-alt" id="arvDL" href="#" download="model.usdz">Download .usdz</a>
             <span class="f-hint" style="margin:0" id="arvOutSize"></span>
           </div>
-          <p class="tool-note" id="arvNoAR" hidden>AR works on iPhone/iPad Safari. You can still download the USDZ file.</p>
+          <p class="tool-note" id="arvNoAR" hidden>AR opens on iPhone and iPad in Safari, and on Android phones in Chrome with Google Play Services for AR. Here you can still download the USDZ file for an iPhone or iPad.</p>
           <p class="tool-note warn" id="arvSafari" hidden>If AR does not open, open this page in Safari.</p>
           <p class="tool-note warn" id="arvBigOut" hidden></p>
         </div>
@@ -324,14 +382,33 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
       </div>
     </div>
 
+    <!-- AR on Android: Chrome shows this full screen over the camera while AR runs -->
+    <div class="arx" id="arx" hidden data-lenis-prevent>
+      <div class="arx-top">
+        <p class="arx-msg" id="arxMsg" role="status" aria-live="polite">Starting AR…</p>
+        <p class="arx-scale" id="arxScale"></p>
+      </div>
+      <div class="arx-bot">
+        <button type="button" class="arx-main" id="arxPlace" disabled>Place</button>
+        <button type="button" class="arx-ic" id="arxLeft" hidden aria-label="Turn left 15 degrees"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+        <button type="button" class="arx-main" id="arxMove" hidden aria-pressed="false">Move</button>
+        <button type="button" class="arx-ic" id="arxRight" hidden aria-label="Turn right 15 degrees"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>
+        <button type="button" id="arxAgain" hidden>Place again</button>
+        <button type="button" id="arxExit">Exit AR</button>
+      </div>
+    </div>
+
     <div class="tool-note arv-notes" style="margin-top:34px">
       <p><b>What this does, and what it does not.</b></p>
-      <p><b>Scale.</b> Revit writes FBX in feet, and the tool converts to metres before it makes the USDZ, so AR shows the model at real size. Check one known dimension before you rely on it.</p>
+      <p><b>Scale.</b> Revit writes FBX in feet, and the tool converts to metres, so real size in AR is real size. Check one known dimension before you rely on it. Table size and the scales shrink the model by that ratio.</p>
       <p><b>Position.</b> The model is centred and its lowest point sits on the floor. It is not placed at its site location or turned to face north.</p>
+      <p><b>Android.</b> View in AR opens the camera in Chrome. Point the phone at the floor until the ring shows, then tap Place. The model locks where it stands; tap Move to slide or turn it. Chrome holds it with an AR anchor where the phone offers one. Phone AR is a visual check, not a survey.</p>
+      <p><b>iPhone and iPad.</b> Create the USDZ, then tap View in AR. Quick Look places it on the floor; pinch there to resize it.</p>
       <p><b>Colours.</b> Only materials saved inside the FBX come across. An FBX with none shows plain grey, and textures stored on the computer that made the FBX are skipped.</p>
-      <p><b>Faces.</b> AR draws each face from its front side only, the same as the preview.</p>
+      <p><b>Faces.</b> AR draws each face from its front side only, the same as the preview. Mirrored families are turned the right way round first.</p>
+      <p><b>Speed.</b> The model is joined into a few large meshes, one per material, so a phone draws it quickly. Thousands of Revit objects become a handful of meshes.</p>
       <p><b>Size.</b> In testing, a 27.6 MB Revit FBX made an 84 MB USDZ. If a phone struggles, create the USDZ on a computer, send it to the phone, and open it from the Files app.</p>
-      <p>Built with three.js 0.186.1 (FBXLoader and USDZExporter), loaded from jsDelivr. AR opens in Safari on iPhone and iPad with iOS 16.4 or newer. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="#contact">Tell me</a> and I will fix it.</p>
+      <p>Built with three.js 0.186.1 (FBXLoader, USDZExporter and WebXR), loaded from jsDelivr. The Android AR follows the approach of <a href="https://github.com/isaddiq/BIM2AR" target="_blank" rel="noopener">BIM2AR</a>. AR opens in Safari on iPhone and iPad with iOS 16.4 or newer, and in Chrome on Android phones with Google Play Services for AR. Built by <a href="/about/">Ajmal P.S</a>, MEP BIM Coordinator in Doha, Qatar. Found something wrong? <a href="#contact">Tell me</a> and I will fix it.</p>
     </div>
 
   </div>
@@ -351,19 +428,23 @@ main [hidden]{display:none !important}   /* .btn and .calc-grid set display, whi
 <script src="/vendor/lenis.min.js" defer></script>
 <script src="/assets/site.js" defer></script>
 <script type="module">
-/* AR Viewer. Reads a Revit FBX with three.js FBXLoader, previews it, and writes
-   a USDZ with three.js USDZExporter for AR Quick Look. The file is read with the
-   browser's File API and never leaves this tab. */
+/* AR Viewer. Reads a Revit FBX with three.js FBXLoader and previews it. For
+   iPhone and iPad it writes a USDZ with three.js USDZExporter and opens it in AR
+   Quick Look. On Android it shows the same model in AR with WebXR in Chrome.
+   The file is read with the browser's File API and never leaves this tab. */
 
 const $ = (id) => document.getElementById(id);
 const ui = {
-  needs: $('arvNeeds'), tool: $('arvTool'), drop: $('arvDrop'), file: $('arvFile'),
+  needs: $('arvNeeds'), tool: $('arvTool'), drop: $('arvDrop'), file: $('arvFile'), sample: $('arvSample'),
   info: $('arvInfo'), name: $('arvName'), size: $('arvSize'), bigIn: $('arvBigIn'), status: $('arvStatus'),
   unit: $('arvUnit'), declared: $('arvDeclared'), x: $('arvX'), y: $('arvY'), h: $('arvH'),
   objs: $('arvObjs'), tris: $('arvTris'), odd: $('arvOdd'),
   stage: $('arvStage'), canvas: $('arvCanvas'), empty: $('arvEmpty'), grid: $('arvGrid'), reset: $('arvReset'),
+  scale: $('arvScale'), scaleNote: $('arvScaleNote'), xr: $('arvXR'),
   make: $('arvMake'), makeStatus: $('arvMakeStatus'), out: $('arvOut'), ar: $('arvAR'), dl: $('arvDL'),
   outSize: $('arvOutSize'), noAR: $('arvNoAR'), safari: $('arvSafari'), bigOut: $('arvBigOut'),
+  xrUI: $('arx'), xrMsg: $('arxMsg'), xrScale: $('arxScale'), xrPlace: $('arxPlace'), xrMove: $('arxMove'),
+  xrLeft: $('arxLeft'), xrRight: $('arxRight'), xrAgain: $('arxAgain'), xrExit: $('arxExit'),
 };
 
 // NEEDS_REVIEW: first guesses from one PC test (a 27.6 MB Revit FBX used about
@@ -376,6 +457,15 @@ const UNITS = { ft: 0.3048, mm: 0.001, m: 1 };
 // FBX states its unit as centimetres per unit (UnitScaleFactor)
 const FBX_UNITS = [[30.48, 'feet', 'ft'], [0.1, 'millimetres', 'mm'], [100, 'metres', 'm'],
                    [1, 'centimetres'], [2.54, 'inches']];
+// Merged meshes are cut at this many corner points, so no single geometry in the
+// USDZ grows past a few tens of MB of text while it is being written.
+const CHUNK = 400000;
+// Geometry Revit shares between copies is baked into the merged meshes while the
+// copies add at most SHARE_ONE corner points for one shape, SHARE_BUDGET in all
+const SHARE_ONE = 100000;
+const SHARE_BUDGET = 1000000;
+// "Table size" fits the model's longer side in this many metres
+const TABLE = 0.6;
 
 const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);   // iPadOS reports itself as a Mac
@@ -385,23 +475,24 @@ const importMaps = typeof HTMLScriptElement !== 'undefined' &&
   typeof HTMLScriptElement.supports === 'function' && HTMLScriptElement.supports('importmap');
 
 if (importMaps) start();
-else ui.needs.textContent = 'This browser is too old for the AR Viewer. On an iPhone, update to iOS 16.4 or newer. On a computer, use a current Chrome, Edge, Firefox or Safari.';
+else ui.needs.textContent = 'This browser is too old for the AR Viewer. On an iPhone, update to iOS 16.4 or newer. On Android or a computer, use a current Chrome, Edge, Firefox or Safari.';
 
 function start() {
   ui.needs.hidden = true;
   ui.tool.hidden = false;
-  ui.noAR.hidden = isAppleMobile;
   // iOS greys out files it has no type for, and it has none for .fbx, so only filter elsewhere
   if (!isAppleMobile) ui.file.accept = '.fbx';
 
   let E = null;          // three.js modules, once downloaded
   let enginePromise = null;
   let view = null;       // preview, or false when this browser has no WebGL
-  let model = null;      // unit scale + centring, wraps what FBXLoader returned
-  let box0 = null;       // model bounds in file units, Y up
+  let model = null;      // unit scale; holds the merged, centred model
+  let box0 = null;       // model bounds in file units, Y up, centred, lowest point at 0
   let usdzURL = null;
   let baseName = 'model';
   let busy = false;
+  let xrSupported = false;   // Android AR (WebXR immersive-ar) is available here
+  let xr = null;             // the AR session while it runs
 
   const engine = () => {
     enginePromise ??= Promise.all([
@@ -417,22 +508,40 @@ function start() {
     return enginePromise;
   };
   // start the 2 MB download as soon as someone reaches for the file picker
-  for (const t of ['pointerdown', 'dragenter', 'focusin']) {
-    ui.drop.addEventListener(t, () => engine().catch(() => {}), { once: true });
+  for (const el of [ui.drop, ui.sample]) {
+    for (const t of ['pointerdown', 'dragenter', 'focusin']) {
+      el.addEventListener(t, () => engine().catch(() => {}), { once: true });
+    }
   }
 
   const say = (el, kind, text) => { el.className = 'arv-status ' + kind; el.textContent = text; };
   const paint = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
   const mb = (b) => (b / 1048576).toFixed(b < 10 * 1048576 ? 2 : 1) + ' MB';
   const metres = (v) => v.toLocaleString('en', { minimumFractionDigits: v < 1 ? 3 : 2, maximumFractionDigits: v < 1 ? 3 : 2 }) + ' m';
+  const ratio = (s) => '1:' + (1 / s >= 10 ? Math.round(1 / s) : +(1 / s).toFixed(1)).toLocaleString('en');
 
   function setBusy(on) {
     busy = on;
     ui.file.disabled = on;
+    ui.sample.disabled = on;
     ui.unit.disabled = on;
-    ui.make.disabled = on || !model;
+    ui.scale.disabled = on;
     ui.drop.classList.toggle('busy', on);
+    syncAR();
   }
+
+  // which AR route this device has: Quick Look (iPhone, iPad), WebXR (Android), or the download only
+  function syncAR() {
+    ui.make.disabled = busy || !model;
+    ui.xr.hidden = !xrSupported;
+    ui.xr.disabled = busy || !model || !view;
+    ui.make.classList.toggle('arv-alt', xrSupported);
+    ui.noAR.hidden = isAppleMobile || xrSupported;
+  }
+  if (!isAppleMobile && window.isSecureContext && navigator.xr && typeof navigator.xr.isSessionSupported === 'function') {
+    navigator.xr.isSessionSupported('immersive-ar').then((ok) => { xrSupported = !!ok; syncAR(); }, () => {});
+  }
+  syncAR();
 
   // ---------------------------------------------------------------- choosing a file
   ui.file.addEventListener('change', () => {
@@ -447,6 +556,22 @@ function start() {
   for (const t of ['dragover', 'drop']) {
     window.addEventListener(t, (e) => { if (!ui.drop.contains(e.target)) e.preventDefault(); });
   }
+
+  // the sample is fetched from this site, the same way the page itself was
+  ui.sample.addEventListener('click', async () => {
+    if (busy) return;
+    setBusy(true);
+    let blob = null;
+    try {
+      const r = await fetch(ui.sample.dataset.src);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      blob = await r.blob();
+    } catch (err) {
+      say(ui.status, 'error', 'The sample could not be downloaded. Check your internet connection and try again.');
+    }
+    setBusy(false);
+    if (blob) openFile(new File([blob], ui.sample.dataset.src.split('/').pop()));
+  });
 
   async function openFile(file) {
     if (busy) return;
@@ -484,16 +609,17 @@ function start() {
       const loaded = await loadFBX(buffer);
       say(ui.status, 'busy', 'Preparing the model for AR…');
       await paint();
-      const stats = prepare(loaded.root);
-      if (!stats.meshes) {
+      const unitScale = loaded.root.userData.unitScaleFactor;
+      const ready = prepare(loaded.root);
+      if (!ready) {
         disposeTree(loaded.root);
         say(ui.status, 'error', 'No 3D geometry was found in this file. In Revit, export from a 3D view where the elements are visible.');
         return;
       }
-      showModel(loaded.root, stats);
-      readUnit(loaded.root.userData.unitScaleFactor);
+      showModel(ready);
+      readUnit(unitScale);
       applyUnit();
-      say(ui.status, 'ok', 'Model ready. Check the size, then create the USDZ.' +
+      say(ui.status, 'ok', 'Model ready. Check the size, then go to step 4.' +
         (loaded.skipped ? ` ${loaded.skipped} texture${loaded.skipped > 1 ? 's were' : ' was'} skipped because the FBX does not contain ${loaded.skipped > 1 ? 'them' : 'it'}.` : ''));
     } catch (err) {
       dropModel();
@@ -527,74 +653,223 @@ function start() {
     return { root, skipped: skipped.size };
   }
 
-  // Keep what AR Quick Look can show. Lights, cameras and lines are dropped (USDZ
-  // here carries meshes only). Materials become MeshStandardMaterial, the type
-  // USDZExporter is written for. Duplicate corner points are joined with three.js
-  // mergeVertices: same shape, and on a 27.6 MB Revit FBX the USDZ fell from 212 MB to 84 MB.
+  // ---------------------------------------------------------------- preparing for AR
+  // Keep what AR can show and make it light to draw:
+  // - Lights, cameras and lines are dropped (AR here shows meshes only).
+  // - Materials become MeshStandardMaterial, the type USDZExporter is written for,
+  //   one per look (colour, opacity, texture), so Revit's many copies of one material count once.
+  // - Duplicate corner points are joined with three.js mergeVertices: same shape, and on a
+  //   27.6 MB Revit FBX the USDZ fell from 212 MB to 84 MB.
+  // - Every element is baked into a few big meshes, one per material. A Revit FBX holds
+  //   thousands of small objects, and a phone draws a few big meshes far faster. Large
+  //   geometry that Revit shares between several copies stays shared, so the file does not balloon.
+  // - Mirrored elements (a negative scale, the way Revit writes a mirrored family) are
+  //   baked with their faces turned back the right way. USDZ has no negative scales, so
+  //   left as they were they showed inside out in AR Quick Look.
+  // - The model is centred on its own base, so the numbers stay small: site coordinates
+  //   far from the origin lose precision in a phone's graphics.
   function prepare(root) {
     const { THREE, mergeVertices } = E;
     const junk = [];
     root.traverse((o) => { if (o !== root && (o.isLight || o.isCamera || o.isLine || o.isPoints)) junk.push(o); });
     junk.forEach((o) => o.removeFromParent());
+    root.updateMatrixWorld(true);
 
+    const meshes = [];
+    root.traverse((o) => { if (o.isMesh && o.geometry && o.geometry.attributes.position && o.geometry.attributes.position.count) meshes.push(o); });
+    if (!meshes.length) return null;
+
+    // materials
     const loaded = (t) => !!(t && t.image && (t.image.naturalWidth || t.image.width));
-    const swapped = new Map();
+    const looks = new Map(), bySource = new Map(), keptMaps = new Set();
     const toStandard = (m) => {
-      let s = swapped.get(m);
+      let s = bySource.get(m);
+      if (s) return s;
+      const map = loaded(m.map) ? m.map : null;
+      const color = m.color ? m.color.clone() : new THREE.Color(0xcccccc);
+      const opacity = typeof m.opacity === 'number' ? Math.min(1, Math.max(0, m.opacity)) : 1;
+      const key = color.getHexString() + '|' + opacity.toFixed(3) + '|' + (map ? map.uuid : '');
+      s = looks.get(key);
       if (!s) {
-        s = new THREE.MeshStandardMaterial({
-          name: m.name,
-          color: m.color ? m.color.clone() : new THREE.Color(0xcccccc),
-          map: loaded(m.map) ? m.map : null,
-          opacity: m.opacity,
-          transparent: m.opacity < 1,
-          roughness: 0.8,
-          metalness: 0,
-        });
-        swapped.set(m, s);
+        s = new THREE.MeshStandardMaterial({ name: m.name, color, map, opacity, transparent: opacity < 1, roughness: 0.8, metalness: 0 });
+        looks.set(key, s);
+        if (map) keptMaps.add(map);
       }
+      bySource.set(m, s);
       return s;
     };
 
-    const meshes = [];
-    root.traverse((o) => { if (o.isMesh) meshes.push(o); });
-    const keepUV = new Set();
+    // one tidy, welded copy of each geometry, however many elements use it
+    const geos = new Map();
     for (const mesh of meshes) {
-      mesh.material = Array.isArray(mesh.material) ? mesh.material.map(toStandard) : toStandard(mesh.material);
-      if ([].concat(mesh.material).some((m) => m.map)) keepUV.add(mesh.geometry);
+      const mats = [].concat(mesh.material).map(toStandard);
+      mesh.material = Array.isArray(mesh.material) ? mats : mats[0];
+      let gi = geos.get(mesh.geometry);
+      if (!gi) geos.set(mesh.geometry, gi = { users: 0, uv: false, pending: 0, kept: false, bake: false, g: null });
+      gi.users++;
+      if (mats.some((m) => m.map)) gi.uv = true;
     }
-    for (const [old, now] of swapped) {
-      if (old.map && old.map !== now.map) old.map.dispose();
+    for (const old of bySource.keys()) {
+      if (old.map && !keptMaps.has(old.map)) old.map.dispose();
       old.dispose();
     }
+    let most = 0;
+    for (const [g, gi] of geos) {
+      for (const n of Object.keys(g.attributes)) {
+        if (!(n === 'position' || n === 'normal' || (n === 'uv' && gi.uv))) g.deleteAttribute(n);
+      }
+      g.morphAttributes = {};
+      if (!g.attributes.normal) g.computeVertexNormals();
+      gi.g = mergeVertices(g);
+      g.dispose();
+      most = Math.max(most, gi.g.attributes.position.count);
+    }
+    // Shared geometry that is small is baked as well: a thousand copies of a small
+    // fitting cost a phone a thousand draws but add little to the file. Smallest
+    // first, until the copies would add more than SHARE_BUDGET corner points.
+    let extra = 0;
+    for (const gi of [...geos.values()].filter((x) => x.users > 1)
+      .sort((a, b) => (a.users - 1) * a.g.attributes.position.count - (b.users - 1) * b.g.attributes.position.count)) {
+      const cost = (gi.users - 1) * gi.g.attributes.position.count;
+      if (cost > SHARE_ONE || extra + cost > SHARE_BUDGET) break;
+      extra += cost;
+      gi.bake = true;
+    }
 
-    const merged = new Map();
+    // the model's real bounds, from every corner point
+    const box = new THREE.Box3();
+    for (const mesh of meshes) {
+      const p = geos.get(mesh.geometry).g.attributes.position.array, e = mesh.matrixWorld.elements;
+      for (let i = 0; i < p.length; i += 3) {
+        const x = p[i], y = p[i + 1], z = p[i + 2];
+        const wx = e[0] * x + e[4] * y + e[8] * z + e[12];
+        const wy = e[1] * x + e[5] * y + e[9] * z + e[13];
+        const wz = e[2] * x + e[6] * y + e[10] * z + e[14];
+        if (wx < box.min.x) box.min.x = wx; if (wx > box.max.x) box.max.x = wx;
+        if (wy < box.min.y) box.min.y = wy; if (wy > box.max.y) box.max.y = wy;
+        if (wz < box.min.z) box.min.z = wz; if (wz > box.max.z) box.max.z = wz;
+      }
+    }
+    const cx = (box.min.x + box.max.x) / 2, cz = (box.min.z + box.max.z) / 2, by = box.min.y;
+    const shift = new THREE.Matrix4().makeTranslation(-cx, -by, -cz);
+
+    // sort into what stays shared and what is baked, per material
+    const content = new THREE.Group();
+    content.name = 'Model';
+    const buckets = new Map();
     let tris = 0;
     for (const mesh of meshes) {
-      const g = mesh.geometry;
-      let m = merged.get(g);
-      if (!m) {
-        if (!keepUV.has(g)) ['uv', 'uv1', 'uv2', 'uv3'].forEach((n) => g.deleteAttribute(n));
-        g.deleteAttribute('color');
-        if (!g.attributes.normal) g.computeVertexNormals();
-        m = mergeVertices(g);
-        g.dispose();
-        merged.set(g, m);
+      const gi = geos.get(mesh.geometry), g = gi.g;
+      const world = new THREE.Matrix4().multiplyMatrices(shift, mesh.matrixWorld);
+      const mats = [].concat(mesh.material);
+      const ranges = Array.isArray(mesh.material) && g.groups.length
+        ? g.groups.map((r) => ({ start: r.start, count: Math.min(r.count, g.index.count - r.start), mat: mats[r.materialIndex] }))
+        : [{ start: 0, count: g.index.count, mat: mats[0] }];
+      for (const r of ranges) if (r.mat && r.count >= 3) tris += Math.floor(r.count / 3);
+      if (gi.users > 1 && !gi.bake && world.determinant() > 0) {
+        const copy = new THREE.Mesh(g, mesh.material);
+        copy.name = mesh.name;
+        copy.matrixAutoUpdate = false;
+        copy.matrix.copy(world);
+        content.add(copy);
+        gi.kept = true;
+        continue;
       }
-      mesh.geometry = m;
-      tris += m.index.count / 3;
+      for (const r of ranges) {
+        if (!r.mat || r.count < 3) continue;
+        let list = buckets.get(r.mat);
+        if (!list) buckets.set(r.mat, list = []);
+        list.push({ gi, world, start: r.start, count: r.count - (r.count % 3) });
+        gi.pending++;
+      }
     }
-    return { meshes: meshes.length, tris };
+
+    // bake: corner points into model space, normals turned with them, faces flipped where mirrored
+    const seen = new Int32Array(most).fill(-1), slot = new Uint32Array(most);
+    const nm = new THREE.Matrix3();
+    let stamp = 0;
+    const countPoints = (pc) => {
+      const ix = pc.gi.g.index.array;
+      stamp++;
+      let n = 0;
+      for (let t = pc.start, end = pc.start + pc.count; t < end; t++) {
+        if (seen[ix[t]] !== stamp) { seen[ix[t]] = stamp; n++; }
+      }
+      return n;
+    };
+    for (const [mat, pieces] of buckets) {
+      const withUV = !!mat.map;
+      let i = 0;
+      while (i < pieces.length) {
+        let points = 0, corners = 0, j = i;
+        while (j < pieces.length) {
+          const n = countPoints(pieces[j]);
+          if (j > i && points + n > CHUNK) break;
+          points += n; corners += pieces[j].count; j++;
+        }
+        const pos = new Float32Array(points * 3), nor = new Float32Array(points * 3);
+        const uv = withUV ? new Float32Array(points * 2) : null;
+        const idx = points > 65535 ? new Uint32Array(corners) : new Uint16Array(corners);
+        let vo = 0, io = 0;
+        for (let k = i; k < j; k++) {
+          const pc = pieces[k], g = pc.gi.g;
+          const sp = g.attributes.position.array, sn = g.attributes.normal.array;
+          const su = withUV && g.attributes.uv ? g.attributes.uv.array : null;
+          const ix = g.index.array, e = pc.world.elements, n = nm.getNormalMatrix(pc.world).elements;
+          const flip = pc.world.determinant() < 0;
+          stamp++;
+          const emit = (v) => {
+            if (seen[v] === stamp) return slot[v];
+            seen[v] = stamp;
+            const s = vo++, a = v * 3, b = s * 3;
+            const x = sp[a], y = sp[a + 1], z = sp[a + 2];
+            pos[b] = e[0] * x + e[4] * y + e[8] * z + e[12];
+            pos[b + 1] = e[1] * x + e[5] * y + e[9] * z + e[13];
+            pos[b + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+            const nx = sn[a], ny = sn[a + 1], nz = sn[a + 2];
+            const ox = n[0] * nx + n[3] * ny + n[6] * nz, oy = n[1] * nx + n[4] * ny + n[7] * nz, oz = n[2] * nx + n[5] * ny + n[8] * nz;
+            const len = Math.hypot(ox, oy, oz) || 1;
+            nor[b] = ox / len; nor[b + 1] = oy / len; nor[b + 2] = oz / len;
+            if (su) { uv[s * 2] = su[v * 2]; uv[s * 2 + 1] = su[v * 2 + 1]; }
+            slot[v] = s;
+            return s;
+          };
+          for (let t = pc.start, end = pc.start + pc.count; t < end; t += 3) {
+            const a = emit(ix[t]), b = emit(ix[t + 1]), c = emit(ix[t + 2]);
+            idx[io++] = a;
+            if (flip) { idx[io++] = c; idx[io++] = b; } else { idx[io++] = b; idx[io++] = c; }
+          }
+          // free each welded geometry as soon as its last piece is baked
+          if (--pc.gi.pending === 0 && !pc.gi.kept) { g.dispose(); pc.gi.g = null; }
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+        if (uv) geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+        geo.setIndex(new THREE.BufferAttribute(idx, 1));
+        geo.computeBoundingSphere();
+        const part = new THREE.Mesh(geo, mat);
+        part.name = (mat.name || 'Material').replace(/[^\w-]+/g, '_').slice(0, 60);
+        content.add(part);
+        i = j;
+      }
+    }
+
+    const size = box.getSize(new THREE.Vector3());
+    return {
+      content, tris, meshes: meshes.length,
+      box: new THREE.Box3(new THREE.Vector3(-size.x / 2, 0, -size.z / 2), new THREE.Vector3(size.x / 2, size.y, size.z / 2)),
+    };
   }
 
-  function showModel(root, stats) {
+  function showModel(ready) {
     const { THREE } = E;
-    box0 = new THREE.Box3().setFromObject(root, true);   // file units; FBXLoader has already stood Z-up files upright
+    box0 = ready.box;
     model = new THREE.Group();
     model.name = 'Model';
-    model.add(root);
-    ui.objs.textContent = stats.meshes.toLocaleString('en');
-    ui.tris.textContent = Math.round(stats.tris).toLocaleString('en');
+    model.add(ready.content);
+    ui.objs.textContent = ready.meshes.toLocaleString('en');
+    ui.tris.textContent = Math.round(ready.tris).toLocaleString('en');
     if (view === null) view = makeView();
     if (view) view.show(model);
   }
@@ -613,21 +888,20 @@ function start() {
     }
   }
 
+  const realSize = () => box0.getSize(new E.THREE.Vector3()).multiplyScalar(UNITS[ui.unit.value]);
+
   function applyUnit() {
     if (!model) return;
-    const { THREE } = E;
-    const f = UNITS[ui.unit.value];
-    const c = box0.getCenter(new THREE.Vector3());
-    model.scale.setScalar(f);
-    model.position.set(-c.x * f, -box0.min.y * f, -c.z * f);   // centred, lowest point on the floor
+    model.scale.setScalar(UNITS[ui.unit.value]);   // the model is already centred on its base
     model.updateMatrixWorld(true);
-    const s = box0.getSize(new THREE.Vector3()).multiplyScalar(f);
+    const s = realSize();
     // FBXLoader turned Revit's Z up into three.js Y up: X stays X, Revit Y runs along Z
     ui.x.textContent = metres(s.x);
     ui.y.textContent = metres(s.z);
     ui.h.textContent = metres(s.y);
     const longest = Math.max(s.x, s.y, s.z);
     ui.odd.hidden = longest >= 0.5 && longest <= 3000;
+    showScale();
     if (view) view.frame(s);
   }
 
@@ -637,6 +911,32 @@ function start() {
     if (usdzURL) {
       clearOutput();
       say(ui.makeStatus, 'warn', 'The unit changed, so create the USDZ again.');
+    }
+  });
+
+  // ---------------------------------------------------------------- size in AR
+  // metres in AR per real metre: 1 is real size
+  function arScale() {
+    if (ui.scale.value === 'fit') {
+      const s = realSize();
+      return Math.min(1, TABLE / Math.max(s.x, s.z, 1e-6));
+    }
+    return 1 / Number(ui.scale.value);
+  }
+
+  function showScale() {
+    if (!model) { ui.scaleNote.textContent = ''; return; }
+    const s = arScale(), d = realSize().multiplyScalar(s);
+    ui.scaleNote.textContent = (s > 0.9999 ? 'Real size. ' : 'Scale ' + ratio(s) + '. ') +
+      `In AR it is ${metres(d.x)} × ${metres(d.z)}, ${metres(d.y)} high.`;
+  }
+
+  ui.scale.addEventListener('change', () => {
+    if (!model) return;
+    showScale();
+    if (usdzURL) {
+      clearOutput();
+      say(ui.makeStatus, 'warn', 'The size changed, so create the USDZ again.');
     }
   });
 
@@ -659,12 +959,13 @@ function start() {
     scene.add(sun);
     const controls = new OrbitControls(camera, renderer.domElement);
     let grid = null, current = null, last = null, queued = false;
-    const render = () => { queued = false; renderer.render(scene, camera); };
+    // while AR runs, the AR session draws every frame and the preview stays still
+    const render = () => { queued = false; if (!renderer.xr.isPresenting) renderer.render(scene, camera); };
     const redraw = () => { if (!queued) { queued = true; requestAnimationFrame(render); } };
     controls.addEventListener('change', redraw);
     const resize = () => {
       const w = ui.stage.clientWidth, h = ui.stage.clientHeight;
-      if (!w || !h) return;
+      if (!w || !h || renderer.xr.isPresenting) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
@@ -680,12 +981,14 @@ function start() {
       grid = null;
     };
     return {
+      renderer, scene, resize,
       show(obj) {
-        if (current) scene.remove(current);
+        if (current && current !== obj) scene.remove(current);
         current = obj;
         scene.add(obj);
         ui.empty.hidden = true;
         ui.reset.disabled = false;
+        redraw();
       },
       clear() {
         if (current) scene.remove(current);
@@ -697,6 +1000,7 @@ function start() {
         ui.reset.disabled = true;
         redraw();
       },
+      setGrid(on) { if (grid) grid.visible = on; },
       frame(size) {
         last = size.clone();
         // floor grid in round-number squares, so the scale reads at a glance
@@ -743,7 +1047,7 @@ function start() {
   }
   ui.reset.addEventListener('click', () => { if (view) view.reset(); });
 
-  // ---------------------------------------------------------------- USDZ + AR
+  // ---------------------------------------------------------------- USDZ for iPhone and iPad
   ui.make.addEventListener('click', async () => {
     if (!model || busy) return;
     setBusy(true);
@@ -751,11 +1055,17 @@ function start() {
     say(ui.makeStatus, 'busy', 'Creating the USDZ file…');
     await paint();
     try {
-      model.updateMatrixWorld(true);
-      const data = await new E.USDZExporter().parseAsync(model, { quickLookCompatible: true, maxTextureSize: 1024 });
+      // a light copy at the chosen size; the parts share their geometry with the preview
+      const s = arScale();
+      const out = new E.THREE.Group();
+      out.name = 'Model';
+      out.scale.setScalar(UNITS[ui.unit.value] * s);
+      for (const part of model.children[0].children) out.add(part.clone());
+      out.updateMatrixWorld(true);
+      const data = await new E.USDZExporter().parseAsync(out, { quickLookCompatible: true, maxTextureSize: 1024 });
       const blob = new Blob([data], { type: 'model/vnd.usdz+zip' });
       usdzURL = URL.createObjectURL(blob);
-      const name = baseName + '.usdz';
+      const name = baseName + (s > 0.9999 ? '' : '-' + ratio(s).replace(':', 'to')) + '.usdz';
       ui.ar.href = usdzURL;
       ui.ar.download = name;
       ui.dl.href = usdzURL;
@@ -770,7 +1080,9 @@ function start() {
       ui.out.hidden = false;
       say(ui.makeStatus, 'ok', isAppleMobile
         ? 'USDZ ready. Tap View in AR.'
-        : 'USDZ ready. Download it, or open this page on an iPhone or iPad to view it in AR.');
+        : xrSupported
+          ? 'USDZ ready. This file is for iPhone and iPad. On this phone, tap View in AR above.'
+          : 'USDZ ready. Download it, or open this page on an iPhone, iPad or Android phone to view it in AR.');
     } catch (err) {
       clearOutput();
       say(ui.makeStatus, 'error', friendly(err, 'export'));
@@ -789,6 +1101,278 @@ function start() {
     ui.bigOut.hidden = true;
     ui.outSize.textContent = '';
     say(ui.makeStatus, '', '');
+  }
+
+  // ---------------------------------------------------------------- AR on Android: WebXR in Chrome
+  // The approach follows BIM2AR (github.com/isaddiq/BIM2AR, MIT licence): every pose
+  // comes from the phone's AR runtime, the floor from its hit test, and the model is
+  // held by an anchor where Chrome offers one, so it stays put while you walk round it.
+  // Nothing here reads the motion sensors itself.
+  ui.xr.addEventListener('click', () => startXR());
+
+  async function startXR() {
+    if (!model || busy || xr || !view) return;
+    const { THREE } = E;
+    setBusy(true);
+    say(ui.makeStatus, 'busy', 'Starting AR. Allow the camera if Chrome asks.');
+    ui.xrUI.hidden = false;
+    let session;
+    try {
+      session = await navigator.xr.requestSession('immersive-ar', {
+        optionalFeatures: ['hit-test', 'anchors', 'dom-overlay'],
+        domOverlay: { root: ui.xrUI },
+      });
+    } catch (err) {
+      ui.xrUI.hidden = true;
+      setBusy(false);
+      say(ui.makeStatus, 'error', xrError(err));
+      return;
+    }
+    const enabled = session.enabledFeatures ? new Set(session.enabledFeatures) : null;
+    const has = (f) => (enabled ? enabled.has(f) : true);
+    const s = arScale();
+    xr = {
+      session, ref: null, hitSource: null,
+      cam: new THREE.PerspectiveCamera(60, 1, 0.02, 2000),
+      placement: new THREE.Group(),
+      reticle: new THREE.Mesh(new THREE.RingGeometry(0.08, 0.1, 48).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95, depthTest: false })),
+      viewer: new THREE.Matrix4(), tracking: false,
+      hit: null,                 // the floor point under the screen centre, this frame
+      base: null,                // where the model stands and which way it faces
+      anchor: null, anchorK: null, anchors: has('anchors'), place: 0,
+      offset: new THREE.Vector3(), yaw: 0, scale: s, full: s > 0.9999,
+      want: false, moving: false, guess: false, touch: null, key: '',
+    };
+    xr.placement.matrixAutoUpdate = false;
+    xr.placement.visible = false;
+    xr.reticle.matrixAutoUpdate = false;
+    xr.reticle.visible = false;
+    xr.reticle.renderOrder = 10;
+    xr.placement.add(model);
+    view.scene.add(xr.placement, xr.reticle);
+    view.setGrid(false);
+    const { renderer } = view;
+    try {
+      renderer.xr.enabled = true;
+      renderer.xr.setReferenceSpaceType('local');
+      await renderer.xr.setSession(session);
+      xr.ref = renderer.xr.getReferenceSpace();
+      if (has('hit-test') && typeof session.requestHitTestSource === 'function') {
+        try {
+          const space = await session.requestReferenceSpace('viewer');
+          xr.hitSource = await session.requestHitTestSource({ space });
+        } catch (err) { xr.hitSource = null; }
+      }
+    } catch (err) {
+      xr.failed = xrError(err);
+      try { await session.end(); } catch (e) { /* already ended */ }
+      endXR();
+      return;
+    }
+    // after three.js's own listener, so the renderer has its size back before the preview returns
+    session.addEventListener('end', endXR);
+    session.addEventListener('select', onXRSelect);
+    renderer.setAnimationLoop(xrFrame);
+    say(ui.makeStatus, '', '');
+    syncXR();
+  }
+
+  function xrError(err) {
+    const t = String((err && (err.name + ' ' + err.message)) || err);
+    if (/NotAllowed|denied|permission/i.test(t)) return 'AR needs the camera. Allow camera access for this site in Chrome, then try again.';
+    if (/NotSupported/i.test(t)) return 'This phone cannot start AR in Chrome. It needs Google Play Services for AR. You can still create the USDZ file.';
+    return 'AR could not start. (Details: ' + ((err && err.message) || err) + ')';
+  }
+
+  function xrFrame(time, frame) {
+    if (!xr || !frame || !xr.ref) return;
+    const { THREE } = E;
+    const pose = frame.getViewerPose(xr.ref);
+    xr.tracking = !!pose;
+    if (pose) xr.viewer.fromArray(pose.transform.matrix);
+    xr.hit = null;
+    if (xr.hitSource && pose) {
+      for (const r of frame.getHitTestResults(xr.hitSource)) {
+        const hp = r.getPose(xr.ref);
+        if (!hp) continue;
+        const m = new THREE.Matrix4().fromArray(hp.transform.matrix);
+        // walls and slopes are skipped: the model stands on the floor or a table
+        if (new THREE.Vector3().setFromMatrixColumn(m, 1).y < 0.9) continue;
+        xr.hit = { matrix: m, result: r };
+        break;
+      }
+    }
+    if (xr.want) { xr.want = false; placeNow(); }
+    if (xr.anchor) followAnchor(frame);
+    xr.reticle.visible = !xr.base && !!xr.hit;
+    if (xr.hit) { xr.reticle.matrix.copy(xr.hit.matrix); xr.reticle.matrixWorldNeedsUpdate = true; }
+    if (xr.base) {
+      const m = xr.placement.matrix.makeTranslation(xr.offset.x, 0, xr.offset.z).multiply(xr.base);
+      m.multiply(new THREE.Matrix4().makeRotationY(xr.yaw)).multiply(new THREE.Matrix4().makeScale(xr.scale, xr.scale, xr.scale));
+      xr.placement.matrixWorldNeedsUpdate = true;
+      xr.placement.visible = true;
+    }
+    syncXR();
+    view.renderer.render(view.scene, xr.cam);
+  }
+
+  // runs inside an AR frame: an anchor can only be made from a hit of the current frame
+  function placeNow() {
+    const { THREE } = E;
+    let pos;
+    xr.guess = false;
+    if (xr.hit) {
+      pos = new THREE.Vector3().setFromMatrixPosition(xr.hit.matrix);
+    } else if (!xr.hitSource && xr.tracking) {
+      // this phone gives no floor detection: 1.5 m ahead and 1.4 m below the phone, a guess
+      const fwd = new THREE.Vector3(0, 0, -1).transformDirection(xr.viewer);
+      fwd.y = 0;
+      if (fwd.lengthSq() < 1e-6) fwd.set(0, 0, -1);
+      pos = new THREE.Vector3().setFromMatrixPosition(xr.viewer).addScaledVector(fwd.normalize(), 1.5);
+      pos.y -= 1.4;
+      xr.guess = true;
+    } else {
+      return;
+    }
+    // turn the model to face you
+    const me = new THREE.Vector3().setFromMatrixPosition(xr.viewer);
+    const dx = me.x - pos.x, dz = me.z - pos.z;
+    const turn = Math.hypot(dx, dz) > 1e-3 ? Math.atan2(dx, dz) : 0;
+    xr.base = new THREE.Matrix4().makeRotationY(turn).setPosition(pos);
+    xr.offset.set(0, 0, 0);
+    xr.yaw = 0;
+    xr.moving = false;
+    const id = ++xr.place;
+    if (xr.anchors && xr.hit && typeof xr.hit.result.createAnchor === 'function') {
+      Promise.resolve(xr.hit.result.createAnchor()).then((a) => {
+        if (xr && xr.place === id && xr.base && !xr.anchor) { xr.anchor = a; xr.anchorK = null; }
+        else { try { a.delete(); } catch (e) { /* gone */ } }
+      }, () => { /* no anchor here: the model is held in the session's space */ });
+    }
+  }
+
+  // the runtime refines the anchor as it learns the room; the model moves with it
+  function followAnchor(frame) {
+    const { THREE } = E;
+    const tracked = !frame.trackedAnchors || frame.trackedAnchors.has(xr.anchor);
+    const ap = tracked ? frame.getPose(xr.anchor.anchorSpace, xr.ref) : null;
+    if (!ap) return;           // not tracked this frame: the model keeps its last place
+    const a = new THREE.Matrix4().fromArray(ap.transform.matrix);
+    if (!xr.anchorK) xr.anchorK = a.clone().invert().multiply(xr.base);
+    xr.base = a.multiply(xr.anchorK);
+  }
+
+  function placeAgain() {
+    if (!xr) return;
+    if (xr.anchor) { try { xr.anchor.delete(); } catch (e) { /* gone */ } }
+    xr.anchor = null;
+    xr.anchorK = null;
+    xr.base = null;
+    xr.moving = false;
+    xr.place++;
+    xr.placement.visible = false;
+    syncXR();
+  }
+
+  // a tap on the camera view while looking for the floor places the model
+  function onXRSelect() { if (xr && !xr.base) xr.want = true; }
+  // taps on the AR buttons, and drags while moving, are not taps on the camera view
+  ui.xrUI.addEventListener('beforexrselect', (e) => {
+    if ((xr && xr.moving) || (e.target.closest && e.target.closest('button'))) e.preventDefault();
+  });
+
+  ui.xrPlace.addEventListener('click', () => { if (xr && !xr.base) xr.want = true; });
+  ui.xrMove.addEventListener('click', () => { if (xr && xr.base) { xr.moving = !xr.moving; xr.touch = null; syncXR(); } });
+  ui.xrLeft.addEventListener('click', () => { if (xr) xr.yaw += Math.PI / 12; });
+  ui.xrRight.addEventListener('click', () => { if (xr) xr.yaw -= Math.PI / 12; });
+  ui.xrAgain.addEventListener('click', placeAgain);
+  ui.xrExit.addEventListener('click', () => { if (xr) xr.session.end().catch(() => endXR()); });
+
+  // while moving: one finger slides the model on the floor, two fingers turn it,
+  // and at a table size a pinch makes it bigger or smaller
+  function onTouch(e) {
+    if (!xr || !xr.base || !xr.moving || (e.target.closest && e.target.closest('button'))) return;
+    e.preventDefault();
+    const pts = Array.from(e.touches).slice(0, 2).map((t) => ({ x: t.clientX, y: t.clientY }));
+    const g = xr.touch;
+    if (!pts.length) { xr.touch = null; return; }
+    if (!g || g.pts.length !== pts.length) {   // a new touch, or a finger added or lifted: start again from here
+      xr.touch = { pts, offset: xr.offset.clone(), yaw: xr.yaw, scale: xr.scale, floor: pts.length === 1 ? floorPoint(pts[0]) : null };
+      return;
+    }
+    if (pts.length === 1) {
+      const p = floorPoint(pts[0]);
+      if (p && g.floor) xr.offset.set(g.offset.x + p.x - g.floor.x, 0, g.offset.z + p.z - g.floor.z);
+    } else {
+      const angle = (q) => Math.atan2(q[1].y - q[0].y, q[1].x - q[0].x);
+      const apart = (q) => Math.hypot(q[1].x - q[0].x, q[1].y - q[0].y);
+      xr.yaw = g.yaw - (angle(pts) - angle(g.pts));
+      if (!xr.full && apart(g.pts) > 10) xr.scale = Math.min(1, Math.max(0.0005, g.scale * apart(pts) / apart(g.pts)));
+    }
+  }
+  for (const t of ['touchstart', 'touchmove', 'touchend', 'touchcancel']) ui.xrUI.addEventListener(t, onTouch, { passive: false });
+
+  // where a point on the screen meets the floor the model stands on
+  function floorPoint(pt) {
+    const { THREE } = E;
+    const all = view.renderer.xr.getCamera();
+    const cam = (all.cameras && all.cameras[0]) || all;
+    const origin = new THREE.Vector3().setFromMatrixPosition(cam.matrixWorld);
+    const p = new THREE.Vector3((pt.x / window.innerWidth) * 2 - 1, -(pt.y / window.innerHeight) * 2 + 1, 0.5)
+      .applyMatrix4(cam.projectionMatrix.clone().invert()).applyMatrix4(cam.matrixWorld);
+    const ray = new THREE.Ray(origin, p.sub(origin).normalize());
+    const floor = new THREE.Plane(new THREE.Vector3(0, 1, 0), -new THREE.Vector3().setFromMatrixPosition(xr.base).y);
+    return ray.intersectPlane(floor, new THREE.Vector3());
+  }
+
+  // the buttons and the message, changed only when something changes
+  function syncXR() {
+    if (!xr) return;
+    const looking = !xr.base;
+    let msg;
+    if (!xr.tracking) msg = looking ? 'Move your phone slowly so it can see the room.' : 'Tracking lost. Move the phone slowly.';
+    else if (looking) msg = xr.hit ? 'Floor found. Tap Place.' : xr.hitSource ? 'Point the phone at the floor and move it slowly.' : 'Tap Place to put the model 1.5 m in front of you.';
+    else if (xr.moving) msg = 'Drag to move. Twist two fingers to turn.' + (xr.full ? '' : ' Pinch to resize.');
+    else msg = (xr.guess ? 'Placed at a guessed floor height.' : 'Placed. Walk around it.') + ' Tap Move to adjust.';
+    const scale = xr.full ? 'Real size 1:1' : 'Scale ' + ratio(xr.scale);
+    const canPlace = !!xr.hit || (!xr.hitSource && xr.tracking);
+    const key = [msg, scale, looking, xr.moving, canPlace].join('|');
+    if (key === xr.key) return;
+    xr.key = key;
+    ui.xrUI.dataset.state = looking ? 'looking' : xr.moving ? 'moving' : 'placed';
+    ui.xrMsg.textContent = msg;
+    ui.xrScale.textContent = scale;
+    ui.xrPlace.hidden = !looking;
+    ui.xrPlace.disabled = !canPlace;
+    ui.xrMove.hidden = looking;
+    ui.xrMove.textContent = xr.moving ? 'Done' : 'Move';
+    ui.xrMove.setAttribute('aria-pressed', String(xr.moving));
+    ui.xrLeft.hidden = ui.xrRight.hidden = !xr.moving;
+    ui.xrAgain.hidden = looking || xr.moving;
+  }
+
+  // the session ended: from Exit, the phone's back gesture, or a failed start
+  function endXR() {
+    if (!xr) return;
+    const s = xr;
+    xr = null;
+    const { renderer, scene } = view;
+    renderer.setAnimationLoop(null);
+    try { if (s.hitSource) s.hitSource.cancel(); } catch (e) { /* ended */ }
+    try { if (s.anchor) s.anchor.delete(); } catch (e) { /* ended */ }
+    s.session.removeEventListener('end', endXR);
+    s.session.removeEventListener('select', onXRSelect);
+    renderer.xr.enabled = false;
+    scene.remove(s.placement, s.reticle);
+    s.reticle.geometry.dispose();
+    s.reticle.material.dispose();
+    if (model) view.show(model);      // back into the preview, as it was
+    view.setGrid(true);
+    ui.xrUI.hidden = true;
+    setBusy(false);
+    view.resize();
+    say(ui.makeStatus, s.failed ? 'error' : '', s.failed || '');
   }
 
   // ---------------------------------------------------------------- tidy up
@@ -812,7 +1396,8 @@ function start() {
     }
     for (const el of [ui.x, ui.y, ui.h, ui.objs, ui.tris]) el.textContent = '—';
     ui.odd.hidden = true;
-    ui.make.disabled = true;
+    ui.scaleNote.textContent = '';
+    syncAR();
   }
 
   function friendly(err, stage) {
